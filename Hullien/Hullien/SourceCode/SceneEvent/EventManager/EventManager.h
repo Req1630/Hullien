@@ -3,6 +3,8 @@
 
 #include "..\EventBase\EventBase.h"
 
+class CPeraRenderer;	// G-Buufer描画用.
+
 // イベントの種類.
 enum class enEventNo
 {
@@ -36,16 +38,22 @@ public:
 	void OnSkip() { m_IsSkip = true; }
 	// ゲームオーバーの設定.
 	void OnGameOver() { m_IsGameOver = true; }
-
+	// もう一回最初から.
+	void EventRetry();
 
 private:
-	std::shared_ptr<CEventBase> m_pEventBase;	// イベント元クラス.
-	EEvent								 m_NowEvent;		// 現在のイベント.	
-	EEvent								 m_NextEvent;		// 次のイベント.
-	bool									 m_IsLoadEnd;		// ロードが終了したか.
-	bool									 m_IsSkip;			// スキップするか.
-	bool									 m_IsGameOver;	// ゲームオーバーか.
-	bool									 m_IsEventEnd;	// イベントが終了したか.
+	// モデルの描画.
+	void ModelRender();
+
+private:
+	std::shared_ptr<CEventBase>			m_pEventBase;	// イベント元クラス.
+	std::unique_ptr<CPeraRenderer>		m_pPeraRenderer;
+	EEvent										m_NowEvent;		// 現在のイベント.	
+	EEvent										m_NextEvent;		// 次のイベント.
+	bool											m_IsLoadEnd;		// ロードが終了したか.
+	bool											m_IsSkip;			// スキップするか.
+	bool											m_IsGameOver;	// ゲームオーバーか.
+	bool											m_IsEventEnd;		// イベントが終了したか.
 };
 
 #endif	//#ifndef SCENE_EVENT_MANAGER_H

@@ -3,12 +3,13 @@
 
 #include "..\..\EventBase\EventBase.h"
 
-class CGroundStage;		// 地面クラス.
+class CGroundStage;	// 地面クラス.
 class CSpawnUFO;		// イベント用UFOクラス.
 class CEventPlayer;		// イベント用プレイヤークラス.
-class CGirl;			// 女の子クラス.
-class CAlienA;			// 宇宙人Aクラス.
-class CEventCamera;		// イベント用カメラクラス.
+class CGirl;					// 女の子クラス.
+class CAlienA;				// 宇宙人Aクラス.
+class CEventCamera;	// イベント用カメラクラス.
+class CEventManager;	// イベント管理クラス.
 
 /***********************************
 *	スタートイベントクラス.
@@ -28,14 +29,22 @@ public:
 
 private:
 	void DebugRender();
+	void DebugOperation();
 
 private:
 	std::shared_ptr<CGroundStage>		m_pGroundStage;
-	std::shared_ptr<CSpawnUFO>			m_pSpawnUFO;
+	std::shared_ptr<CSpawnUFO>		m_pSpawnUFO;
 	std::shared_ptr<CEventPlayer>		m_pPlayer;
-	std::shared_ptr<CGirl>				m_pGirl;
-	std::shared_ptr<CAlienA>			m_pAlienA;
+	std::shared_ptr<CGirl>					m_pGirl;
+	std::shared_ptr<CAlienA>				m_pAlienA;
 	std::shared_ptr<CEventCamera>		m_pEventCamera;
+	std::shared_ptr<CEventManager>	m_pEventManager;
+	D3DXVECTOR3							m_vPosition;
+	D3DXVECTOR3							m_vRotation;
+	D3DXVECTOR3							m_vLookPosition;
+	D3DXVECTOR3							m_vUFOPosition;
+	int												m_NowStep;
+	float											m_Speed;
 };
 
 #endif //#ifndef START_EVENT_H.

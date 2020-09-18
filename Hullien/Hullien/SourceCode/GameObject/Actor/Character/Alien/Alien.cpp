@@ -281,7 +281,7 @@ void CAlien::BarrierCollision( CActor* pActor )
 		m_IsBarrierHit = false;
 		
 	} else {
-		CSoundManager::NoMultipleSEPlay("BarrierHitSE");
+		CSoundManager::PlaySE("BarrierHitSE");
 		m_MoveSpeed = moveSpeed;
 		m_IsBarrierHit = true;
 		*m_pIsAlienOtherAbduct = false;

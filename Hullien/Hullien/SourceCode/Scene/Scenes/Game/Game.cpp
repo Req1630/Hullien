@@ -66,7 +66,7 @@ void CGame::Update()
 {
 	if (m_pEventManager->GetIsEventEnd() == false)
 	{
-		m_pEventManager->Update();
+		m_pEventManager->Update();;
 	}
 	else
 	{
