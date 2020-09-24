@@ -43,8 +43,9 @@ private:
 	D3DXVECTOR3							m_vRotation;
 	D3DXVECTOR3							m_vLookPosition;
 	D3DXVECTOR3							m_vUFOPosition;
-	int												m_NowStep;
-	float											m_Speed;
+	int									m_NowStep;
+	float								m_Speed;
+	bool								m_IsDisp;
 };
 
 #endif //#ifndef START_EVENT_H.
