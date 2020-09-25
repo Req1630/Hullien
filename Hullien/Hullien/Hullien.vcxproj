@@ -201,7 +201,11 @@
     <ClCompile Include="SourceCode\GameObject\Actor\Item\Items\MoveSpeedUp\MoveSpeedUp.cpp" />
     <ClCompile Include="SourceCode\GameObject\Actor\Item\Items\SPEffectTime\SPEffectTime.cpp" />
     <ClCompile Include="SourceCode\GameObject\Actor\LaserBeam\LaserBeam.cpp" />
-    <ClCompile Include="SourceCode\GameObject\Actor\Character\EventPlayer\EventPlayer.cpp" />
+    <ClCompile Include="SourceCode\GameObject\Actor\EventCharacter\EventAlien\EventAlien.cpp" />
+    <ClCompile Include="SourceCode\GameObject\Actor\EventCharacter\EventAlien\EventAlien_A\EventAlien_A.cpp" />
+    <ClCompile Include="SourceCode\GameObject\Actor\EventCharacter\EventCharacter.cpp" />
+    <ClCompile Include="SourceCode\GameObject\Actor\EventCharacter\EventGirl\EventGirl.cpp" />
+    <ClCompile Include="SourceCode\GameObject\Actor\EventCharacter\EventPlayer\EventPlayer.cpp" />
     <ClCompile Include="SourceCode\GameObject\GameObject.cpp" />
     <ClCompile Include="SourceCode\GameObject\Actor\Actor.cpp" />
     <ClCompile Include="SourceCode\GameObject\GroundStage\GroundStage.cpp" />
@@ -331,7 +335,11 @@
     <ClInclude Include="SourceCode\GameObject\Actor\Item\Items\MoveSpeedUp\MoveSpeedUp.h" />
     <ClInclude Include="SourceCode\GameObject\Actor\Item\Items\SPEffectTime\SPEffectTime.h" />
     <ClInclude Include="SourceCode\GameObject\Actor\LaserBeam\LaserBeam.h" />
-    <ClInclude Include="SourceCode\GameObject\Actor\Character\EventPlayer\EventPlayer.h" />
+    <ClInclude Include="SourceCode\GameObject\Actor\EventCharacter\EventAlien\EventAlien.h" />
+    <ClInclude Include="SourceCode\GameObject\Actor\EventCharacter\EventAlien\EventAlien_A\EventAlien_A.h" />
+    <ClInclude Include="SourceCode\GameObject\Actor\EventCharacter\EventCharacter.h" />
+    <ClInclude Include="SourceCode\GameObject\Actor\EventCharacter\EventGirl\EventGirl.h" />
+    <ClInclude Include="SourceCode\GameObject\Actor\EventCharacter\EventPlayer\EventPlayer.h" />
     <ClInclude Include="SourceCode\GameObject\GameObject.h" />
     <ClInclude Include="SourceCode\GameObject\GroundStage\GroundStage.h" />
     <ClInclude Include="SourceCode\GameObject\MotherShipUFO\MotherShipUFO.h" />

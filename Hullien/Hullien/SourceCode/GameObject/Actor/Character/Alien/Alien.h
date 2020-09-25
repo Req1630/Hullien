@@ -142,10 +142,10 @@ public:
 	bool IsDelete() const { return m_IsDelete; }
 	// マザーシップに昇っているか.
 	bool IsRisingMotherShip() const { return m_IsRisingMotherShip; }
-	// 座標設定関数.
-	virtual void SetPosition(const D3DXVECTOR3& vPos) override;
 
 protected:
+	// 座標設定関数.
+	virtual void SetPosition(const D3DXVECTOR3& vPos) override;
 	// 現在の状態の更新関数.
 	void CurrentStateUpdate();
 	// 女の子の座標を設定.

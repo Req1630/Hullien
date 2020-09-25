@@ -2,9 +2,11 @@
 #include "..\..\..\Utility\XInput\XInput.h"
 #include ".\..\..\..\GameObject\GroundStage\GroundStage.h"
 #include "..\..\..\GameObject\SpawnUFO\SpawnUFO.h"
-#include "..\..\..\GameObject\Actor\Character\EventPlayer\EventPlayer.h"
-#include "..\..\..\GameObject\Actor\Character\Girl\Girl.h"
-#include "..\..\..\GameObject\Actor\Character\Alien\Alien_A\Alien_A.h"
+#include "..\..\..\GameObject\EventActor\EventCharacter\EventPlayer\EventPlayer.h"
+#include "..\..\..\GameObject\EventActor\EventCharacter\EventGirl\EventGirl.h"
+#include "..\..\..\GameObject\EventActor\EventCharacter\EventAlien\EventAlien_A\EventAlien_A.h"
+#include "..\..\..\GameObject\Actor\Barrier\Barrier.h"
+#include "..\..\..\GameObject\MotherShipUFO\MotherShipUFO.h"
 #include "..\..\..\Camera\EvevtCamera\EvevtCamera.h"
 #include "..\..\..\Camera\CameraManager\CameraManager.h"
 #include "..\..\EventManager\EventManager.h"
@@ -15,27 +17,31 @@
 *	スタートイベントクラス.
 **/
 CGameStartEvent::CGameStartEvent()
-	: m_pGroundStage	( nullptr )
-	, m_pSpawnUFO		( nullptr )
-	, m_pPlayer				( nullptr )
-	, m_pGirl					( nullptr )
-	, m_pAlienA				( nullptr )
-	, m_pEventCamera	( nullptr )
-	, m_pEventManager	( nullptr )
-	, m_vPosition			(D3DXVECTOR3(0.0f,0.0f,0.0f))
-	, m_vRotation			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
-	, m_vLookPosition	(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
-	, m_vUFOPosition		(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
-	, m_NowStep			(0)
-	, m_Speed				( 0.0f )
-	, m_IsDisp				(false)
+	: m_pGroundStage		( nullptr )
+	, m_pSpawnUFO			( nullptr )
+	, m_pPlayer					( nullptr )
+	, m_pGirl						( nullptr )
+	, m_pAlienA					( nullptr )
+	, m_pBarrier				( nullptr )
+	, m_pMotherShipUFO	( nullptr )
+	, m_pEventCamera		( nullptr )
+	, m_pEventManager		( nullptr )
+	, m_vPosition				(D3DXVECTOR3(0.0f,0.0f,0.0f))
+	, m_vRotation				(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
+	, m_vLookPosition		(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
+	, m_vUFOPosition			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
+	, m_NowStep				(0)
+	, m_Speed					( 0.0f )
+	, m_IsDisp					(false)
 {
-	m_pGroundStage	= std::make_shared<CGroundStage>();
-	m_pSpawnUFO	= std::make_shared<CSpawnUFO>();
-	m_pPlayer			= std::make_shared<CEventPlayer>();
-	m_pGirl				= std::make_shared<CGirl>();
-	m_pAlienA			= std::make_shared<CAlienA>();
-	m_pEventCamera	= std::make_shared<CEventCamera>();
+	m_pGroundStage		= std::make_shared<CGroundStage>();
+	m_pSpawnUFO		= std::make_shared<CSpawnUFO>();
+	m_pPlayer				= std::make_shared<CEventPlayer>();
+	m_pGirl					= std::make_shared<CEventGirl>();
+	m_pAlienA				= std::make_shared<CEventAlienA>();
+	m_pBarrier				= std::make_shared<CBarrier>();
+	m_pMotherShipUFO = std::make_shared<CMotherShipUFO>();
+	m_pEventCamera		= std::make_shared<CEventCamera>();
 }
 
 CGameStartEvent::~CGameStartEvent()
@@ -45,11 +51,12 @@ CGameStartEvent::~CGameStartEvent()
 // 読込関数.
 bool CGameStartEvent::Load()
 {
-	if( m_pGroundStage->Init() == false ) return false;	// 地面の初期化.
-	if( m_pSpawnUFO->Init() == false ) return false;	// UFOの初期化.
-	if( m_pPlayer->Init() == false ) return false;			// プレイヤーの初期化.
-	if( m_pGirl->Init() == false ) return false;				// 女の子の初期化.
-	if( m_pAlienA->Init() == false ) return false;			// 宇宙人Aの初期化.
+	if( m_pGroundStage->Init() == false ) return false;			// 地面の初期化.
+	if( m_pSpawnUFO->Init() == false ) return false;			// UFOの初期化.
+	if( m_pPlayer->Init() == false ) return false;					// プレイヤーの初期化.
+	if( m_pGirl->Init() == false ) return false;						// 女の子の初期化.
+	if( m_pAlienA->Init() == false ) return false;					// 宇宙人Aの初期化.
+	if (m_pMotherShipUFO->Init() == false) return false;		// マザーシップの初期化.
 
 	m_IsEventEnd = false;
 	m_vPosition = { 23.0f , 7.5f, 20.0f };
@@ -58,6 +65,7 @@ bool CGameStartEvent::Load()
 	m_vUFOPosition = { 0.0f, 12.0f, 120.0f };
 	m_pPlayer->SetPosition({ 0.0f, 4.0f, 60.0f });
 	m_pGirl->SetPosition({ 0.0f, 4.0f, 62.5f });
+	m_pMotherShipUFO->SetPosition({ 0.0f, 20.0f, 100.0f });
 
 	m_Speed = static_cast<float>(D3DX_PI) * 0.05f;
 
@@ -171,7 +179,7 @@ void CGameStartEvent::Update()
 		count++;
 		if (count < 100)
 		{
-			m_vUFOPosition.y = m_vUFOPosition.y + sinf(D3DX_PI * 2.0f / 100.0f * count) * 0.1f;
+			m_vUFOPosition.y =  m_vUFOPosition.y + static_cast<float>(sin(D3DX_PI * 2.0f / 100.0f * count) * 0.1f);
 		}
 		else
 		{
@@ -190,9 +198,7 @@ void CGameStartEvent::Update()
 		m_vLookPosition.y = m_pAlienA->GetPosition().y;
 		if (m_IsDisp == false)
 		{
-			CAlienA::SAlienParam param;
-			param.ModelAlphaAddValue = 0.01f;
-			m_pAlienA->Spawn(param, m_pSpawnUFO->GetPosition());
+			m_pAlienA->Spawn(m_pSpawnUFO->GetPosition());
 			m_IsDisp = true;
 		}
 
@@ -205,7 +211,6 @@ void CGameStartEvent::Update()
 			m_NowStep++;
 		}
 
-		m_pAlienA->SetOtherAbduct(&flag);
 		m_pAlienA->SetPosition({
 			m_pAlienA->GetPosition().x,
 			y,
@@ -214,7 +219,7 @@ void CGameStartEvent::Update()
 
 	case 5: // 宇宙人ダッシュ.
 		count++;
-		y = m_pAlienA->GetPosition().y + sinf(D3DX_PI * 2.0f / 90.0f * count) * 0.01f;
+		y = m_pAlienA->GetPosition().y + static_cast<float>(sin(D3DX_PI * 2.0f / 90.0f * count) * 0.01f);
 		if (count <= 200)
 		{
 			z = m_pAlienA->GetPosition().z;
@@ -233,11 +238,10 @@ void CGameStartEvent::Update()
 		{ 
 			m_NowStep++;
 			m_vPosition = { -20.0f, 5.0f, -10.0f };
-
 		}
 		break;
 
-	case 6:
+	case 6: // 女の子捕まる.
 //		m_vPosition = { -20.0f, 5.0f, -10.0f };
 		m_vLookPosition = m_pPlayer->GetPosition();
 		m_pAlienA->SetPosition({
@@ -249,9 +253,40 @@ void CGameStartEvent::Update()
 		{
 			z = m_pAlienA->GetPosition().z + 0.3f;
 		}
+		else
+		{
+			m_NowStep++;
+		}
 
-
+		m_pAlienA->Collision( m_pGirl.get() );
+		m_pGirl->Collision(m_pAlienA.get());
 		break;
+
+	case 7:	//バリア発動指示.
+		m_vLookPosition = m_pGirl->GetPosition();
+		m_vPosition = { -6.5f, 8.4f, -10.0f };
+		m_pPlayer->SetRotationY(static_cast<float>(D3DXToRadian(180)));
+		m_pPlayer->Update();
+
+		if (m_pPlayer->IsSpecialAbility() == true)
+		{
+			m_pBarrier->Init();	// バリアの初期化.
+			m_NowStep++;
+		}
+		break;
+
+	case 8:	//バリア発動.
+		m_pBarrier->SetTargetPos(*m_pGirl.get());
+		m_pBarrier->Update();
+		break;
+
+	case 9:	// 女の子帰還.
+		break; 
+
+	case 10:	//ゲームシーンへ.
+		m_IsEventEnd = true;
+		break;
+
 	default:
 		break;
 	}
@@ -280,6 +315,9 @@ void CGameStartEvent::Render()
 	{
 		m_pAlienA->Render();			// 宇宙Aの描画.
 	}
+	m_pBarrier->Render();
+	m_pMotherShipUFO->Render();
+
 	DebugRender();
 }
 
