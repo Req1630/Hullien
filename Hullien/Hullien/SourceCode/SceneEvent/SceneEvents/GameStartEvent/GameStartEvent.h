@@ -30,6 +30,13 @@ public:
 	virtual void Render() override;
 
 private:
+	// キャラクタの更新関数.
+	void CharacterUpdate();
+	// カメラの更新関数.
+	void CameraUpdate();
+
+
+	// 以下デバッグ用.
 	void DebugRender();
 	void DebugOperation();
 

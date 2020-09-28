@@ -31,17 +31,14 @@ class CEventPlayer : public CEventCharacter
 	} typedef EAnimNo;
 
 public:
-	// プレイヤーパラメータ.
-	struct stPlayerParam
+	enum class enPlayerState
 	{
-		D3DXVECTOR3 SphereAdjPos;		// スフィアの調整座標.
-		float		SphereAdjRadius;	// スフィアの調整半径.
+		None = 0,
 
-		stPlayerParam()
-			: SphereAdjPos(0.0f, 0.0f, 0.0f)
-			, SphereAdjRadius(0.0f)
-		{}
-	} typedef SPlayerParam;
+		Move,				//移動.
+		Wait,				//待機.
+		SpecialAbility,	//特殊能力.
+	} typedef EPlayerState;
 
 public:
 	CEventPlayer();
@@ -80,7 +77,7 @@ private:
 	EAnimNo										m_NowAnimNo;			// 今のアニメーション番号.
 	EAnimNo										m_OldAnimNo;				// 前のアニメーション番号.
 	D3DXVECTOR3								m_AttackPosition;
-	SPlayerParam									m_Parameter;				// パラメーター.
+	EPlayerState									m_State;						// 状態.
 	std::vector<std::shared_ptr<CEffectManager>> m_pEffects;		// エフェクト.
 	float			m_SpecialAbility;			// 特殊能力.
 	bool			m_HasUsableSP;			// 特殊能力を使えるか.

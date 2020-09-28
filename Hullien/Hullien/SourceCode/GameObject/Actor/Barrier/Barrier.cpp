@@ -5,14 +5,13 @@
 #include "..\..\..\Resource\MeshResource\MeshResource.h"
 #include "..\..\..\XAudio2\SoundManager.h"
 
-#include "..\..\EventActor\EventActor.h"
 #include "..\..\..\Common\Effect\EffectManager.h"
 
 CBarrier::CBarrier()
 	: m_StaticMesh			( nullptr )
-	, m_pEffect				( nullptr )
-	, m_IsEffectPlay		( false )
-	, m_IsActive			( false )
+	, m_pEffect					( nullptr )
+	, m_IsEffectPlay			( false )
+	, m_IsActive				( false )
 	, m_ActiveCount			( 0.0f )
 	, m_CollSphereRadius	( 0.0f )
 #if _DEBUG
@@ -130,36 +129,6 @@ void CBarrier::SetTargetPos( CActor& pActor )
 	m_pEffect->Play(m_vPosition);	// エフェクトを再生.
 	m_IsEffectPlay = true;
 
-}
-
-// 当たり判定関数.
-void CBarrier::Collision(CEventActor * pActor)
-{
-	if (m_IsActive == false) return;
-	if (pActor == nullptr) return;
-	if (m_pCollManager == nullptr) return;
-	if (m_pCollManager->GetSphere() == nullptr) return;
-
-	// 対象オブジェクトじゃなければ終了.
-	if ((pActor->GetObjectTag() != EObjectTag::Alien_A) &&
-		(pActor->GetObjectTag() != EObjectTag::Alien_B) &&
-		(pActor->GetObjectTag() != EObjectTag::Alien_C) &&
-		(pActor->GetObjectTag() != EObjectTag::Alien_D)) return;
-
-	// 球体の当たり判定.
-	if (m_pCollManager->IsShereToShere(pActor->GetCollManager()) == false) return;
-	pActor->SetTargetPos(*this);
-}
-
-// 相手座標の設定関数.
-void CBarrier::SetTargetPos(CEventActor & pActor)
-{
-	if (m_IsActive == false) return;
-	m_vPosition = pActor.GetPosition();
-	// すでにエフェクトを再生していれば終了.
-	if (m_IsEffectPlay == true) return;
-	m_pEffect->Play(m_vPosition);	// エフェクトを再生.
-	m_IsEffectPlay = true;
 }
 
 // モデルの取得.

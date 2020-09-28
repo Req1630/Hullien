@@ -30,7 +30,7 @@ bool CEventAlienA::Init()
 // 更新関数.
 void CEventAlienA::Update()
 {
-	SetMoveVector(m_vDestination);
+	SetMoveVector(m_Parameter.Destination);
 	CurrentStateUpdate();	// 現在の状態の更新.
 }
 
@@ -71,7 +71,7 @@ void CEventAlienA::Render()
 }
 
 // 当たり判定関数.
-void CEventAlienA::Collision(CEventActor * pActor)
+void CEventAlienA::Collision(CActor * pActor)
 {
 	if (pActor == nullptr) return;
 	if (m_pCollManager == nullptr) return;
@@ -123,12 +123,6 @@ void CEventAlienA::Escape()
 void CEventAlienA::BlowAway()
 {
 	CEventAlien::BlowAway();
-}
-
-// 待機.
-void CEventAlienA::Wait()
-{
-	CEventAlien::Wait();
 }
 
 // 当たり判定の設定

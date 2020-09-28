@@ -28,10 +28,6 @@ public:
 	virtual void Collision( CActor* pActor ) override;
 	// ‘ŠèÀ•W‚Ìİ’èŠÖ”.
 	virtual void SetTargetPos( CActor& pActor ) override;
-	// “–‚½‚è”»’èŠÖ”.
-	void Collision(CEventActor* pActor );
-	// ‘ŠèÀ•W‚Ìİ’èŠÖ”.
-	void SetTargetPos(CEventActor& pActor );
 
 private:
 	// ƒ‚ƒfƒ‹‚Ìæ“¾.

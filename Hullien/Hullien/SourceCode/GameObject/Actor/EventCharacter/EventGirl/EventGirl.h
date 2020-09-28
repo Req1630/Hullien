@@ -12,20 +12,16 @@ class CEventGirl : public CEventCharacter
 	const char* MODEL_TEMP_NAME = "yuri-dy";	// 仮モデル名.
 
 	// パラメータ.
-	struct stGirlParam
+	struct stGirlParam : public SCharacterParam
 	{
 		float		SearchCollRadius;	// 索敵用のスフィアの半径.
-		D3DXVECTOR3 SphereAdjPos;		// スフィアの調整座標.
-		float		SphereAdjRadius;	// スフィアの調整半径.
 
 		stGirlParam()
 			: SearchCollRadius(10.0f)
-			, SphereAdjPos(0.0f, 0.0f, 0.0f)
-			, SphereAdjRadius(0.0f)
 		{}
 	} typedef SGirlParam;
 
-
+public:
 	// 現在の状態.
 	enum class enNowState
 	{
@@ -40,18 +36,6 @@ class CEventGirl : public CEventCharacter
 
 	} typedef ENowState;
 
-	// 移動状態.
-	enum class enMoveState
-	{
-		None,
-
-		Rotation,	// 回転.
-		Move,			// 移動.
-		Wait,			// 待機.
-
-		Max,
-	} typedef EMoveState;
-
 public:
 	CEventGirl();
 	virtual ~CEventGirl();
@@ -63,9 +47,7 @@ public:
 	// 描画関数.
 	virtual void Render() override;
 	// 当たり判定関数.
-	virtual void Collision(CEventActor* pActor) override;
-	// 相手座標の設定関数.
-	virtual void SetTargetPos(CEventActor& actor) override;
+	virtual void Collision(CActor* pActor) override;
 	// 相手座標の設定関数.
 	virtual void SetTargetPos(CActor& actor) override;
 	
@@ -75,13 +57,11 @@ public:
 private:
 	// 移動関数.
 	virtual void Move() override;
-	// 目的の場所に向けて回転.
-	void TargetRotation();
 	// 目的の場所に向けて移動.
 	void TargetMove();
 
 	// 索敵の当たり判定.
-	void SearchCollision(CEventActor* pActor);
+	void SearchCollision(CActor* pActor);
 
 	// 当たり判定の作成.
 	bool  ColliderSetting();
@@ -91,7 +71,6 @@ private:
 	std::shared_ptr<CCollisionManager>	m_pSearchCollManager;	// 索敵用の当たり判定.
 	D3DXVECTOR3	m_OldPosition;		// 前回の座標.
 	ENowState	m_NowState;				// 現在の状態.
-	EMoveState	m_NowMoveState;	// 現在の移動状態.
 
 };
 

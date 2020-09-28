@@ -2,9 +2,9 @@
 #include "..\..\..\Utility\XInput\XInput.h"
 #include ".\..\..\..\GameObject\GroundStage\GroundStage.h"
 #include "..\..\..\GameObject\SpawnUFO\SpawnUFO.h"
-#include "..\..\..\GameObject\EventActor\EventCharacter\EventPlayer\EventPlayer.h"
-#include "..\..\..\GameObject\EventActor\EventCharacter\EventGirl\EventGirl.h"
-#include "..\..\..\GameObject\EventActor\EventCharacter\EventAlien\EventAlien_A\EventAlien_A.h"
+#include "..\..\..\GameObject\Actor\EventCharacter\EventPlayer\EventPlayer.h"
+#include "..\..\..\GameObject\Actor\EventCharacter\EventGirl\EventGirl.h"
+#include "..\..\..\GameObject\Actor\EventCharacter\EventAlien\EventAlien_A\EventAlien_A.h"
 #include "..\..\..\GameObject\Actor\Barrier\Barrier.h"
 #include "..\..\..\GameObject\MotherShipUFO\MotherShipUFO.h"
 #include "..\..\..\Camera\EvevtCamera\EvevtCamera.h"
@@ -26,11 +26,11 @@ CGameStartEvent::CGameStartEvent()
 	, m_pMotherShipUFO	( nullptr )
 	, m_pEventCamera		( nullptr )
 	, m_pEventManager		( nullptr )
-	, m_vPosition				(D3DXVECTOR3(0.0f,0.0f,0.0f))
-	, m_vRotation				(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
-	, m_vLookPosition		(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
-	, m_vUFOPosition			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
-	, m_NowStep				(0)
+	, m_vPosition				( D3DXVECTOR3( 0.0f, 0.0f, 0.0f ))
+	, m_vRotation				( D3DXVECTOR3( 0.0f, 0.0f, 0.0f ))
+	, m_vLookPosition		( D3DXVECTOR3( 0.0f, 0.0f, 0.0f ))
+	, m_vUFOPosition			( D3DXVECTOR3( 0.0f, 0.0f, 0.0f ))
+	, m_NowStep				( 0 )
 	, m_Speed					( 0.0f )
 	, m_IsDisp					(false)
 {
@@ -83,19 +83,8 @@ void CGameStartEvent::Update()
 	bool flag = true;
 
 	switch (m_NowStep)
-	{
+	{ 
 	case 0:	//逃げるプレイヤーと女の子.
-		// プレイヤーの位置設定.
-		m_pPlayer->SetPosition({
-			m_pPlayer->GetPosition().x,
-			m_pPlayer->GetPosition().y,
-			m_pPlayer->GetPosition().z - 0.1f });
-		// 女の子の位置設定.
-		m_pGirl->SetPosition({
-			m_pGirl->GetPosition().x,
-			m_pGirl->GetPosition().y,
-			m_pGirl->GetPosition().z - 0.1f });
-
 		m_vPosition.z = m_pPlayer->GetPosition().z;
 		m_vLookPosition = m_pPlayer->GetPosition();
 
@@ -106,20 +95,6 @@ void CGameStartEvent::Update()
 		break;
 
 	case 1:	//2人を追うUFOの視点.
-		if (m_pPlayer->GetPosition().z >= 0.0f)
-		{
-			// プレイヤーの位置設定.
-			m_pPlayer->SetPosition({
-				m_pPlayer->GetPosition().x,
-				m_pPlayer->GetPosition().y,
-				m_pPlayer->GetPosition().z - 0.1f });
-			// 女の子の位置設定.
-			m_pGirl->SetPosition({
-				m_pGirl->GetPosition().x,
-				m_pGirl->GetPosition().y,
-				m_pGirl->GetPosition().z - 0.1f });
-		}
-
 		// UFO移動.
 		m_vUFOPosition.z = m_pSpawnUFO->GetPosition().z - 0.3f;
 
@@ -194,8 +169,8 @@ void CGameStartEvent::Update()
 		break;
 
 	case 4: //宇宙人登場.
-		m_vPosition = D3DXVECTOR3(0.0f, 8.5f, -0.7f);
-		m_vLookPosition.y = m_pAlienA->GetPosition().y;
+		m_vPosition = D3DXVECTOR3(0.0f, 8.5f, -1.0f);
+		m_vLookPosition.y = m_pAlienA->GetPosition().y+1.0f;
 		if (m_IsDisp == false)
 		{
 			m_pAlienA->Spawn(m_pSpawnUFO->GetPosition());
@@ -237,12 +212,11 @@ void CGameStartEvent::Update()
 		if (z >= 0.0f) 
 		{ 
 			m_NowStep++;
-			m_vPosition = { -20.0f, 5.0f, -10.0f };
 		}
 		break;
 
 	case 6: // 女の子捕まる.
-//		m_vPosition = { -20.0f, 5.0f, -10.0f };
+		m_vPosition = { -20.0f, 5.0f, -10.0f };
 		m_vLookPosition = m_pPlayer->GetPosition();
 		m_pAlienA->SetPosition({
 			m_pAlienA->GetPosition().x,
@@ -278,6 +252,8 @@ void CGameStartEvent::Update()
 	case 8:	//バリア発動.
 		m_pBarrier->SetTargetPos(*m_pGirl.get());
 		m_pBarrier->Update();
+		m_pAlienA->Collision(m_pBarrier.get());
+
 		break;
 
 	case 9:	// 女の子帰還.
@@ -290,6 +266,9 @@ void CGameStartEvent::Update()
 	default:
 		break;
 	}
+
+	// キャラクタの更新.
+	CharacterUpdate();
 
 	m_pSpawnUFO->SetPosition( m_vUFOPosition );
 
@@ -319,6 +298,40 @@ void CGameStartEvent::Render()
 	m_pMotherShipUFO->Render();
 
 	DebugRender();
+}
+
+// キャラクタの更新関数.
+void CGameStartEvent::CharacterUpdate()
+{
+	CEventCharacter::SOptionalState P_State, G_State, A_state, U_state;
+
+	P_State.MoveSpeed = 0.1f;
+	P_State.RotationalSpeed = 0.1f;
+	G_State.MoveSpeed = 0.2f;
+	G_State.RotationalSpeed = 0.1f;
+
+	switch (m_NowStep)
+	{
+	case 0:
+	case 1:
+		// プレイヤー.
+		P_State.Destination = { 0.0f, 0.0f, 0.0f };
+		m_pPlayer->SetOptionalState(P_State);
+		m_pPlayer->Update();
+
+		// 女の子.
+		G_State.Destination = { 0.0f, 0.0f, 2.5f };
+		m_pGirl->SetOptionalState(G_State);
+		m_pGirl->Update();
+		break;
+	default:
+		break;
+	}
+}
+
+// カメラの更新関数.
+void CGameStartEvent::CameraUpdate()
+{
 }
 
 void CGameStartEvent::DebugRender()

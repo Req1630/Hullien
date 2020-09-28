@@ -13,13 +13,12 @@ CEventPlayer::CEventPlayer()
 	: m_NowAnimNo()
 	, m_OldAnimNo()
 	, m_AttackPosition()
-	, m_Parameter()
 	, m_pEffects( )
 	, m_SpecialAbility( 0.0f )
 	, m_HasUsableSP(false)
 	, m_IsAttackSE(false)
-
 {
+	m_NowMoveState = EMoveState::Rotation;
 }
 
 CEventPlayer::~CEventPlayer()
@@ -37,6 +36,7 @@ bool CEventPlayer::Init()
 // 更新関数.
 void CEventPlayer::Update()
 {
+	Move();
 	SPController();			// 特殊能力操作.
 }
 
@@ -48,12 +48,7 @@ void CEventPlayer::Render()
 }
 
 // 当たり判定関数.
-void CEventPlayer::Collision(CEventActor * pActor)
-{
-}
-
-// 相手座標の設定関数.
-void CEventPlayer::SetTargetPos(CEventActor & actor)
+void CEventPlayer::Collision(CActor * pActor)
 {
 }
 
@@ -86,6 +81,8 @@ void CEventPlayer::SPController()
 // 移動関数.
 void CEventPlayer::Move()
 {
+	m_Parameter.ResearchLenght = 3.0f;
+	CEventCharacter::Move();
 }
 
 // エフェクト描画関数.

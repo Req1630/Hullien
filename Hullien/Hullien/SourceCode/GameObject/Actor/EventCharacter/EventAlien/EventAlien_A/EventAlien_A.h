@@ -22,7 +22,7 @@ public:
 	// 描画関数.
 	virtual void Render() override;
 	// 当たり判定関数.
-	virtual void Collision(CEventActor* pActor) override;
+	virtual void Collision(CActor* pActor) override;
 	// スポーン.
 	virtual bool Spawn(const D3DXVECTOR3& spawnPos) override;
 
@@ -37,8 +37,6 @@ private:
 	virtual void Escape() override;
 	// 吹き飛ぶ.
 	virtual void BlowAway() override;
-	// 待機.
-	virtual void	Wait() override;
 
 	// 当たり判定の設定.
 	bool ColliderSetting();

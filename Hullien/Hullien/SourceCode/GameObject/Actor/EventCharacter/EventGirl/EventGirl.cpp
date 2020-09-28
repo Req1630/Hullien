@@ -13,11 +13,10 @@ CEventGirl::CEventGirl()
 	, m_pSearchCollManager	( nullptr )
 	, m_OldPosition				( 0.0f, 0.0f, 0.0f )
 	, m_NowState					( ENowState::None )
-	, m_NowMoveState			( EMoveState::None )
 {
 	m_ObjectTag = EObjectTag::Girl;
-	m_NowState = ENowState::Protected;
-	m_NowMoveState = EMoveState::Wait;
+	m_NowState = ENowState::Move;
+	m_NowMoveState = EMoveState::Move;
 	m_pSearchCollManager = std::make_shared<CCollisionManager>();
 }
 
@@ -74,7 +73,7 @@ void CEventGirl::Render()
 }
 
 // 当たり判定関数.
-void CEventGirl::Collision(CEventActor * pActor)
+void CEventGirl::Collision(CActor * pActor)
 {
 	if (pActor == nullptr) return;
 	SearchCollision(pActor);
@@ -83,12 +82,6 @@ void CEventGirl::Collision(CEventActor * pActor)
 }
 
 // 相手座標の設定関数
-void CEventGirl::SetTargetPos(CEventActor& actor)
-{
-	m_vPosition = actor.GetPosition();
-	m_NowState = ENowState::Abduct;
-}
-
 void CEventGirl::SetTargetPos(CActor& actor)
 {
 	m_vPosition = actor.GetPosition();
@@ -103,59 +96,14 @@ void CEventGirl::Move()
 	case EMoveState::None:
 		break;
 	case EMoveState::Rotation:
-		TargetRotation();
+		CEventCharacter::TargetRotation();
 		break;
 	case EMoveState::Move:
-		TargetMove();
-		break;
-	case EMoveState::Wait:
+//		TargetMove();
+		CEventCharacter::Move();
 		break;
 	default:
 		break;
-	}
-}
-
-// 目的の場所に向けて回転.
-void CEventGirl::TargetRotation()
-{
-	if (m_NowMoveState != EMoveState::Rotation) return;
-
-	const D3DXVECTOR3 targetPosition = { 0.0f, 0.0f, 0.0f };
-	// 目的の回転軸を取得.
-	D3DXVECTOR3 targetRotation = { 0.0f, 0.0f, 0.0f };
-	targetRotation.y = atan2f(
-		targetPosition.x - m_vPosition.x,
-		targetPosition.z - m_vPosition.z);
-	m_MoveVector.x = sinf(targetRotation.y);
-	m_MoveVector.z = cosf(targetRotation.y);
-
-	// 自身のベクトルを用意.
-	D3DXVECTOR3 myVector = { 0.0f, 0.0f ,0.0f };
-	myVector.x = sinf(m_vRotation.y);
-	myVector.z = cosf(m_vRotation.y);
-
-	// ベクトルの長さを求める.
-	float myLenght = sqrtf(myVector.x*myVector.x + myVector.z*myVector.z);
-	float targetLenght = sqrtf(m_MoveVector.x*m_MoveVector.x + m_MoveVector.z*m_MoveVector.z);
-
-	// 目的のベクトルと、自分のベクトルの外積を求める.
-	float cross = myVector.x * m_MoveVector.z - myVector.z * m_MoveVector.x;
-	float dot = myVector.x * m_MoveVector.x + myVector.z * m_MoveVector.z;
-	dot = acosf(dot / (myLenght * targetLenght));
-
-	const float ROTATIONAL_SPEED = 0.05f;	// 回転速度.
-	const float TOLERANCE_RADIAN = static_cast<float>(D3DXToRadian(10.0));	// 回転の許容範囲.
-
-	// 外積が0.0より少なければ 時計回り : 反時計回り に回転する.
-	m_vRotation.y += cross < 0.0f ? ROTATIONAL_SPEED : -ROTATIONAL_SPEED;
-
-	// 内積が許容範囲なら.
-	if (-TOLERANCE_RADIAN < dot && dot < TOLERANCE_RADIAN) {
-		m_vRotation.y = targetRotation.y;	// ターゲットへの回転取得.
-											// 移動用ベクトルを取得.
-		m_MoveVector.x = sinf(m_vRotation.y);
-		m_MoveVector.z = cosf(m_vRotation.y);
-		m_NowMoveState = EMoveState::Move;
 	}
 }
 
@@ -169,16 +117,14 @@ void CEventGirl::TargetMove()
 	m_vPosition.x -= sinf(m_vRotation.y + static_cast<float>(D3DX_PI)) * moveSpeed;
 	m_vPosition.z -= cosf(m_vRotation.y + static_cast<float>(D3DX_PI)) * moveSpeed;
 
-	float lenght = D3DXVec3Length(&D3DXVECTOR3(m_vDestination - m_vPosition));
+	float lenght = D3DXVec3Length(&D3DXVECTOR3(m_Parameter.Destination - m_vPosition));
 
 	if (lenght >= 1.0f) return;
-
-	m_NowMoveState = EMoveState::Wait;
 
 }
 
 // 索敵の当たり判定.
-void CEventGirl::SearchCollision(CEventActor * pActor)
+void CEventGirl::SearchCollision(CActor * pActor)
 {
 	if (pActor == nullptr) return;
 	if (m_pSearchCollManager == nullptr) return;
