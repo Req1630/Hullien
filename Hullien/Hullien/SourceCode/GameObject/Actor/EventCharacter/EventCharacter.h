@@ -11,17 +11,37 @@
 class CEventCharacter : public CActor
 {
 	const float ROTATIONAL_SPEED = 0.05f;	// 回転速度.
-//	const float TOLERANCE_RADIAN = static_cast<float>(D3DXToRadian(10.0));	// 回転の許容範囲.
 	const float TOLERANCE_RADIAN = static_cast<float>(D3DXToRadian(10.0));	// 回転の許容範囲.
+
+protected:
+	const float MODEL_ALPHA_MAX = 1.0f;	// モデルアルファの最大値.
+	const float MODEL_SCALE_MAX = 1.0f;	// モデルの大きさ最大値.
 
 public:
 	// 任意で設定する情報.
 	struct stOptionalState
 	{
-		D3DXVECTOR3		Destination;				// 目的地.
-		float						RotationalSpeed;			// 回転速度.
-		float						MoveSpeed;				// 移動速度.
+		D3DXVECTOR3	vPosition;			// 位置.
+		D3DXVECTOR3	vRotation;			// 回転値.
+		D3DXVECTOR3	vScale;				// 大きさ.
+		float		ModelAlpha;			// モデルの透過値.
+		float		MoveSpeed;			// 移動速度.
+		float		RotationalSpeed;	// 回転速度.
+		float		ScaleSpeed;			// 拡大速度.
+		float		AlphaSpeed;			// 透過速度.
+		bool		IsDisp;				// 描画するか.
 
+		stOptionalState()
+			: vPosition			( {0.0f,4.0f,0.0f} )
+			, vRotation			( {0.0f,0.0f,0.0f} )
+			, vScale			( {1.0f,1.0f,1.0f} )
+			, ModelAlpha		( 1.0f )
+			, MoveSpeed			( 0.1f )
+			, RotationalSpeed	( 0.5f )
+			, ScaleSpeed		( 0.5f )
+			, AlphaSpeed		( 0.5f )
+			, IsDisp			( true )
+		{}
 	}typedef SOptionalState;
 
 protected:
@@ -41,14 +61,12 @@ protected:
 	// キャラクタの情報.
 	struct stCharacterParam : public SOptionalState
 	{
-		float						ModelAlphaAddValue;	// モデルのアルファ値の加算する値.
-		float						ResearchLenght;			// 再検査する際の距離.
-		D3DXVECTOR3		SphereAdjPos;				// スフィアの調整座標.
-		float						SphereAdjRadius;			// スフィアの調整半径.
+		float			ResearchLenght;		// 再検査する際の距離.
+		D3DXVECTOR3		SphereAdjPos;		// スフィアの調整座標.
+		float			SphereAdjRadius;	// スフィアの調整半径.
 
 		stCharacterParam()
-			: ModelAlphaAddValue(0.0f)
-			, ResearchLenght(0.0f)
+			: ResearchLenght(0.0f)
 			, SphereAdjPos(0.0f, 0.0f, 0.0f)
 			, SphereAdjRadius(0.0f)
 		{}
@@ -59,7 +77,7 @@ public:
 	virtual ~CEventCharacter();
 
 	// 移動関数.
-	virtual void Move();
+	virtual void Move() = 0;
 
 	// 情報設定関数.
 	void SetOptionalState(SOptionalState state);
@@ -90,13 +108,6 @@ protected:
 	void MeshRender();
 	// モデルの取得関数.
 	bool GetModel(const char* modelName);
-	// 移動ベクトル設定関数.
-	virtual void SetMoveVector(const D3DXVECTOR3& targetPos);
-	// 目的の座標へ回転.
-	void TargetRotation();
-	// 移動関数.
-	virtual void VectorMove(const float& moveSpeed);
-
 
 protected:
 	std::shared_ptr<CDX9SkinMesh>	m_pSkinMesh;		// スキンメッシュ.
@@ -104,12 +115,8 @@ protected:
 	std::shared_ptr<CDX9StaticMesh>	m_pTempStaticMesh;	// 仮のモデルデータ.
 #endif	// #ifdef IS_TEMP_MODEL_RENDER.
 
-	D3DXVECTOR3		m_MoveVector;					// 移動ベクトル.
-	D3DXVECTOR3		m_TargetRotation;				// 目標の回転情報.
-	D3DXVECTOR3		m_BeforeMoveingPosition;		// 移動前の座標.
-	SCharacterParam	m_Parameter;						// パラメータ.
-	EMoveState			m_NowMoveState;				// 現在の移動状態.
-	float						m_ModelAlpha;						// モデルのアルファ値.
+	SCharacterParam	m_Parameter;					// パラメータ.
+	EMoveState		m_NowMoveState;					// 現在の移動状態.
 };
 
 #endif	//#ifndef EVENT_CHARACTER_H.

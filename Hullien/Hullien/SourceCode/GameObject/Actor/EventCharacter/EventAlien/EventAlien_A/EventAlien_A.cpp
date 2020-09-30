@@ -30,13 +30,15 @@ bool CEventAlienA::Init()
 // 更新関数.
 void CEventAlienA::Update()
 {
-	SetMoveVector(m_Parameter.Destination);
+	if (m_Parameter.IsDisp == false) return;
 	CurrentStateUpdate();	// 現在の状態の更新.
 }
 
 // 描画関数.
 void CEventAlienA::Render()
 {
+	if (m_Parameter.IsDisp == false) return;
+
 #ifndef IS_TEMP_MODEL_RENDER
 	if (m_pSkinMesh == nullptr) return;
 
@@ -56,7 +58,7 @@ void CEventAlienA::Render()
 	m_pTempStaticMesh->SetPosition(m_vPosition);
 	m_pTempStaticMesh->SetRotation(m_vRotation);
 	m_pTempStaticMesh->SetScale(m_vSclae);
-	m_pTempStaticMesh->SetColor({ 0.8f, 0.0f, 0.0f, m_ModelAlpha });
+	m_pTempStaticMesh->SetColor({ 0.8f, 0.0f, 0.0f, m_Parameter.ModelAlpha });
 	//	m_pTempStaticMesh->SetBlend( true );
 	m_pTempStaticMesh->SetRasterizerState(CCommon::enRS_STATE::Back);
 	m_pTempStaticMesh->Render();
@@ -73,6 +75,7 @@ void CEventAlienA::Render()
 // 当たり判定関数.
 void CEventAlienA::Collision(CActor * pActor)
 {
+	if (m_Parameter.IsDisp == false) return;
 	if (pActor == nullptr) return;
 	if (m_pCollManager == nullptr) return;
 	if (m_pCollManager->GetSphere() == nullptr) return;

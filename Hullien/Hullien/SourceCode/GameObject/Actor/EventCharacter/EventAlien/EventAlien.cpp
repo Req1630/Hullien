@@ -6,7 +6,7 @@
 **/
 CEventAlien::CEventAlien()
 	: m_pAbductUFOPosition		( nullptr )
-	, m_NowState						( EEventAlienState::None )
+	, m_NowState				( EEventAlienState::None )
 {
 }
 
@@ -51,7 +51,6 @@ void CEventAlien::SetGirlPos(CActor& actor)
 	if (m_NowMoveState == EMoveState::Move) return;
 	// 女の子じゃなければ終了.
 	if (actor.GetObjectTag() != EObjectTag::Girl) return;
-	m_Parameter.Destination = actor.GetPosition();	// 女の子の座標を取得.
 
 }
 
@@ -61,8 +60,8 @@ void CEventAlien::Spawning()
 	// モデルのスケール値を足していく.
 
 	// モデルのアルファ値を足していく.
-	m_ModelAlpha += m_Parameter.ModelAlphaAddValue;
-	if (m_ModelAlpha < MODEL_ALPHA_MAX) return;
+	m_Parameter.ModelAlpha += m_Parameter.AlphaSpeed;
+	if (m_Parameter.ModelAlpha < MODEL_ALPHA_MAX) return;
 	m_NowState = EEventAlienState::Move;
 	m_NowMoveState = EMoveState::Rotation;
 }
@@ -70,35 +69,18 @@ void CEventAlien::Spawning()
 // 移動.
 void CEventAlien::Move()
 {
-	TargetRotation();			// 回転.
-	CEventAlien::VectorMove(m_Parameter.MoveSpeed);	// 移動.
-
-	if (m_NowState == EEventAlienState::Abduct) return;
-	m_NowState = EEventAlienState::Escape;
-	m_NowMoveState = EMoveState::Rotation;	// 移動状態を回転する.
 }
 
 // 拐う.
 void CEventAlien::Abduct()
 {
 	if (m_IsBarrierHit == true) return;
-
-	SetMoveVector(*m_pAbductUFOPosition);
-	m_Parameter.Destination = *m_pAbductUFOPosition;
-
-	TargetRotation();
-	CEventAlien::VectorMove(m_Parameter.MoveSpeed);
 }
 
 // 逃げる.
 void CEventAlien::Escape()
 {
 	if (m_IsBarrierHit == true) return;
-
-	SetMoveVector(*m_pAbductUFOPosition);
-	m_Parameter.Destination = *m_pAbductUFOPosition;
-	TargetRotation();
-	CEventAlien::VectorMove(m_Parameter.MoveSpeed);
 }
 
 // 吹き飛ぶ.

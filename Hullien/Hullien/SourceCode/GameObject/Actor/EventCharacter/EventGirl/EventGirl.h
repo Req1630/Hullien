@@ -57,8 +57,6 @@ public:
 private:
 	// ˆÚ“®ŠÖ”.
 	virtual void Move() override;
-	// –Ú“I‚ÌêŠ‚ÉŒü‚¯‚ÄˆÚ“®.
-	void TargetMove();
 
 	// õ“G‚Ì“–‚½‚è”»’è.
 	void SearchCollision(CActor* pActor);

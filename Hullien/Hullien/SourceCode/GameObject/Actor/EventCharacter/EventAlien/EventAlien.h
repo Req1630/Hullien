@@ -9,9 +9,6 @@
 class CEventAlien : public CEventCharacter
 {
 protected:
-	const float MODEL_ALPHA_MAX = 1.0f;	// モデルアルファの最大値.
-
-protected:
 	// 宇宙人状態.
 	enum class enEventAlienState
 	{
@@ -34,12 +31,14 @@ public:
 
 	// 相手座標の設定.
 	virtual void SetTargetPos(CActor& actor) override;
+	// バリアに当たっているか.
+	bool IsBarrierHit() const { return m_IsBarrierHit; }
 
 private:
 	// スポーン.
 	virtual bool Spawn(const D3DXVECTOR3& spawnPos) = 0;
 	// モデルのアルファ値の取得.
-	float GetModelAplha() const { return m_ModelAlpha; }
+	float GetModelAplha() const { return m_Parameter.ModelAlpha; }
 	// 連れ去っているかどうか.
 	bool IsAbduct() const { return m_NowState == EEventAlienState::Abduct; }
 	// 連れ去るUFOの座標の取得.
@@ -69,9 +68,9 @@ protected:
 
 protected:
 	D3DXVECTOR3*		m_pAbductUFOPosition;		// UFOの座標.
-	EEventAlienState		m_NowState;						// 現在の状態.
-	bool						m_IsBarrierHit;						// バリアに当たっているか.
-	float						m_Speed;							// 移動速度,
+	EEventAlienState	m_NowState;					// 現在の状態.
+	bool				m_IsBarrierHit;				// バリアに当たっているか.
+	float				m_Speed;					// 移動速度,
 
 };
 

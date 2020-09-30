@@ -8,10 +8,18 @@
 **/
 class CEventCamera : public CCamera
 {
+	const float INITIAL_VIEWING_ANGLE = static_cast<float>(D3DX_PI / 4.0);	// ‰Šú‹–ìŠp.
+
 public:
 	CEventCamera();
 	virtual ~CEventCamera();
 
+	// ‹–ìŠpæ“¾ŠÖ”.
+	float GetViewingAngle() const { return m_ViewingAngle; }
+	// ‹–ìŠpİ’èŠÖ”.
+	void SetViewingAngle(const float angle) { m_ViewingAngle = angle; }
+	// ‹–ìŠpƒŠƒZƒbƒg.
+	void ResetViewingAngle() { m_ViewingAngle = INITIAL_VIEWING_ANGLE; }
 private:
 
 };

@@ -36,6 +36,7 @@ bool CEventPlayer::Init()
 // 更新関数.
 void CEventPlayer::Update()
 {
+	if (m_Parameter.IsDisp == false) return;
 	Move();
 	SPController();			// 特殊能力操作.
 }
@@ -43,6 +44,7 @@ void CEventPlayer::Update()
 // 描画関数.
 void CEventPlayer::Render()
 {
+	if (m_Parameter.IsDisp == false) return;
 	MeshRender();	// メッシュの描画.
 	EffectRender();
 }
@@ -81,8 +83,6 @@ void CEventPlayer::SPController()
 // 移動関数.
 void CEventPlayer::Move()
 {
-	m_Parameter.ResearchLenght = 3.0f;
-	CEventCharacter::Move();
 }
 
 // エフェクト描画関数.

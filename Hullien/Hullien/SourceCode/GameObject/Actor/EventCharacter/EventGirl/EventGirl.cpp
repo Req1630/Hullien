@@ -40,6 +40,7 @@ bool CEventGirl::Init()
 // 更新関数.
 void CEventGirl::Update()
 {
+	if (m_Parameter.IsDisp == false) return;
 	switch (m_NowState)
 	{
 	case ENowState::None:
@@ -61,6 +62,7 @@ void CEventGirl::Update()
 // 描画関数
 void CEventGirl::Render()
 {
+	if (m_Parameter.IsDisp == false) return;
 	MeshRender();	// メッシュの描画.
 
 #if _DEBUG
@@ -75,6 +77,7 @@ void CEventGirl::Render()
 // 当たり判定関数.
 void CEventGirl::Collision(CActor * pActor)
 {
+	if (m_Parameter.IsDisp == false) return;
 	if (pActor == nullptr) return;
 	SearchCollision(pActor);
 	if (m_pCollManager == nullptr) return;
@@ -96,36 +99,18 @@ void CEventGirl::Move()
 	case EMoveState::None:
 		break;
 	case EMoveState::Rotation:
-		CEventCharacter::TargetRotation();
 		break;
 	case EMoveState::Move:
-//		TargetMove();
-		CEventCharacter::Move();
 		break;
 	default:
 		break;
 	}
 }
 
-// 目的の場所に向けて移動.
-void CEventGirl::TargetMove()
-{
-	if (m_NowMoveState != EMoveState::Move) return;
-
-	// 目的の場所.
-	const float moveSpeed = 0.05f;
-	m_vPosition.x -= sinf(m_vRotation.y + static_cast<float>(D3DX_PI)) * moveSpeed;
-	m_vPosition.z -= cosf(m_vRotation.y + static_cast<float>(D3DX_PI)) * moveSpeed;
-
-	float lenght = D3DXVec3Length(&D3DXVECTOR3(m_Parameter.Destination - m_vPosition));
-
-	if (lenght >= 1.0f) return;
-
-}
-
 // 索敵の当たり判定.
 void CEventGirl::SearchCollision(CActor * pActor)
 {
+	if (m_Parameter.IsDisp == false) return;
 	if (pActor == nullptr) return;
 	if (m_pSearchCollManager == nullptr) return;
 	if (m_pSearchCollManager->GetSphere() == nullptr) return;
