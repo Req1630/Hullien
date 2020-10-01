@@ -19,6 +19,28 @@ class CEventManager;	// イベント管理クラス.
 **/
 class CGameStartEvent : public CEventBase
 {
+	// イベントの各ステップ.
+	enum class enEventStep
+	{
+		Escape_PlayerAndGirl = 0,	// 逃げるプレイヤーと女の子.
+		Viewpoint_UFO,				// UFOの視点.
+		Move_UFO,					// UFO定位置まで移動.
+		Stop_UFO,					// UFO停止.
+		Appearance_Alien,			// 宇宙人登場.
+		Move_Alien,					// 宇宙人前進.
+		GetCaught_Girl,				// 女の子が捕まる.
+		InvocatingOrder_Barrier,	// バリア発動準備.
+		Invocating_Barrier,			// バリア発動.
+		Return_Girl,				// 女の子帰還.
+		GameStart,					// ゲーム開始.
+
+		Max,
+		EventStart = Escape_PlayerAndGirl,
+	} typedef EEventStep;
+
+private:
+
+
 public:
 	CGameStartEvent();
 	virtual ~CGameStartEvent();
@@ -31,11 +53,39 @@ public:
 	virtual void Render() override;
 
 private:
+	// カメラ初期化関数.
+	bool CameraInit();
+	// UFO初期化関数.
+	bool SpawnUFOInit();
+	// プレイヤー初期化関数.
+	bool PlayerInit();
+	// 女の子初期化関数.
+	bool GirlInit();
+	// 宇宙人初期化関数.
+	bool AlienInit();
+	// マザーシップ初期化関数.
+	bool MotherShipUFOInit();
 	// アクタの更新関数.
 	void ActorUpdate();
 	// カメラの更新関数.
 	void CameraUpdate();
+	// シーンの設定.
+	void SceneSetting();
+	// 次のシーンに進める.
+	void NextStep();
 
+	// 以下イベントのステップ.
+	void EscapePlayerAndGirl();
+	void ViewpointUFO();
+	void MoveUFO();
+	void StopUFO();
+	void AppearanceAlien();
+	void MoveAlien();
+	void GetCaughtGirl();
+	void InvocatingOrderBarrier();
+	void InvocatingBarrier();
+	void ReturnGirl();
+	void GameStart();
 
 	// 以下デバッグ用.
 	void DebugRender();
@@ -55,8 +105,11 @@ private:
 	D3DXVECTOR3							m_vCameraRotation;
 	D3DXVECTOR3							m_vLookPosition;
 	D3DXVECTOR3							m_vUFOPosition;
+	EEventStep							m_EventStep;
 	int									m_NowStep;
 	float								m_Speed;
+	float								m_DecelerationZ;	// z座標減速度.
+	float								m_Count;			// カウント.
 	bool								m_IsDisp;
 
 	CEventCharacter::SOptionalState		m_stPlayer;

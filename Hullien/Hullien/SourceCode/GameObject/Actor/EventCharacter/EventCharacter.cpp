@@ -32,6 +32,7 @@ void CEventCharacter::SetOptionalState(SOptionalState state)
 	m_Parameter.RotationalSpeed = state.RotationalSpeed;
 	m_Parameter.ScaleSpeed = state.ScaleSpeed;
 	m_Parameter.AlphaSpeed = state.AlphaSpeed;
+	m_Parameter.IsDisp = state.IsDisp;
 }
 
 // ƒƒbƒVƒ…‚Ì•\¦ŠÖ”.

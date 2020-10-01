@@ -1,4 +1,5 @@
 #include "..\EventList.h"
+#include "..\..\GameObject\SkyDome\SkyDome.h"
 
 #include "..\..\Common\D3DX\D3DX11.h"
 #include "..\..\Common\Shader\ShadowMap\ShadowMap.h"
@@ -8,17 +9,19 @@
 *	イベントシーン管理クラス.
 **/
 CEventManager::CEventManager()
-	: m_pEventBase	( nullptr )
-	, m_pPeraRenderer(nullptr)
+	: m_pEventBase		( nullptr )
+	, m_pPeraRenderer	( nullptr )
+	, m_pSkyDome		( nullptr )
 	, m_NowEvent		( EEvent::Start )
 	, m_NextEvent		( EEvent::Start )
 	, m_IsLoadEnd		( false )
 	, m_IsSkip			( false )
-	, m_IsGameOver	( false )
-	, m_IsEventEnd	( false ) 
+	, m_IsGameOver		( false )
+	, m_IsEventEnd		( false ) 
 {
 	NextEventMove();
 	m_pPeraRenderer = std::make_unique<CPeraRenderer>();
+	m_pSkyDome = std::make_shared<CSkyDome>();
 }
 
 CEventManager::~CEventManager()
@@ -36,6 +39,7 @@ void CEventManager::Update()
 		// 読み込みが終了していなければ、読み込みを行う.
 		if (m_pPeraRenderer->Init(nullptr, nullptr) == E_FAIL) return;
 		m_IsLoadEnd = m_pEventBase->Load();
+		m_pSkyDome->Init();
 	}
 	else
 	{
@@ -57,9 +61,9 @@ void CEventManager::NextEventMove()
 	switch (m_NextEvent)
 	{
 	case EEvent::GameStart:
-		m_pEventBase		= std::make_shared<CGameStartEvent>();
+		m_pEventBase	= std::make_shared<CGameStartEvent>();
 		m_IsGameOver	= false;
-		m_IsEventEnd		= false;
+		m_IsEventEnd	= false;
 		m_NowEvent		= m_NextEvent;
 		m_NextEvent		= EEvent::GameClear;
 		break;
@@ -121,6 +125,7 @@ void CEventManager::ModelRender()
 
 	CShadowMap::SetRenderPass(1);
 	CDirectX11::SetGBuufer();
+	m_pSkyDome->Render();
 	m_pEventBase->Render();
 
 	//--------------------------------------------.
