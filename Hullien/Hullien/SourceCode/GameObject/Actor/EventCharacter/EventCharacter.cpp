@@ -159,3 +159,20 @@ void CEventCharacter::SetScaleZ(const float & vScale_z)
 {
 	m_vSclae.z = vScale_z;
 }
+
+float CEventCharacter::RotationMoveRight(const float& rotValue, const float& rotSpeed, bool IsRightRot)
+{
+	if (IsRightRot == true) 
+	{
+		if (m_vRotation.y >= rotValue) m_vRotation.y = rotValue;
+	}
+	else
+	{
+		if (m_vRotation.y <= rotValue) m_vRotation.y = rotValue;
+	}
+
+	if( m_vRotation.y == rotValue ) return rotValue;
+	m_vRotation.y += static_cast<float>(D3DX_PI) * rotSpeed;
+
+	return m_vRotation.y;
+}

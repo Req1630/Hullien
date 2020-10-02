@@ -9,10 +9,11 @@
 *	イベント用女の子クラス.
 **/
 CEventGirl::CEventGirl()
-	: m_Parameter					()
+	: m_Parameter			()
 	, m_pSearchCollManager	( nullptr )
-	, m_OldPosition				( 0.0f, 0.0f, 0.0f )
-	, m_NowState					( ENowState::None )
+	, m_OldPosition			( 0.0f, 0.0f, 0.0f )
+	, m_NowState			( ENowState::None )
+	, m_IsDanger			( false )
 {
 	m_ObjectTag = EObjectTag::Girl;
 	m_NowState = ENowState::Move;
@@ -126,6 +127,8 @@ void CEventGirl::SearchCollision(CActor * pActor)
 
 	// 球体の当たり判定.
 	if (m_pSearchCollManager->IsShereToShere(pActor->GetCollManager()) == false) return;
+	m_IsDanger = true;
+
 }
 
 // 当たり判定の作成.

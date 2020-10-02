@@ -18,6 +18,7 @@ CSpawnUFO::CSpawnUFO()
 	, m_AlienCWaveIntervalCount	( 0 )
 	, m_AlienDWaveCount			( 0 )
 	, m_AlienDWaveIntervalCount	( 0 )
+	, m_IsDisp					( true ) 
 	, m_RandomSeed				()
 {
 	// ランダムシードの初期化.
@@ -55,6 +56,7 @@ void CSpawnUFO::Update()
 void CSpawnUFO::Render()
 {
 	if( m_pStaticMesh == nullptr ) return;
+	if( m_IsDisp == false ) return;
 
 	m_pStaticMesh->SetPosition( m_vPosition );
 	m_pStaticMesh->Render();

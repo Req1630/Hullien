@@ -8,6 +8,7 @@ CMotherShipUFO::CMotherShipUFO()
 	: m_pStaticMesh		( nullptr )
 	, m_pCollManager	( nullptr )
 	, m_Param			()
+	, m_IsDisp			( true )
 {
 	m_vPosition = INIT_POS;
 }
@@ -33,6 +34,7 @@ void CMotherShipUFO::Update()
 void CMotherShipUFO::Render()
 {
 	if( m_pStaticMesh == nullptr ) return;
+	if( m_IsDisp == false ) return;
 
 	m_pStaticMesh->SetPosition( m_vPosition );
 	m_pStaticMesh->Render();

@@ -8,11 +8,9 @@
 #include "..\..\..\GameObject\Actor\Barrier\Barrier.h"
 #include "..\..\..\GameObject\MotherShipUFO\MotherShipUFO.h"
 #include "..\..\..\GameObject\SkyDome\SkyDome.h"
-#include "..\..\..\Camera\EvevtCamera\EvevtCamera.h"
 #include "..\..\..\Camera\CameraManager\CameraManager.h"
 #include "..\..\EventManager\EventManager.h"
 
-#include "..\..\..\GameObject\Widget\Fade\Fade.h"
 #include "..\..\..\Common\DebugText\DebugText.h"
 
 /***********************************
@@ -28,9 +26,6 @@ CGameStartEvent::CGameStartEvent()
 	, m_pMotherShipUFO		( nullptr )
 	, m_pEventCamera		( nullptr )
 	, m_pEventManager		( nullptr )
-	, m_vCameraPosition		( D3DXVECTOR3( 0.0f, 0.0f, 0.0f ))
-	, m_vCameraRotation		( D3DXVECTOR3( 0.0f, 0.0f, 0.0f ))
-	, m_vLookPosition		( D3DXVECTOR3( 0.0f, 0.0f, 0.0f ))
 	, m_vUFOPosition		( D3DXVECTOR3( 0.0f, 0.0f, 0.0f ))
 	, m_EventStep			( EEventStep::EventStart )
 	, m_NowStep				( 0 )
@@ -41,6 +36,7 @@ CGameStartEvent::CGameStartEvent()
 	, m_stPlayer			()
 	, m_stGirl				()
 	, m_stAlien				()
+	, m_stCamera			()
 {
 	m_pGroundStage		= std::make_shared<CGroundStage>();
 	m_pSpawnUFO			= std::make_shared<CSpawnUFO>();
@@ -103,17 +99,15 @@ void CGameStartEvent::Render()
 	m_pBarrier->Render();
 	m_pMotherShipUFO->Render();
 
-	CFade::Render();
-
 	DebugRender();
 }
 
 // カメラ初期化関数.
 bool CGameStartEvent::CameraInit()
 {
-	m_vCameraPosition = { 23.0f , 7.5f, 20.0f };
-	m_vLookPosition = m_pPlayer->GetPosition();
-	m_vLookPosition.y = m_pPlayer->GetPosition().y + 3.0f;
+	m_stCamera.vPosition = CAMERA_INITPOSITION;
+	m_stCamera.vLookPosition = m_pPlayer->GetPosition();
+	m_stCamera.vLookPosition.y = m_pPlayer->GetPosition().y + CAMERA_CORRECTION_PLAYERPOS_Y;
 	return true;
 }
 
@@ -121,7 +115,7 @@ bool CGameStartEvent::CameraInit()
 bool CGameStartEvent::SpawnUFOInit()
 {
 	if (m_pSpawnUFO->Init() == false) return false;	
-	m_vUFOPosition = { 0.0f, 12.0f, 120.0f };
+	m_vUFOPosition = UFO_INITPOSITION;
 
 	return true;
 }
@@ -130,7 +124,7 @@ bool CGameStartEvent::SpawnUFOInit()
 bool CGameStartEvent::PlayerInit()
 {
 	if (m_pPlayer->Init() == false) return false;	
-	m_stPlayer.vPosition.z = 60.0f;
+	m_stPlayer.vPosition.z = PLAYER_INITPOSITION_Z;
 	return true;
 }
 
@@ -138,7 +132,7 @@ bool CGameStartEvent::PlayerInit()
 bool CGameStartEvent::GirlInit()
 {
 	if (m_pGirl->Init() == false) return false;
-	m_stGirl.vPosition.z = 64.5f;
+	m_stGirl.vPosition.z = GIRL_INITPOSITION_Z;
 	return true;
 }
 
@@ -146,6 +140,7 @@ bool CGameStartEvent::GirlInit()
 bool CGameStartEvent::AlienInit()
 {
 	if (m_pAlienA->Init() == false) return false;
+	m_stAlien.vRotation.y = ALIEN_INITROTATION_Y;
 	m_stAlien.IsDisp = false;
 	return true;
 }
@@ -154,7 +149,8 @@ bool CGameStartEvent::AlienInit()
 bool CGameStartEvent::MotherShipUFOInit()
 {
 	if (m_pMotherShipUFO->Init() == false) return false;
-	m_pMotherShipUFO->SetPosition({ 0.0f, 20.0f, 100.0f });
+	m_pMotherShipUFO->SetPosition(MOTHERSHIP_INITPOSITION);
+	m_pMotherShipUFO->SetDisp(false);
 	return true;
 }
 
@@ -174,9 +170,8 @@ void CGameStartEvent::ActorUpdate()
 // カメラの更新関数.
 void CGameStartEvent::CameraUpdate()
 {
-	m_pEventCamera->SetPosition(m_vCameraPosition);
-	m_pEventCamera->SetLookPosition(m_vLookPosition);
-	CCameraManager::SetCamera(m_pEventCamera);
+	m_pEventCamera->SetState( m_stCamera );
+	CCameraManager::SetCamera( m_pEventCamera );
 }
 
 // シーンの設定.
@@ -208,6 +203,9 @@ void CGameStartEvent::SceneSetting()
 	case EEventStep::InvocatingOrder_Barrier:	//バリア発動指示.
 		InvocatingOrderBarrier();
 		break;
+	case EEventStep::Player_Up:	//バリア発動.
+		PlayerUp();
+		break;
 	case EEventStep::Invocating_Barrier:	//バリア発動.
 		InvocatingBarrier();
 		break;
@@ -232,23 +230,23 @@ void CGameStartEvent::NextStep()
 // 逃げるプレイヤーと女の子.
 void CGameStartEvent::EscapePlayerAndGirl()
 {
-	m_vCameraPosition.z = m_stPlayer.vPosition.z;
-	m_vLookPosition = m_stPlayer.vPosition;
+	m_stCamera.vPosition.z = m_stPlayer.vPosition.z;
+	m_stCamera.vLookPosition = m_stPlayer.vPosition;
 	m_stPlayer.vPosition.z -= m_stPlayer.MoveSpeed;
 	m_stGirl.vPosition.z -= m_stGirl.MoveSpeed;
 
 	// 次のステップへ.
-	if (m_stPlayer.vPosition.z <= 40.0f) NextStep();
+	if (m_stPlayer.vPosition.z <= CAMERASWITCHING_POS_Z) NextStep();
 }
 
 // UFO視点.
 void CGameStartEvent::ViewpointUFO()
 {
 	// カメラの設定.
-	m_vCameraPosition = m_vUFOPosition;
-	m_vCameraPosition.y = m_vUFOPosition.y + 5.0f;
-	m_vCameraPosition.z = m_vUFOPosition.z - 5.0f;
-	m_vLookPosition.z = m_pPlayer->GetPosition().z - 1.5f;
+	m_stCamera.vPosition = m_vUFOPosition;
+	m_stCamera.vPosition.y = m_vUFOPosition.y + CAMERA_CORRECTION_UFOPOS_Y;
+	m_stCamera.vPosition.z = m_vUFOPosition.z - CAMERA_CORRECTION_UFOPOS_Z;
+	m_stCamera.vLookPosition.z = m_pPlayer->GetPosition().z - CAMERA_CORRECTION_PLAYERLOOK_Z;
 	// プレイヤーと女の子の移動.
 	if (m_stPlayer.vPosition.z > 0.0f)
 	{
@@ -257,37 +255,37 @@ void CGameStartEvent::ViewpointUFO()
 	}
 
 	// UFO移動.
-	m_vUFOPosition.z -= 0.3f;
+	m_vUFOPosition.z -= UFO_MOVE_SPEED;
 
 	// 次のステップへ.
-	if (m_pSpawnUFO->GetPosition().z <= 40.0f)	 NextStep();
+	if (m_pSpawnUFO->GetPosition().z <= CAMERASWITCHING_POS_Z) NextStep();
 }
 
 // UFO移動.
 void CGameStartEvent::MoveUFO()
 {
 	// UFO移動.
-	if (m_pSpawnUFO->GetPosition().z < -10.0f)
+	if (m_pSpawnUFO->GetPosition().z < UFO_MOVEING_LIMIT_Z)
 	{
-		m_vUFOPosition.z = m_pSpawnUFO->GetPosition().z - (0.3f + m_DecelerationZ);
-		m_DecelerationZ -= 0.0046f;
+		m_vUFOPosition.z -= (UFO_MOVE_SPEED + m_DecelerationZ);
+		m_DecelerationZ -= UFO_MOVE_DECELERATION_Z;
 	}
 	else
 	{
-		m_vUFOPosition.z = m_pSpawnUFO->GetPosition().z - 0.3f;
+		m_vUFOPosition.z -= UFO_MOVE_SPEED;
 	}
 
 	// カメラ位置.
-	m_vCameraPosition = D3DXVECTOR3(3.5f, 7.0f, 10.5f);
+	m_stCamera.vPosition = CAMERA_POSITION_MOVEUFO;
 	// カメラの視点移動.
-	m_vLookPosition = m_pSpawnUFO->GetPosition();
+	m_stCamera.vLookPosition = m_pSpawnUFO->GetPosition();
 	// プレイヤーの位置設定.
 	m_stPlayer.vPosition.z = 0.0f;
 	// 女の子の位置設定.
-	m_stGirl.vPosition.z = 4.5f;
+	m_stGirl.vPosition.z = GIRL_CONSTANT_POSITION_Z;
 
 	// 次のステップ.
-	if (m_pSpawnUFO->GetPosition().z < -10.0f)
+	if (m_pSpawnUFO->GetPosition().z < UFO_MOVEING_LIMIT_Z)
 	{
 		m_DecelerationZ = 0.0f;
 		NextStep();
@@ -298,16 +296,16 @@ void CGameStartEvent::MoveUFO()
 void CGameStartEvent::StopUFO()
 {
 	m_Count++;
-	if (m_Count < 100)
+	if (m_Count < UFO_STOP_COUNT)
 	{
-		m_vUFOPosition.y = m_vUFOPosition.y + static_cast<float>(sin(D3DX_PI * 2.0f / 100.0f * m_Count) * 0.1f);
+		m_vUFOPosition.y = m_vUFOPosition.y + static_cast<float>(sin(D3DX_PI * TWO / FREQUENCY_UFO_STOP * m_Count) * AMPLITUDE_UFO_STOP);
 	}
 	else
 	{
-		if (m_vUFOPosition.y >= 11.5f) m_vUFOPosition.y -= 0.01f;
+		if (m_vUFOPosition.y >= UFO_MOVEING_LIMIT_Y) m_vUFOPosition.y -= UFO_STOP_SPEED;
 	}
 
-	if (m_vUFOPosition.y < 11.5f && m_Count >= 200)
+	if (m_vUFOPosition.y < UFO_MOVEING_LIMIT_Y && m_Count >= WAIT_COUNT)
 	{
 		NextStep();
 		m_stAlien.vPosition = m_pSpawnUFO->GetPosition();
@@ -318,14 +316,14 @@ void CGameStartEvent::StopUFO()
 // 宇宙人登場.
 void CGameStartEvent::AppearanceAlien()
 {
-	m_vCameraPosition = D3DXVECTOR3(0.0f, 8.5f, -1.0f);
-	m_vLookPosition.y = m_pAlienA->GetPosition().y + 1.0f;
+	m_stCamera.vPosition = CAMERA_POSITION_APP_ALIEN;
+	m_stCamera.vLookPosition.y = m_pAlienA->GetPosition().y + CAMERA_CORRECTIONALIENPOS_Y;
 
 	m_stAlien.IsDisp = true;
 
-	if (m_stAlien.vPosition.y >= 7.0f)
+	if (m_stAlien.vPosition.y >= ALIEN_MOVEING_LIMIT_Y)
 	{
-		m_stAlien.vPosition.y -= 0.05f;
+		m_stAlien.vPosition.y -= ALIEN_FALL_SPEED;
 	}
 	else
 	{
@@ -337,10 +335,10 @@ void CGameStartEvent::AppearanceAlien()
 void CGameStartEvent::MoveAlien()
 {
 	m_Count++;
-	m_stAlien.vPosition.y = m_pAlienA->GetPosition().y + static_cast<float>(sin(D3DX_PI * 2.0f / 90.0f * m_Count) * 0.01f);
-	if (m_Count > 200)
+	m_stAlien.vPosition.y = m_pAlienA->GetPosition().y + static_cast<float>(sin(D3DX_PI * TWO / FREQUENCY_ALIEN_UPDOWN * m_Count) * AMPLITUDE_ALIEN_UPDOWN);
+	if (m_Count > WAIT_COUNT)
 	{
-		m_stAlien.vPosition.z += 0.5f;
+		m_stAlien.vPosition.z += ALIEN_RUN_SPEED;
 	}
 
 	if (m_stAlien.vPosition.z >= 0.0f)
@@ -353,28 +351,35 @@ void CGameStartEvent::MoveAlien()
 // 女の子捕まる.
 void CGameStartEvent::GetCaughtGirl()
 {
-	m_vCameraPosition = { -20.0f, 5.0f, -10.0f };
-	m_vLookPosition = m_pPlayer->GetPosition();
+	m_stCamera.vPosition = CAMERA_POSITION_CAUGHT_GIRL;
+	m_stCamera.vLookPosition = m_pPlayer->GetPosition();
 
-	m_stAlien.vPosition.y = 5.0f;
-	m_stAlien.vPosition.z += 0.3f;
+	m_stAlien.vPosition.z += ALIEN_MOVE_SPEED;
 
-	if (m_stAlien.vPosition.z > 50.0f)
+	m_pSpawnUFO->SetDisp(false);
+
+	if (m_stAlien.vPosition.z > ALIEN_MOVEING_LIMIT_Z)
 	{
 		NextStep();
-		m_vCameraPosition = { -6.5f, 8.4f, -10.0f };
-		m_vLookPosition = m_pGirl->GetPosition();
 	}
 
-	m_pAlienA->Collision(m_pGirl.get());
+	if (m_pGirl->GetIsDanger() == true)
+	{
+		m_stPlayer.vRotation.y = m_pPlayer->RotationMoveRight(PLAYER_ROTATION_Y, m_stPlayer.RotationalSpeed);
+	}
 	m_pGirl->Collision(m_pAlienA.get());
+	m_pAlienA->Collision( m_pGirl.get() );
 	m_stGirl.vPosition = m_pGirl->GetPosition();
 }
 
 // バリア発動準備.
 void CGameStartEvent::InvocatingOrderBarrier()
 {
-	m_pPlayer->SetRotationY(static_cast<float>(D3DXToRadian(180)));
+	m_stCamera.vPosition = CAMERA_POSITION_ORDER_BARRIER;
+	m_stCamera.vLookPosition = m_pGirl->GetPosition();
+	// マザーシップの描画.
+	m_pMotherShipUFO->SetDisp(true);
+	// プレイヤーの更新.
 	m_pPlayer->Update();
 
 	if (m_pPlayer->IsSpecialAbility() == true)
@@ -382,15 +387,70 @@ void CGameStartEvent::InvocatingOrderBarrier()
 		m_pBarrier->Init();	// バリアの初期化.
 		NextStep();
 
-		m_Count = 100;
+		// カメラの設定.
+		m_stCamera.vLookPosition = m_pPlayer->GetPosition();
+		m_stCamera.vLookPosition.y = m_pPlayer->GetPosition().y + CAMERA_CORRECTION_PLAYERPOS_Y;
+		m_stCamera.vPosition = CAMERA_POSITION_PLAYER_UP;
+		m_stCamera.ViewingAngle = VIEWING_ANGLE_PLAYER_UP;
+	}
+}
+
+// プレイヤーのアップ.
+void CGameStartEvent::PlayerUp()
+{
+	// 視野角が移動限界値よりも大きい場合.
+	if (m_stCamera.ViewingAngle > VIEWING_ANGLE_MOVING_LIMIT)
+	{
+		if (m_stCamera.ViewingAngle > VIEWING_ANGLE_DEC_START_POS)
+		{
+			m_stCamera.ViewingAngle -= VIEWING_ANGLE_MOVE_SPEED;
+		}
+		else
+		{
+			m_stCamera.ViewingAngle -= VIEWING_ANGLE_MOVE_SPEED + m_DecelerationZ;
+			m_DecelerationZ -= VIEWING_ANGLE_DECELERATION_SPEED;
+		}
+	}
+	else
+	{
+		m_DecelerationZ = 0.0f;
+		m_stCamera.ViewingAngle = VIEWING_ANGLE_MOVING_LIMIT;
+		// カメラをプレイヤーの後ろ側に移動.
+		if (m_stCamera.vRotation.x > CAMERA_ROTAION_MOVING_LIMIT_X)
+		{
+			m_stCamera.vRotation.x -= static_cast<float>(D3DX_PI) * m_stCamera.MoveSpeed;
+			// カメラの加速・減速の設定.
+			if (m_stCamera.vRotation.x > CAMERA_ROTAION_DEC_START)
+			{
+				if (m_stCamera.MoveSpeed <= CAMERA_ROTATION_SPEED) m_stCamera.MoveSpeed += CAMERA_DECELERATION_SPEED;
+			}
+			else
+			{
+				if (m_stCamera.MoveSpeed >= CAMERA_ROTATION_SPEED) m_stCamera.MoveSpeed -= CAMERA_DECELERATION_SPEED;
+			}
+		}
+		else
+		{
+			NextStep();
+			// カメラの揺れ用カウント.
+			m_Count = AMPLITUDE_COUNT;
+		}
+
+		// カメラとプレイヤーの距離.
+		if (m_stCamera.vLenght.z < 16.0f) m_stCamera.vLenght.z += CAMERA_MOVE_SPEED;
+		if (m_stCamera.vLookPosition.z < 9.5f) m_stCamera.vLookPosition.z += CAMERA_MOVE_SPEED;
+
+		// カメラ位置を算出.
+		m_stCamera.vPosition.x = m_stCamera.vLookPosition.x + (sinf(m_stCamera.vRotation.x) * m_stCamera.vLenght.x);
+		m_stCamera.vPosition.z = m_stCamera.vLookPosition.z + (cosf(m_stCamera.vRotation.x) * m_stCamera.vLenght.z);
 	}
 }
 
 // バリア発動.
 void CGameStartEvent::InvocatingBarrier()
 {
-	m_vLookPosition.x = m_vLookPosition.x + static_cast<float>(sin(D3DX_PI * 2.0f / 10.0f * m_Count) * (m_Count * 0.01f));
-	m_vLookPosition.y = m_vLookPosition.y + static_cast<float>(sin(D3DX_PI * 2.0f / 10.0f * m_Count) * (m_Count * 0.01f));
+	m_stCamera.vLookPosition.x = m_stCamera.vLookPosition.x + static_cast<float>(sin(D3DX_PI * 2.0f / 10.0f * m_Count) * (m_Count * 0.01f));
+	m_stCamera.vLookPosition.y = m_stCamera.vLookPosition.y + static_cast<float>(sin(D3DX_PI * 2.0f / 20.0f * m_Count) * (m_Count * 0.01f));
 	if (m_Count != 0) {
 		m_Count--;
 	}
@@ -412,21 +472,25 @@ void CGameStartEvent::InvocatingBarrier()
 // 女の子帰還.
 void CGameStartEvent::ReturnGirl()
 {
+	m_pSpawnUFO->SetDisp( true );
+	m_vUFOPosition.y = 10.0f;
 	m_vUFOPosition.z = -100.0f;
 
 	m_stGirl.vPosition.z -= m_stGirl.MoveSpeed;
 
 	if (m_stGirl.vPosition.z >= 20.0f) return;
-	m_vLookPosition = m_stPlayer.vPosition;
+	m_stCamera.vLookPosition = m_stPlayer.vPosition;
+	m_stCamera.ViewingAngle = m_pEventCamera->ResetViewingAngle();
+	m_stPlayer.vRotation.y = m_pPlayer->RotationMoveRight(static_cast<float>(D3DXToRadian(0)), m_stPlayer.RotationalSpeed);
 
-	if (m_vCameraPosition.x < 0.0f) { m_vCameraPosition.x += 0.1f; }
-	else { m_vCameraPosition.x = 0.0f; }
+	if (m_stCamera.vPosition.x < 0.0f) { m_stCamera.vPosition.x += 0.1f; }
+	else { m_stCamera.vPosition.x = 0.0f; }
 
-	if (m_vCameraPosition.y < 12.0f) { m_vCameraPosition.y += 0.2f; }
-	else { m_vCameraPosition.y = 12.0f; }
+	if (m_stCamera.vPosition.y < 12.0f) { m_stCamera.vPosition.y += 0.2f; }
+	else { m_stCamera.vPosition.y = 12.0f; }
 
-	if (m_vCameraPosition.z < 30.0f) { m_vCameraPosition.z += 1.0f; }
-	else { m_vCameraPosition.z = 30.0f; }
+	if (m_stCamera.vPosition.z < 30.0f) { m_stCamera.vPosition.z += 1.0f; }
+	else { m_stCamera.vPosition.z = 30.0f; }
 
 	if (m_stGirl.vPosition.z <= 0.0f)  NextStep();
 }
@@ -444,19 +508,19 @@ void CGameStartEvent::DebugRender()
 	CDebugText::SetPosition({ 0.0f, 80.0f + CDebugText::GetScale() * 2.0f ,0.0f });
 	CDebugText::Render("- CameraPosition -");
 	CDebugText::SetPosition({ 0.0f, 80.0f + CDebugText::GetScale() * 3.0f ,0.0f });
-	CDebugText::Render("Pos_x", m_vCameraPosition.x);
+	CDebugText::Render("Pos_x", m_stCamera.vPosition.x);
 	CDebugText::SetPosition({ 0.0f, 80.0f + CDebugText::GetScale() * 4.0f ,0.0f });
-	CDebugText::Render("Pos_y", m_vCameraPosition.y);
+	CDebugText::Render("Pos_y", m_stCamera.vPosition.y);
 	CDebugText::SetPosition({ 0.0f, 80.0f + CDebugText::GetScale() * 5.0f ,0.0f });
-	CDebugText::Render("Pos_z", m_vCameraPosition.z);
+	CDebugText::Render("Pos_z", m_stCamera.vPosition.z);
 	CDebugText::SetPosition({ 0.0f, 80.0f + CDebugText::GetScale() * 7.0f ,0.0f });
 	CDebugText::Render("- LookPosition -");
 	CDebugText::SetPosition({ 0.0f, 80.0f + CDebugText::GetScale() * 8.0f ,0.0f });
-	CDebugText::Render("Pos_x", m_vLookPosition.x);
+	CDebugText::Render("Pos_x", m_stCamera.vLookPosition.x);
 	CDebugText::SetPosition({ 0.0f, 80.0f + CDebugText::GetScale() * 9.0f ,0.0f });
-	CDebugText::Render("Pos_y", m_vLookPosition.y);
+	CDebugText::Render("Pos_y", m_stCamera.vLookPosition.y);
 	CDebugText::SetPosition({ 0.0f, 80.0f + CDebugText::GetScale() * 10.0f ,0.0f });
-	CDebugText::Render("Pos_z", m_vLookPosition.z);
+	CDebugText::Render("Pos_z", m_stCamera.vLookPosition.z);
 	CDebugText::SetPosition({ 0.0f, 80.0f + CDebugText::GetScale() * 12.0f ,0.0f });
 	CDebugText::Render("- ViewingAngle -");
 	CDebugText::SetPosition({ 0.0f, 80.0f + CDebugText::GetScale() * 13.0f ,0.0f });
@@ -468,43 +532,43 @@ void CGameStartEvent::DebugOperation()
 {
 	if (GetAsyncKeyState(VK_UP) & 0x8000 && GetAsyncKeyState(VK_SHIFT) & 0x8000)
 	{
-		m_vCameraPosition.z += m_Speed;
+		m_stCamera.vPosition.z += m_Speed;
 	}
 	else if (GetAsyncKeyState(VK_DOWN) & 0x8000 && GetAsyncKeyState(VK_SHIFT) & 0x8000)
 	{
-		m_vCameraPosition.z -= m_Speed;
+		m_stCamera.vPosition.z -= m_Speed;
 	}
 	else if (GetAsyncKeyState(VK_UP) & 0x8000)
 	{
-		m_vCameraPosition.y += m_Speed;
+		m_stCamera.vPosition.y += m_Speed;
 	}
 	else if (GetAsyncKeyState(VK_DOWN) & 0x8000)
 	{
-		m_vCameraPosition.y -= m_Speed;
+		m_stCamera.vPosition.y -= m_Speed;
 	}
 	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
 	{
-		m_vCameraPosition.x += m_Speed;
+		m_stCamera.vPosition.x += m_Speed;
 	}
 	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
 	{
-		m_vCameraPosition.x -= m_Speed;
+		m_stCamera.vPosition.x -= m_Speed;
 	}
 	if (GetAsyncKeyState('W') & 0x8000)
 	{
-		m_vLookPosition.y += m_Speed;
+		m_stCamera.vLookPosition.y += m_Speed;
 	}
 	if (GetAsyncKeyState('S') & 0x8000)
 	{
-		m_vLookPosition.y -= m_Speed;
+		m_stCamera.vLookPosition.y -= m_Speed;
 	}
 	if (GetAsyncKeyState('A') & 0x8000)
 	{
-		m_vLookPosition.z -= m_Speed;
+		m_stCamera.vLookPosition.z -= m_Speed;
 	}
 	if (GetAsyncKeyState('D') & 0x8000)
 	{
-		m_vLookPosition.z += m_Speed;
+		m_stCamera.vLookPosition.z += m_Speed;
 	}
 }
 

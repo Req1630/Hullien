@@ -31,6 +31,8 @@ public:
 	void SetSpawnParameter( const SSpawnUFOParam& param );
 	// 連れ去るUFOの座標設定.
 	void SetAbductUFOPosition( D3DXVECTOR3* pPos ){ m_pAbductUFOPosition = pPos; }
+	// 描画フラグ設定関数.
+	void SetDisp(const bool& disp) { m_IsDisp = disp; }
 
 private:
 	// 更新関数.外部で使用しないので隠蔽.
@@ -63,6 +65,8 @@ private:
 	int m_AlienCWaveIntervalCount;	// 宇宙人Cのウェーブ間隔カウント.
 	int m_AlienDWaveCount;			// 宇宙人Dのウェーブカウント.
 	int m_AlienDWaveIntervalCount;	// 宇宙人Dのウェーブ間隔カウント,
+
+	bool m_IsDisp;		//描画フラグ.
 
 	std::mt19937 m_RandomSeed;	// ランダムシード.
 };

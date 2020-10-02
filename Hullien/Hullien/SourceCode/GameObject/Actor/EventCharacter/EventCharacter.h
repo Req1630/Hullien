@@ -37,7 +37,7 @@ public:
 			, vScale			( {1.0f,1.0f,1.0f} )
 			, ModelAlpha		( 1.0f )
 			, MoveSpeed			( 0.1f )
-			, RotationalSpeed	( 0.5f )
+			, RotationalSpeed	( 0.05f )
 			, ScaleSpeed		( 0.5f )
 			, AlphaSpeed		( 0.5f )
 			, IsDisp			( true )
@@ -102,6 +102,10 @@ public:
 	void SetScaleX(const float& vScale_x);
 	void SetScaleY(const float& vScale_y);
 	void SetScaleZ(const float& vScale_z);
+
+	// 右回転の設定.
+	float RotationMoveRight(const float& rotValue, 
+		const float& rotSpeed, bool IsRightRot = true);
 	
 protected:
 	// メッシュの表示関数.
