@@ -37,3 +37,7 @@ void CGameClearEvent::Render()
 	CDebugText::SetPosition({ 0.0f, 80.0f + CDebugText::GetScale() * 0 ,0.0f });
 	CDebugText::Render("- GameClearEvent -");
 }
+
+void CGameClearEvent::SpriteRender()
+{
+}

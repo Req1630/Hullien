@@ -23,6 +23,8 @@ public:
 	virtual void Update() = 0;
 	// 描画関数.
 	virtual void Render() = 0;
+	// 描画関数.
+	virtual void SpriteRender() = 0;
 	// イベントの終了を取得.
 	bool GetIsEventEnd() const { return m_IsEventEnd; };
 

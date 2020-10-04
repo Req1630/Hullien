@@ -41,7 +41,14 @@ class CGameStartEvent : public CEventBase
 	const float CAMERA_ROTAION_DEC_START = static_cast<float>(D3DXToRadian(-100));		// カメラの減速開始値.
 	const float CAMERA_DECELERATION_SPEED			= 0.0005f;							// カメラの減速度.
 	const float CAMERA_ROTATION_SPEED				= 0.01f;							// カメラの回転速度.
-	const float CAMERA_MOVE_SPEED = 0.1f;	//カメラ移動速度.
+	const float CAMERA_MOVE_SPEED					= 0.1f;								// カメラ移動速度.
+	const float CAMERA_MOVE_SPEED_Y					= 0.2f;								// カメラ移動速度.
+	const float CAMERA_MOVE_SPEED_Z					= 1.0f;								// カメラ移動速度.
+	const float CAMERA_LENGHT_Z						= 16.0f;							// カメラとプレイヤーの距離z座標.
+	const float CAMERA_LOOKPOS_Z_PLAYER_UP			= 9.5f;								// プレイヤーアップ時のカメラの注視位置.
+	const float FREQUENCY_LOOKPOS_Y					= 10.0f;							// カメラ注視位置の周波数.
+	const float FREQUENCY_LOOKPOS_Z					= 20.0f;							// カメラ注視位置の周波数.
+	const float AMPLITUDE_LOOKPOS					= 0.01f;							// カメラ注視位置の振幅.
 
 	const float VIEWING_ANGLE_PLAYER_UP				= 1.6f;								// プレイヤーのアップ時の視野角.
 	const float VIEWING_ANGLE_MOVING_LIMIT			= 0.7f;								// 視野角の移動限界値.
@@ -50,7 +57,8 @@ class CGameStartEvent : public CEventBase
 	const float VIEWING_ANGLE_DECELERATION_SPEED	= 0.0008f;							// 視野角の減速度.
 
 	// UFO関係.
-	const D3DXVECTOR3 UFO_INITPOSITION	= D3DXVECTOR3(0.0f, 12.0f, 120.0f);			// UFO初期位置.
+	const D3DXVECTOR3 UFO_INITPOSITION	= D3DXVECTOR3(0.0f, 10.0f, 120.0f);			// UFO初期位置.
+	const D3DXVECTOR3 UFO_POSITION		= D3DXVECTOR3(0.0f, 10.0f, -100.0f);			// UFO初期位置.
 	const int   UFO_STOP_COUNT			= 100;										// UFO停止のカウント.
 	const float UFO_MOVE_SPEED			= 0.3f;										// UFOの移動速度.
 	const float UFO_MOVE_DECELERATION_Z	= 0.0046f;									// UFOの移動減速度.
@@ -63,10 +71,13 @@ class CGameStartEvent : public CEventBase
 	// プレイヤー関係.
 	const float PLAYER_INITPOSITION_Z = 60.0f;										// プレイヤー初期位置.
 	const float PLAYER_ROTATION_Y = static_cast<float>(D3DXToRadian(180));			// 宇宙人のy座標回転値.
+	const float PLAYER_DEFAULT_ROTATION_Y = static_cast<float>(D3DXToRadian(0));			// 宇宙人のy座標回転値.
 
 	// 女の子関係.
+	D3DXVECTOR3 GIRL_POSITION = D3DXVECTOR3(0.0f, 12.0f, 30.0f);					// 女の子の位置.
 	const float GIRL_INITPOSITION_Z = 64.5f;										// 女の子初期位置.
 	const float GIRL_CONSTANT_POSITION_Z = 4.5f;									// 女の子の定位置z座標.
+	const float CAMERASWITCHING_GIRLPOS_Z = 20.0f;									// カメラ切り替え用の女の子のz座標,
 
 	// 宇宙人関係.
 	const float ALIEN_INITROTATION_Y = static_cast<float>(D3DXToRadian(180));		// 宇宙人のy座標回転値.
@@ -77,6 +88,7 @@ class CGameStartEvent : public CEventBase
 	const float ALIEN_RUN_SPEED = 0.5f;												// 宇宙人の移動速度.
 	const float FREQUENCY_ALIEN_UPDOWN = 90.0f;										// 宇宙人の周波数.
 	const float AMPLITUDE_ALIEN_UPDOWN = 0.01f;										// 宇宙人の振幅.
+	const float GET_EXPELLED_SPEED = 1.0f;											// バリアからはじき出される速度.
 
 	// マザーシップ関係.
 	const D3DXVECTOR3 MOTHERSHIP_INITPOSITION = D3DXVECTOR3(0.0f, 20.0f, 100.0f);	// マザーシップ初期位置.
@@ -112,6 +124,8 @@ public:
 	virtual void Update() override;
 	// 描画関数.
 	virtual void Render() override;
+	// スプライト描画関数.
+	virtual void SpriteRender() override;
 
 private:
 	// カメラ初期化関数.
@@ -126,6 +140,8 @@ private:
 	bool AlienInit();
 	// マザーシップ初期化関数.
 	bool MotherShipUFOInit();
+	// スプライトの設定.
+	bool SpriteSetting();
 	// アクタの更新関数.
 	void ActorUpdate();
 	// カメラの更新関数.
@@ -154,27 +170,28 @@ private:
 	void DebugOperation();
 
 private:
-	std::shared_ptr<CGroundStage>		m_pGroundStage;
-	std::shared_ptr<CSpawnUFO>			m_pSpawnUFO;
-	std::shared_ptr<CEventPlayer>		m_pPlayer;
-	std::shared_ptr<CEventGirl>			m_pGirl;
-	std::shared_ptr<CEventAlienA>		m_pAlienA;
-	std::shared_ptr<CBarrier>			m_pBarrier;
-	std::shared_ptr<CMotherShipUFO>		m_pMotherShipUFO;
-	std::shared_ptr<CEventCamera>		m_pEventCamera;
-	std::shared_ptr<CEventManager>		m_pEventManager;
-	D3DXVECTOR3							m_vUFOPosition;
-	EEventStep							m_EventStep;
-	int									m_NowStep;
-	float								m_Speed;
-	float								m_DecelerationZ;	// z座標減速度.
-	float								m_Count;			// カウント.
-	bool								m_IsDisp;
+	std::shared_ptr<CGroundStage>			m_pGroundStage;
+	std::shared_ptr<CSpawnUFO>				m_pSpawnUFO;
+	std::shared_ptr<CEventPlayer>			m_pPlayer;
+	std::shared_ptr<CEventGirl>				m_pGirl;
+	std::shared_ptr<CEventAlienA>			m_pAlienA;
+	std::shared_ptr<CBarrier>				m_pBarrier;
+	std::shared_ptr<CMotherShipUFO>			m_pMotherShipUFO;
+	std::shared_ptr<CEventCamera>			m_pEventCamera;
+	std::shared_ptr<CEventManager>			m_pEventManager;
+	std::vector<std::shared_ptr<CSprite>>	m_pSprite;
+	D3DXVECTOR3								m_vUFOPosition;
+	EEventStep								m_EventStep;
+	int										m_NowStep;
+	float									m_Speed;
+	float									m_DecelerationZ;	// z座標減速度.
+	float									m_Count;			// カウント.
+	bool									m_IsDisp;
 
-	CEventCharacter::SOptionalState		m_stPlayer;	//プレイヤーの情報.
-	CEventCharacter::SOptionalState		m_stGirl;	//女の子の情報.
-	CEventCharacter::SOptionalState		m_stAlien;	//宇宙人の情報.
-	CEventCamera::SCameraState			m_stCamera;	//カメラの情報.
+	CEventCharacter::SOptionalState			m_stPlayer;	//プレイヤーの情報.
+	CEventCharacter::SOptionalState			m_stGirl;	//女の子の情報.
+	CEventCharacter::SOptionalState			m_stAlien;	//宇宙人の情報.
+	CEventCamera::SCameraState				m_stCamera;	//カメラの情報.
 };
 
 #endif //#ifndef START_EVENT_H.

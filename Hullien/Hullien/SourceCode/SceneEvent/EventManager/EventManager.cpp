@@ -136,4 +136,6 @@ void CEventManager::ModelRender()
 	CDirectX11::SetBackBuffer();
 	m_pPeraRenderer->Render(CDirectX11::GetGBuffer());
 
+	m_pEventBase->SpriteRender();
+
 }

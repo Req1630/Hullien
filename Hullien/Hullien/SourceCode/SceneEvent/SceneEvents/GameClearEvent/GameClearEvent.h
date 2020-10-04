@@ -18,6 +18,8 @@ public:
 	virtual void Update() override;
 	// 描画関数.
 	virtual void Render() override;
+	// スプライト描画関数.
+	virtual void SpriteRender() override;
 
 private:
 };
