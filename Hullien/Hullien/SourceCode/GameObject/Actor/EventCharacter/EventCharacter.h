@@ -38,8 +38,8 @@ public:
 			, ModelAlpha		( 1.0f )
 			, MoveSpeed			( 0.1f )
 			, RotationalSpeed	( 0.05f )
-			, ScaleSpeed		( 0.5f )
-			, AlphaSpeed		( 0.5f )
+			, ScaleSpeed		( 0.03f )
+			, AlphaSpeed		( 0.03f )
 			, IsDisp			( true )
 		{}
 	}typedef SOptionalState;

@@ -154,6 +154,8 @@ bool CGameStartEvent::AlienInit()
 	if (m_pAlienA->Init() == false) return false;
 	m_stAlien.vRotation.y = ALIEN_INITROTATION_Y;
 	m_stAlien.IsDisp = false;
+	m_stAlien.ModelAlpha = 0.0f;
+	m_stAlien.vScale = D3DXVECTOR3(0.0f,0.0f,0.0f);
 	return true;
 }
 
@@ -326,7 +328,11 @@ void CGameStartEvent::AppearanceAlien()
 	m_stCamera.vPosition = CAMERA_POSITION_APP_ALIEN;
 	m_stCamera.vLookPosition.y = m_pAlienA->GetPosition().y + CAMERA_CORRECTIONALIENPOS_Y;
 
-	m_stAlien.IsDisp = true;
+	m_pAlienA->Spawn(m_stAlien.vPosition);
+	m_stAlien.vScale = m_pAlienA->GetScale();
+	m_stAlien.ModelAlpha = m_pAlienA->GetParameter().ModelAlpha;
+	m_stAlien.IsDisp = m_pAlienA->GetParameter().IsDisp;
+	
 
 	if (m_stAlien.vPosition.y >= ALIEN_MOVEING_LIMIT_Y)
 	{

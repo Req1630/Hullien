@@ -85,16 +85,14 @@ void CEventAlienA::Collision(CActor * pActor)
 }
 
 // スポーン.
-bool CEventAlienA::Spawn(const D3DXVECTOR3 & spawnPos)
+bool CEventAlienA::Spawn(const D3DXVECTOR3& spawnPos)
 {
 	// 既にスポーン済みなら終了.
 	if (m_NowState != EEventAlienState::None) return true;
 	// 初期化に失敗したら終了.
 	if (Init() == false) return false;
-	m_vPosition = spawnPos;	// スポーン座標の設定.
-	m_vPosition.y += INIT_POSITION_ADJ_HEIGHT;
-//	m_NowState = EEventAlienState::Spawn;	// 現在の状態をスポーンに変更.
 
+	Spawning();
 	return true;
 }
 

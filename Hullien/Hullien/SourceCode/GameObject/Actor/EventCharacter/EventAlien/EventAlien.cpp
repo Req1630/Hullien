@@ -57,13 +57,28 @@ void CEventAlien::SetGirlPos(CActor& actor)
 // スポーン中.
 void CEventAlien::Spawning()
 {
-	// モデルのスケール値を足していく.
+	if (m_Parameter.IsDisp == false)
+	{
+		m_Parameter.IsDisp = true;	
+		m_Parameter.vScale = {0.0f,0.0f,0.0f};
+	}
 
 	// モデルのアルファ値を足していく.
+	if (m_Parameter.ModelAlpha >= MODEL_ALPHA_MAX) return;
 	m_Parameter.ModelAlpha += m_Parameter.AlphaSpeed;
-	if (m_Parameter.ModelAlpha < MODEL_ALPHA_MAX) return;
-	m_NowState = EEventAlienState::Move;
-	m_NowMoveState = EMoveState::Rotation;
+
+	// モデルのスケール値を足していく.
+	if (m_Parameter.vScale.x >= MODEL_SCALE_MAX) return;
+	m_vSclae.x += m_Parameter.ScaleSpeed;
+	m_vSclae.y += m_Parameter.ScaleSpeed;
+	m_vSclae.z += m_Parameter.ScaleSpeed;
+	if (m_Parameter.vScale.x > MODEL_SCALE_MAX)
+	{
+		m_Parameter.vScale.x = MODEL_SCALE_MAX;
+		m_Parameter.vScale.y = MODEL_SCALE_MAX;
+		m_Parameter.vScale.z = MODEL_SCALE_MAX;
+	}
+
 }
 
 // 移動.

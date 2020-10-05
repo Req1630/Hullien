@@ -8,18 +8,18 @@
 **/
 class CEventAlien : public CEventCharacter
 {
-protected:
+public:
 	// 宇宙人状態.
 	enum class enEventAlienState
 	{
 		None,
 
 		Spawn,		// スポーン.
-		Move,			// 移動.
+		Move,		// 移動.
 		Abduct,		// 拐う.
 		Escape,		// 逃げる.
-		BlowAway, // 吹き飛ぶ.
-		Wait,			// 待機.
+		BlowAway,	// 吹き飛ぶ.
+		Wait,		// 待機.
 
 		Max,
 
@@ -33,6 +33,9 @@ public:
 	virtual void SetTargetPos(CActor& actor) override;
 	// バリアに当たっているか.
 	bool IsBarrierHit() const { return m_IsBarrierHit; }
+	// 宇宙人の状態設定.
+	void SetAlienState(const EEventAlienState& state) { m_NowState = state; }
+
 
 private:
 	// スポーン.
