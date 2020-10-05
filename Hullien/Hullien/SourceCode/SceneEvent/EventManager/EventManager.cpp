@@ -67,6 +67,16 @@ void CEventManager::NextEventMove()
 		m_NowEvent		= m_NextEvent;
 		m_NextEvent		= EEvent::GameClear;
 		break;
+	case EEvent::ResultCheck:
+		if (m_IsGameOver == true)
+		{
+			m_NextEvent = EEvent::GameOver;
+		}
+		else {
+			m_NextEvent = EEvent::GameClear;
+		}
+		NextEventMove();
+		break;
 	case EEvent::GameClear:
 		m_pEventBase = std::make_shared<CGameClearEvent>();
 		m_IsEventEnd = false;

@@ -47,6 +47,7 @@ CPlayer::CPlayer()
 {
 	m_ObjectTag = EObjectTag::Player;
 	m_pCamera = std::make_shared<CRotLookAtCenter>();
+
 }
 
 CPlayer::~CPlayer()
@@ -74,7 +75,6 @@ bool CPlayer::Init()
 	// アニメーション再生.
 	SetAttackFrameList();
 #endif	//#if 0
-
 
 	return true;
 }

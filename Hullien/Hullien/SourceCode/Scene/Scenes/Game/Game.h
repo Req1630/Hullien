@@ -16,18 +16,33 @@ class CPeraRenderer;	// G-Buufer描画用.
 class CGame : public CSceneBase
 {
 private:
-	// シーン切り替え状態.
-	enum class enChangeSceneState
+	// シーンの状態.
+	enum class enSceneState
 	{
-		None, 
+		None,
+
+		GameStart,			// ゲームスタート.
+		Game,				// ゲーム中.
+		GameOver_Player,	// プレイヤーが死んだ場合.
+		GameOver_Girl,		// 女の子が連れ去られた場合.
+		Continue,			// コンテニュー.
+		Clear,				// クリア.
+
+		Max,
+	}typedef ESceneState;
+
+	// シーン切り替え状態.
+	enum class enNextSceneState
+	{
+		None,
 
 		Game,			//ゲーム.
-		Clear,				//クリア.
+		Clear,			//クリア.
 		GameOver,		//ゲームオーバー.
-	}typedef EChangeSceneState;
+	}typedef ENextSceneState;
 
 public:
-	CGame( CSceneManager* pSceneManager );
+	CGame(CSceneManager* pSceneManager);
 	virtual ~CGame();
 
 	// 読込関数.
@@ -41,26 +56,26 @@ private:
 	// モデルの描画.
 	void ModelRender();
 	// フェード初期化関数.
-	bool InitFade();	
+	bool InitFade();
+	// ゲーム処理関数.
+	void UpdateGame();
 	// コンテニュー処理関数.
 	void UpdateContinue();
 	// シーン切り替え関数.
 	void ChangeScene();
-	// シーンの選択.
-	void SelectScene();
-	// シーン切り替え設定関数.
-	void SetChangeScene( const EChangeSceneState& changeState );
-
+	// 次のシーンに移行.
+	void NextSceneMove();
 
 private:
 	std::unique_ptr<CGameActorManager>		m_GameObjManager;	// ゲームオブジェクト管理クラス.
-	std::unique_ptr<CGameWidgetManager>	m_WidgetManager;		// ゲームUI管理クラス.
-	std::unique_ptr<CContinueWidget>			m_ContinueWidget;		// コンテニューUIクラス.
-	std::unique_ptr<CSkyDome>					m_pSkyDome;				// 背景.
-	std::unique_ptr<CEventManager>			m_pEventManager;		//	イベント管理クラス.
-	std::unique_ptr<CPeraRenderer>		m_pPeraRenderer;
-	EChangeSceneState					m_ChangeSceneState;	// シーン切り替え状態.
-	bool								m_IsChangeScene;	// シーン切り替えが可能か.
+	std::unique_ptr<CGameWidgetManager>		m_WidgetManager;	// ゲームUI管理クラス.
+	std::unique_ptr<CContinueWidget>		m_ContinueWidget;	// コンテニューUIクラス.
+	std::unique_ptr<CSkyDome>				m_pSkyDome;			// 背景.
+	std::unique_ptr<CEventManager>			m_pEventManager;	// イベント管理クラス.
+	std::unique_ptr<CPeraRenderer>			m_pPeraRenderer;
+	ESceneState								m_NowScene;			// 現在のシーン.
+	ENextSceneState							m_NextSceneState;	// 次のシーン状態.
+	bool									m_IsChangeScene;	// シーン切り替えが可能か.
 
 };
 

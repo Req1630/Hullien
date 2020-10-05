@@ -7,13 +7,14 @@
 #include "..\..\XAudio2\SoundManager.h"
 
 CSceneManager::CSceneManager()
-	: m_hWnd			( nullptr )
-	, m_pScene			( nullptr )
-	, m_NowScene		( EScene::Start )
+	: m_hWnd		( nullptr )
+	, m_pScene		( nullptr )
+	, m_NowScene	( EScene::Start )
 	, m_NextScene	( EScene::Start )
-	, m_IsLoadEnd		( false )
+	, m_IsLoadEnd	( false )
 	, m_IsGameOver	( false )
 	, m_IsGameEnd	( false )
+	, m_IsRetry		( false )
 {
 	NextSceneMove();
 }
@@ -75,6 +76,7 @@ void CSceneManager::NextSceneMove()
 		m_NextScene	= EScene::ResultCheck;
 		break;
 	case EScene::ResultCheck:
+		m_IsRetry = false;
 		if( m_IsGameOver == true ){
 			// ゲームオーバー.
 			m_NextScene = EScene::GameOver;
@@ -115,6 +117,7 @@ void CSceneManager::EndGameClose()
 void CSceneManager::RetryGame()
 {
 	m_IsLoadEnd = false;
+	m_IsRetry = true;
 	m_pScene = std::make_shared<CGame>(this);
 }
 
