@@ -218,6 +218,7 @@
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\ClearWidget\ClearWidget.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\ContinueWidget\ContinueWidget.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\GameOverWidget\GameOverWidget.cpp" />
+    <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\GameStartEventWidget\GameStartEventWidget.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\GameWidget\CharacterWidget\ChatacterWidget.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\GameWidget\GameWidgetManager\GameWidgetManager.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\GameWidget\CharacterWidget\LifeGauge\LifeGauge.cpp" />
@@ -354,6 +355,7 @@
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\ClearWidget\ClearWidget.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\ContinueWidget\ContinueWidget.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\GameOverWidget\GameOverWidget.h" />
+    <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\GameStartEventWidget\GameStartEventWidget.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\GameWidget\CharacterWidget\ChatacterWidget.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\GameWidget\GameWidgetManager\GameWidgetManager.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\GameWidget\CharacterWidget\LifeGauge\LifeGauge.h" />

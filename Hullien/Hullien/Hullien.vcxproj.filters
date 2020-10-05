@@ -137,6 +137,7 @@
     <ClCompile Include="SourceCode\GameObject\Actor\EventCharacter\EventGirl\EventGirl.cpp" />
     <ClCompile Include="SourceCode\GameObject\Actor\EventCharacter\EventPlayer\EventPlayer.cpp" />
     <ClCompile Include="SourceCode\GameObject\Actor\EventCharacter\EventCharacter.cpp" />
+    <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\GameStartEventWidget\GameStartEventWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\ImGui\imconfig.h" />
@@ -279,5 +280,6 @@
     <ClInclude Include="SourceCode\GameObject\Actor\EventCharacter\EventGirl\EventGirl.h" />
     <ClInclude Include="SourceCode\GameObject\Actor\EventCharacter\EventPlayer\EventPlayer.h" />
     <ClInclude Include="SourceCode\GameObject\Actor\EventCharacter\EventCharacter.h" />
+    <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\GameStartEventWidget\GameStartEventWidget.h" />
   </ItemGroup>
 </Project>

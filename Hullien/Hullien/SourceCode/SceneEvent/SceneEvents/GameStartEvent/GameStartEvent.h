@@ -5,15 +5,16 @@
 #include "..\..\..\GameObject\Actor\EventCharacter\EventCharacter.h"
 #include "..\..\..\Camera\EvevtCamera\EvevtCamera.h"
 
-class CGroundStage;		// 地面クラス.
-class CSpawnUFO;		// イベント用UFOクラス.
-class CEventPlayer;		// イベント用プレイヤークラス.
-class CEventGirl;		// イベント用女の子クラス.
-class CEventAlienA;		// イベント用宇宙人Aクラス.
-class CBarrier;			// バリアクラス.
-class CMotherShipUFO;	// マザーシップクラス.
-class CEventCamera;		// イベント用カメラクラス.
-class CEventManager;	// イベント管理クラス.
+class CGroundStage;				// 地面クラス.
+class CSpawnUFO;				// イベント用UFOクラス.
+class CEventPlayer;				// イベント用プレイヤークラス.
+class CEventGirl;				// イベント用女の子クラス.
+class CEventAlienA;				// イベント用宇宙人Aクラス.
+class CBarrier;					// バリアクラス.
+class CMotherShipUFO;			// マザーシップクラス.
+class CGameStartEventWidget;	// イベント用UIクラス.
+class CEventCamera;				// イベント用カメラクラス.
+class CEventManager;			// イベント管理クラス.
 
 /***********************************
 *	スタートイベントクラス.
@@ -30,7 +31,7 @@ class CGameStartEvent : public CEventBase
 	const D3DXVECTOR3 CAMERA_POSITION_CAUGHT_GIRL = D3DXVECTOR3(-20.0f, 5.0f, -10.0f);	// 女の子捕獲時のカメラ位置.
 	const D3DXVECTOR3 CAMERA_POSITION_ORDER_BARRIER = D3DXVECTOR3(-6.5f, 8.4f, -10.0f);	// バリア準備時のカメラ位置.
 	const D3DXVECTOR3 CAMERA_POSITION_PLAYER_UP		= D3DXVECTOR3(0.0f, 8.0f, 7.0f);	// プレイヤーのアップ時のカメラ位置.
-	const int AMPLITUDE_COUNT						= 50;								// カメラの揺れ用カウント.
+	const float AMPLITUDE_COUNT						= 50.0f;								// カメラの揺れ用カウント.
 	const float CAMERA_CORRECTION_PLAYERPOS_Y		= 3.0f;								// プレイヤーに対するカメラy座標補正値.
 	const float CAMERA_CORRECTION_UFOPOS_Y			= 5.0f;								// UFOに対するカメラy座標補正値.
 	const float CAMERA_CORRECTION_UFOPOS_Z			= 5.0f;								// UFOに対するカメラz座標補正値.
@@ -59,9 +60,9 @@ class CGameStartEvent : public CEventBase
 	// UFO関係.
 	const D3DXVECTOR3 UFO_INITPOSITION	= D3DXVECTOR3(0.0f, 10.0f, 120.0f);			// UFO初期位置.
 	const D3DXVECTOR3 UFO_POSITION		= D3DXVECTOR3(0.0f, 10.0f, -100.0f);			// UFO初期位置.
-	const int   UFO_STOP_COUNT			= 100;										// UFO停止のカウント.
+	const float UFO_STOP_COUNT			= 80.0f;										// UFO停止のカウント.
 	const float UFO_MOVE_SPEED			= 0.3f;										// UFOの移動速度.
-	const float UFO_MOVE_DECELERATION_Z	= 0.0046f;									// UFOの移動減速度.
+	const float UFO_STOP_DECELERATION_Y	= 0.001f;									// UFOの停止減速度.
 	const float UFO_STOP_SPEED			= 0.01f;									// UFO停止速度.
 	const float UFO_MOVEING_LIMIT_Y		= 11.5f;									// UFOの移動限界値y座標.
 	const float UFO_MOVEING_LIMIT_Z		= -30.0f;									// UFOの移動限界値z座標.
@@ -140,8 +141,6 @@ private:
 	bool AlienInit();
 	// マザーシップ初期化関数.
 	bool MotherShipUFOInit();
-	// スプライトの設定.
-	bool SpriteSetting();
 	// アクタの更新関数.
 	void ActorUpdate();
 	// カメラの更新関数.
@@ -177,21 +176,21 @@ private:
 	std::shared_ptr<CEventAlienA>			m_pAlienA;
 	std::shared_ptr<CBarrier>				m_pBarrier;
 	std::shared_ptr<CMotherShipUFO>			m_pMotherShipUFO;
+	std::unique_ptr<CGameStartEventWidget>	m_pWidget;
 	std::shared_ptr<CEventCamera>			m_pEventCamera;
 	std::shared_ptr<CEventManager>			m_pEventManager;
-	std::vector<std::shared_ptr<CSprite>>	m_pSprite;
 	D3DXVECTOR3								m_vUFOPosition;
 	EEventStep								m_EventStep;
 	int										m_NowStep;
 	float									m_Speed;
+	float									m_DecelerationY;	// y座標減速度.
 	float									m_DecelerationZ;	// z座標減速度.
 	float									m_Count;			// カウント.
-	bool									m_IsDisp;
 
-	CEventCharacter::SOptionalState			m_stPlayer;	//プレイヤーの情報.
-	CEventCharacter::SOptionalState			m_stGirl;	//女の子の情報.
-	CEventCharacter::SOptionalState			m_stAlien;	//宇宙人の情報.
-	CEventCamera::SCameraState				m_stCamera;	//カメラの情報.
+	CEventCharacter::SOptionalState			m_stPlayer;			//プレイヤーの情報.
+	CEventCharacter::SOptionalState			m_stGirl;			//女の子の情報.
+	CEventCharacter::SOptionalState			m_stAlien;			//宇宙人の情報.
+	CEventCamera::SCameraState				m_stCamera;			//カメラの情報.
 };
 
 #endif //#ifndef START_EVENT_H.
