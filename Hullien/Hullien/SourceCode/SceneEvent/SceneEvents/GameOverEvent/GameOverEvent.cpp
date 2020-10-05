@@ -8,6 +8,7 @@
 **/
 CGameOverEvent::CGameOverEvent()
 {
+	m_IsEventEnd = false;
 }
 
 CGameOverEvent::~CGameOverEvent()

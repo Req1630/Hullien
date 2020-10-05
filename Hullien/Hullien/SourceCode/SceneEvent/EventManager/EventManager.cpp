@@ -65,7 +65,7 @@ void CEventManager::NextEventMove()
 		m_IsGameOver	= false;
 		m_IsEventEnd	= false;
 		m_NowEvent		= m_NextEvent;
-		m_NextEvent		= EEvent::GameClear;
+		m_NextEvent		= EEvent::ResultCheck;
 		break;
 	case EEvent::ResultCheck:
 		if (m_IsGameOver == true)
@@ -88,29 +88,6 @@ void CEventManager::NextEventMove()
 		m_IsEventEnd = false;
 		m_NowEvent = m_NextEvent;
 		m_NextEvent = EEvent::GameStart;
-		break;
-	default:
-		break;
-	}
-}
-
-void CEventManager::EventRetry()
-{
-	m_IsLoadEnd = false;
-	switch (m_NowEvent)
-	{
-	case EEvent::GameStart:
-		m_pEventBase = std::make_shared<CGameStartEvent>();
-		m_IsGameOver = false;
-		m_IsEventEnd = false;
-		break;
-	case EEvent::GameClear:
-		m_pEventBase = std::make_shared<CGameClearEvent>();
-		m_IsEventEnd = false;
-		break;
-	case EEvent::GameOver:
-		m_pEventBase = std::make_shared<CGameOverEvent>();
-		m_IsEventEnd = false;
 		break;
 	default:
 		break;

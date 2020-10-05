@@ -35,13 +35,11 @@ public:
 	// 次のイベントに移動.
 	void NextEventMove();
 	// イベントの終了を取得.
-	bool GetIsEventEnd() const { return m_IsEventEnd; };
+	bool GetIsEventEnd() const { return m_IsEventEnd; }
 	// スキップの設定.
 	void OnSkip() { m_IsSkip = true; }
 	// ゲームオーバーの設定.
 	void OnGameOver() { m_IsGameOver = true; }
-	// もう一回最初から.
-	void EventRetry();
 
 private:
 	// モデルの描画.

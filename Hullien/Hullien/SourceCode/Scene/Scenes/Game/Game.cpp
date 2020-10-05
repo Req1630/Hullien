@@ -184,9 +184,7 @@ void CGame::UpdateGame()
 	m_WidgetManager->Update(m_GameObjManager.get());
 }
 
-//============================.
 // コンテニュー処理関数.
-//============================.
 void CGame::UpdateContinue()
 {
 	m_ContinueWidget->Update();
@@ -220,14 +218,9 @@ void CGame::UpdateContinue()
 // シーン切り替え関数.
 void CGame::ChangeScene()
 {
-	if (m_pEventManager->GetIsEventEnd() == false) return;
-
-	switch (m_NowScene)
+	if (m_NowScene == ESceneState::Game)
 	{
-	case ESceneState::GameStart:
-		m_NowScene = ESceneState::Game;
-		break;
-	case ESceneState::Game:
+		// ゲームオーバーの場合.
 		if (m_GameObjManager->IsGameOver() == true)
 		{
 			if (m_GameObjManager->IsGirlAbduct() == true)
@@ -242,11 +235,20 @@ void CGame::ChangeScene()
 			m_pEventManager->NextEventMove();
 		}
 
+		// ゲームクリアの場合.
 		if (m_WidgetManager->IsGameFinish() == true)
 		{
 			m_NowScene = ESceneState::Clear;
 			m_pEventManager->NextEventMove();
 		}
+	}
+
+	// イベントが終了していれば更新.
+	if (m_pEventManager->GetIsEventEnd() == false) return;
+	switch (m_NowScene)
+	{
+	case ESceneState::GameStart:
+		m_NowScene = ESceneState::Game;
 		break;
 	case ESceneState::GameOver_Girl:
 	case ESceneState::GameOver_Player:
