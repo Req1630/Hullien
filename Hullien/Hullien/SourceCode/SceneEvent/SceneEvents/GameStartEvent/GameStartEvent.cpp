@@ -68,6 +68,7 @@ bool CGameStartEvent::Load()
 	if (m_pWidget->Init() == false)			return false;	// UIの設定.
 
 	m_IsEventEnd = false;
+	m_IsSkip = false;
 	m_Speed = static_cast<float>(D3DX_PI) * 0.05f;
 
 	return true;
@@ -76,7 +77,9 @@ bool CGameStartEvent::Load()
 // 更新関数.
 void CGameStartEvent::Update()
 {
+#if 0
 	DebugOperation();
+#endif
 
 	// シーンの設定.
 	SceneSetting();
@@ -90,8 +93,10 @@ void CGameStartEvent::Update()
 	if (GetAsyncKeyState(VK_RETURN) & 0x0001
 		|| CXInput::B_Button() == CXInput::enPRESS_AND_HOLD)
 	{
-		m_EventStep = EEventStep::GameStart;
+		// 長押しされたら遷移するようにしたい.
+		Skip();
 	}
+
 }
 
 // 描画関数.
@@ -217,14 +222,17 @@ void CGameStartEvent::SceneSetting()
 	case EEventStep::InvocatingOrder_Barrier:	//バリア発動指示.
 		InvocatingOrderBarrier();
 		break;
-	case EEventStep::Player_Up:	//バリア発動.
+	case EEventStep::Player_Up:				//バリア発動.
 		PlayerUp();
 		break;
 	case EEventStep::Invocating_Barrier:	//バリア発動.
 		InvocatingBarrier();
 		break;
-	case EEventStep::Return_Girl:	// 女の子帰還.
+	case EEventStep::Return_Girl:			// 女の子帰還.
 		ReturnGirl();
+		break;
+	case EEventStep::Disp_Preserve_Girl:	// 女の子を守る指示の表示.
+		DispPreserveGirl();
 		break;
 	case EEventStep::GameStart:	//ゲームシーンへ.
 		GameStart();
@@ -232,6 +240,7 @@ void CGameStartEvent::SceneSetting()
 	default:
 		break;
 	}
+
 }
 
 // 次のシーンに進める.
@@ -239,6 +248,29 @@ void CGameStartEvent::NextStep()
 {
 	m_NowStep++;
 	m_EventStep = static_cast<EEventStep>(m_NowStep);
+}
+
+// スキップ.
+void CGameStartEvent::Skip()
+{
+	if (m_IsSkip == true) return;
+	// プレイヤー.
+	m_stPlayer.vPosition = { 0.0f,m_pPlayer->GetPosition().y,0.0f };
+	m_stPlayer.vRotation.y = 0.0f;
+	// 女の子.
+	m_stGirl.vPosition.z = PRESERVE_GIRL_DISP_POSITION;
+	// UFO.
+	m_pSpawnUFO->SetPosition(UFO_POSITION);
+	// カメラ.
+	m_stCamera.vLookPosition = m_stPlayer.vPosition;
+	m_stCamera.ViewingAngle = m_pEventCamera->ResetViewingAngle();
+	m_stCamera.vPosition = GIRL_POSITION;
+
+	m_NowStep = SKIP_SCENE;
+	NextStep();
+
+	m_IsSkip = true;
+
 }
 
 // 逃げるプレイヤーと女の子.
@@ -502,8 +534,6 @@ void CGameStartEvent::ReturnGirl()
 	m_stGirl.vPosition.z -= m_stGirl.MoveSpeed;
 
 	if (m_stGirl.vPosition.z >= CAMERASWITCHING_GIRLPOS_Z) return;
-	// UIの設定.
-	m_pWidget->SetWidgetState(CGameStartEventWidget::EWidgetState::Preserve_Girl);
 
 	// プレイヤーの回転値設定.
 	m_stPlayer.vRotation.y = m_pPlayer->RotationMoveRight(PLAYER_DEFAULT_ROTATION_Y, m_stPlayer.RotationalSpeed);
@@ -521,6 +551,16 @@ void CGameStartEvent::ReturnGirl()
 	if (m_stCamera.vPosition.z < GIRL_POSITION.z) { m_stCamera.vPosition.z += CAMERA_MOVE_SPEED_Z; }
 	else { m_stCamera.vPosition.z = GIRL_POSITION.z; }
 
+	if (m_stGirl.vPosition.z <= PRESERVE_GIRL_DISP_POSITION)  NextStep();
+}
+
+// 女の子を守る指示の表示.
+void CGameStartEvent::DispPreserveGirl()
+{
+	// UIの設定.
+	m_pWidget->SetWidgetState(CGameStartEventWidget::EWidgetState::Preserve_Girl);
+
+	m_stGirl.vPosition.z -= m_stGirl.MoveSpeed;
 	if (m_stGirl.vPosition.z <= 0.0f)  NextStep();
 }
 

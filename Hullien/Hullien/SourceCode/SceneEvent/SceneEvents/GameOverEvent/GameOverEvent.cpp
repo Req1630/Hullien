@@ -8,6 +8,7 @@
 **/
 CGameOverEvent::CGameOverEvent()
 {
+	m_IsSkip = false;
 	m_IsEventEnd = false;
 }
 
@@ -39,5 +40,15 @@ void CGameOverEvent::Render()
 }
 
 void CGameOverEvent::SpriteRender()
+{
+}
+
+// 次のシーンに進める.
+void CGameOverEvent::NextStep()
+{
+}
+
+// スキップ.
+void CGameOverEvent::Skip()
 {
 }

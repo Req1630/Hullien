@@ -19,14 +19,14 @@
 
 CGame::CGame(CSceneManager* pSceneManager)
 	: CSceneBase(pSceneManager)
-	, m_GameObjManager(nullptr)
-	, m_WidgetManager(nullptr)
-	, m_ContinueWidget(nullptr)
-	, m_pSkyDome(nullptr)
-	, m_pPeraRenderer(nullptr)
-	, m_NowScene(ESceneState::GameStart)
-	, m_NextSceneState(ENextSceneState::None)
-	, m_IsChangeScene(false)
+	, m_GameObjManager	(nullptr)
+	, m_WidgetManager	(nullptr)
+	, m_ContinueWidget	(nullptr)
+	, m_pSkyDome		(nullptr)
+	, m_pPeraRenderer	(nullptr)
+	, m_NowEventScene	(EEventSceneState::GameStart)
+	, m_NextSceneState	(ENextSceneState::None)
+	, m_IsChangeScene	(false)
 {
 	m_GameObjManager = std::make_unique<CGameActorManager>();
 	m_WidgetManager = std::make_unique<CGameWidgetManager>();
@@ -57,11 +57,11 @@ bool CGame::Load()
 
 	if (m_pSceneManager->GetRetry() == false)
 	{
-		m_NowScene = ESceneState::GameStart;
+		m_NowEventScene = EEventSceneState::GameStart;
 	}
 	else
 	{
-		m_NowScene = ESceneState::Game;
+		m_NowEventScene = EEventSceneState::Game;
 	}
 
 	CSoundManager::GetInstance()->m_fMaxBGMVolume = 0.5f;
@@ -76,24 +76,26 @@ bool CGame::Load()
 //============================.
 void CGame::Update()
 {
-	switch (m_NowScene)
+	switch (m_NowEventScene)
 	{
-	case ESceneState::GameStart:
-	case ESceneState::GameOver_Girl:
-	case ESceneState::GameOver_Player:
-	case ESceneState::Clear:
-		m_pEventManager->Update();
+	case EEventSceneState::Game:
+		UpdateGame();
 		break;
-	case ESceneState::Continue:
+	case EEventSceneState::Continue:
 		UpdateContinue();
 		break;
-	case ESceneState::Game:
-		UpdateGame();
+	case EEventSceneState::GameStart:
+	case EEventSceneState::GameOver_Girl:
+	case EEventSceneState::GameOver_Player:
+	case EEventSceneState::Clear:
+		m_pEventManager->Update();
 		break;
 	default:
 		break;
 	}
-	ChangeScene();
+
+	// イベントシーンの切り替え.
+	ChangeEventScene();
 
 
 #if 0	// 次のシーンへ移動.
@@ -104,6 +106,7 @@ void CGame::Update()
 		SetChangeScene(EChangeSceneState::Clear);
 	}
 #else 
+	// 次のシーンへ移動.
 	NextSceneMove();
 #endif	// #if 0.
 }
@@ -113,17 +116,22 @@ void CGame::Update()
 //============================.
 void CGame::Render()
 {
-	switch (m_NowScene)
+	switch (m_NowEventScene)
 	{
-	case ESceneState::Game:
-		// モデルの描画.
+	case EEventSceneState::Game:
 		ModelRender();
 		m_GameObjManager->SpriteRender();
 		m_WidgetManager->Render();
 		break;
-
-	case ESceneState::Continue:
+	case EEventSceneState::Continue:
+		m_pEventManager->Render();
 		m_ContinueWidget->Render();
+		break;
+	case EEventSceneState::GameStart:
+	case EEventSceneState::GameOver_Girl:
+	case EEventSceneState::GameOver_Player:
+	case EEventSceneState::Clear:
+		m_pEventManager->Render();
 		break;
 	default:
 		break;
@@ -216,20 +224,20 @@ void CGame::UpdateContinue()
 }
 
 // シーン切り替え関数.
-void CGame::ChangeScene()
+void CGame::ChangeEventScene()
 {
-	if (m_NowScene == ESceneState::Game)
+	if (m_NowEventScene == EEventSceneState::Game)
 	{
 		// ゲームオーバーの場合.
 		if (m_GameObjManager->IsGameOver() == true)
 		{
 			if (m_GameObjManager->IsGirlAbduct() == true)
 			{
-				m_NowScene = ESceneState::GameOver_Girl;
+				m_NowEventScene = EEventSceneState::GameOver_Girl;
 			}
 			else
 			{
-				m_NowScene = ESceneState::GameOver_Player;
+				m_NowEventScene = EEventSceneState::GameOver_Player;
 			}
 			m_pEventManager->OnGameOver();
 			m_pEventManager->NextEventMove();
@@ -238,23 +246,23 @@ void CGame::ChangeScene()
 		// ゲームクリアの場合.
 		if (m_WidgetManager->IsGameFinish() == true)
 		{
-			m_NowScene = ESceneState::Clear;
+			m_NowEventScene = EEventSceneState::Clear;
 			m_pEventManager->NextEventMove();
 		}
 	}
 
 	// イベントが終了していれば更新.
 	if (m_pEventManager->GetIsEventEnd() == false) return;
-	switch (m_NowScene)
+	switch (m_NowEventScene)
 	{
-	case ESceneState::GameStart:
-		m_NowScene = ESceneState::Game;
+	case EEventSceneState::GameStart:
+		m_NowEventScene = EEventSceneState::Game;
 		break;
-	case ESceneState::GameOver_Girl:
-	case ESceneState::GameOver_Player:
-		m_NowScene = ESceneState::Continue;
+	case EEventSceneState::GameOver_Girl:
+	case EEventSceneState::GameOver_Player:
+		m_NowEventScene = EEventSceneState::Continue;
 		break;
-	case ESceneState::Clear:
+	case EEventSceneState::Clear:
 		m_NextSceneState = ENextSceneState::Clear;
 		break;
 	default:

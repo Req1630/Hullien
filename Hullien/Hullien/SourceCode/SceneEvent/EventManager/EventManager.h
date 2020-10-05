@@ -32,6 +32,8 @@ public:
 
 	// 更新関数.
 	void Update();
+	// 描画関数.
+	void Render();
 	// 次のイベントに移動.
 	void NextEventMove();
 	// イベントの終了を取得.

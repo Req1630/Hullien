@@ -46,12 +46,15 @@ void CEventManager::Update()
 		// 読み込みが終了したら.
 		m_IsEventEnd = m_pEventBase->GetIsEventEnd();
 		m_pEventBase->Update();		//イベントの更新.
-		// イベントが終了していなければ描画する.
-		if (m_IsEventEnd == false)
-		{
-			ModelRender();	// イベントの描画.
-		}
 	}
+}
+
+// 描画関数.
+void CEventManager::Render()
+{
+	if (m_IsLoadEnd == false) return;
+	ModelRender();	
+	m_pEventBase->SpriteRender();
 }
 
 // 次のイベントに移動.
@@ -122,7 +125,5 @@ void CEventManager::ModelRender()
 
 	CDirectX11::SetBackBuffer();
 	m_pPeraRenderer->Render(CDirectX11::GetGBuffer());
-
-	m_pEventBase->SpriteRender();
 
 }

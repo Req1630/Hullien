@@ -29,7 +29,14 @@ public:
 	bool GetIsEventEnd() const { return m_IsEventEnd; };
 
 protected:
+	// 次のシーンに進める.
+	virtual void NextStep() = 0;
+	// スキップ.
+	virtual void Skip() = 0;
+
+protected:
 	bool	m_IsEventEnd;	// イベントが終了したか.
+	bool	m_IsSkip;		// スキップしたか.
 
 private:
 };

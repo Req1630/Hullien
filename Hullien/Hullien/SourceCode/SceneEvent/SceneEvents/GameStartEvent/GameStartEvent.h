@@ -23,6 +23,7 @@ class CGameStartEvent : public CEventBase
 {
 	const float TWO			= 2.0f;	// 二.
 	const int   WAIT_COUNT	= 200;	// 待機時間.
+	const int	SKIP_SCENE  = static_cast<int>(EEventStep::Disp_Preserve_Girl) - 1;	// スキップするシーン.
 
 	// カメラ関係.
 	const D3DXVECTOR3 CAMERA_INITPOSITION = D3DXVECTOR3(23.0f, 7.5f, 20.0f);		// カメラ初期位置.
@@ -79,6 +80,7 @@ class CGameStartEvent : public CEventBase
 	const float GIRL_INITPOSITION_Z = 64.5f;										// 女の子初期位置.
 	const float GIRL_CONSTANT_POSITION_Z = 4.5f;									// 女の子の定位置z座標.
 	const float CAMERASWITCHING_GIRLPOS_Z = 20.0f;									// カメラ切り替え用の女の子のz座標,
+	const float PRESERVE_GIRL_DISP_POSITION = 15.0f;								// 女の子を守れ指示の表示位置.
 
 	// 宇宙人関係.
 	const float ALIEN_INITROTATION_Y = static_cast<float>(D3DXToRadian(180));		// 宇宙人のy座標回転値.
@@ -109,6 +111,7 @@ private:
 		Player_Up,					// プレイヤーのアップ.
 		Invocating_Barrier,			// バリア発動.
 		Return_Girl,				// 女の子帰還.
+		Disp_Preserve_Girl,			// 女の子を守る指示の表示.
 		GameStart,					// ゲーム開始.
 
 		Max,
@@ -148,7 +151,9 @@ private:
 	// シーンの設定.
 	void SceneSetting();
 	// 次のシーンに進める.
-	void NextStep();
+	virtual void NextStep() override;
+	// スキップ.
+	virtual void Skip() override;
 
 	// 以下イベントのステップ.
 	void EscapePlayerAndGirl();
@@ -162,6 +167,7 @@ private:
 	void PlayerUp();
 	void InvocatingBarrier();
 	void ReturnGirl();
+	void DispPreserveGirl();
 	void GameStart();
 
 	// 以下デバッグ用.

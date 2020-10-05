@@ -17,7 +17,7 @@ class CGame : public CSceneBase
 {
 private:
 	// シーンの状態.
-	enum class enSceneState
+	enum class enEventSceneState
 	{
 		None,
 
@@ -29,7 +29,7 @@ private:
 		Clear,				// クリア.
 
 		Max,
-	}typedef ESceneState;
+	}typedef EEventSceneState;
 
 	// シーン切り替え状態.
 	enum class enNextSceneState
@@ -62,7 +62,7 @@ private:
 	// コンテニュー処理関数.
 	void UpdateContinue();
 	// シーン切り替え関数.
-	void ChangeScene();
+	void ChangeEventScene();
 	// 次のシーンに移行.
 	void NextSceneMove();
 
@@ -73,7 +73,7 @@ private:
 	std::unique_ptr<CSkyDome>				m_pSkyDome;			// 背景.
 	std::unique_ptr<CEventManager>			m_pEventManager;	// イベント管理クラス.
 	std::unique_ptr<CPeraRenderer>			m_pPeraRenderer;
-	ESceneState								m_NowScene;			// 現在のシーン.
+	EEventSceneState						m_NowEventScene;	// 現在のイベントシーン.
 	ENextSceneState							m_NextSceneState;	// 次のシーン状態.
 	bool									m_IsChangeScene;	// シーン切り替えが可能か.
 

@@ -9,6 +9,7 @@
 CGameClearEvent::CGameClearEvent()
 {
 	m_IsEventEnd = false;
+	m_IsSkip = false;
 }
 
 CGameClearEvent::~CGameClearEvent()
@@ -39,5 +40,15 @@ void CGameClearEvent::Render()
 }
 
 void CGameClearEvent::SpriteRender()
+{
+}
+
+// 次のシーンに進める.
+void CGameClearEvent::NextStep()
+{
+}
+
+// スキップ.
+void CGameClearEvent::Skip()
 {
 }

@@ -22,6 +22,11 @@ public:
 	virtual void SpriteRender() override;
 
 private:
+	// 次のシーンに進める.
+	virtual void NextStep() override;
+	// スキップ.
+	virtual void Skip() override;
+
 };
 
 
