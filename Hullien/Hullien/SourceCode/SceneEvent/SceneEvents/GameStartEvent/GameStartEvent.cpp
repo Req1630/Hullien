@@ -7,7 +7,7 @@
 #include "..\..\..\GameObject\Actor\EventCharacter\EventAlien\EventAlien_A\EventAlien_A.h"
 #include "..\..\..\GameObject\Actor\Barrier\Barrier.h"
 #include "..\..\..\GameObject\MotherShipUFO\MotherShipUFO.h"
-#include "..\..\..\GameObject\Widget\SceneWidget\GameStartEventWidget\GameStartEventWidget.h"
+#include "..\..\..\GameObject\Widget\EventWidget\GameStartEventWidget\GameStartEventWidget.h"
 #include "..\..\..\GameObject\SkyDome\SkyDome.h"
 #include "..\..\..\Camera\CameraManager\CameraManager.h"
 #include "..\..\EventManager\EventManager.h"
@@ -270,6 +270,8 @@ void CGameStartEvent::Skip()
 	NextStep();
 
 	m_IsSkip = true;
+	// UI.
+	m_pWidget->SetSkip(m_IsSkip);
 
 }
 

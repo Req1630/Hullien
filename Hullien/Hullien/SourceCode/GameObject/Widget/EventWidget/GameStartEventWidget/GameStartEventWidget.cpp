@@ -22,6 +22,7 @@ CGameStartEventWidget::~CGameStartEventWidget()
 // ‰Šú‰»ŠÖ”.
 bool CGameStartEventWidget::Init()
 {
+	if (CEventWidget::Init() == false) return false;
 	if( SpriteSetting() == false ) return false;
 	return true;
 }
@@ -29,6 +30,8 @@ bool CGameStartEventWidget::Init()
 // XVŠÖ”.
 void CGameStartEventWidget::Update()
 {
+	CEventWidget::Update();
+
 	switch (m_WidgetState)
 	{
 	case CGameStartEventWidget::EWidgetState::None:
@@ -84,6 +87,8 @@ void CGameStartEventWidget::Render()
 		m_pSprite[sprite]->SetDeprh( true );
 		m_pSprite[sprite]->SetBlend( false );
 	}
+
+	CEventWidget::Render();
 }
 
 // UI‚Ìó‘Ôİ’èŠÖ”.

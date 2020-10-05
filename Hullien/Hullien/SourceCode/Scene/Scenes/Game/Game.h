@@ -6,9 +6,9 @@
 class CGameActorManager;	// ゲームオブジェクト管理クラス.
 class CGameWidgetManager;	// UI管理クラス.
 class CContinueWidget;		// コンテニューUIクラス.
-class CSkyDome;					// 背景クラス.
-class CEventManager;			//イベント管理クラス.
-class CPeraRenderer;	// G-Buufer描画用.
+class CSkyDome;				// 背景クラス.
+class CEventManager;		// イベント管理クラス.
+class CPeraRenderer;		// G-Buufer描画用.
 
 /**********************************
 *	ゲームシーンクラス.

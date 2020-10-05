@@ -7,8 +7,6 @@
 #include "..\..\..\GameObject\Widget\SceneWidget\ContinueWidget\ContinueWidget.h"
 #include "..\..\..\GameObject\SkyDome\SkyDome.h"
 #include "..\..\..\SceneEvent\EventManager\EventManager.h"
-#include "..\..\..\Common\Sprite\CSprite.h"
-#include "..\..\..\Resource\SpriteResource\SpriteResource.h"
 #include "..\..\..\GameObject\Widget\Fade\Fade.h"
 #include "..\..\..\Utility\XInput\XInput.h"
 #include "..\..\..\XAudio2\SoundManager.h"

@@ -15,7 +15,7 @@ protected:
 	//	•`‰æó‘Ô.
 	enum class enDrawingState
 	{
-		NowDrawing,	// •`‰æ’†.
+		NowDrawing,		// •`‰æ’†.
 		Finish,			// •`‰æI—¹.
 	} typedef EDrawingState;
 

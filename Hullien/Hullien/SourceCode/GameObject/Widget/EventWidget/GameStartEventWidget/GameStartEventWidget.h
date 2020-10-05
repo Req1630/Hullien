@@ -1,18 +1,18 @@
 #ifndef GAMESTART_EVENT_WIDGET_H
 #define GAMESTART_EVENT_WIDGET_H
 
-#include "..\SceneWidget.h"
+#include "..\EventWidget.h"
 #include <vector>
 
 /*****************************************
 *	ゲームスタートシーンのUIクラス.
 **/
-class CGameStartEventWidget : public CSceneWidget
+class CGameStartEventWidget : public CEventWidget
 {
 	const int	PUSH_YBUTTON	= 0;		// Yボタン指示の配列番号.
 	const int	PRESERVE_GIRL	= 1;		// 女の子を守る指示の配列番号.
-	const float ALPHA_SPEED		= 0.05f;	//透過速度.
-	const float WAITCOUNT_MAX	= 120.0f;	//待機カウント最大.
+	const float ALPHA_SPEED		= 0.05f;	// 透過速度.
+	const float WAITCOUNT_MAX	= 100.0f;	// 待機カウント最大.
 
 public:
 	// UIの情報.
@@ -49,8 +49,6 @@ private:
 	EWidgetState							m_WidgetState;		// UIの情報.
 	float									m_Alpha;			// 透過値.
 	float									m_WaitCount;		// 待機カウント.
-
-
 };
 
 #endif	//#ifndef GAMESTART_EVENT_WIDGET_H.
