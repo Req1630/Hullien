@@ -26,6 +26,7 @@ CGameClearEvent::CGameClearEvent()
 	, m_vUFOPosition	( D3DXVECTOR3(0.0f,0.0f,0.0f))
 	, m_vUFOScale		( D3DXVECTOR3(1.0f,1.0f,1.0f))
 	, m_WaitCount		( 0 )
+	, m_SwingCameraCount( 50 )
 	, m_Gravity			( 0.0f )
 	, m_Speed			( 0.0f ) 
 	, m_NowScene		( 0 )
@@ -277,6 +278,7 @@ void CGameClearEvent::SceneSetting()
 		if(m_stCamera.ViewingAngle <= m_pEventCamera->ResetViewingAngle()) 
 		{
 			m_stCamera.ViewingAngle += 0.01f;
+			if (m_stCamera.vPosition.y >= 1.3f) m_stCamera.vPosition.y -= 0.3f;
 		}
 		else
 		{
@@ -285,8 +287,8 @@ void CGameClearEvent::SceneSetting()
 		if (m_stAlien.vPosition.y > 6.0f) {
 			m_stAlien.vPosition.x += sinf(m_stAlien.vRotation.y + static_cast<float>(D3DX_PI)) * 0.2f;
 			m_stAlien.vPosition.z += cosf(m_stAlien.vRotation.y + static_cast<float>(D3DX_PI)) * 0.2f;
-			m_stAlien.vPosition.y += 0.4f + m_Gravity;
-			m_Gravity -= 0.005f;
+			m_stAlien.vPosition.y += 0.6f + m_Gravity;
+			m_Gravity -= 0.0065f;
 		}
 		break;
 
@@ -296,15 +298,10 @@ void CGameClearEvent::SceneSetting()
 			{
 				m_stCamera.vLookPosition.y -= 1.0f;
 			}
-			else
-			{
-				// ÉJÉÅÉâóhÇÁÇ∑.
-				m_stCamera.vLookPosition.y -= 1.0f;
-			}
 		}
 
 
-		if (m_stAlien.vPosition.y > 6.0f) {
+		if (m_stAlien.vPosition.y > 2.0f) {
 			m_stAlien.vPosition.x += sinf(m_stAlien.vRotation.y + static_cast<float>(D3DX_PI)) * 0.2f;
 			m_stAlien.vPosition.z += cosf(m_stAlien.vRotation.y + static_cast<float>(D3DX_PI)) * 0.2f;
 			m_stAlien.vPosition.y += 0.4f + m_Gravity;
@@ -312,11 +309,13 @@ void CGameClearEvent::SceneSetting()
 		}
 		else
 		{
-			m_NowScene++;
+			if (m_SwingCameraCount != 0) m_SwingCameraCount--;
+			// ÉJÉÅÉâóhÇÁÇ∑.
+			m_stCamera.vLookPosition.y = m_stCamera.vLookPosition.y + static_cast<float>(sin(D3DX_PI * 2.0f / 10.0f * m_SwingCameraCount) * (m_SwingCameraCount * 0.1f));
 		}
 
 		if (m_stAlien.vPosition.y < m_vAlienOldPosition.y) {
-			if (m_stAlien.vRotation.x <= static_cast<float>(D3DXToRadian(180))) m_stAlien.vRotation.x += static_cast<float>(D3DXToRadian(20));
+			if (m_stAlien.vRotation.x <= static_cast<float>(D3DXToRadian(160))) m_stAlien.vRotation.x += static_cast<float>(D3DXToRadian(20));
 		}
 		m_vAlienOldPosition = m_stAlien.vPosition;
 

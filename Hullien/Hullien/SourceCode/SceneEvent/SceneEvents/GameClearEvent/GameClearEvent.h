@@ -75,6 +75,7 @@ private:
 	D3DXVECTOR3								m_vUFOScale;		// UFOの大きさ.
 	D3DXVECTOR3								m_vAlienOldPosition;// 宇宙人の前座標.
 	int										m_WaitCount;		// 待機カウント.
+	int										m_SwingCameraCount;	// カメラを揺らすカウント.
 	float									m_Gravity;			// 重力.
 
 	float									m_Speed;
