@@ -101,6 +101,7 @@ void CEventAlien::Escape()
 // ‚«”ò‚Ô.
 void CEventAlien::BlowAway()
 {
+
 }
 
 // —‚Ìq‚Æ‚Ì“–‚½‚è”»’è.

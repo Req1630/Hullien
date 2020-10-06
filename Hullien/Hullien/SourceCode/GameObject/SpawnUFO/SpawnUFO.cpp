@@ -6,6 +6,8 @@
 #include "..\Actor\Character\Alien\Alien_C\Alien_C.h"
 #include "..\Actor\Character\Alien\Alien_D\Alien_D.h"
 
+#include "..\..\Collider\CollsionManager\CollsionManager.h"
+
 CSpawnUFO::CSpawnUFO()
 	: m_pStaticMesh				( nullptr )
 	, m_SpawnParameter			()
@@ -20,6 +22,7 @@ CSpawnUFO::CSpawnUFO()
 	, m_AlienDWaveIntervalCount	( 0 )
 	, m_IsDisp					( true ) 
 	, m_RandomSeed				()
+	, m_pCollManager			( nullptr )
 {
 	// ランダムシードの初期化.
 	std::random_device rd;
@@ -34,7 +37,23 @@ CSpawnUFO::~CSpawnUFO()
 bool CSpawnUFO::Init()
 {
 	if( GetModel() == false ) return false;
+	if (CollisionSetting() == false) return false;
 	return true;
+}
+
+// 当たり判定(イベントで使用).
+D3DXVECTOR3 CSpawnUFO::Collision(CActor * pActor)
+{
+	// 対象オブジェクトじゃなければ終了.
+	if ((pActor->GetObjectTag() != EObjectTag::Player) &&
+		(pActor->GetObjectTag() != EObjectTag::Girl)) return pActor->GetPosition();
+
+	if (m_pCollManager->IsShereToShere(pActor->GetCollManager()) == false) return pActor->GetPosition();
+
+	D3DXVECTOR3 pos = pActor->GetPosition();
+	pos.y += ADD_POS_POWER;	// 座標を上にあげる.
+	
+	return pos;
 }
 
 // 更新関数.
@@ -59,6 +78,7 @@ void CSpawnUFO::Render()
 	if( m_IsDisp == false ) return;
 
 	m_pStaticMesh->SetPosition( m_vPosition );
+	m_pStaticMesh->SetScale( m_vSclae);
 	m_pStaticMesh->Render();
 }
 
@@ -204,5 +224,22 @@ bool CSpawnUFO::GetModel()
 	if( m_pStaticMesh != nullptr ) return false;
 	CMeshResorce::GetStatic( m_pStaticMesh, MODEL_NAME );
 	if( m_pStaticMesh == nullptr ) return false;
+	return true;
+}
+
+// 当たり判定の設定.
+bool CSpawnUFO::CollisionSetting()
+{
+	if (m_pCollManager == nullptr) {
+		m_pCollManager = std::make_shared<CCollisionManager>();
+	}
+	if (FAILED(m_pCollManager->InitSphere(
+		&m_vPosition,
+		&m_vRotation,
+		&m_vSclae.x,
+		{ 0.0f, 0.0f, 0.0f },
+		COLLISION_RADIUS))) {
+		return false;
+	}
 	return true;
 }

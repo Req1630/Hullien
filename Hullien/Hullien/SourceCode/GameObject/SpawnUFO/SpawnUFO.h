@@ -10,10 +10,16 @@
 #include <vector>
 #include <random>
 
+class CActor;
+class CCollisionManager;	// 当たり判定クラス.
+
 class CSpawnUFO : public CGameObject
 {
 	const char* MODEL_NAME = "ufo_mini";	// モデル名.
 	const float POS_HEIGHT = 10.0f;			// UFOの高さ.
+	const float COLLISION_RADIUS = 5.0f;
+	const float ADD_POS_POWER = 0.1f;
+
 public:
 	CSpawnUFO();
 	virtual ~CSpawnUFO();
@@ -34,6 +40,11 @@ public:
 	// 描画フラグ設定関数.
 	void SetDisp(const bool& disp) { m_IsDisp = disp; }
 
+	// スケール値の設定.
+	void SetScale(const D3DXVECTOR3& scale) { m_vSclae = scale; }
+	// 当たり判定(イベントで使用).
+	D3DXVECTOR3 Collision(CActor* pActor);
+
 private:
 	// 更新関数.外部で使用しないので隠蔽.
 	virtual void Update() override;
@@ -51,6 +62,8 @@ private:
 
 	// モデルの取得.
 	bool GetModel();
+	// 当たり判定の設定.
+	bool CollisionSetting();
 
 private:
 	std::shared_ptr<CDX9StaticMesh>	m_pStaticMesh;	// メッシュ.
@@ -69,6 +82,9 @@ private:
 	bool m_IsDisp;		//描画フラグ.
 
 	std::mt19937 m_RandomSeed;	// ランダムシード.
+
+	std::shared_ptr<CCollisionManager>	m_pCollManager;	// 当たり判定クラス.
+
 };
 
 #endif	// #ifndef SPAWN_UFO_H.

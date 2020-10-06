@@ -55,12 +55,10 @@ public:
 private:
 	// モデルの描画.
 	void ModelRender();
-	// フェード初期化関数.
-	bool InitFade();
 	// ゲーム処理関数.
-	void UpdateGame();
+	void GameUpdate();
 	// コンテニュー処理関数.
-	void UpdateContinue();
+	void ContinueUpdate();
 	// シーン切り替え関数.
 	void ChangeEventScene();
 	// 次のシーンに移行.

@@ -18,6 +18,7 @@ CEventPlayer::CEventPlayer()
 	, m_HasUsableSP(false)
 	, m_IsAttackSE(false)
 {
+	m_ObjectTag = EObjectTag::Player;
 	m_NowMoveState = EMoveState::Rotation;
 }
 
@@ -29,6 +30,7 @@ CEventPlayer::~CEventPlayer()
 bool CEventPlayer::Init()
 {
 	if (GetModel(MODEL_TEMP_NAME) == false) return false;
+	if (ColliderSetting() == false) return false;
 
 	return true;
 }

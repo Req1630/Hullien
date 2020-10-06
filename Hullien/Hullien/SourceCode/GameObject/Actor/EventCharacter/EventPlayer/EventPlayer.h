@@ -72,6 +72,7 @@ private:
 	// エフェクトの設定.
 	bool EffectSetting();
 
+
 private:
 	std::shared_ptr<CCollisionManager>	m_pAttackCollManager;	// 攻撃用の当たり判定.
 	EAnimNo										m_NowAnimNo;			// 今のアニメーション番号.

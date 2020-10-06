@@ -11,14 +11,14 @@ enum class enEventNo
 {
 	None,
 
-	GameStart,			//ゲームスタート.
-	GameClear,			//ゲームクリア.
-	GameOver,			//ゲームオーバー.
+	GameStart,			// ゲームスタート.
+	GameClear,			// ゲームクリア.
+	GameOver,			// ゲームオーバー.
 
 	Max,
 
 	ResultCheck,		// ゲームクリアかゲームオーバーの確認.
-	Start = GameStart,	//初めのシーン.
+	Start = GameClear,	// 初めのシーン.
 }typedef EEvent;
 
 /************************************

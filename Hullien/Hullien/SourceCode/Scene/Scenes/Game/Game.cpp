@@ -77,10 +77,10 @@ void CGame::Update()
 	switch (m_NowEventScene)
 	{
 	case EEventSceneState::Game:
-		UpdateGame();
+		GameUpdate();
 		break;
 	case EEventSceneState::Continue:
-		UpdateContinue();
+		ContinueUpdate();
 		break;
 	case EEventSceneState::GameStart:
 	case EEventSceneState::GameOver_Girl:
@@ -170,7 +170,7 @@ void CGame::ModelRender()
 }
 
 // ゲーム処理関数.
-void CGame::UpdateGame()
+void CGame::GameUpdate()
 {
 	if (m_GameObjManager->IsDanger() == false)
 	{
@@ -191,7 +191,7 @@ void CGame::UpdateGame()
 }
 
 // コンテニュー処理関数.
-void CGame::UpdateContinue()
+void CGame::ContinueUpdate()
 {
 	m_ContinueWidget->Update();
 
