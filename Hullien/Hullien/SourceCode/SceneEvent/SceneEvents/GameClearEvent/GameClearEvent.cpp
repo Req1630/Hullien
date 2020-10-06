@@ -302,7 +302,7 @@ void CGameClearEvent::SceneSetting()
 
 
 		if (m_stAlien.vPosition.y > 2.0f) {
-			m_stAlien.vPosition.x += sinf(m_stAlien.vRotation.y + static_cast<float>(D3DX_PI)) * 0.2f;
+			m_stAlien.vPosition.x += sinf(m_stAlien.vRotation.y + static_cast<float>(D3DX_PI)) * 0.19f;
 			m_stAlien.vPosition.z += cosf(m_stAlien.vRotation.y + static_cast<float>(D3DX_PI)) * 0.2f;
 			m_stAlien.vPosition.y += 0.4f + m_Gravity;
 			m_Gravity -= 0.005f;
