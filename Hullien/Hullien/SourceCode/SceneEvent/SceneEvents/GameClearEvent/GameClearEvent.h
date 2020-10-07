@@ -14,9 +14,9 @@ class CEventCamera;				// イベント用カメラクラス.
 class CEventManager;			// イベント管理クラス.
 class CEventWidget;				// イベントのUIクラス.
 
-								/************************************
-								*	クリアイベントクラス.
-								**/
+/************************************
+*	クリアイベントクラス.
+**/
 class CGameClearEvent : public CEventBase
 {
 	const D3DXVECTOR3 SCALE_DEFAULT				= D3DXVECTOR3(1.0f, 1.0f, 1.0f);		//標準拡大値.
