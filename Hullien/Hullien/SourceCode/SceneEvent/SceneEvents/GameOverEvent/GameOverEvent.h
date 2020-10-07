@@ -3,6 +3,13 @@
 
 #include "..\..\EventBase\EventBase.h"
 
+class CGroundStage;				// 地面クラス.
+class CSpawnUFO;				// イベント用UFOクラス.
+class CEventGirl;				// イベント用女の子クラス.
+class CEventCamera;				// イベント用カメラクラス.
+class CEventManager;			// イベント管理クラス.
+class CEventWidget;				// イベントのUIクラス.
+
 /************************************
 *	ゲームオーバーイベントクラス.
 **/
@@ -26,6 +33,18 @@ private:
 	virtual void NextStep() override;
 	// スキップ.
 	virtual void Skip() override;
+
+private:
+	std::shared_ptr<CGroundStage>			m_pGroundStage;
+	std::shared_ptr<CSpawnUFO>				m_pSpawnUFO;
+	std::shared_ptr<CEventGirl>				m_pGirl;
+	std::shared_ptr<CEventCamera>			m_pEventCamera;
+	std::shared_ptr<CEventManager>			m_pEventManager;
+	std::shared_ptr<CEventWidget>			m_pEventWidget;
+	CEventCharacter::SOptionalState			m_stGirl;			//女の子の情報.
+	CEventCamera::SCameraState				m_stCamera;			//カメラの情報.
+	D3DXVECTOR3								m_vUFOPosition;		// UFOの位置.
+	D3DXVECTOR3								m_vUFOScale;		// UFOの大きさ.
 
 };
 
