@@ -26,13 +26,13 @@ class CGameStartEvent : public CEventBase
 	const int	SKIP_SCENE  = static_cast<int>(EEventStep::Disp_Preserve_Girl) - 1;	// スキップするシーン.
 
 	// カメラ関係.
-	const D3DXVECTOR3 CAMERA_INITPOSITION = D3DXVECTOR3(23.0f, 7.5f, 20.0f);		// カメラ初期位置.
-	const D3DXVECTOR3 CAMERA_POSITION_MOVEUFO = D3DXVECTOR3(3.5f, 7.0f, 10.5f);		// MoveUFOの時のカメラ位置.
-	const D3DXVECTOR3 CAMERA_POSITION_APP_ALIEN = D3DXVECTOR3(0.0f, 8.5f, -15.0f);	// 宇宙人登場時のカメラ位置.
+	const D3DXVECTOR3 CAMERA_INITPOSITION = D3DXVECTOR3(23.0f, 7.5f, 20.0f);			// カメラ初期位置.
+	const D3DXVECTOR3 CAMERA_POSITION_MOVEUFO = D3DXVECTOR3(3.5f, 7.0f, 10.5f);			// MoveUFOの時のカメラ位置.
+	const D3DXVECTOR3 CAMERA_POSITION_APP_ALIEN = D3DXVECTOR3(0.0f, 8.5f, -15.0f);		// 宇宙人登場時のカメラ位置.
 	const D3DXVECTOR3 CAMERA_POSITION_CAUGHT_GIRL = D3DXVECTOR3(-20.0f, 5.0f, -10.0f);	// 女の子捕獲時のカメラ位置.
 	const D3DXVECTOR3 CAMERA_POSITION_ORDER_BARRIER = D3DXVECTOR3(-6.5f, 8.4f, -10.0f);	// バリア準備時のカメラ位置.
 	const D3DXVECTOR3 CAMERA_POSITION_PLAYER_UP		= D3DXVECTOR3(0.0f, 8.0f, 7.0f);	// プレイヤーのアップ時のカメラ位置.
-	const float AMPLITUDE_COUNT						= 50.0f;								// カメラの揺れ用カウント.
+	const float AMPLITUDE_COUNT						= 50.0f;							// カメラの揺れ用カウント.
 	const float CAMERA_CORRECTION_PLAYERPOS_Y		= 3.0f;								// プレイヤーに対するカメラy座標補正値.
 	const float CAMERA_CORRECTION_UFOPOS_Y			= 5.0f;								// UFOに対するカメラy座標補正値.
 	const float CAMERA_CORRECTION_UFOPOS_Z			= 5.0f;								// UFOに対するカメラz座標補正値.

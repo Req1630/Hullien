@@ -32,7 +32,6 @@ CGame::CGame(CSceneManager* pSceneManager)
 	m_pSkyDome = std::make_unique<CSkyDome>();
 	m_pEventManager = std::make_unique<CEventManager>();
 	m_pPeraRenderer = std::make_unique<CPeraRenderer>();
-	CFade::SetFadeOut();
 }
 
 CGame::~CGame()

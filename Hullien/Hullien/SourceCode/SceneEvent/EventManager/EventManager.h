@@ -18,7 +18,7 @@ enum class enEventNo
 	Max,
 
 	ResultCheck,		// ゲームクリアかゲームオーバーの確認.
-	Start = GameClear,	// 初めのシーン.
+	Start = GameStart,	// 初めのシーン.
 }typedef EEvent;
 
 /************************************

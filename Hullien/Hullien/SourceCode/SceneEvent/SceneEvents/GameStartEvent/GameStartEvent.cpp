@@ -12,6 +12,7 @@
 #include "..\..\..\Camera\CameraManager\CameraManager.h"
 #include "..\..\EventManager\EventManager.h"
 
+#include "..\..\..\GameObject\Widget\Fade\Fade.h"
 #include "..\..\..\Common\DebugText\DebugText.h"
 
 /***********************************
@@ -40,6 +41,8 @@ CGameStartEvent::CGameStartEvent()
 	, m_stAlien				()
 	, m_stCamera			()
 {
+	CFade::SetFadeOut();
+
 	m_pGroundStage		= std::make_shared<CGroundStage>();
 	m_pSpawnUFO			= std::make_shared<CSpawnUFO>();
 	m_pPlayer			= std::make_shared<CEventPlayer>();
@@ -70,7 +73,6 @@ bool CGameStartEvent::Load()
 	m_IsEventEnd = false;
 	m_IsSkip = false;
 	m_Speed = static_cast<float>(D3DX_PI) * 0.05f;
-
 	return true;
 }
 
@@ -96,7 +98,6 @@ void CGameStartEvent::Update()
 		// 長押しされたら遷移するようにしたい.
 		Skip();
 	}
-
 }
 
 // 描画関数.
@@ -253,12 +254,16 @@ void CGameStartEvent::NextStep()
 // スキップ.
 void CGameStartEvent::Skip()
 {
+	if (m_EventStep == EEventStep::Disp_Preserve_Girl) return;
+	if (m_EventStep == EEventStep::GameStart) return;
 	if (m_IsSkip == true) return;
 	// プレイヤー.
 	m_stPlayer.vPosition = { 0.0f,m_pPlayer->GetPosition().y,0.0f };
 	m_stPlayer.vRotation.y = 0.0f;
 	// 女の子.
 	m_stGirl.vPosition.z = PRESERVE_GIRL_DISP_POSITION;
+	// 宇宙人.
+	m_stAlien.IsDisp = false;
 	// UFO.
 	m_pSpawnUFO->SetPosition(UFO_POSITION);
 	// カメラ.

@@ -21,6 +21,9 @@ public:
 	// スキップしたか設定関数.
 	void SetSkip(const bool& skip) { m_IsSkip = skip; }
 
+private:
+	// スプライト設定関数.
+	virtual bool SpriteSetting() { return true; }
 
 private:
 	std::shared_ptr<CSprite> m_pSprite;	// スプライトクラス.
