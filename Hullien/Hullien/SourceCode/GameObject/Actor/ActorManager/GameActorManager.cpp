@@ -135,7 +135,7 @@ void CGameActorManager::Render()
 // スプライトの描画.
 void CGameActorManager::SpriteRender()
 {
-	m_pGirl->SpriteRender();		//女の子のスプライト描画.
+	m_pGirl->SpriteRender();	//女の子のスプライト描画.
 	m_pPlayer->SpriteRender();	//プレイヤーのスプライト描画.
 }
 

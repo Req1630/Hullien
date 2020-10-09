@@ -9,6 +9,7 @@
 #include "..\..\..\GameObject\Widget\EventWidget\EventWidget.h"
 #include "..\..\..\GameObject\SkyDome\SkyDome.h"
 
+#include "..\..\..\XAudio2\SoundManager.h"
 #include "..\..\..\GameObject\Widget\Fade\Fade.h"
 #include "..\..\..\Common\DebugText\DebugText.h"
 
@@ -47,6 +48,8 @@ CGameOverEvent::~CGameOverEvent()
 bool CGameOverEvent::Load()
 {
 	CFade::SetFadeOut();
+	CSoundManager::ThreadPlayBGM("GameOverEvent");
+	CSoundManager::FadeInBGM("GameOverEvent");
 
 	if( m_pGroundStage->Init() == false ) return false; // ステージの初期化.
 	if( SpawnUFOInit() == false ) return false;			// UFOの初期化.

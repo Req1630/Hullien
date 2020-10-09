@@ -5,6 +5,7 @@
 #include "..\..\Editor\EditRenderer\EditRenderer.h"
 #include "..\..\GameObject\Widget\Fade\Fade.h"
 #include "..\..\XAudio2\SoundManager.h"
+#include "..\..\Camera\CameraManager\CameraManager.h"
 
 CSceneManager::CSceneManager()
 	: m_hWnd		( nullptr )
@@ -41,7 +42,11 @@ void CSceneManager::Update()
 		m_pScene->Update();	// シーンの更新.
 		// ゲーム終了してなければ描画する.
 		if( m_IsGameEnd == false ){
-			if( m_IsLoadEnd == true ) m_pScene->Render();	// シーンの描画.
+			if (m_IsLoadEnd == true)
+			{
+				CCameraManager::InitViewProj();
+				m_pScene->Render();	// シーンの描画.
+			}
 			if( m_IsLoadEnd == true ) CEditRenderer::Render();
 		}
 	}

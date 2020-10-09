@@ -9,6 +9,7 @@
 #include "..\..\..\GameObject\Widget\EventWidget\EventWidget.h"
 #include "..\..\..\GameObject\SkyDome\SkyDome.h"
 
+#include "..\..\..\XAudio2\SoundManager.h"
 #include "..\..\..\GameObject\Widget\Fade\Fade.h"
 #include "..\..\..\Common\DebugText\DebugText.h"
 
@@ -55,6 +56,9 @@ CGameClearEvent::~CGameClearEvent()
 bool CGameClearEvent::Load()
 {
 	CFade::SetFadeOut();
+	CSoundManager::ThreadPlayBGM("ClearEventBGM");
+	CSoundManager::FadeInBGM("ClearEventBGM");
+
 	if( m_pGroundStage->Init() == false )	return false;	// ステージの初期化.
 	if( SpawnUFOInit() == false )			return false;	// UFOの初期化.
 	if( PlayerInit() == false )				return false;	// プレイヤーの初期化.
@@ -259,6 +263,7 @@ void CGameClearEvent::ScaleDownActor(D3DXVECTOR3& scale, const float& speed)
 void CGameClearEvent::RunTowardsUFO()
 {
 	m_stCamera.vLookPosition = m_stPlayer.vPosition;
+	m_stCamera.vLookPosition.y = m_stPlayer.vPosition.y + 3.0f;
 	m_stPlayer.vPosition.z -= m_stPlayer.MoveSpeed;
 	m_stGirl.vPosition.z -= m_stGirl.MoveSpeed;
 
@@ -422,7 +427,10 @@ void CGameClearEvent::MoveUFO()
 // 次のシーンに移動.
 void CGameClearEvent::NextScene()
 {
+	CSoundManager::FadeInBGM("ClearEventBGM");
+
 	if (CFade::GetIsFade() == true) return;
+	CSoundManager::StopBGMThread("ClearEventBGM");
 	m_IsEventEnd = true;
 }
 

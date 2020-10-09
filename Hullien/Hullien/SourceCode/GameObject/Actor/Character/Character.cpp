@@ -3,6 +3,8 @@
 #include "..\..\..\Common\Mesh\Dx9SkinMesh\Dx9SkinMesh.h"
 #include "..\..\..\Resource\MeshResource\MeshResource.h"
 #include "..\..\..\Utility\FileManager\FileManager.h"
+#include "..\..\..\Collider\CollsionManager\CollsionManager.h"
+#include "..\..\..\XAudio2\SoundManager.h"	
 
 CCharacter::CCharacter()
 	: m_pSkinMesh				( nullptr )
@@ -12,6 +14,11 @@ CCharacter::CCharacter()
 	, m_MoveVector				( 0.0f, 0.0f, 0.0f )
 	, m_InvincibleCount			( 0 )
 	, m_HasFinishedParamSetting	( false )
+	, m_pFootCollision			()
+	, m_pGroundCollision		( nullptr )
+	, m_vGroundPosition			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
+	, m_vRightPosition			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
+	, m_vLeftPosition			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
 {
 	m_vPosition.y = INIT_POSITION_ADJ_HEIGHT;
 //	m_vSclae = { 0.1f, 0.1f, 0.1f };
@@ -68,4 +75,53 @@ bool CCharacter::GetModel( const char* modelName )
 	if( m_pTempStaticMesh == nullptr ) return false;
 	return true;
 #endif	// #ifndef IS_MODEL_RENDER.
+}
+
+void CCharacter::FootStep(const char * rightfoot, const char * leftfoot)
+{
+	m_vGroundPosition = m_vPosition;
+	m_pSkinMesh->GetPosFromBone(leftfoot, &m_vLeftPosition);
+	m_pSkinMesh->GetPosFromBone(rightfoot, &m_vRightPosition);
+
+	if (m_pFootCollision[0]->IsShereToShere(m_pGroundCollision.get()) == true
+		|| m_pFootCollision[1]->IsShereToShere(m_pGroundCollision.get()) == true)
+	{
+		CSoundManager::NoMultipleSEPlay("FooStept");
+	}
+}
+
+bool CCharacter::FootStepCollisionSetting()
+{
+#ifndef IS_TEMP_MODEL_RENDER
+	// ’n–Ê‚Ì“–‚½‚è”»’è.
+	if (m_pGroundCollision != nullptr) return true;
+	if (m_pGroundCollision == nullptr)
+	{
+		m_pGroundCollision = std::make_shared<CCollisionManager>();
+	}
+	if (FAILED(m_pGroundCollision->InitSphere(
+		&m_vGroundPosition,
+		&m_vRotation,
+		&m_vSclae.x,
+		{0.0f,0.0f,0.0f},
+		1.0f))) return false;
+
+	// ‘«‚Ì“–‚½‚è”»’è.
+	if (m_pFootCollision.size() != 0) return true;
+	m_pFootCollision.emplace_back(std::make_shared<CCollisionManager>());
+	m_pFootCollision.emplace_back(std::make_shared<CCollisionManager>());
+	if (FAILED(m_pFootCollision[0]->InitSphere(
+		&m_vRightPosition,
+		&m_vRotation,
+		&m_vSclae.x,
+		{ 0.0f,0.0f,0.0f },
+		0.5f))) return false;
+	if (FAILED(m_pFootCollision[1]->InitSphere(
+		&m_vLeftPosition,
+		&m_vRotation,
+		&m_vSclae.x,
+		{ 0.0f,0.0f,0.0f },
+		0.5f))) return false;
+#endif
+	return true;
 }

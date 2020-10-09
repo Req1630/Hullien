@@ -67,6 +67,9 @@ bool CPlayer::Init()
 #if 1
 	// アニメーション再生.
 	SetAttackFrameList();
+	// 足音用当たり判定の設定.
+	if (FootStepCollisionSetting() == false) return false;
+
 #endif	//#if 0
 #else
 	if( GetModel( MODEL_TEMP_NAME ) == false ) return false;
@@ -120,6 +123,9 @@ void CPlayer::Update()
 		if (CSoundManager::GetIsPlaySE("HP", 0) == true) return;
 		CSoundManager::NoMultipleSEPlay("HP");
 	}
+
+	// 足音.
+	FootStep("kaito_rifa_2_L_asi_4", "kaito_rifa_2_R_asi_4");
 }
 
 // 描画関数.

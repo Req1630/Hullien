@@ -33,6 +33,7 @@ bool CEventPlayer::Init()
 	if (GetModel(MODEL_NAME) == false) return false;
 	// アニメーションの設定.
 	SetAnimation(m_NowAnimNo);
+	if (FootStepCollisionSetting() == false) return false;
 #else
 	if (GetModel(MODEL_TEMP_NAME) == false) return false;
 #endif
@@ -53,6 +54,7 @@ void CEventPlayer::Update()
 void CEventPlayer::Render()
 {
 	if (m_Parameter.IsDisp == false) return;
+	FootStep("kaito_rifa_2_L_asi_4", "kaito_rifa_2_R_asi_4");
 	MeshRender();	// メッシュの描画.
 	EffectRender();
 }

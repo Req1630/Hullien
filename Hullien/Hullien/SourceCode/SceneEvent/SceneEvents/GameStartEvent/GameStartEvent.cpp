@@ -13,6 +13,7 @@
 #include "..\..\EventManager\EventManager.h"
 #include "..\..\..\GameObject\SkyDome\SkyDome.h"
 
+#include "..\..\..\XAudio2\SoundManager.h"
 #include "..\..\..\GameObject\Widget\Fade\Fade.h"
 #include "..\..\..\Common\DebugText\DebugText.h"
 
@@ -63,6 +64,8 @@ CGameStartEvent::~CGameStartEvent()
 bool CGameStartEvent::Load()
 {
 	CFade::SetFadeOut();
+	CSoundManager::ThreadPlayBGM("StartEventBGM");
+	CSoundManager::FadeInBGM("StartEventBGM");
 	if (MotherShipUFOInit() == false)		return false;	// マザーシップの初期化.
 	if( m_pGroundStage->Init() == false )	return false;	// 地面の初期化.
 	if( SpawnUFOInit() == false )			return false;	// UFOの初期化.
@@ -269,6 +272,7 @@ void CGameStartEvent::Skip()
 	// プレイヤー.
 	m_stPlayer.vPosition.z = 0.0f;
 	m_stPlayer.vRotation.y = PLAYER_ROTATION_Y;
+	m_pPlayer->SetAnimation(CEventPlayer::EAnimNo::Wait);
 	// 宇宙人.
 	m_stAlien.IsDisp = true;
 	m_stAlien.vScale = SCALE_MAX;
@@ -573,6 +577,7 @@ void CGameStartEvent::DispPreserveGirl()
 // ゲーム開始.
 void CGameStartEvent::GameStart()
 {
+	CSoundManager::FadeOutBGM("StartEventBGM");
 	m_IsEventEnd = true;
 }
 
