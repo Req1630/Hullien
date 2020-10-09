@@ -13,21 +13,22 @@ class CEventPlayer : public CEventCharacter
 {
 	// パラメータのファイルパス.
 	const char* PARAMETER_FILE_PATH = "Data\\GameParam\\Player\\Player.bin";
-	const char*	MODEL_NAME = "kaito_s";	// モデル名.
-	const char* MODEL_TEMP_NAME = "kaito";	// 仮モデル名.
+	const char*	MODEL_NAME = "kaito_s";			// モデル名.
+	const char* MODEL_TEMP_NAME = "kaito";		// 仮モデル名.
 
-											// アニメーション番号.
+public:
+	// アニメーション番号.
 	enum class enAnimNo
 	{
 		None = -1,
 
-		Dead = 0,
-		Wait,
-		Walk,
-		Wait1,
-		Happy,
+		Wait,		// 待機.
+		Walk,		// 走り.
+		Attack1,	// 攻撃1.
+		Attack2,	// 攻撃2.
+		Attack3 = Walk,	// 攻撃3.
 
-		Max = Happy,
+		Max = Attack2,
 	} typedef EAnimNo;
 
 public:
@@ -37,7 +38,7 @@ public:
 
 		Move,				//移動.
 		Wait,				//待機.
-		SpecialAbility,	//特殊能力.
+		SpecialAbility,	    //特殊能力.
 	} typedef EPlayerState;
 
 public:

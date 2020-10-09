@@ -15,10 +15,11 @@ class CMotherShipUFO;			// マザーシップクラス.
 class CGameStartEventWidget;	// イベント用UIクラス.
 class CEventCamera;				// イベント用カメラクラス.
 class CEventManager;			// イベント管理クラス.
+class CSkyDome;					// 背景.
 
-								/***********************************
-								*	スタートイベントクラス.
-								**/
+/***********************************
+*	スタートイベントクラス.
+**/
 class CGameStartEvent : public CEventBase
 {
 	const D3DXVECTOR3 SCALE_MAX = D3DXVECTOR3(1.0f, 1.0f, 1.0f);	//大きさ最大値.
@@ -35,13 +36,13 @@ class CGameStartEvent : public CEventBase
 	const D3DXVECTOR3 CAMERA_GAMEPOSITION			= D3DXVECTOR3(0.0f, 12.0f, 30.0f);					// 女の子の位置.
 
 	const float AMPLITUDE_COUNT						= 50.0f;							// カメラの揺れ用カウント.
-	const float CAMERA_CORRECTION_PLAYERPOS_Y		= 3.0f;								// プレイヤーに対するカメラy座標補正値.
+	const float CAMERA_CORRECTION_PLAYERPOS_Y		= 6.0f;								// プレイヤーに対するカメラy座標補正値.
 	const float CAMERA_CORRECTION_UFOPOS_Y			= 7.0f;								// UFOに対するカメラy座標補正値.
 	const float CAMERA_CORRECTION_UFOPOS_Z			= 5.0f;								// UFOに対するカメラz座標補正値.
 	const float CAMERA_CORRECTIONALIENPOS_Y			= 1.0f;								// 宇宙人に対するカメラy座標補正値.
 	const float CAMERA_CORRECTION_PLAYERLOOK_Z		= 1.5f;								// プレイヤーに対するカメラの注視位置z座標補正値.
 	const float CAMERASWITCHING_POS_Z				= -40.0f;							// カメラ切り替えz座標,
-	const float CAMERA_ROTAION_MOVING_LIMIT_X = static_cast<float>(D3DXToRadian(-155)); // カメラのx座標回転値の限界.
+	const float CAMERA_ROTAION_MOVING_LIMIT_X = static_cast<float>(D3DXToRadian(-150)); // カメラのx座標回転値の限界.
 	const float CAMERA_ROTAION_DEC_START = static_cast<float>(D3DXToRadian(-100));		// カメラの減速開始値.
 	const float CAMERA_DECELERATION_SPEED			= 0.0005f;							// カメラの減速度.
 	const float CAMERA_ROTATION_SPEED				= 0.01f;							// カメラの回転速度.
@@ -72,8 +73,8 @@ class CGameStartEvent : public CEventBase
 	const float FREQUENCY_UFO_STOP		= 100.0f;									// UFO停止の周波数.
 	const float AMPLITUDE_UFO_STOP		= 0.1f;										// UFO停止の振幅.
 
-																					// プレイヤー関係.
-	const float PLAYER_INITPOSITION_Z = -60.0f;										// プレイヤー初期位置.
+	// プレイヤー関係.
+	const float PLAYER_INITPOSITION_Z = -120.0f;										// プレイヤー初期位置.
 	const float PLAYER_ROTATION_Y = static_cast<float>(D3DXToRadian(0));			// プレイヤーのy座標回転値.
 	const float PLAYER_DEFAULT_ROTATION_Y = static_cast<float>(D3DXToRadian(180));	// プレイヤーのy座標回転値.
 
@@ -184,6 +185,7 @@ private:
 	std::unique_ptr<CGameStartEventWidget>	m_pWidget;
 	std::shared_ptr<CEventCamera>			m_pEventCamera;
 	std::shared_ptr<CEventManager>			m_pEventManager;
+	std::shared_ptr<CSkyDome>				m_pSkyDome;
 	D3DXVECTOR3								m_vUFOPosition;
 	EEventStep								m_EventStep;
 	int										m_NowStep;

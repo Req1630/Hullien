@@ -3,7 +3,7 @@
 
 #include "..\Actor.h"
 
-#define IS_TEMP_MODEL_RENDER	// 仮モデル表示.
+//#define IS_TEMP_MODEL_RENDER	// 仮モデル表示.
 
 /***************************************
 *	イベント用キャラクタクラス.
@@ -32,7 +32,7 @@ public:
 		bool		IsDisp;				// 描画するか.
 
 		stOptionalState()
-			: vPosition			( {0.0f,4.0f,0.0f} )
+			: vPosition			( {0.0f,0.0f,0.0f} )
 			, vRotation			( {0.0f,0.0f,0.0f} )
 			, vScale			( {1.0f,1.0f,1.0f} )
 			, ModelAlpha		( 1.0f )

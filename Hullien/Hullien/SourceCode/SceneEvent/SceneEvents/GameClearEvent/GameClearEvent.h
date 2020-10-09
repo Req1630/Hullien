@@ -13,6 +13,8 @@ class CEventAlienA;				// イベント用宇宙人Aクラス.
 class CEventCamera;				// イベント用カメラクラス.
 class CEventManager;			// イベント管理クラス.
 class CEventWidget;				// イベントのUIクラス.
+class CSkyDome;					// 背景.
+
 
 /************************************
 *	クリアイベントクラス.
@@ -92,6 +94,8 @@ private:
 
 		Max,
 		Start = RunTowards_UFO,
+		Skip = NextScene - 1,
+
 	}typedef EEventStep;
 
 public:
@@ -155,6 +159,7 @@ private:
 	std::shared_ptr<CEventGirl>				m_pGirl;
 	std::shared_ptr<CEventAlienA>			m_pAlienA;
 	std::shared_ptr<CEventCamera>			m_pEventCamera;
+	std::shared_ptr<CSkyDome>				m_pSkyDome;
 	std::shared_ptr<CEventWidget>			m_pEventWidget;
 	CEventCharacter::SOptionalState			m_stPlayer;			//プレイヤーの情報.
 	CEventCharacter::SOptionalState			m_stGirl;			//女の子の情報.

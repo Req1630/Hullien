@@ -10,8 +10,8 @@
 *	イベント用プレイヤークラス.
 **/
 CEventPlayer::CEventPlayer()
-	: m_NowAnimNo()
-	, m_OldAnimNo()
+	: m_NowAnimNo( EAnimNo::Walk)
+	, m_OldAnimNo( EAnimNo::None)
 	, m_AttackPosition()
 	, m_pEffects( )
 	, m_SpecialAbility( 0.0f )
@@ -29,7 +29,13 @@ CEventPlayer::~CEventPlayer()
 // 初期化関数
 bool CEventPlayer::Init()
 {
+#ifndef IS_TEMP_MODEL_RENDER
+	if (GetModel(MODEL_NAME) == false) return false;
+	// アニメーションの設定.
+	SetAnimation(m_NowAnimNo);
+#else
 	if (GetModel(MODEL_TEMP_NAME) == false) return false;
+#endif
 	if (ColliderSetting() == false) return false;
 
 	return true;
@@ -94,13 +100,13 @@ void CEventPlayer::EffectRender()
 }
 
 // アニメーション設定.
-void CEventPlayer::SetAnimation(const EAnimNo & animNo)
+void CEventPlayer::SetAnimation(const EAnimNo& animNo)
 {
 	if (m_pSkinMesh == nullptr) return;
-	if (m_NowAnimNo == m_OldAnimNo) return;
+	if (animNo == m_OldAnimNo) return;
 	m_OldAnimNo = m_NowAnimNo;
 	m_NowAnimNo = animNo;
-	m_pSkinMesh->ChangeAnimSet(static_cast<int>(animNo));
+	m_pSkinMesh->ChangeAnimSet(static_cast<int>(m_NowAnimNo));
 }
 
 // 当たり判定の設定.

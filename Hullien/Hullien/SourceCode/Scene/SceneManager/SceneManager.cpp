@@ -31,7 +31,7 @@ void CSceneManager::Update()
 	if( m_pScene == nullptr ) return;
 
 	CXInput::StatsUpdate();	// コントローラーの更新.
-
+	
 	if( m_IsLoadEnd == false ){
 		// 読み込みが終了していない場合.
 		// 読み込みを行う.
@@ -41,19 +41,16 @@ void CSceneManager::Update()
 		m_pScene->Update();	// シーンの更新.
 		// ゲーム終了してなければ描画する.
 		if( m_IsGameEnd == false ){
-			if( m_IsLoadEnd == false ) return;
-			m_pScene->Render();	// シーンの描画.
-			if( m_IsLoadEnd == false ) return;
-			CEditRenderer::Render();
+			if( m_IsLoadEnd == true ) m_pScene->Render();	// シーンの描画.
+			if( m_IsLoadEnd == true ) CEditRenderer::Render();
 		}
 	}
 
 	ChangeEditScene();	// エディットシーンに切り替える.
-
+	
 	// フェードの描画.
 	if (CFade::Init() == false) return;
 	CFade::Render();
-
 
 }
 

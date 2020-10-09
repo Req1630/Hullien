@@ -11,6 +11,7 @@
 #include "..\..\..\GameObject\SkyDome\SkyDome.h"
 #include "..\..\..\Camera\CameraManager\CameraManager.h"
 #include "..\..\EventManager\EventManager.h"
+#include "..\..\..\GameObject\SkyDome\SkyDome.h"
 
 #include "..\..\..\GameObject\Widget\Fade\Fade.h"
 #include "..\..\..\Common\DebugText\DebugText.h"
@@ -29,6 +30,7 @@ CGameStartEvent::CGameStartEvent()
 	, m_pWidget				( nullptr )
 	, m_pEventCamera		( nullptr )
 	, m_pEventManager		( nullptr )
+	, m_pSkyDome			( nullptr )
 	, m_vUFOPosition		( D3DXVECTOR3( 0.0f, 0.0f, 0.0f ))
 	, m_EventStep			( EEventStep::EventStart )
 	, m_NowStep				( 0 )
@@ -41,8 +43,6 @@ CGameStartEvent::CGameStartEvent()
 	, m_stAlien				()
 	, m_stCamera			()
 {
-	CFade::SetFadeOut();
-
 	m_pGroundStage		= std::make_shared<CGroundStage>();
 	m_pSpawnUFO			= std::make_shared<CSpawnUFO>();
 	m_pPlayer			= std::make_shared<CEventPlayer>();
@@ -52,6 +52,7 @@ CGameStartEvent::CGameStartEvent()
 	m_pMotherShipUFO	= std::make_shared<CMotherShipUFO>();
 	m_pWidget			= std::make_unique<CGameStartEventWidget>();
 	m_pEventCamera		= std::make_shared<CEventCamera>();
+	m_pSkyDome			= std::make_shared<CSkyDome>();
 }
 
 CGameStartEvent::~CGameStartEvent()
@@ -61,6 +62,7 @@ CGameStartEvent::~CGameStartEvent()
 // 読込関数.
 bool CGameStartEvent::Load()
 {
+	CFade::SetFadeOut();
 	if (MotherShipUFOInit() == false)		return false;	// マザーシップの初期化.
 	if( m_pGroundStage->Init() == false )	return false;	// 地面の初期化.
 	if( SpawnUFOInit() == false )			return false;	// UFOの初期化.
@@ -69,6 +71,7 @@ bool CGameStartEvent::Load()
 	if( AlienInit() == false )				return false;	// 宇宙人Aの初期化.
 	if( CameraInit() == false )				return false;	// カメラの初期化.
 	if( m_pWidget->Init() == false )		return false;	// UIの設定.
+	if (m_pSkyDome->Init() == false)		return false;	// 背景の初期化.
 
 	m_IsEventEnd = false;
 	m_IsSkip = false;
@@ -83,6 +86,7 @@ void CGameStartEvent::Update()
 	DebugOperation();
 #endif
 
+	m_pSkyDome->SetPosition(m_stPlayer.vPosition);
 	// シーンの設定.
 	SceneSetting();
 	// アクタの更新.
@@ -103,6 +107,7 @@ void CGameStartEvent::Update()
 // 描画関数.
 void CGameStartEvent::Render()
 {
+	m_pSkyDome->Render();		// 背景の描画.
 	m_pGroundStage->Render();	// ステージの描画.
 	m_pSpawnUFO->Render();		// UFOの描画.
 	m_pPlayer->Render();		// プレイヤーの描画.
@@ -110,6 +115,8 @@ void CGameStartEvent::Render()
 	m_pAlienA->Render();		// 宇宙Aの描画.
 	m_pBarrier->Render();
 	m_pMotherShipUFO->Render();
+
+	DebugRender();
 
 }
 
@@ -286,11 +293,12 @@ void CGameStartEvent::EscapePlayerAndGirl()
 {
 	m_stCamera.vPosition.z = m_stPlayer.vPosition.z;
 	m_stCamera.vLookPosition = m_stPlayer.vPosition;
-
 	// プレイヤーの目的地.
-	const D3DXVECTOR3 PLAYER_DESTINATION = { 0.0f, m_stPlayer.vPosition.y, CAMERASWITCHING_POS_Z };
+	const D3DXVECTOR3 PLAYER_DESTINATION = { 0.0f, m_stPlayer.vPosition.y, -60.0f };
 	// 女の子の目的地.
 	const D3DXVECTOR3 GIRL_DESTINATION = { 0.0f, m_stGirl.vPosition.y, GIRL_DISTANCE_Z };
+
+	m_stPlayer.MoveSpeed = m_stGirl.MoveSpeed = 0.2f;
 
 	MoveDestination(m_stGirl.vPosition, GIRL_DESTINATION, m_stGirl.MoveSpeed);
 	if (MoveDestination(m_stPlayer.vPosition, PLAYER_DESTINATION, m_stPlayer.MoveSpeed) == false) return;
@@ -328,6 +336,7 @@ void CGameStartEvent::MoveUFO()
 	// カメラの視点移動.
 	m_stCamera.vLookPosition = m_pSpawnUFO->GetPosition();
 	// プレイヤーの位置設定.
+	m_pPlayer->SetAnimation(CEventPlayer::EAnimNo::Wait);
 	m_stPlayer.vPosition.z = 0.0f;
 	// 女の子の位置設定.
 	m_stGirl.vPosition.z = GIRL_DISTANCE_Z;

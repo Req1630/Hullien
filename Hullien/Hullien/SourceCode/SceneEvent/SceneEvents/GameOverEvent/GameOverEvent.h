@@ -11,6 +11,7 @@ class CEventGirl;				// イベント用女の子クラス.
 class CEventCamera;				// イベント用カメラクラス.
 class CEventManager;			// イベント管理クラス.
 class CEventWidget;				// イベントのUIクラス.
+class CSkyDome;					// 背景.
 
 /************************************
 *	ゲームオーバーイベントクラス.
@@ -114,6 +115,7 @@ private:
 	std::shared_ptr<CEventGirl>				m_pGirl;
 	std::shared_ptr<CEventCamera>			m_pEventCamera;
 	std::shared_ptr<CEventWidget>			m_pEventWidget;
+	std::shared_ptr<CSkyDome>				m_pSkyDome;
 	CEventCharacter::SOptionalState			m_stGirl;			// 女の子の情報.
 	CEventCamera::SCameraState				m_stCamera;			// カメラの情報.
 	D3DXVECTOR3								m_vUFOPosition;		// UFOの位置.

@@ -14,7 +14,9 @@ CEventCharacter::CEventCharacter()
 	, m_Parameter					()
 	, m_NowMoveState				( EMoveState::None )
 {
+#ifdef IS_TEMP_MODEL_RENDER
 	m_vPosition.y = INIT_POSITION_ADJ_HEIGHT;
+#endif
 }
 
 CEventCharacter::~CEventCharacter()

@@ -7,6 +7,7 @@
 #include "..\..\..\Camera\CameraManager\CameraManager.h"
 #include "..\..\EventManager\EventManager.h"
 #include "..\..\..\GameObject\Widget\EventWidget\EventWidget.h"
+#include "..\..\..\GameObject\SkyDome\SkyDome.h"
 
 #include "..\..\..\GameObject\Widget\Fade\Fade.h"
 #include "..\..\..\Common\DebugText\DebugText.h"
@@ -16,10 +17,11 @@
 **/
 CGameOverEvent::CGameOverEvent()
 	: m_pGroundStage	( nullptr )
-	, m_pUFO( nullptr )
+	, m_pUFO			( nullptr )
 	, m_pGirl			( nullptr )
 	, m_pEventCamera	( nullptr )
 	, m_pEventWidget	( nullptr )
+	, m_pSkyDome		( nullptr )
 	, m_stGirl			()
 	, m_stCamera		()
 	, m_vUFOPosition	( D3DXVECTOR3(0.0f, 0.0f, 0.0f) )
@@ -33,6 +35,7 @@ CGameOverEvent::CGameOverEvent()
 	m_pGirl			= std::make_shared<CEventGirl>();
 	m_pEventCamera	= std::make_shared<CEventCamera>();
 	m_pEventWidget	= std::make_shared<CEventWidget>();
+	m_pSkyDome = std::make_shared<CSkyDome>();
 	
 }
 
@@ -43,13 +46,15 @@ CGameOverEvent::~CGameOverEvent()
 // 読込関数.
 bool CGameOverEvent::Load()
 {
+	CFade::SetFadeOut();
+
 	if( m_pGroundStage->Init() == false ) return false; // ステージの初期化.
 	if( SpawnUFOInit() == false ) return false;			// UFOの初期化.
 	if( GirlInit() == false ) return false;				// 女の子の初期化.
 	if( CameraInit() == false ) return false;			// カメラの初期化.
 	if( m_pEventWidget->Init() == false ) return false;	// UIの初期化.
+	if( m_pSkyDome->Init() == false ) return false;		// 背景の初期化.
 
-	CFade::SetFadeOut();
 	m_IsSkip = false;
 	m_IsEventEnd = false;
 
@@ -62,6 +67,7 @@ bool CGameOverEvent::Load()
 // 更新関数.
 void CGameOverEvent::Update()
 {
+	m_pSkyDome->SetPosition(m_stGirl.vPosition);
 	// シーンの設定.
 	SceneSetting();
 	// アクタの更新.
@@ -79,6 +85,7 @@ void CGameOverEvent::Update()
 // 描画関数.
 void CGameOverEvent::Render()
 {
+	m_pSkyDome->Render();
 	m_pGroundStage->Render();
 	m_pUFO->Render();
 	m_pGirl->Render();
