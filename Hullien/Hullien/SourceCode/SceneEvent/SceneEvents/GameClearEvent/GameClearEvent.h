@@ -144,7 +144,7 @@ private:
 	void NextScene();			// 次のシーンに移動.
 
 
-								// 以下デバッグ用.
+	// 以下デバッグ用.
 	void DebugRender();
 	void DebugOperation();
 
@@ -155,7 +155,6 @@ private:
 	std::shared_ptr<CEventGirl>				m_pGirl;
 	std::shared_ptr<CEventAlienA>			m_pAlienA;
 	std::shared_ptr<CEventCamera>			m_pEventCamera;
-	std::shared_ptr<CEventManager>			m_pEventManager;
 	std::shared_ptr<CEventWidget>			m_pEventWidget;
 	CEventCharacter::SOptionalState			m_stPlayer;			//プレイヤーの情報.
 	CEventCharacter::SOptionalState			m_stGirl;			//女の子の情報.

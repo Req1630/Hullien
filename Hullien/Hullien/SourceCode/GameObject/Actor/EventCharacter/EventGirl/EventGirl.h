@@ -52,6 +52,8 @@ public:
 	virtual void SetTargetPos(CActor& actor) override;
 	// —‚Ìq‚ªŠëŒ¯‚Èó‘Ô‚©.
 	bool GetIsDanger() const { return m_IsDanger; }
+	// î•ñİ’èŠÖ”.
+	virtual void SetOptionalState(const SOptionalState& state) override;
 
 	// —‚Ìq‚Ìó‘Ôİ’èŠÖ”.
 	void SetNowState(const ENowState& state) { m_NowState = state; }

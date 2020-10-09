@@ -22,7 +22,7 @@ CEventCharacter::~CEventCharacter()
 }
 
 // î•ñİ’èŠÖ”.
-void CEventCharacter::SetOptionalState(SOptionalState state)
+void CEventCharacter::SetOptionalState(const SOptionalState& state)
 {
 	m_vPosition = state.vPosition;
 	m_vRotation = state.vRotation;

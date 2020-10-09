@@ -74,8 +74,9 @@ bool CEventPlayer::IsSpecialAbility()
 void CEventPlayer::SPController()
 {
 	// YÉ{É^ÉìÇ™âüÇ≥ÇÍÇΩèuä‘Ç∂Ç·Ç»ÇØÇÍÇŒèIóπ.
-	//	if (CXInput::Y_Button() != CXInput::enPRESSED_MOMENT) return;
-	if (GetAsyncKeyState('Y') & 0x8000)
+	//if (CXInput::Y_Button() != CXInput::enPRESSED_MOMENT) return;
+	if (GetAsyncKeyState('Y') & 0x8000
+		|| CXInput::Y_Button() == CXInput::enPRESSED_MOMENT)
 	{
 		m_SpecialAbility = 0.0f;
 		m_HasUsableSP = true;

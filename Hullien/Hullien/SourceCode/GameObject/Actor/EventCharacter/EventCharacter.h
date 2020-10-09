@@ -80,7 +80,7 @@ public:
 	virtual void Move() = 0;
 
 	// î•ñİ’èŠÖ”.
-	void SetOptionalState(SOptionalState state);
+	virtual void SetOptionalState(const SOptionalState& state);
 
 	// À•W•ÊˆÊ’uİ’èŠÖ”.
 	void SetPositionX(const float& vPos_x);

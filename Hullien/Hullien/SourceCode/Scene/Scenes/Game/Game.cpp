@@ -9,7 +9,6 @@
 #include "..\..\..\SceneEvent\EventManager\EventManager.h"
 #include "..\..\..\Common\Sprite\CSprite.h"
 #include "..\..\..\Resource\SpriteResource\SpriteResource.h"
-#include "..\..\..\GameObject\Widget\Fade\Fade.h"
 #include "..\..\..\Utility\XInput\XInput.h"
 #include "..\..\..\XAudio2\SoundManager.h"
 
@@ -33,7 +32,6 @@ CGame::CGame( CSceneManager* pSceneManager )
 	m_WidgetManager			= std::make_unique<CGameWidgetManager>();
 	m_ContinueWidget		= std::make_unique<CContinueWidget>();
 	m_pEventManager			= std::make_unique<CEventManager>();
-	CFade::SetFadeOut();
 }
 
 CGame::~CGame()

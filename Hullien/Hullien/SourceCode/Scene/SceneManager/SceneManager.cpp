@@ -54,6 +54,7 @@ void CSceneManager::Update()
 	if (CFade::Init() == false) return;
 	CFade::Render();
 
+
 }
 
 //=================================.
