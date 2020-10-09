@@ -28,6 +28,10 @@ class CPlayer : public CCharacter
 	// 回避エフェクト名.
 	const char* AVOIDANCE_EFFECT_NAME		= "uvtest";
 
+	// 足のボーン名.
+	const char* RIGHT_FOOT = "kaito_rifa_2_R_asi_4";
+	const char* LEFT_FOOT = "kaito_rifa_2_L_asi_4";
+
 	// アニメーション番号.
 	enum class enAnimNo
 	{

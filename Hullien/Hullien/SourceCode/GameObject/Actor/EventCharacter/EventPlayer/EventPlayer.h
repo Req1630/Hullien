@@ -16,6 +16,10 @@ class CEventPlayer : public CEventCharacter
 	const char*	MODEL_NAME = "kaito_s";			// モデル名.
 	const char* MODEL_TEMP_NAME = "kaito";		// 仮モデル名.
 
+		// 足のボーン名.
+	const char* RIGHT_FOOT = "kaito_rifa_2_R_asi_4";
+	const char* LEFT_FOOT = "kaito_rifa_2_L_asi_4";
+
 public:
 	// アニメーション番号.
 	enum class enAnimNo

@@ -125,7 +125,7 @@ void CPlayer::Update()
 	}
 
 	// ‘«‰¹.
-	FootStep("kaito_rifa_2_L_asi_4", "kaito_rifa_2_R_asi_4");
+	FootStep(RIGHT_FOOT, LEFT_FOOT);
 }
 
 // •`‰æŠÖ”.
