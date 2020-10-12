@@ -32,6 +32,9 @@ class CPlayer : public CCharacter
 	const char* RIGHT_FOOT = "kaito_rifa_2_R_asi_4";
 	const char* LEFT_FOOT = "kaito_rifa_2_L_asi_4";
 
+	// 声の音量.
+	const float VOICE_VOLUME = 1.5f;
+
 	// アニメーション番号.
 	enum class enAnimNo
 	{
@@ -187,6 +190,10 @@ private:
 	// エディット用の描画関数.
 	void EditRender();
 
+	// サウンドの設定.
+	bool SoundSetting();
+	// 音量の設定.
+	void VolumeSetting(const char* soung, float volume);
 	// ウィジェット設定.
 	bool WidgetSetting();
 
@@ -223,7 +230,7 @@ private:
 	float			m_CameraShakeCountAdd;		// カメラの揺れカウント加算値.
 	std::vector<std::shared_ptr<CEffectTimer>>	m_pEffectTimers;	// 効果時間計測クラス.
 	
-	bool				m_IsAttackSE;				//攻撃SEを鳴らすか.
+	bool			m_IsAttackSE;				//攻撃SEを鳴らすか.
 
 };
 

@@ -86,8 +86,12 @@ void CCharacter::FootStep(const char * rightfoot, const char * leftfoot)
 	if (m_pFootCollision[0]->IsShereToShere(m_pGroundCollision.get()) == true
 		|| m_pFootCollision[1]->IsShereToShere(m_pGroundCollision.get()) == true)
 	{
-		CSoundManager::NoMultipleSEPlay("FooStept");
+		CSoundManager::NoMultipleSEPlay("Walk");
 	}
+
+	m_pGroundCollision->DebugRender();
+	m_pFootCollision[0]->DebugRender();
+	m_pFootCollision[1]->DebugRender();
 }
 
 bool CCharacter::FootStepCollisionSetting()

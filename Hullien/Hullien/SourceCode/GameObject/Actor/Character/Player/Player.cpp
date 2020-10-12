@@ -77,13 +77,12 @@ bool CPlayer::Init()
 	if( ColliderSetting() == false ) return false;
 	if( WidgetSetting() == false ) return false;
 	if( EffectSetting() == false ) return false;
+	if( SoundSetting() == false ) return false;
 	m_MoveSpeed		= m_Parameter.MoveSpeed;	// 移動速度の設定.
 	m_AttackPower	= m_Parameter.AttackPower;	// 攻撃力の設定.
 	m_LifePoint		= m_Parameter.LifeMax;		// 体力の設定.
 	m_SpecialAbilityValue = m_Parameter.SpecialAbilityValue;	// 特殊能力回復値の設定.
 	m_CameraHeight = m_CameraDefaultHeight = m_Parameter.CameraHeight;
-
-
 	return true;
 }
 
@@ -124,8 +123,10 @@ void CPlayer::Update()
 		CSoundManager::NoMultipleSEPlay("HP");
 	}
 
+#ifndef IS_TEMP_MODEL_RENDER
 	// 足音.
 	FootStep(RIGHT_FOOT, LEFT_FOOT);
+#endif
 }
 
 // 描画関数.
@@ -234,8 +235,6 @@ void CPlayer::AttackController()
 	if( CXInput::X_Button() != CXInput::enPRESSED_MOMENT ) return;
 	// 攻撃カウントが最大以上なら終了.
 	if( m_AttackComboCount >= m_Parameter.AttackComboMax ) return;
-	CSoundManager::NoMultipleSEPlay("PlayerAttackSE");
-
 	m_AttackComboCount++;	// 攻撃カウントを加算.
 	// 攻撃データがキューに追加されたら終了.
 	if( IsPushAttack() == true ) return;
@@ -249,7 +248,7 @@ void CPlayer::SPController()
 	if( m_SpecialAbility < m_Parameter.SpecialAbilityMax ) return;
 	// Yボタンが押された瞬間じゃなければ終了.
 	if( CXInput::Y_Button() != CXInput::enPRESSED_MOMENT ) return;
-
+	CSoundManager::NoMultipleSEPlay("PlayerVoiceSpecial");
 	m_SpecialAbility = 0.0f;
 	m_HasUsableSP = true;
 }
@@ -268,7 +267,8 @@ void CPlayer::AvoidController()
 	m_IsDuringAvoid = true;
 	m_AvoidVector = m_MoveVector;	// 移動ベクトルを設定.
 	m_OldPosition = m_vPosition;	// 現在の座標を設定.
-	CSoundManager::NoMultipleSEPlay("AvoidMove");
+	CSoundManager::PlaySE("PlayerAvoidMove");
+	CSoundManager::PlaySE("PlayerVoiceAvoidMove");
 	m_pEffects[EEffectNo::enEffectNo_Avoidance]->Play( m_vPosition );
 	// 回避アニメーションを設定するなら ここ.
 	//
@@ -386,6 +386,11 @@ void CPlayer::AttackCollision( CActor* pActor )
 	// 攻撃関数.
 	auto attackProc = [&]( float& life ){ life -= 10.0f; };
 	pActor->LifeCalculation( attackProc );
+	if (m_IsAttackSE == false)
+	{
+		CSoundManager::PlaySE("PlayerAttackHit");
+		m_IsAttackSE = true;
+	}
 	m_IsAttackHitCamera = true;
 }
 
@@ -450,10 +455,20 @@ void CPlayer::AttackAnimation()
 			m_AttackComboCount = 0;	
 			// アニメーションを待機に設定.
 			SetAnimationBlend( enAnimNo::Wait );
+			// 攻撃ヒットSEフラグを下す.
+			m_IsAttackSE = false;
 			return;
 		}
 		// 新しくアニメーションをセットする.
 		SetAnimation( m_AttackDataQueue.front().AnimNo );
+		// 攻撃SEを鳴らす.
+		CSoundManager::PlaySE("PlayerAttack");
+		if(m_AttackComboCount == 2) CSoundManager::PlaySE("PlayerVoiceAttack2");
+		if(m_AttackComboCount == 3)	CSoundManager::PlaySE("PlayerVoiceAttack3");
+		
+
+		// 攻撃ヒットSEフラグを下す.
+		m_IsAttackSE = false;
 	}
 	m_AttackDataQueue.front().Frame += 0.01;	// フレームの更新.
 }
@@ -508,6 +523,8 @@ bool CPlayer::IsPushAttack()
 		tmpAttackData.EndFrame = m_pSkinMesh->GetAnimPeriod( static_cast<int>(CPlayer::enAnimNo::Attack1) )-0.5;
 		// 最初はアニメーションを設定する.
 		SetAnimation( tmpAttackData.AnimNo );
+		CSoundManager::PlaySE("PlayerAttack");
+		CSoundManager::PlaySE("PlayerVoiceAttack1");
 #endif	// #if INTERMEDIATE_ANNOUCEMENT_ATTACK.
 		
 		break;
@@ -588,7 +605,7 @@ void CPlayer::SetParalysisTime( const std::function<void(float&)>& proc )
 	proc( tmpTime );
 	m_pEffectTimers[EEffectTimerNo::EEffectTimerNo_Paralysis]->SetTime( tmpTime );
 	m_pEffectTimers[EEffectTimerNo::EEffectTimerNo_Paralysis]->Set();
-	CSoundManager::NoMultipleSEPlay("PlayerHitSE");
+	CSoundManager::NoMultipleSEPlay("PlayerVoiceParalysis");
 
 }
 
@@ -716,6 +733,26 @@ void CPlayer::EditRender()
 
 	ImGui::End();
 #endif	// #if _DEBUG.
+}
+
+// サウンドの設定.
+bool CPlayer::SoundSetting()
+{
+	VolumeSetting("PlayerVoiceAvoidMove", VOICE_VOLUME);
+	VolumeSetting("PlayerVoiceHit",		  VOICE_VOLUME);
+	VolumeSetting("PlayerVoiceParalysis", VOICE_VOLUME);
+	VolumeSetting("PlayerVoiceAttack1", VOICE_VOLUME);
+	VolumeSetting("PlayerVoiceAttack2", VOICE_VOLUME);
+	VolumeSetting("PlayerVoiceAttack3", VOICE_VOLUME);
+	VolumeSetting("PlayerVoiceSpecial", VOICE_VOLUME);
+	return true;
+}
+
+// 音量の設定.
+void CPlayer::VolumeSetting(const char * soung, float volume)
+{
+	CSoundManager::SetAnotherSEVolume(soung, volume);
+	CSoundManager::SetUseAnotherSEVolumeFlag(soung, true);
 }
 
 // ウィジェット設定.

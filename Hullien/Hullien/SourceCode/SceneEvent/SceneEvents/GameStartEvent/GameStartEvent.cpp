@@ -282,6 +282,7 @@ void CGameStartEvent::Skip()
 	m_stGirl.vPosition = m_stAlien.vPosition;
 	// UFO.
 	m_pSpawnUFO->SetDisp( false );
+	CSoundManager::StopAllSE("UFOMove");
 
 	m_NowStep = static_cast<int>(EEventStep::Skip);
 	NextStep();
@@ -306,6 +307,8 @@ void CGameStartEvent::EscapePlayerAndGirl()
 
 	MoveDestination(m_stGirl.vPosition, GIRL_DESTINATION, m_stGirl.MoveSpeed);
 	if (MoveDestination(m_stPlayer.vPosition, PLAYER_DESTINATION, m_stPlayer.MoveSpeed) == false) return;
+	CSoundManager::PlaySE("UFOMove");
+
 	// 次のステップへ.
 	NextStep();
 }
@@ -426,6 +429,7 @@ void CGameStartEvent::GetCaughtGirl()
 	// 宇宙人の設定.
 	const D3DXVECTOR3 ALIEN_DESTINATION = { m_stAlien.vPosition.x, m_stAlien.vPosition.y, ALIEN_MOVEING_LIMIT_Z };
 	if (MoveDestination(m_stAlien.vPosition, ALIEN_DESTINATION, ALIEN_MOVE_SPEED) == false) return;
+	m_IsSkip = true;
 	NextStep();
 }
 
@@ -452,7 +456,7 @@ void CGameStartEvent::InvocatingOrderBarrier()
 		m_stCamera.ViewingAngle = VIEWING_ANGLE_PLAYER_UP;
 		// UIの設定.
 		m_pWidget->SetWidgetState(CGameStartEventWidget::EWidgetState::None);
-
+		CSoundManager::NoMultipleSEPlay("PlayerUp");
 		m_pBarrier->Init();	// バリアの初期化.
 		NextStep();			// 次のステップへ.
 	}

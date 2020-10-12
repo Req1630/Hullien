@@ -20,6 +20,9 @@ class CEventPlayer : public CEventCharacter
 	const char* RIGHT_FOOT = "kaito_rifa_2_R_asi_4";
 	const char* LEFT_FOOT = "kaito_rifa_2_L_asi_4";
 
+	// 声の音量.
+	const float VOICE_VOLUME = 1.5f;
+
 public:
 	// アニメーション番号.
 	enum class enAnimNo
@@ -76,6 +79,10 @@ private:
 	bool ColliderSetting();
 	// エフェクトの設定.
 	bool EffectSetting();
+	// サウンドの設定.
+	bool SoundSetting();
+	// 音量の設定.
+	void VolumeSetting(const char* soung, float volume);
 
 
 private:

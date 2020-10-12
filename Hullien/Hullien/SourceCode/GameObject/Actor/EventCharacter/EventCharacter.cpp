@@ -90,6 +90,16 @@ bool CEventCharacter::GetModel(const char * modelName)
 // ‘«‰¹.
 void CEventCharacter::FootStep(const char* rightfoot, const char* leftfoot)
 {
+	m_vGroundPosition = m_vPosition;
+	m_vGroundPosition.y = 0.0f;
+	m_pSkinMesh->GetPosFromBone(leftfoot, &m_vLeftPosition);
+	m_pSkinMesh->GetPosFromBone(rightfoot, &m_vRightPosition);
+
+	if (m_pFootCollision[0]->IsShereToShere(m_pGroundCollision.get()) == true
+		|| m_pFootCollision[1]->IsShereToShere(m_pGroundCollision.get()) == true )
+	{
+		CSoundManager::NoMultipleSEPlay("Walk");
+	}
 
 	m_pGroundCollision->DebugRender();
 	m_pFootCollision[0]->DebugRender();
@@ -111,7 +121,7 @@ bool CEventCharacter::FootStepCollisionSetting()
 		&m_vRotation,
 		&m_vSclae.x,
 		m_Parameter.SphereAdjPos,
-		1.0f))) return false;
+		0.5f))) return false;
 
 	// ‘«‚Ì“–‚½‚è”»’è.
 	if(m_pFootCollision.size() != 0) return true;

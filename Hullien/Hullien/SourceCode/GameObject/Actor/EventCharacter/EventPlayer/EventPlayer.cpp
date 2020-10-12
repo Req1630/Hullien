@@ -5,6 +5,7 @@
 #include "..\..\..\..\Collider\CollsionManager\CollsionManager.h"
 #include "..\..\..\Actor\Actor.h"
 #include "..\...\..\..\..\..\Utility\XInput\XInput.h"
+#include "..\..\..\..\XAudio2\SoundManager.h"
 
 /********************************
 *	イベント用プレイヤークラス.
@@ -37,7 +38,8 @@ bool CEventPlayer::Init()
 #else
 	if (GetModel(MODEL_TEMP_NAME) == false) return false;
 #endif
-	if (ColliderSetting() == false) return false;
+	if( ColliderSetting() == false ) return false;
+	if( SoundSetting() == false ) return false;
 
 	return true;
 }
@@ -86,6 +88,7 @@ void CEventPlayer::SPController()
 	if (GetAsyncKeyState('Y') & 0x8000
 		|| CXInput::Y_Button() == CXInput::enPRESSED_MOMENT)
 	{
+		CSoundManager::PlaySE("PlayerVoiceSpecial");
 		m_SpecialAbility = 0.0f;
 		m_HasUsableSP = true;
 	}
@@ -159,5 +162,19 @@ bool CEventPlayer::ColliderSetting()
 bool CEventPlayer::EffectSetting()
 {
 	return false;
+}
+
+// サウンドの設定.
+bool CEventPlayer::SoundSetting()
+{
+	VolumeSetting("PlayerVoiceSpecial", VOICE_VOLUME);
+	return true;
+}
+
+// 音量の設定.
+void CEventPlayer::VolumeSetting(const char * soung, float volume)
+{
+	CSoundManager::SetAnotherSEVolume(soung, volume);
+	CSoundManager::SetUseAnotherSEVolumeFlag(soung, true);
 }
 
