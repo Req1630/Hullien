@@ -71,9 +71,9 @@ namespace STG
 		if( m_pCollManager->IsCapsuleToCapsule( pActor->GetColl() ) == false ) return;
 
 		// Õ“Ë‘Šè‚Ìƒ‰ƒCƒtŒvZŠÖ”.
-		pActor->LifeCalculation( []( float& life )
+		pActor->LifeCalculation( [&]( float& life )
 		{
-			life -= 1.0f;
+			life -= ATTACK_POWAR;
 		});
 
 		// ‘Šè‚ª’e‚È‚ç‘Šè‚Ì’e‚Ì“®ì‚ğ‚È‚­‚·.
@@ -104,8 +104,8 @@ namespace STG
 			&m_vRotation,
 			&m_vScale.x,
 			{0.0f, 0.0f, 0.0f},
-			1.0f,
-			1.0f ))) return false;
+			COLLISION_SCALE,
+			COLLISION_SCALE ))) return false;
 		return true;
 	}
 };

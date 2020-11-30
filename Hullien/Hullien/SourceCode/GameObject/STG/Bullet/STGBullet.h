@@ -7,7 +7,9 @@ namespace STG
 {
 	class CBullet : public STG::CActor
 	{
-		const char* MODEL_NAME;	// モデル名 : 外部から取得.
+		const char* MODEL_NAME;				// モデル名 : 外部から取得.
+		const float	COLLISION_SCALE = 1.0f;	// 当たり判定の大きさ.
+		const float ATTACK_POWAR	= 1.0f;	// 攻撃力.
 	public:
 		CBullet();
 		CBullet( const char* modelName );
