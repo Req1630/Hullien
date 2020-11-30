@@ -68,7 +68,6 @@ void CExplosion::EffectRender()
 	// エフェクトの再生終わっていれば終了,
 	if( m_IsEffectPlay == false ) return;
 	// エフェクトを描画.
-	m_pEffect->SetScale( 1.0f );
 	m_pEffect->Render();
 }
 
