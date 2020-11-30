@@ -21,7 +21,7 @@ bool CEditAlien::Spawn( const D3DXVECTOR3& spawnPos )
 	m_LifePoint	= m_Paramter.LifeMax;			// 体力の設定.
 	m_NowState	= alien::EAlienState::Spawn;	// 現在の状態をスポーンに変更.
 	m_AnimSpeed	= 0.0;							// アニメーション速度を止める.
-	m_vScale	= { 0.0f, 0.0f, 0.0f };
+	m_vScale	= { SCALE_MIN, SCALE_MIN, SCALE_MIN };
 	m_pEffects[alien::EEffectNo_Spawn]->Play( m_vPosition );
 	m_IsPlaying = true;
 	return true;
@@ -40,7 +40,7 @@ void CEditAlien::PlayFright()
 	SetAnimation( alien::EAnimNo_Damage, m_pAC );
 	m_AnimSpeed = DEFAULT_ANIM_SPEED;
 	m_KnockBackVector = -m_MoveVector;
-	m_pEffects[0]->Play( { m_vPosition.x, m_vPosition.y+4.0f, m_vPosition.z });
+	m_pEffects[alien::EEffectNo_Hit]->Play( { m_vPosition.x, m_vPosition.y+HIT_EFFECT_HEIGHT, m_vPosition.z });
 	m_IsPlaying = true;
 }
 
@@ -100,15 +100,13 @@ void CEditAlien::Spawning()
 	}
 
 	m_vPosition.y -= m_Paramter.SpawnDownSpeed;	// 高さを下げる.
-	if( m_vPosition.y <= 0.0f ){
-		m_vPosition.y = 0.0f;
-	}
+	if( m_vPosition.y <= POSITION_HEIGHT_MIN ) m_vPosition.y = POSITION_HEIGHT_MIN;
 
 	// 高さが一定値より大きければ終了.
-	if( m_vScale.x < SCALE_MAX || m_vPosition.y > 0.0f ) return;
+	if( m_vScale.x < SCALE_MAX || m_vPosition.y > POSITION_HEIGHT_MIN ) return;
 
 	CSoundManager::NoMultipleSEPlay("AlienApp");
-	m_AnimSpeed	= 0.01;
+	m_AnimSpeed	= DEFAULT_ANIM_SPEED;
 	SetAnimation( alien::EAnimNo_Move, m_pAC );
 	m_NowState	= alien::EAlienState::Move;
 	m_NowMoveState = alien::EMoveState::Wait;
@@ -201,7 +199,7 @@ void CEditAlien::RisingMotherShip()
 	m_vScale.x -= m_Paramter.MotherShipUpScaleSubValue;
 	m_vScale.y -= m_Paramter.MotherShipUpScaleSubValue;
 	m_vScale.z -= m_Paramter.MotherShipUpScaleSubValue;
-	if( m_vScale.x > 0.0f ) return;
+	if( m_vScale.x > SCALE_MIN ) return;
 	m_vScale = { SCALE_MAX, SCALE_MAX, SCALE_MAX };
 	m_vPosition = { 0.0f, 0.0f, 0.0f };
 	SetAnimation( alien::EAnimNo_Move, m_pAC );
