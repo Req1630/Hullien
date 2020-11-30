@@ -6,7 +6,7 @@
 
 #include <vector>
 
-class CGameObject;
+class CGameObject;		// ゲームオブジェクトクラス.
 class CSkyDome;			// 背景クラス.
 class CGroundStage;		// 地面クラス.
 class CPlayer;			// プレイヤークラス.
@@ -61,7 +61,7 @@ private:
 	std::shared_ptr<CBarrier>		m_pBarrier;			// バリア.
 	std::unique_ptr<CInvisibleWall>	m_pInvisibleWall;	// 見えない壁.
 
-	std::vector<std::pair<EObjectTag, std::pair<D3DXVECTOR3, float>>>	m_ObjPositionList;
+	std::vector<std::pair<EObjectTag, std::pair<D3DXVECTOR3, float>>>	m_ObjPositionList;	// 各オブジェクトの座標リスト.
 	int		m_ObjPosListCount;		// オブジェクトの座標リストの数.
 	bool	m_IsOllAnimationStop;	// 全部のアニメーションが停止したか.
 };

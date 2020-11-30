@@ -120,12 +120,13 @@ void CGameActorManager::Update()
 	SetPositionList( m_pGirl.get() );			// 女の子座標を設定.
 	SetPositionList( m_pPlayer.get() );			// プレイヤー座標を設定.
 	SetPositionList( m_pMotherShipUFO.get() );	// マザーシップの座標を設定.
+	m_ObjPositionList.shrink_to_fit();
 }
 
 // 描画関数.
 void CGameActorManager::Render()
 {
-	m_pSkyDome->Render();
+	m_pSkyDome->Render();		// 背景の描画.
 	m_pGroundStage->Render();	// ステージの描画.
 	m_pPlayer->Render();		// プレイヤーの描画.
 	m_pGirl->Render();			// 女の子の描画.
@@ -185,9 +186,8 @@ void CGameActorManager::SetPositionList( CGameObject* pObj )
 	m_ObjPosListCount++;	// オブジェクト数の加算.
 	m_ObjPositionList.emplace_back( 
 		pObj->GetObjectTag(),	// タグの取得.
-		std::pair<D3DXVECTOR3, float>(
-			pObj->GetPosition(),	// 座標の取得.
-			pObj->GetRotatinY()));	// Y軸回転値の取得.
+		// 座標、回転値 の取得..
+		std::pair<D3DXVECTOR3, float>( pObj->GetPosition(), pObj->GetRotatinY()) );
 }
 
 // アニメーションを止める.
