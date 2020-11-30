@@ -55,7 +55,7 @@ void CAlienB::Update()
 	CurrentStateUpdate();	// 現在の状態の更新.
 	// アーム.
 	if( m_IsRisingMotherShip == false )
-		m_pArm->SetPosition( {m_vPosition.x, m_vPosition.y+5.0f, m_vPosition.z} );		// 座標をセット.
+		m_pArm->SetPosition( {m_vPosition.x, m_vPosition.y+CArm::GRAB_HEIGHT, m_vPosition.z} );		// 座標をセット.
 	m_pArm->SetRotationY( m_vRotation.y );	// 回転情報をセット.
 	m_pArm->Update();						// 更新.
 }
@@ -68,6 +68,8 @@ void CAlienB::Render()
 	if( m_pSkinMesh == nullptr ) return;
 	if( m_pAttackMesh == nullptr ) return;
 
+	// 攻撃時に攻撃モデルを描画予定だったがなしになった.
+	// 念のため追加するかもしないので残しとく.
 #if 0
 	if( m_NowMoveState == EMoveState::Attack ){
 		m_pAttackMesh->SetPosition( m_vPosition );
@@ -109,7 +111,7 @@ void CAlienB::Render()
 void CAlienB::EffectRender()
 {
 	// ヒット時のエフェクト.
-	m_pEffects[alien::EEffectNo_Hit]->SetScale( 2.0f );
+	m_pEffects[alien::EEffectNo_Hit]->SetScale( HIT_EFFECT_SCALE );
 	m_pEffects[alien::EEffectNo_Hit]->Render();
 
 	// スポーンエフェクト.
@@ -121,7 +123,7 @@ void CAlienB::EffectRender()
 
 	// 攻撃時のエフェクト.
 	m_pEffects[alien::EEffectNo_Attack]->SetLocation( m_vPosition );
-	m_pEffects[alien::EEffectNo_Attack]->SetScale( 0.5f );
+	m_pEffects[alien::EEffectNo_Attack]->SetScale( ATTACK_EFFECT_SCALE );
 	m_pEffects[alien::EEffectNo_Attack]->Render();
 
 }
@@ -177,9 +179,9 @@ void CAlienB::LifeCalculation( const std::function<void(float&,bool&)>& proc )
 	proc( m_LifePoint, isAttack );
 	m_NowState = alien::EAlienState::Fright;	// 怯み状態へ遷移.
 	SetAnimation( alien::EAnimNo_Damage, m_pAC );
-	m_AnimSpeed = 0.01;
+	m_AnimSpeed = DEFAULT_ANIM_SPEED;
 	m_pEffects[alien::EEffectNo_Attack]->Stop();
-	m_pEffects[alien::EEffectNo_Hit]->Play( { m_vPosition.x, m_vPosition.y+4.0f, m_vPosition.z });
+	m_pEffects[alien::EEffectNo_Hit]->Play( { m_vPosition.x, m_vPosition.y+HIT_EFFECT_HEIGHT, m_vPosition.z });
 	if( m_pArm != nullptr ){
 		// アームを片付けていなければ片付ける.
 		if( m_pArm->IsCleanUp() == false ){
@@ -192,7 +194,7 @@ void CAlienB::LifeCalculation( const std::function<void(float&,bool&)>& proc )
 	m_NowState = alien::EAlienState::Death;
 	m_NowMoveState = alien::EMoveState::Wait;
 	m_pEffects[alien::EEffectNo_Spawn]->Play( m_vPosition );
-	SetAnimation( alien::EAnimNo_Dead, m_pAC );
+	CAlien::SetAnimation( alien::EAnimNo_Dead, m_pAC );
 }
 
 // プレイヤー座標の設定.

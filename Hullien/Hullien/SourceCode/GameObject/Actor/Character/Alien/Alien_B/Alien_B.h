@@ -7,6 +7,7 @@ class CAlienB : public CAlien
 {
 	const char* MODEL_NAME = "b_s";
 	const char* ATTACK_MODEL_NAME	= "b_attack";
+	const float ATTACK_EFFECT_SCALE = 0.5f;
 
 public:
 	CAlienB();
