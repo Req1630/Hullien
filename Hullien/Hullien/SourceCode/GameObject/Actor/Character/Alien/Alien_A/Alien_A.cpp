@@ -49,7 +49,7 @@ void CAlienA::Update()
 	CurrentStateUpdate();				// 現在の状態の更新.
 	// アーム.
 	if( m_IsRisingMotherShip == false )
-		m_pArm->SetPosition( {m_vPosition.x, m_vPosition.y+5.0f, m_vPosition.z} );		// 座標を設定.
+		m_pArm->SetPosition( {m_vPosition.x, m_vPosition.y+CArm::GRAB_HEIGHT, m_vPosition.z} );		// 座標を設定.
 	m_pArm->SetRotationY( m_vRotation.y );	// 回転情報を設定.
 	m_pArm->Update();						// 更新.
 }
@@ -94,11 +94,11 @@ bool CAlienA::Spawn( const D3DXVECTOR3& spawnPos )
 {
 	// 既にスポーン済みなら終了.
 	if( m_NowState != alien::EAlienState::None ) return true;
-	m_vPosition			= spawnPos;						// スポーン座標の設定.
-	m_LifePoint			= pPARAMETER->LifeMax;			// 体力の設定.
-	m_NowState			= alien::EAlienState::Spawn;	// 現在の状態をスポーンに変更.
-	m_AnimSpeed			= 0.0;							// アニメーション速度を止める.
-	m_pEffects[alien::EEffectNo_Spawn]->Play( m_vPosition );
+	m_vPosition			= spawnPos;							// スポーン座標の設定.
+	m_LifePoint			= pPARAMETER->LifeMax;				// 体力の設定.
+	m_NowState			= alien::EAlienState::Spawn;		// 現在の状態をスポーンに変更.
+	m_AnimSpeed			= 0.0;								// アニメーション速度を止める.
+	m_pEffects[alien::EEffectNo_Spawn]->Play( m_vPosition );// スポーンエフェクトの再生.
 	return true;
 }
 
