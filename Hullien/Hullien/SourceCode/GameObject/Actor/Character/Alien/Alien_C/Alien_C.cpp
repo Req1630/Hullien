@@ -45,7 +45,7 @@ void CAlienC::Update()
 	CurrentStateUpdate();				// 現在の状態の更新.
 	// アーム.
 	if( m_IsRisingMotherShip == false )
-		m_pArm->SetPosition( {m_vPosition.x, m_vPosition.y+5.0f, m_vPosition.z} );		// 座標を設定.
+		m_pArm->SetPosition( {m_vPosition.x, m_vPosition.y+CArm::GRAB_HEIGHT, m_vPosition.z} );	// 座標を設定.
 	m_pArm->SetRotationY( m_vRotation.y );	// 回転値を設定.
 	m_pArm->Update();						// 更新.
 
