@@ -18,8 +18,7 @@ CCharacter::CCharacter()
 	, m_pFootCollision			()
 	, m_pGroundCollision		( nullptr )
 	, m_vGroundPosition			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
-	, m_vRightPosition			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
-	, m_vLeftPosition			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))
+	, m_vFootPosition			()
 {
 }
 
@@ -110,18 +109,18 @@ void CCharacter::SetAnimationBlend( const int& animNo )
 void CCharacter::FootStep(const char * rightfoot, const char * leftfoot)
 {
 	m_vGroundPosition = m_vPosition;
-	m_pSkinMesh->GetPosFromBone(leftfoot, &m_vLeftPosition);
-	m_pSkinMesh->GetPosFromBone(rightfoot, &m_vRightPosition);
+	m_pSkinMesh->GetPosFromBone(leftfoot, &m_vFootPosition[EFootNumber_Right]);
+	m_pSkinMesh->GetPosFromBone(rightfoot, &m_vFootPosition[EFootNumber_Left]);
 
-	if (m_pFootCollision[0]->IsShereToShere(m_pGroundCollision.get()) == true
-		|| m_pFootCollision[1]->IsShereToShere(m_pGroundCollision.get()) == true)
+	if (m_pFootCollision[EFootNumber_Right]->IsShereToShere(m_pGroundCollision.get()) == true
+		|| m_pFootCollision[EFootNumber_Left]->IsShereToShere(m_pGroundCollision.get()) == true)
 	{
 		CSoundManager::NoMultipleSEPlay("Walk");
 	}
 
 	m_pGroundCollision->DebugRender();
-	m_pFootCollision[0]->DebugRender();
-	m_pFootCollision[1]->DebugRender();
+	m_pFootCollision[EFootNumber_Right]->DebugRender();
+	m_pFootCollision[EFootNumber_Left]->DebugRender();
 }
 
 // ë´âπópìñÇΩÇËîªíËÇÃê›íË.
@@ -138,23 +137,19 @@ bool CCharacter::FootStepCollisionSetting()
 		&m_vRotation,
 		&m_vScale.x,
 		{0.0f,0.0f,0.0f},
-		1.0f))) return false;
+		GROUND_COLLISION_SIZE))) return false;
 
 	// ë´ÇÃìñÇΩÇËîªíË.
 	if (m_pFootCollision.size() != 0) return true;
 	m_pFootCollision.emplace_back(std::make_shared<CCollisionManager>());
 	m_pFootCollision.emplace_back(std::make_shared<CCollisionManager>());
-	if (FAILED(m_pFootCollision[0]->InitSphere(
-		&m_vRightPosition,
-		&m_vRotation,
-		&m_vScale.x,
-		{ 0.0f,0.0f,0.0f },
-		0.5f))) return false;
-	if (FAILED(m_pFootCollision[1]->InitSphere(
-		&m_vLeftPosition,
-		&m_vRotation,
-		&m_vScale.x,
-		{ 0.0f,0.0f,0.0f },
-		0.5f))) return false;
+	for( int i = 0; i < EFootNumber_Max; i++ ){
+		if( FAILED(m_pFootCollision[i]->InitSphere(
+			&m_vFootPosition[i],
+			&m_vRotation,
+			&m_vScale.x,
+			{ 0.0f,0.0f,0.0f },
+			FOOT_COLLISION_SIZE ))) return false;
+	}
 	return true;
 }

@@ -6,8 +6,21 @@
 
 class CCharacter : public CActor
 {
+	inline static const float FOOT_COLLISION_SIZE	= 0.5f;	// 足の当たり判定のサイズ.
+	inline static const float GROUND_COLLISION_SIZE	= 1.0f;	// 地面の当たり判定のサイズ.
 protected:
 	const double DEFAULT_ANIM_SPEED = 0.01;	// デフォルトアニメーション速度.
+
+	// 足の番号.
+	enum enFootNumber : char
+	{
+		EFootNumber_None = -1,
+
+		EFootNumber_Right,	// 右足.
+		EFootNumber_Left,	// 左足.
+
+		EFootNumber_Max,
+	} typedef EFootNumber;
 
 public:
 	// キャラクターパラメータ.
@@ -45,7 +58,7 @@ protected:
 	// モデルの取得.
 	bool GetModel( const char* modelName );
 	// 当たり判定の設定.
-	bool ColliderSetting();
+	bool ColliderSetting(){};
 	// パラメータの設定.
 	template<class inParam>
 	bool ParameterSetting( const char* fileName, inParam& param )
@@ -89,8 +102,7 @@ private:
 	std::vector<std::shared_ptr<CCollisionManager>> m_pFootCollision;
 	std::shared_ptr<CCollisionManager>				m_pGroundCollision;
 	D3DXVECTOR3 m_vGroundPosition;	// 地面の位置.
-	D3DXVECTOR3 m_vRightPosition;	// 右足の位置.
-	D3DXVECTOR3 m_vLeftPosition;	// 左足の位置.
+	D3DXVECTOR3 m_vFootPosition[2];	// 足の位置.
 };
 
 #endif	// #ifndef CHARACTER_H.
