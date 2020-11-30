@@ -7,18 +7,21 @@
 
 #include <random>
 
-class CArm;
-class CEffectManager;
+class CArm;				// アームクラス.
+class CEffectManager;	// エフェクトクラス.
 
 class CAlien : public CCharacter
 {
 protected:
 	inline static const float TOLERANCE_RADIAN			= static_cast<float>(D3DXToRadian(10.0));	// 回転の許容範囲.
 	inline static const float BARRIER_HIT_MOVE_SPEED	= -5.0f;									// バリアと衝突時の移動速度.
+	inline static const float SCALE_MIN					= 0.0f;										// モデルの最小値.
 	inline static const float SCALE_MAX					= 1.0f;										// モデルの最大値.
 	inline static const float DEATH_SCALE_PI			= 6.0f*static_cast<float>(D3DX_PI);			// 死亡時のスケールの範囲.
+	inline static const float POSITION_HEIGHT_MIN		= 0.0f;										// 座標の最小高さ.
 
-protected:
+	inline static const float HIT_EFFECT_SCALE		= 2.0f;				// ヒットエフェクトのサイズ.
+	inline static const float HIT_EFFECT_HEIGHT		= 4.0f;				// ヒットエフェクトの高さ.
 	inline static const char* HIT_EEFECT_NAME		= "hiteffekt";		// ヒットエフェクト.
 	inline static const char* SPAWN_EFFECT_NAME		= "uvtest";			// スポーンエフェクト.
 	inline static const char* DEAD_EFFECT_NAME		= "uvtest";			// 死亡エフェクト.

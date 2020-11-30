@@ -36,7 +36,7 @@ CAlien::CAlien( const SAlienParam* pParam )
 	, m_IsExplosion				( false )
 	, m_IsDelete				( false )
 {
-	m_vScale = { 0.0f, 0.0f, 0.0f };
+	m_vScale = { SCALE_MIN, SCALE_MIN, SCALE_MIN };
 	m_AnimFrameList.resize( alien::EAnimNo_Max );
 }
 
@@ -48,7 +48,7 @@ CAlien::~CAlien()
 void CAlien::EffectRender()
 {
 	// ヒット時のエフェクト.
-	m_pEffects[alien::EEffectNo_Hit]->SetScale( 2.0f );
+	m_pEffects[alien::EEffectNo_Hit]->SetScale( HIT_EFFECT_SCALE );
 	m_pEffects[alien::EEffectNo_Hit]->Render();
 
 	// スポーンエフェクト.
@@ -86,7 +86,7 @@ void CAlien::LifeCalculation( const std::function<void(float&,bool&)>& proc )
 	m_NowState = alien::EAlienState::Fright;	// 怯み状態へ遷移.
 	SetAnimation( alien::EAnimNo_Damage, m_pAC );
 	m_AnimSpeed = DEFAULT_ANIM_SPEED;
-	m_pEffects[0]->Play( { m_vPosition.x, m_vPosition.y+4.0f, m_vPosition.z });
+	m_pEffects[alien::EEffectNo_Hit]->Play( { m_vPosition.x, m_vPosition.y+HIT_EFFECT_HEIGHT, m_vPosition.z });
 	if( m_pArm != nullptr ){
 		// アームを片付けていなければ片付ける.
 		if( m_pArm->IsCleanUp() == false ){
@@ -98,7 +98,7 @@ void CAlien::LifeCalculation( const std::function<void(float&,bool&)>& proc )
 	// 体力が 0.0以下なら死亡状態へ遷移.
 	m_NowState = alien::EAlienState::Death;
 	m_pEffects[alien::EEffectNo_Dead]->Play( m_vPosition );
-	SetAnimation( alien::EAnimNo_Dead, m_pAC );
+	CAlien::SetAnimation( alien::EAnimNo_Dead, m_pAC );
 }
 
 // 現在の状態の更新関数.
@@ -240,15 +240,13 @@ void CAlien::Spawning()
 	}
 
 	m_vPosition.y -= pPARAMETER->SpawnDownSpeed;	// 高さを下げる.
-	if( m_vPosition.y <= 0.0f ){
-		m_vPosition.y = 0.0f;
-	}
+	if( m_vPosition.y <= POSITION_HEIGHT_MIN ) m_vPosition.y = POSITION_HEIGHT_MIN;
 
 	// 高さが一定値より大きければ終了.
-	if( m_vScale.x < SCALE_MAX || m_vPosition.y > 0.0f ) return;
+	if( m_vScale.x < SCALE_MAX || m_vPosition.y > POSITION_HEIGHT_MIN ) return;
 
 	CSoundManager::NoMultipleSEPlay("AlienApp");
-	m_AnimSpeed	= 0.01;
+	m_AnimSpeed	= DEFAULT_ANIM_SPEED;
 	SetAnimation( alien::EAnimNo_Move, m_pAC );
 	m_NowState	= alien::EAlienState::Move;
 	m_NowMoveState = alien::EMoveState::Rotation;
@@ -321,8 +319,8 @@ void CAlien::Death()
 	m_vScale = { scale, scale, scale };
 
 	// 大きさが一定値以上なら.
-	if( m_vScale.x > 0.0f ) return;
-	m_vScale = { 0.0f, 0.0f, 0.0f };
+	if( m_vScale.x > SCALE_MIN ) return;
+	m_vScale = { SCALE_MIN, SCALE_MIN, SCALE_MIN };
 	CSoundManager::PlaySE("AlienDead");
 	m_IsDelete = true;	// 死亡フラグを立てる.
 }
@@ -351,7 +349,7 @@ void CAlien::RisingMotherShip()
 	m_vScale.y -= pPARAMETER->MotherShipUpScaleSubValue;
 	m_vScale.z -= pPARAMETER->MotherShipUpScaleSubValue;
 	m_IsRisingMotherShip = true;
-	if( m_vScale.x > 0.0f ) return;
+	if( m_vScale.x > SCALE_MIN ) return;
 	m_IsDelete = true;	// 死亡フラグを立てる.
 }
 
@@ -368,23 +366,23 @@ void CAlien::GirlCollision( CActor* pActor )
 
 	// 球体の当たり判定.
 	if( m_pCollManager->IsShereToShere( pActor->GetCollManager() ) == false ) return;
-
 	if( m_NowState == alien::EAlienState::Abduct ){
 		if( m_AnimFrameList[alien::EAnimNo_Arm].IsNowFrameOver() == true ) m_AnimSpeed = 0.0;
 		if( m_IsRisingMotherShip == true ){
 			pActor->SetScale( m_vScale );
 			m_pArm->SetCleanUpScale( m_vScale );
-			m_pArm->SetPosition( { m_vPosition.x, m_vPosition.y+(5.0f*(fabsf(m_vScale.x))), m_vPosition.z } );
+			m_pArm->SetPosition( { m_vPosition.x, m_vPosition.y+(CArm::GRAB_HEIGHT*(fabsf(m_vScale.x))), m_vPosition.z } );
+			// 掴んだ時の座標.
 			const D3DXVECTOR3 pos =
 			{
-				m_pArm->GetGrabPosition().x+(m_MoveVector.x*(5.0f*(1.0f-m_vScale.x))),
-				m_pArm->GetGrabPosition().y-(5.0f*(fabsf(m_vScale.x))),
-				m_pArm->GetGrabPosition().z+(m_MoveVector.z*(5.0f*(1.0f-m_vScale.x))),
+				m_pArm->GetGrabPosition().x+(m_MoveVector.x*(CArm::GRAB_HEIGHT*(1.0f-m_vScale.x))),
+				m_pArm->GetGrabPosition().y-(CArm::GRAB_HEIGHT*(fabsf(m_vScale.x))),
+				m_pArm->GetGrabPosition().z+(m_MoveVector.z*(CArm::GRAB_HEIGHT*(1.0f-m_vScale.x))),
 			};
 			pActor->SetPosition( pos );
 		} else {
 			// 連れ去っている状態なのでアームの座標を設定する.
-			pActor->SetPosition( { m_pArm->GetGrabPosition().x, m_pArm->GetGrabPosition().y-5.0f, m_pArm->GetGrabPosition().z } );
+			pActor->SetPosition( { m_pArm->GetGrabPosition().x, m_pArm->GetGrabPosition().y-CArm::GRAB_HEIGHT, m_pArm->GetGrabPosition().z } );
 		}
 		pActor->SetRotationY( m_vRotation.y );
 		return;
@@ -393,7 +391,7 @@ void CAlien::GirlCollision( CActor* pActor )
 		if( *m_pIsAlienOtherAbduct == true ){
 			// アームを片付けていなければ片付ける.
 			if( m_pArm->IsCleanUp() == false ){
-				m_AnimSpeed = 0.01;
+				m_AnimSpeed = DEFAULT_ANIM_SPEED;
 				SetAnimation( alien::EAnimNo_Move, m_pAC );
 				m_pArm->SetCleanUpPreparation();
 			}
@@ -431,7 +429,7 @@ void CAlien::BarrierCollision( CActor* pActor )
 		m_NowMoveState	= alien::EMoveState::Move;	// 移動の移動状態へ遷移.
 		*m_pIsAlienOtherAbduct	= false;			// 女の子を連れ去るフラグを下す.
 		SetAnimation( alien::EAnimNo_Move, m_pAC );
-		m_AnimSpeed = 0.01;
+		m_AnimSpeed = DEFAULT_ANIM_SPEED;
 	} else {
 		m_MoveSpeed		= pPARAMETER->MoveSpeed;	// 通常の移動速度に戻す.
 		m_IsBarrierHit	= false;	// バリア衝突フラグを下す.
@@ -459,10 +457,10 @@ bool CAlien::SetAnimFrameList()
 	// 調整用アニメーションフレームのリストを用意.
 	const double animAdjFrames[] =
 	{
-		0.0f,
-		0.01f,
-		0.0f,
-		0.0f,
+		0.0,
+		0.01,
+		0.0,
+		0.0,
 	};
 	if( m_pSkinMesh == nullptr ) return false;
 	for( int i = alien::EAnimNo_Begin; i < alien::EAnimNo_End; i++ ){

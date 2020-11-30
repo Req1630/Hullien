@@ -7,6 +7,7 @@ class CArm : public CGameObject
 {
 public:
 	inline static const float GRAB_DISTANCE	= 5.0f;		// ’Í‚Ş‚Æ‚«‚Ì‹——£.
+	inline static const float GRAB_HEIGHT	= 5.0f;		// ’Í‚Ş‚Æ‚«‚Ì‚‚³.
 
 private:
 	const char* MODEL_NAME = "armsandwich_s";
