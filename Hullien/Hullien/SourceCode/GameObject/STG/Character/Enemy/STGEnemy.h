@@ -6,7 +6,7 @@
 
 #include <random>
 
-class CFont;
+class CFont;	// フォントクラス.
 
 namespace STG
 {
@@ -82,17 +82,18 @@ namespace STG
 
 	private:
 		std::unique_ptr<CFont>	m_pFont;				// フォントクラス.
-		D3DXVECTOR3				m_FontRotation;			// フォントの回転値.
 		STG::EEnemyState		m_NowState;				// 現在の状態.
+		D3DXVECTOR3				m_BulletColor;			// 弾の色.
+		D3DXVECTOR3				m_FontRotation;			// フォントの回転値.
 		float					m_MoveSpeed;			// 移動速度.
 		float					m_MoveingDistance;		// 移動距離.
 		float					m_MoveingDistanceMax;	// 移動距離.
-		int						m_SpawnCount;			// スポーンカウント.
 		float					m_ShotAngle;			// 撃つときの角度.
-		int						m_NowShotBulletCount;	// 現在の撃った弾の数.
-		bool					m_IsHitShake;			// 当たった時の揺れをするか.
 		float					m_ShakeCount;			// 揺れのカウント.
 		float					m_EscapeCount;			// 逃げるカウント.
+		int						m_SpawnCount;			// スポーンカウント.
+		int						m_NowShotBulletCount;	// 現在の撃った弾の数.
+		bool					m_IsHitShake;			// 当たった時の揺れをするか.
 	};
 }
 

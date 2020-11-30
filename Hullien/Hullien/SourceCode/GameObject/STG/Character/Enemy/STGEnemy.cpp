@@ -16,17 +16,18 @@ STG::CEnemy::CEnemy()
 STG::CEnemy::CEnemy( const STG::SEnemyParam& param )
 	: PARAMETER				( param )
 	, m_pFont				( nullptr )
-	, m_FontRotation		( FONT_ROTATION )
 	, m_NowState			( STG::EEnemyState::Spawn )
+	, m_BulletColor			( 0.0f, 0.0f, 0.0f )
+	, m_FontRotation		( FONT_ROTATION )
 	, m_MoveSpeed			( 0.0f )
 	, m_MoveingDistance		( 0.0f )
 	, m_MoveingDistanceMax	( 0.0f )
-	, m_SpawnCount			( 0 )
 	, m_ShotAngle			( 0.0f )
-	, m_NowShotBulletCount	( 0 )
-	, m_IsHitShake			( false )
 	, m_ShakeCount			( SHAKE_COUNT_MAX )
 	, m_EscapeCount			( ESCAPE_COUNT_MAX )
+	, m_SpawnCount			( 0 )
+	, m_NowShotBulletCount	( 0 )
+	, m_IsHitShake			( false )
 {
 	m_pFont			= std::make_unique<CFont>();
 	m_pCollManager	= std::make_shared<CCollisionManager>();
@@ -45,11 +46,18 @@ STG::CEnemy::~CEnemy()
 // 初期化関数.
 bool STG::CEnemy::Init()
 {
-	if( CollisionInit()											== false ) return false;
+	if( CollisionInit()	== false ) return false;
 	if( BulletInit( m_pBullets, PARAMETER.BulletCountMax, BULLET_MODEL_NAME ) == false )	return false;
 	if( FAILED( m_pFont->Init( CDirectX11::GetDevice(), CDirectX11::GetContext() ) ))	return false;
 	// 衝突時、弾を消すかどうか設定.
 	if( PARAMETER.BulletCollDisappear == 1 ) for( auto& b : m_pBullets ) b->SetCollDisappear();
+	// 弾の色を取得.
+	m_BulletColor =
+	{ 
+		1.0f,
+		PARAMETER.BulletCollDisappear*BULLET_COLOR, 
+		PARAMETER.BulletCollDisappear*BULLET_COLOR
+	};
 	return true;
 }
 
@@ -74,12 +82,10 @@ void STG::CEnemy::Update()
 // 描画関数.
 void STG::CEnemy::Render()
 {
-	BulletRender( 
-		{ 
-			1.0f,
-			PARAMETER.BulletCollDisappear*BULLET_COLOR, 
-			PARAMETER.BulletCollDisappear*BULLET_COLOR
-		} );	// 弾の描画.
+	// 弾の描画.
+	BulletRender( m_BulletColor );	// 弾の描画.
+
+	if( m_IsActive	== false ) return;	// 相手が動作してなければ終了.
 
 	m_pFont->SetColor( { 1.0f, 1.0f, 1.0f, 1.0f } );
 	m_pFont->SetPosition( m_vPosition );
@@ -109,8 +115,10 @@ void STG::CEnemy::Collision( STG::CActor* pActor )
 // スポーン.
 void STG::CEnemy::Spawn()
 {
-	m_SpawnCount++;
+	m_SpawnCount++;	// スポーンカウントを加算.
 	if( m_SpawnCount < PARAMETER.SpawnTime ) return;
+	// スポーンカウントが一定値に達すれば.
+	// スポーンする.
 	m_NowState = STG::EEnemyState::Move;
 	m_IsActive = true;
 }
@@ -137,17 +145,21 @@ void STG::CEnemy::Move()
 // 弾を撃つ.
 void STG::CEnemy::Shot()
 {
-	m_ShotCount++;
+	m_ShotCount++;	// ショットカウントを加算.
+	// ショットカウントが一定値に達すれば、弾を撃つ.
 	if( m_ShotCount != PARAMETER.ShotIntervalFrame ) return;
 
-	float angle = m_ShotAngle;
+	float angle = m_ShotAngle;	// 弾の角度を設定.
+	// nWay数分ループ.
 	for( int i = 0; i < PARAMETER.AnyBulletCountMax; i++ ){
 		if( m_NowShotBulletCount < PARAMETER.BulletCountMax ){
+			// 弾を撃つ.
 			STG::CCharacter::BulletShot( angle, PARAMETER.BulletSpeed );
-			angle += PARAMETER.ShotAngle;
-			m_NowShotBulletCount++;
+			angle += PARAMETER.ShotAngle;	// nWayの角度を加算.
+			m_NowShotBulletCount++;			// 現在撃った弾を加算.
 		}
 	}
+	// 撃っ弾の数が最大数になれば逃げる.
 	if( m_NowShotBulletCount == PARAMETER.BulletCountMax ){
 		m_NowState = STG::EEnemyState::Escape;
 	}
@@ -170,10 +182,12 @@ void STG::CEnemy::Escape()
 	if( m_EscapeCount > 0.0f ){
 		m_MoveingDistance += m_MoveSpeed;	// 距離を加算.
 	}
+
 	// 移動距離が一定距離を超得たら.
 	if( m_MoveingDistance >= m_MoveingDistanceMax ){
 		SearchRandomMoveVector();	// 移動ベクトルを検索する.
 	}
+
 	// 画面外に出たら.
 	if( IsDisplayOut( E_WND_OUT_ADJ_SIZE ) == true ){
 		m_NowState = STG::EEnemyState::Dead;	// 死亡.
@@ -246,16 +260,20 @@ void STG::CEnemy::SearchRandomMoveVector()
 // 当たり判定の作成.
 bool STG::CEnemy::CollisionInit()
 {
-	float isLeadByte = 2.0f;
-	if( IsDBCSLeadByte( PARAMETER.Text[0] ) == TRUE ){
-		isLeadByte = 1.0f;
-	}
+	float charByte = 2.0f;	// 文字のバイト数.
+	// テキストの一文字目のバイト数を取得.
+	if( IsDBCSLeadByte( PARAMETER.Text[0] ) == TRUE ) charByte = 1.0f;
+
+	// テキストの大きさを取得.
+	const float textScale = 
+		( PARAMETER.TextSize * charByte * static_cast<float>(PARAMETER.Text.length()) );
+
 	if( FAILED( m_pCollManager->InitCapsule(
 		&m_vPosition,
 		&m_vRotation,
 		&m_vScale.x,
 		{0.0f, 0.0f, 0.0f},
 		PARAMETER.TextSize,
-		PARAMETER.TextSize*isLeadByte*static_cast<float>(PARAMETER.Text.length()) ))) return false;
+		textScale ))) return false;
 	return true;
 }
