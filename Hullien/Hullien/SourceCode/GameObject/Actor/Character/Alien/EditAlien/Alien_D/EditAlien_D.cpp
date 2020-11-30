@@ -12,7 +12,7 @@ CEditAlienD::CEditAlienD()
 	, m_AttackCount			( 0.0f )
 	, m_IsAttackStart		( false )
 {
-	m_vScale = { 1.0f, 1.0f, 1.0f };
+	m_vScale = { SCALE_MAX, SCALE_MAX, SCALE_MAX };
 	m_ObjectTag = EObjectTag::Alien_B;
 	m_pLaserBeam = std::make_unique<CLaserBeam>();
 }
@@ -76,7 +76,7 @@ void CEditAlienD::PlayAttack()
 	m_IsAttackStart	= false;	// 攻撃が始まるフラグを下す.
 	m_AttackCount	= 0.0f;		// 攻撃カウントを初期化,
 	m_NowMoveState	= alien::EMoveState::Attack;	// 攻撃状態へ遷移.
-	m_pLaserBeam->SetTargetPos( { 3.0f, 0.0f, 3.0f } );	// プレイヤーの座標を取得.
+	m_pLaserBeam->SetTargetPos( ATTACK_POSITION );	// プレイヤーの座標を取得.
 	SetAnimation( alien::EAnimNo_Attack, m_pAC );
 	m_IsPlaying = true;
 }
@@ -136,7 +136,7 @@ void CEditAlienD::Attack()
 	const double attackSpeed = m_IsAttackStart == false ? m_AnimSpeed : -m_AnimSpeed;
 	m_AttackCount += static_cast<float>(attackSpeed);	// 攻撃カウントの追加.
 
-	if( m_AnimFrameList[m_NowAnimNo].NowFrame >= 0.7 ){
+	if( m_AnimFrameList[m_NowAnimNo].NowFrame >= ATTACK_FRAME ){
 		m_IsAttackStart = true;
 
 		// 相手への向きを取得.
@@ -144,15 +144,18 @@ void CEditAlienD::Attack()
 			m_TargetPosition.x - m_vPosition.x,
 			m_TargetPosition.z - m_vPosition.z );
 
-		D3DXVECTOR3 headPos = m_vPosition;
-		headPos.y += 15.0f;
-		headPos.x += sinf( radius ) * 3.5f;
-		headPos.z += cosf( radius ) * 3.5f;
+		// 頭の座標.
+		const D3DXVECTOR3 headPos = 
+		{
+			m_vPosition.x + sinf( radius ) * HEAD_ADJ_POSITION.x,
+			m_vPosition.y + HEAD_ADJ_POSITION.y,
+			m_vPosition.z + cosf( radius ) * HEAD_ADJ_POSITION.z,
+		};
 
 		// 上向き少し後ろに設定..
-		m_ControlPositions[0].x = headPos.x + sinf( radius ) * m_Paramter.ControlPointOneLenght;
-		m_ControlPositions[0].y = headPos.y + m_Paramter.ControlPointOneLenghtY;
-		m_ControlPositions[0].z = headPos.z + cosf( radius ) * m_Paramter.ControlPointOneLenght;
+		m_ControlPositions[0].x = headPos.x + sinf( radius ) * pPARAMETER->ControlPointOneLenght;
+		m_ControlPositions[0].y = headPos.y + pPARAMETER->ControlPointOneLenghtY;
+		m_ControlPositions[0].z = headPos.z + cosf( radius ) * pPARAMETER->ControlPointOneLenght;
 
 		// 上で設定したコントロールポジションを設定.
 		m_pLaserBeam->SetControlPointList( m_ControlPositions );

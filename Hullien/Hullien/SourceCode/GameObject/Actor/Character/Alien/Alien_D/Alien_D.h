@@ -15,7 +15,7 @@ class CAlienD : public CAlien
 	const float ATTACK_TIME				= 1.0f;									// 攻撃時間.
 	const float ATTACL_SPRITE_ROT_X		= static_cast<float>(D3DXToRadian(90));	// 攻撃スプライトの回転値.
 	const D3DXVECTOR3 HEAD_ADJ_POSITION = { 3.5f, 15.0f, 3.5f };				// 頭の調整座標.
-	const double ATTACK_FRAME			= 0.7;									// 攻撃フレーム
+	const double ATTACK_FRAME			= 0.7;									// 攻撃フレーム.
 
 	const float SPAWN_EFFECT_SCALE		= 5.0f;	// スポーンエフェクトのサイズ.
 
