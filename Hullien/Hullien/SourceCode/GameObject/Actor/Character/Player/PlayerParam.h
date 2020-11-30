@@ -65,9 +65,9 @@ enum enAttackNo : unsigned char
 {
 	EAttackNo_None,
 
-	EAttackNo_One,
-	EAttackNo_Two, 
-	EAttackNo_Three,
+	EAttackNo_One,		// ˆê‰ñ–Ú.
+	EAttackNo_Two,		// “ñ‰ñ–Ú.
+	EAttackNo_Three,	// ŽO‰ñ–Ú.
 
 	EAttackNo_Max = EAttackNo_Three,
 } typedef EAttackNo;
