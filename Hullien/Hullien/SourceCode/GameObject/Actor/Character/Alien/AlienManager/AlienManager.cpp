@@ -165,7 +165,7 @@ void CAlienManager::SetDropItemList( CAlien* ailen )
 
 	// —Ž‚Æ‚·ƒAƒCƒeƒ€‚ÌÝ’è.
 	D3DXVECTOR3 dropPos = ailen->GetPosition();
-	dropPos.y += 4.0f;	// ‚‚ß‚É’²®.
+	dropPos.y += ITEM_DROP_HEIGHT;	// ‚‚ß‚É’²®.
 	m_DropItemList[ailen->GetAnyItem()] = dropPos;
 }
 

@@ -17,6 +17,8 @@ class CAlienManager
 	const char* SPAWN_PARAM_FILE_PATH = "Data\\GameParam\\Alien\\SpaenParam\\SpaenParam.bin";
 	const char* EXPLOSION_PARAM_FILE_PATH = "Data\\GameParam\\Alien\\Explosion\\Explosion.bin";
 	const char* ALIEN_PARAM_LIST_FILE_PATH = "Data\\GameParam\\Alien\\AlienParamPathList.txt";
+
+	const float ITEM_DROP_HEIGHT = 4.0f;	// ÉAÉCÉeÉÄÇóéÇ∆Ç∑çÇÇ≥.
 public:
 	CAlienManager();
 	~CAlienManager();
