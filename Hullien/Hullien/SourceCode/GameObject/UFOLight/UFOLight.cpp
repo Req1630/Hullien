@@ -14,7 +14,7 @@ CUFOLight::CUFOLight( const float& height, const float& wedht )
 	, m_pStaticMesh		( nullptr )
 	, m_NowState		( EUFOLightState::None )
 {
-	m_vScale = { 0.0f, 0.0f, 0.0f };
+	m_vScale = { DEFAULT_SCALE_WEDTH_MIN, DEFAULT_SCALE_HEIGHT_MIN, DEFAULT_SCALE_WEDTH_MIN };
 }
 
 CUFOLight::~CUFOLight()
@@ -35,12 +35,15 @@ void CUFOLight::Update()
 	switch( m_NowState )
 	{
 	case EUFOLightState::Discharge:
+		// モデルを拡大する.
+		// 高さ.
 		if( m_vScale.y < SCALE_HEIGHT_MAX ){
 			m_vScale.y += SCALE_UP_HEIGHT_SPEED;
 			if( m_vScale.y >= SCALE_HEIGHT_MAX ){
 				m_vScale.y = SCALE_HEIGHT_MAX;
 			}
 		}
+		// 幅.
 		if( m_vScale.x < SCALE_WEDTH_MAX ){
 			m_vScale.x += SCALE_UP_WEDTH_SPEED;
 			m_vScale.z += SCALE_UP_WEDTH_SPEED;
@@ -52,18 +55,21 @@ void CUFOLight::Update()
 		}
 		break;
 	case EUFOLightState::CleanUP:
-		if( m_vScale.y > 0.0f ){
+		// モデルを縮小する.
+		// 高さ.
+		if( m_vScale.y > DEFAULT_SCALE_HEIGHT_MIN ){
 			m_vScale.y -= SCALE_UP_WEDTH_SPEED;
-			if( m_vScale.y <= 0.0f ){
-				m_vScale.y = 0.0f;
+			if( m_vScale.y <= DEFAULT_SCALE_HEIGHT_MIN ){
+				m_vScale.y = DEFAULT_SCALE_HEIGHT_MIN;
 			}
 		}
-		if( m_vScale.x > 0.0f ){
+		// 幅.
+		if( m_vScale.x > DEFAULT_SCALE_WEDTH_MIN ){
 			m_vScale.x -= SCALE_UP_HEIGHT_SPEED;
 			m_vScale.z -= SCALE_UP_HEIGHT_SPEED;
-			if( m_vScale.x <= 0.0f ){
-				m_vScale.x = 0.0f;
-				m_vScale.z = 0.0f;
+			if( m_vScale.x <= DEFAULT_SCALE_WEDTH_MIN ){
+				m_vScale.x = DEFAULT_SCALE_WEDTH_MIN;
+				m_vScale.z = DEFAULT_SCALE_WEDTH_MIN;
 				m_NowState = EUFOLightState::EndCleanUP;
 			}
 		}
@@ -109,11 +115,13 @@ void CUFOLight::CleanUP()
 // 光を完全に放出する.
 void CUFOLight::DischargePreparation()
 {
+	// モデルの最大サイズを入れる.
 	m_vScale = { SCALE_WEDTH_MAX, SCALE_HEIGHT_MAX, SCALE_WEDTH_MAX };
 }
 
 // 光を片づける.
 void CUFOLight::CleanUPPreparation()
 {
-	m_vScale = { 0.0f, 0.0f, 0.0f };
+	// モデルの最小サイズを入れる.
+	m_vScale = { DEFAULT_SCALE_WEDTH_MIN, DEFAULT_SCALE_HEIGHT_MIN, DEFAULT_SCALE_WEDTH_MIN };
 }

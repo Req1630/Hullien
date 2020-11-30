@@ -12,6 +12,8 @@ class CUFOLight : public CGameObject
 	const float SCALE_UP_WEDTH_SPEED		= 0.02f;	// デフォルト幅拡大速度.
 	const float DEFAULT_SCALE_HEIGHT_MAX	= 1.0f;		// 高さの最大サイズ.
 	const float DEFAULT_SCALE_WEDTH_MAX		= 1.0f;		// 幅の最大サイズ,
+	const float DEFAULT_SCALE_HEIGHT_MIN	= 0.0f;		// 高さの最小サイズ.
+	const float DEFAULT_SCALE_WEDTH_MIN		= 0.0f;		// 幅の最小サイズ,
 	
 	const float SCALE_HEIGHT_MAX;	// 高さ拡大速度.
 	const float SCALE_WEDTH_MAX;	// 幅拡大速度.
@@ -21,7 +23,6 @@ class CUFOLight : public CGameObject
 	{
 		None,
 		
-
 		Discharge,		// 取り出す.
 		CleanUP,		// 片づける.
 		EndDischarge,	// 取り出し終わった.
