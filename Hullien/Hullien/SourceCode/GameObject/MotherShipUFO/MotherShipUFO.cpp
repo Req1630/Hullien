@@ -15,7 +15,7 @@ CMotherShipUFO::CMotherShipUFO()
 	, m_IsDisp			( true )
 	, m_IsReturnAlien	( false )
 {
-	m_pUFOLight = std::make_unique<CUFOLight>( 1.85f, 1.5f );
+	m_pUFOLight = std::make_unique<CUFOLight>( LIGHT_HEIGHT, LIGHT_WEDTH );
 	m_ObjectTag = EObjectTag::MotherShipUFO;
 }
 
@@ -76,6 +76,8 @@ void CMotherShipUFO::Collision( CActor* pActor )
 	if (CSoundManager::GetIsPlaySE("UFOSucked", 0) == false) {
 		CSoundManager::PlaySE("UFOSucked");
 	}
+
+	// 宇宙人の座標を取得して座標を移動させる.
 	D3DXVECTOR3 pos = pActor->GetPosition();
 	pos.y += m_Param.AddPosYPower;	// 座標を上にあげる.
 	pActor->SetPosition( pos );

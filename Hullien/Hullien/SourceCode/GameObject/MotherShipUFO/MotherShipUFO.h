@@ -31,6 +31,8 @@ private:
 	const char* MODEL_NAME = "ufo";	// モデル名.
 	const char* PARAMETER_FILE_PATH = "Data\\GameParam\\Alien\\MotherShipUFOParam\\MotherShipUFOParam.bin";
 //	const SMotherShipUFOParam*	pPRAMETER;	// パラメータ(外部からポインタで受け取る).
+	const float LIGHT_HEIGHT	= 1.85f;
+	const float LIGHT_WEDTH		= 1.5f;
 
 public:
 	CMotherShipUFO();
@@ -70,7 +72,7 @@ private:
 	std::shared_ptr<CDX9StaticMesh>		m_pStaticMesh;	// スタティックメッシュ.
 	std::shared_ptr<CCollisionManager>	m_pCollManager;	// 当たり判定クラス.
 	std::unique_ptr<CUFOLight>			m_pUFOLight;	// UFOのライト.
-	SMotherShipUFOParam					m_Param;
+	SMotherShipUFOParam					m_Param;		// パラメーター.
 	bool								m_IsDisp;		// 描画しているか.
 	bool								m_IsReturnAlien;// 宇宙人が帰還したか.
 };
