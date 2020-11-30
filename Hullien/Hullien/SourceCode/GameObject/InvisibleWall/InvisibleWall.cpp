@@ -8,7 +8,7 @@ CInvisibleWall::CInvisibleWall()
 	, m_pCollision	( nullptr )
 #endif	// #ifdef _DEBUG.
 {
-	m_vPosition.y = 10.0f;
+	m_vPosition.y = POSITION_HEIGHT;
 }
 
 CInvisibleWall::~CInvisibleWall()
