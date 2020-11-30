@@ -73,12 +73,12 @@ void CAlienD::Render()
 void CAlienD::EffectRender()
 {
 	// ヒット時のエフェクト.
-	m_pEffects[alien::EEffectNo_Hit]->SetScale( 2.0f );
+	m_pEffects[alien::EEffectNo_Hit]->SetScale( HIT_EFFECT_SCALE );
 	m_pEffects[alien::EEffectNo_Hit]->Render();
 
 	// スポーンエフェクト.
 	m_pEffects[alien::EEffectNo_Spawn]->SetLocation( m_vPosition );
-	m_pEffects[alien::EEffectNo_Spawn]->SetScale( 5.0f );
+	m_pEffects[alien::EEffectNo_Spawn]->SetScale( SPAWN_EFFECT_SCALE );
 	m_pEffects[alien::EEffectNo_Spawn]->Render();
 
 	// 死亡エフェクト.
@@ -160,7 +160,7 @@ void CAlienD::AttackRangeSpriteRender()
 
 	// 攻撃範囲スプライトの描画.
 	m_pAttackRangeSprite->SetPosition( { m_TargetPosition.x, pPARAMETER->AttackRangeSpritePosY, m_TargetPosition.z } );
-	m_pAttackRangeSprite->SetRotation( { static_cast<float>(D3DXToRadian(90)), 0.0f, 0.0f } );
+	m_pAttackRangeSprite->SetRotation( { ATTACL_SPRITE_ROT_X, 0.0f, 0.0f } );
 	m_pAttackRangeSprite->SetScale( pPARAMETER->AttackRangeSpriteScale );	
 	m_pAttackRangeSprite->SetColor( color );
 	m_pAttackRangeSprite->SetBlend( true );
@@ -223,7 +223,7 @@ void CAlienD::Attack()
 	const double attackSpeed = m_IsAttackStart == false ? m_AnimSpeed : -m_AnimSpeed;
 	m_AttackCount += static_cast<float>(attackSpeed);	// 攻撃カウントの追加.
 
-	if( m_AnimFrameList[m_NowAnimNo].NowFrame >= 0.7 ){
+	if( m_AnimFrameList[m_NowAnimNo].NowFrame >= ATTACK_FRAME ){
 		m_IsAttackStart = true;
 
 		// 相手への向きを取得.
@@ -231,10 +231,13 @@ void CAlienD::Attack()
 			m_TargetPosition.x - m_vPosition.x,
 			m_TargetPosition.z - m_vPosition.z );
 
-		D3DXVECTOR3 headPos = m_vPosition;
-		headPos.y += 15.0f;
-		headPos.x += sinf( radius ) * 3.5f;
-		headPos.z += cosf( radius ) * 3.5f;
+		// 頭の座標.
+		const D3DXVECTOR3 headPos = 
+		{
+			m_vPosition.x + sinf( radius ) * HEAD_ADJ_POSITION.x,
+			m_vPosition.y + HEAD_ADJ_POSITION.y,
+			m_vPosition.z + cosf( radius ) * HEAD_ADJ_POSITION.z,
+		};
 
 		// 上向き少し後ろに設定..
 		m_ControlPositions[0].x = headPos.x + sinf( radius ) * pPARAMETER->ControlPointOneLenght;
