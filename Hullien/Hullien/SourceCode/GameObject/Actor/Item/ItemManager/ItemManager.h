@@ -8,7 +8,7 @@
 #include <memory>
 #include <vector>
 
-class CActor;
+class CActor;	// アクタークラス.
 
 class CItemManager
 {
