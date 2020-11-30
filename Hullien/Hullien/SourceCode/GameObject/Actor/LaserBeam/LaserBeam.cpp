@@ -36,8 +36,8 @@ CLaserBeam::~CLaserBeam()
 // ‰Šú‰»ŠÖ”.
 bool CLaserBeam::Init()
 {
-	if( CollisionSetting() == false ) return false;
-	if( GetEffect() == false ) return false; 
+	if( CollisionSetting()	== false ) return false;
+	if( GetEffect()			== false ) return false; 
 	if( FAILED( m_pTrajectory->Init( nullptr, nullptr ) ) ) return false;
 	return true;
 }
