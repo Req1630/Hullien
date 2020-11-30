@@ -189,13 +189,16 @@ PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
 	
 	//-----高さフォグ処理------.
 	// fogテクスチャの座標を取得、計算.
-	const float fogColor =
+		const float fogColor =
 		(g_FogTexture.Sample(g_SamLinear, input.PosW.xz * g_Fog.TexScale + g_Fog.FogTex.xy).r +
 		 g_FogTexture.Sample(g_SamLinear, input.PosW.xz * g_Fog.TexScale + g_Fog.FogTex.zw).r) * 0.5f;
 	float alpha = clamp((input.PosW.y - g_Fog.MinHeight) / (g_Fog.MaxHeight - g_Fog.MinHeight), 0.0f, 1.0f);
 	float alphas = 1.0f - (1.0f - alpha) * fogColor;
 
 	color.rgb = color.rgb * alphas + g_Fog.FogColor.rgb * (1.0f - alphas);
+	
+	if (length(input.Normal) <= 0.0)
+		color = g_Texture.Sample(g_SamLinear, input.Tex) * g_Color;
 	
 	PS_OUTPUT output = (PS_OUTPUT) 0;
 	output.Color = color;

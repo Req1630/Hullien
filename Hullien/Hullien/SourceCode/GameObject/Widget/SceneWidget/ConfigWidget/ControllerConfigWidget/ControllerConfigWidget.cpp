@@ -19,6 +19,7 @@ CControllerConfigWidget::CControllerConfigWidget()
 	, m_InputWaitTime		( 0.0f )
 {
 	m_pCursor = std::make_unique<CCursor>();
+	m_IsVibration = CXInput::IsVibration();
 }
 
 CControllerConfigWidget::~CControllerConfigWidget()

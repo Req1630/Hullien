@@ -226,6 +226,7 @@ public:
 	static bool SetVibration( WORD LMotorSpd, WORD RMotorSpd, const int& connectNum = 0 );
 	// U“®‚ğ‚·‚é‚©‚Ç‚¤‚©İ’è.
 	static void SetVibration( const bool& isVib ){ GetInstance()->m_IsVibration = isVib; }
+	static bool IsVibration(){ return GetInstance()->m_IsVibration; }
 
 	// ƒ{ƒ^ƒ“‚Ìİ’è.
 	static void SetButton( enBUTTON_LIST before, enBUTTON_LIST after )
