@@ -23,7 +23,7 @@ CItemBase::CItemBase()
 	, m_HitEffectCount		( 0.0f )
 	, pPRAMETER				( nullptr )
 {
-	m_vScale = { 1.0f, 1.0f, 1.0f };
+	m_vScale = { SCALE_MAX, SCALE_MAX, SCALE_MAX };
 }
 
 CItemBase::CItemBase( const SParameter* pParam )
@@ -117,7 +117,7 @@ void CItemBase::Collision( CActor* pActor )
 void CItemBase::Drop( const D3DXVECTOR3& vPos )
 {
 	this->Init();
-	m_ModelAlpha		= 1.0f;
+	m_ModelAlpha		= MODEL_ALPHA_MAX;
 	m_AccelerationValue	= 0.0f;
 	m_BoundCount		= 0;
 	m_ActiveCount		= 0;
@@ -134,7 +134,7 @@ void CItemBase::Drop()
 	// モデルサイズを大きくする.
 	if( m_Scale <= pPRAMETER->ModelScaleMax ){
 		m_Scale += pPRAMETER->ModelScaleAddValue;
-		if( m_Scale >= 1.0f ) m_Scale = 1.0f;
+		if( m_Scale >= SCALE_MAX ) m_Scale = SCALE_MAX;
 		m_vScale = { m_Scale, m_Scale, m_Scale };
 	}
 
@@ -142,7 +142,7 @@ void CItemBase::Drop()
 	m_vPosition.y -= m_AccelerationValue;	// 座標を加算値で引く.
 
 	// 高さが1.0fより低くなった場合.
-	if( m_vPosition.y <= 1.0f ){
+	if( m_vPosition.y <= POSITION_HEIGHT_MIN ){
 		m_AccelerationValue = -m_AccelerationValue;	// 加算値を反転する.
 		m_Gravity += m_Gravity;	// 重力を加算する.
 		m_BoundCount++;		// バウンドの回数を加算する.
@@ -170,7 +170,7 @@ void CItemBase::Active()
 // 当たった際に消える処理.
 void CItemBase::HitDisappear()
 {
-	m_HitEffectCount += 1.0f;
+	m_HitEffectCount++;
 	if( m_HitEffectCount < pPRAMETER->HitEffectTime*FPS ) return;
 	m_NowState = ENowState::Delete;	// 現在の状態を消す状態に変更.
 }
@@ -237,14 +237,13 @@ void CItemBase::DropAndActiveRender()
 	if( m_NowState == ENowState::Delete ) return;
 	if( m_NowState == ENowState::None ) return;
 	if( m_NowState == ENowState::Max ) return;
-	if( m_ModelAlpha < 1.0f ) return;
+	if( m_ModelAlpha < MODEL_ALPHA_MAX ) return;
 
 	if( m_pStaticMesh == nullptr ) return;
 	m_pStaticMesh->SetPosition( m_vPosition );
 	m_pStaticMesh->SetRotation( m_vRotation );
 	m_pStaticMesh->SetScale( m_vScale );
 	m_pStaticMesh->SetAlpha( m_ModelAlpha );
-	AlphaBlendSetting();
 	m_pStaticMesh->SetRasterizerState( ERS_STATE::Back );
 	m_pStaticMesh->Render();
 	m_pStaticMesh->SetRasterizerState( ERS_STATE::None );
@@ -262,7 +261,7 @@ void CItemBase::DropAndActiveEffectRender()
 	if( m_NowState == ENowState::Delete ) return;
 	if( m_NowState == ENowState::None ) return;
 	if( m_NowState == ENowState::Max ) return;
-	if( m_ModelAlpha < 1.0f ) return;
+	if( m_ModelAlpha < MODEL_ALPHA_MAX ) return;
 
 	// エフェクトの描画.
 	m_pEffects[static_cast<int>(EEffectNumber::DropAndActive)]->SetScale( 1.5f );
@@ -277,20 +276,4 @@ void CItemBase::HitEffectRender()
 	// エフェクトの描画.
 	m_pEffects[static_cast<int>(EEffectNumber::Hit)]->SetLocation( m_vPosition );
 	m_pEffects[static_cast<int>(EEffectNumber::Hit)]->Render();
-}
-
-// アルファブレンドの設定.
-void CItemBase::AlphaBlendSetting()
-{
-	if( CSceneTexRenderer::GetRenderPass() == CSceneTexRenderer::ERenderPass::Shadow ){
-		if( m_ModelAlpha < 1.0f ){
-			m_pStaticMesh->SetBlend( false );
-		}
-	}
-	if( CSceneTexRenderer::GetRenderPass() == CSceneTexRenderer::ERenderPass::GBuffer ){
-		m_pStaticMesh->SetBlend( true );
-		if( m_ModelAlpha >= 1.0f ){
-			m_pStaticMesh->SetBlend( false );
-		}
-	}
 }

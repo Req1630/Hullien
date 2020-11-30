@@ -7,9 +7,13 @@ class CEffectManager;	// エフェクトクラス.
 
 class CItemBase : public CActor
 {
-	const float INIT_MODEL_ALPHA			= 1.0f;		// 初期モデル透過値.
-	const float DEFAULT_ACCELERATION_VALUE	= -0.05f;	// デフォルト加速値.
-	const float DEFAULT_GRAVITY				= 0.001f;	// デフォルト重力.
+	inline static const float INIT_MODEL_ALPHA				= 1.0f;		// 初期モデル透過値.
+	inline static const float MODEL_ALPHA_MAX				= 1.0f;		// モデルのアルファの最大値.
+	inline static const float DEFAULT_ACCELERATION_VALUE	= -0.05f;	// デフォルト加速値.
+	inline static const float DEFAULT_GRAVITY				= 0.001f;	// デフォルト重力.
+	inline static const float SCALE_MAX						= 1.0f;		// モデルの最小値.
+	inline static const float SCALE_MIN						= 0.0f;		// モデルの最大値.
+	inline static const float POSITION_HEIGHT_MIN			= 1.0f;		// 座標の最小高さ.
 public:
 	// パラメータ.
 	struct stParameter
@@ -50,7 +54,7 @@ private:
 
 protected:
 	// 現在の状態.
-	enum class enNowState
+	enum class enNowState : unsigned char
 	{
 		None,
 
@@ -64,7 +68,7 @@ protected:
 	} typedef ENowState;
 
 	// 使用するエフェクト番号.
-	enum class enEffectNumber
+	enum class enEffectNumber : char
 	{
 		None = -1,
 
@@ -124,27 +128,21 @@ private:
 	void DropAndActiveEffectRender();
 	// ヒット時のエフェクトの描画.
 	void HitEffectRender();
-	// アルファブレンドの設定.
-	void AlphaBlendSetting();
 
 protected:
 	std::shared_ptr<CDX9StaticMesh> m_pStaticMesh;	// スタティックメッシュ.
 	std::vector<std::shared_ptr<CEffectManager>> m_pEffects; // エフェクト.
-	ENowState m_NowState;	// 現在の状態.
-	float m_Scale;
-	float m_ModelAlpha;
-
+	ENowState m_NowState;		// 現在の状態.
+	float m_Scale;				// サイズ.
+	float m_ModelAlpha;			// モデルのアルファ値.
 	float m_AccelerationValue;	// 加速値.
 	float m_Gravity;			// 重力.
 	int m_BoundCount;			// バウンド数.
-
-	int m_ActiveCount;		// アクティブカウント.
-
+	int m_ActiveCount;			// アクティブカウント.
 	float m_FlashingCount;		// 点滅カウント.
 	float m_DisappearCount;		// 消える時間.
 	float m_FlashingAccValue;	// 点滅加速値.
-
-	float m_HitEffectCount;	// ヒット時のエフェクトカウント.
+	float m_HitEffectCount;		// ヒット時のエフェクトカウント.
 };
 
 #endif	// #ifndef ITEM_BASE_H.

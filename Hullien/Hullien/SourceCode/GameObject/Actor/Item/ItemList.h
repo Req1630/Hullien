@@ -5,7 +5,7 @@
 #include "..\..\..\Global.h"
 
 // アイテムリスト.
-enum  class enItemList
+enum class enItemList : unsigned char
 {
 	None,
 
