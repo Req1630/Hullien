@@ -153,9 +153,9 @@ void CEditAlienD::Attack()
 		};
 
 		// 上向き少し後ろに設定..
-		m_ControlPositions[0].x = headPos.x + sinf( radius ) * pPARAMETER->ControlPointOneLenght;
-		m_ControlPositions[0].y = headPos.y + pPARAMETER->ControlPointOneLenghtY;
-		m_ControlPositions[0].z = headPos.z + cosf( radius ) * pPARAMETER->ControlPointOneLenght;
+		m_ControlPositions[0].x = headPos.x + sinf( radius ) * m_Paramter.ControlPointOneLenght;
+		m_ControlPositions[0].y = headPos.y + m_Paramter.ControlPointOneLenghtY;
+		m_ControlPositions[0].z = headPos.z + cosf( radius ) * m_Paramter.ControlPointOneLenght;
 
 		// 上で設定したコントロールポジションを設定.
 		m_pLaserBeam->SetControlPointList( m_ControlPositions );

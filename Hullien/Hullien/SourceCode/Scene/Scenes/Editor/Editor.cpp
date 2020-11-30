@@ -18,6 +18,7 @@
 #include "..\..\..\Camera\CameraManager\CameraManager.h"
 #include "..\..\..\Common\Fog\Fog.h"
 #include "..\..\..\XAudio2\SoundManager.h"
+#include "..\..\..\Resource\EffectResource\EffectResource.h"
 
 CEditor::CEditor( CSceneManager* pSceneManager )
 	: CSceneBase			( pSceneManager )
@@ -43,6 +44,8 @@ CEditor::~CEditor()
 // “ÇŠÖ”.
 bool CEditor::Load()
 {
+	CEffectResource::Release();
+	CEffectResource::Load( CDirectX11::GetDevice(), CDirectX11::GetContext() );
 	if( CreateEditList()			== false ) return false;
 	if( m_pSkyDome->Init()			== false ) return false;
 	if( m_pGroundStage->Init()		== false ) return false;

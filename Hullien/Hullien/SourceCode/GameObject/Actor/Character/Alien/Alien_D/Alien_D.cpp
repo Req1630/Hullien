@@ -22,7 +22,7 @@ CAlienD::CAlienD( const SAlienParam* pParam )
 	, m_IsAttackStart		( false )
 {
 	m_ObjectTag = EObjectTag::Alien_D;
-	m_pLaserBeam = std::make_unique<CLaserBeam>();
+	m_pLaserBeam = std::make_unique<CLaserBeam>( pPARAMETER->AttackRangeSpriteScale*0.1f );
 }
 
 CAlienD::~CAlienD()
@@ -161,7 +161,7 @@ void CAlienD::AttackRangeSpriteRender()
 	// UŒ‚”ÍˆÍƒXƒvƒ‰ƒCƒg‚Ì•`‰æ.
 	m_pAttackRangeSprite->SetPosition( { m_TargetPosition.x, pPARAMETER->AttackRangeSpritePosY, m_TargetPosition.z } );
 	m_pAttackRangeSprite->SetRotation( { ATTACL_SPRITE_ROT_X, 0.0f, 0.0f } );
-	m_pAttackRangeSprite->SetScale( pPARAMETER->AttackRangeSpriteScale );	
+	m_pAttackRangeSprite->SetScale( pPARAMETER->AttackRangeSpriteScale );
 	m_pAttackRangeSprite->SetColor( color );
 	m_pAttackRangeSprite->SetBlend( true );
 	m_pAttackRangeSprite->SetRasterizerState( ERS_STATE::Back );

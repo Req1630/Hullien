@@ -8,19 +8,29 @@
 #include "..\..\..\Common\SceneTexRenderer\SceneTexRenderer.h"
 
 CLaserBeam::CLaserBeam()
-	: m_pTrajectory			( nullptr )
-	, m_pEffect				( nullptr )
-	, m_MoveSpeed			( DEFAULT_MOVE_SPEED )
-	, m_ParalysisTime		( DEFAULT_PARALYSIS_TIME )
-	, m_TargetPosition		( 0.0f, 0.0f, 0.0f )
-	, m_IsInAttack			( false )
-	, m_IsEndAttack			( true )
-	, m_FrameCount			( 0.0f )
-	, m_FrameTime			( 1.0f )
-	, m_InitPosition		( 0.0f, 0.0f, 0.0f )
-	, m_ControlPointList	()
-	, m_VertexPointList		()
-	, m_VertexAddTimeCount	( 0 )
+	: CLaserBeam	( DEFAULT_ATTACK_COLLISION_SCALE )
+{
+	m_ObjectTag = EObjectTag::LaserBeam;
+	m_pTrajectory = std::make_unique<CTrajectory>();
+	m_pEffect = std::make_shared<CEffectManager>();
+	m_VertexPointList.reserve( MAX_TRAJECTORY_COUNT );
+}
+
+CLaserBeam::CLaserBeam( const float& collRad )
+	: ATTACK_COLLISION_SCALE	( collRad )
+	, m_pTrajectory				( nullptr )
+	, m_pEffect					( nullptr )
+	, m_MoveSpeed				( DEFAULT_MOVE_SPEED )
+	, m_ParalysisTime			( DEFAULT_PARALYSIS_TIME )
+	, m_TargetPosition			( 0.0f, 0.0f, 0.0f )
+	, m_IsInAttack				( false )
+	, m_IsEndAttack				( true )
+	, m_FrameCount				( 0.0f )
+	, m_FrameTime				( 1.0f )
+	, m_InitPosition			( 0.0f, 0.0f, 0.0f )
+	, m_ControlPointList		()
+	, m_VertexPointList			()
+	, m_VertexAddTimeCount		( 0 )
 {
 	m_ObjectTag = EObjectTag::LaserBeam;
 	m_pTrajectory = std::make_unique<CTrajectory>();
@@ -107,6 +117,7 @@ void CLaserBeam::Collision( CActor* pActor )
 	if( m_IsEndAttack == true ) return;
 	if( m_pCollManager == nullptr ) return;
 	if( m_pCollManager->GetCapsule() == nullptr ) return;
+	if( m_FrameCount < m_FrameTime-m_MoveSpeed ) return;
 
 	// ƒJƒvƒZƒ‹‚Ì“–‚½‚è”»’è.
 	if( m_pCollManager->IsCapsuleToCapsule( pActor->GetCollManager() ) == false ) return;
@@ -229,8 +240,8 @@ bool CLaserBeam::CollisionSetting()
 		&m_vRotation,
 		&m_vScale.x,
 		{ 0.0f, 0.0f, 0.0f },
-		1.0f,
-		1.0f ) )) return false;
+		ATTACK_COLLISION_SCALE,
+		ATTACK_COLLISION_SCALE ) )) return false;
 
 	return true;
 }
