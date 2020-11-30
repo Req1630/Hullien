@@ -7,6 +7,7 @@ class CEffectManager;	// エフェクトクラス.
 
 class CItemBase : public CActor
 {
+protected:
 	inline static const float INIT_MODEL_ALPHA				= 1.0f;		// 初期モデル透過値.
 	inline static const float MODEL_ALPHA_MAX				= 1.0f;		// モデルのアルファの最大値.
 	inline static const float DEFAULT_ACCELERATION_VALUE	= -0.05f;	// デフォルト加速値.
@@ -14,6 +15,8 @@ class CItemBase : public CActor
 	inline static const float SCALE_MAX						= 1.0f;		// モデルの最小値.
 	inline static const float SCALE_MIN						= 0.0f;		// モデルの最大値.
 	inline static const float POSITION_HEIGHT_MIN			= 1.0f;		// 座標の最小高さ.
+	inline static const float EFFECT_SCALE_MAX				= 1.5f;		// エフェクトの最大サイズ.
+
 public:
 	// パラメータ.
 	struct stParameter

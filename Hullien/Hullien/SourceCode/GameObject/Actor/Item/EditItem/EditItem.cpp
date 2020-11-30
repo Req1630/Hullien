@@ -36,7 +36,7 @@ void CEditItem::Update()
 
 	if( m_NowState != ENowState::Delete ) return;
 	m_RotatonY += m_Parameter.RotationSpeed;
-	if( m_RotatonY >= static_cast<float>(D3DXToDegree( 360.0 )) ) m_RotatonY = 0.0f;
+	if( m_RotatonY >= D3DX_PI*2.0 ) m_RotatonY = 0.0f;
 }
 
 // 描画関数.
@@ -47,10 +47,10 @@ void CEditItem::Render()
 
 	if( m_NowState != ENowState::Delete ) return;
 	if( m_pStaticMesh == nullptr ) return;
-	m_pStaticMesh->SetPosition( { 0.0f, 5.0f, 0.0f } );
+	m_pStaticMesh->SetPosition( { 0.0f, POSITION_HEIGHT, 0.0f } );
 	m_pStaticMesh->SetRotation( { 0.0f, m_RotatonY, 0.0f } );
-	m_pStaticMesh->SetScale( { 1.0f, 1.0f, 1.0f } );
-	m_pStaticMesh->SetAlpha( 1.0f );
+	m_pStaticMesh->SetScale( { SCALE_MAX, SCALE_MAX, SCALE_MAX } );
+	m_pStaticMesh->SetAlpha( MODEL_ALPHA_MAX );
 	m_pStaticMesh->SetRasterizerState( ERS_STATE::Back );
 	m_pStaticMesh->Render();
 	m_pStaticMesh->SetRasterizerState( ERS_STATE::None );
@@ -63,10 +63,10 @@ void CEditItem::EffectRender()
 	if( m_NowState == ENowState::Delete ) return;
 	if( m_NowState == ENowState::None ) return;
 	if( m_NowState == ENowState::Max ) return;
-	if( m_ModelAlpha < 1.0f ) return;
+	if( m_ModelAlpha < MODEL_ALPHA_MAX ) return;
 
 	// エフェクトの描画.
-	m_pEffects[m_NowItemNo]->SetScale( 1.5f );
+	m_pEffects[m_NowItemNo]->SetScale( EFFECT_SCALE_MAX );
 	m_pEffects[m_NowItemNo]->Render();
 }
 
@@ -88,7 +88,7 @@ void CEditItem::Drop( const D3DXVECTOR3& vPos )
 	if( m_NowState == ENowState::Drop ) return;
 	m_vScale = { 0.0f, 0.0f, 0.0f };
 	m_Scale				= 0.0f;
-	m_ModelAlpha		= 1.0f;
+	m_ModelAlpha		= MODEL_ALPHA_MAX;
 	m_AccelerationValue	= 0.0f;
 	m_BoundCount		= 0;
 	m_ActiveCount		= 0;

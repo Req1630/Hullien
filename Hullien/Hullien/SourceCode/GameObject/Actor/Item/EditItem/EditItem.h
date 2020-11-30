@@ -14,6 +14,9 @@ class CEditItem : public CItemBase
 	const char* ABILITY_EFFECT_NAME	= "item_effect_ability";	// エフェクト名.
 	const char* ATTACK_EFFECT_NAME	= "item_effect_attack";		// エフェクト名.
 	const char* SPEED_EFFECT_NAME	= "item_effect_speed";		// エフェクト名.
+
+	const float SCALE_MAX	= 1.0f;
+	const float POSITION_HEIGHT = 5.0f;
 public:
 	CEditItem();
 	virtual ~CEditItem();
