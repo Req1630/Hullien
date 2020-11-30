@@ -46,6 +46,7 @@ bool CBarrier::Init()
 void CBarrier::Update()
 {
 	if( m_IsActive == false ) return;	// 動作してなければ終了.
+
 	if( m_CollSphereRadius <= COLLISION_SPHERE_RDIUS_MAX ){
 		CSoundManager::NoMultipleSEPlay("BarrierInvocating");
 		m_CollSphereRadius += COLLISION_SPHERE_RDIUS_ADD_VALUE;	// 当たり半径の加算.
@@ -105,7 +106,7 @@ void CBarrier::EffectRender()
 
 	// エフェクトを描画.
 	m_pEffect->SetLocation( m_vPosition );
-	m_pEffect->SetScale( 0.3f );
+	m_pEffect->SetScale( EFFECT_SCALE );
 	m_pEffect->Render();
 
 #if _DEBUG

@@ -2,17 +2,19 @@
 #define BARRIER_H
 
 #include "..\Actor.h"
+
 class CEffectManager;	// エフェクトクラス.
-class CEventActor;
+class CEventActor;		// イベントアクタークラス.
 
 class CBarrier : public CActor
 {
 	const char* MODEL_NAME = "Barrier";
 	const char* EFFECT_NAME = "barrier_effect";	// エフェクトの名前.
 
-	const float COLLISION_SPHERE_RDIUS_MAX = 20.0f;
-	const float COLLISION_SPHERE_RDIUS_ADD_VALUE = 1.0f;
-	const float ACTIVE_TIME = 5.0f;
+	const float COLLISION_SPHERE_RDIUS_MAX			= 20.0f;	// 当たり判定の最大半径.
+	const float COLLISION_SPHERE_RDIUS_ADD_VALUE	= 1.0f;		// 当たり判定サイズ加算値.
+	const float ACTIVE_TIME		= 5.0f;	// 動作時間.
+	const float EFFECT_SCALE	= 3.0f;	// エフェクトのサイズ.
 
 public:
 	CBarrier();
@@ -41,7 +43,7 @@ private:
 
 private:
 	std::shared_ptr<CDX9StaticMesh>	m_StaticMesh;	// スタティックメッシュ.
-	std::shared_ptr<CEffectManager>	m_pEffect;	// エフェクト.
+	std::shared_ptr<CEffectManager>	m_pEffect;		// エフェクト.
 	bool m_IsEffectPlay;		// エフェクトが再生されたか.
 	bool m_IsActive;			// 動作状態か.
 	float m_ActiveCount;		// 動作カウント.
