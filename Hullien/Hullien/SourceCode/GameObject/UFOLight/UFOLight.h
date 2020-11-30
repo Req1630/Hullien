@@ -5,16 +5,18 @@
 
 class CUFOLight : public CGameObject
 {
-	const char* MODEL_NAME = "light";
+	const char* MODEL_NAME = "light";	// モデル名.
 
-	const float SCALE_UP_HEIGHT_SPEED = 0.2f;
-	const float SCALE_UP_WEDTH_SPEED = 0.02f;
-	const float DEFAULT_SCALE_HEIGHT_MAX = 1.0f;
-	const float DEFAULT_SCALE_WEDTH_MAX = 1.0f;
+	const float MODEL_ALPHA					= 0.5f;		// モデルアルファ値.
+	const float SCALE_UP_HEIGHT_SPEED		= 0.2f;		// デフォルト高さ拡大速度.
+	const float SCALE_UP_WEDTH_SPEED		= 0.02f;	// デフォルト幅拡大速度.
+	const float DEFAULT_SCALE_HEIGHT_MAX	= 1.0f;		// 高さの最大サイズ.
+	const float DEFAULT_SCALE_WEDTH_MAX		= 1.0f;		// 幅の最大サイズ,
 	
-	const float SCALE_HEIGHT_MAX;
-	const float SCALE_WEDTH_MAX;
+	const float SCALE_HEIGHT_MAX;	// 高さ拡大速度.
+	const float SCALE_WEDTH_MAX;	// 幅拡大速度.
 
+	// UFOライトの状態.
 	enum class enUFOLightState
 	{
 		None,
@@ -48,8 +50,8 @@ public:
 	void CleanUPPreparation();
 
 private:
-	std::shared_ptr<CDX9StaticMesh>	m_pStaticMesh;
-	EUFOLightState					m_NowState;
+	std::shared_ptr<CDX9StaticMesh>	m_pStaticMesh;	// メッシュ.
+	EUFOLightState					m_NowState;		// 現在の状態.
 };
 
 #endif	// #ifndef UFO_LIGHT_H.

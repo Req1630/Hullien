@@ -86,7 +86,7 @@ void CUFOLight::Render()
 	m_pStaticMesh->SetPosition( m_vPosition );
 	m_pStaticMesh->SetRotation( m_vRotation );
 	m_pStaticMesh->SetScale( m_vScale );
-	m_pStaticMesh->SetAlpha( 0.5f );
+	m_pStaticMesh->SetAlpha( MODEL_ALPHA );
 	m_pStaticMesh->SetCoverage( true );
 	m_pStaticMesh->SetRasterizerState( ERS_STATE::Back );
 	m_pStaticMesh->Render( true );
