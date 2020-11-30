@@ -14,6 +14,7 @@ namespace STG
 	class CEnemyFactory
 	{
 		const char* FILE_NAME = "Data\\GameParam\\STG\\EnemyData.csv";	// ファイル名.
+		const float POSITION_HEIGHT_ADD_VALUE = 0.0001f;				// 高さ調整用値.
 	public:
 		CEnemyFactory();
 		~CEnemyFactory();

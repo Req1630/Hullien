@@ -40,7 +40,7 @@ namespace STG
 	} typedef SEnemyParam;
 
 	// Œ»İ‚Ìó‘Ô.
-	enum class enEnemyState
+	enum class enEnemyState : unsigned char
 	{
 		None,
 
@@ -54,7 +54,7 @@ namespace STG
 	} typedef EEnemyState;
 
 	// “G‚Ìƒpƒ‰ƒ[ƒ^”Ô†.
-	enum enEnemyParamNo
+	enum enEnemyParamNo : unsigned char
 	{
 		EEnemyParamNo_None,
 

@@ -84,7 +84,9 @@ bool STG::CEnemyFactory::Create( std::vector<std::shared_ptr<STG::CEnemy>>& enem
 		}
 		enemys.emplace_back( std::make_shared<STG::CEnemy>(enemyParam) );
 		enemys.back()->SetPositionY( posY );
-		posY += 0.001f;
+		// おんなじ座標で重なるとおかしくなるので、
+		// 少し座標を足して、調整する.
+		posY += POSITION_HEIGHT_ADD_VALUE;
 	}
 	return true;
 }
