@@ -37,6 +37,9 @@ void CLifeGauge::Update()
 		m_OldLife = m_Parameter.LifeMax;	// “ü‚ê‚é.
 		m_IsOldLifeSet = true;
 	}
+
+	if( m_Parameter.Life <= 0.0f ) m_Parameter.Life = 0.0f;
+
 	m_GaugeState[GAUGE_NUM].vScale.x = m_Parameter.Life / m_Parameter.LifeMax;
 
 	// ’x‰„—pƒ‰ƒCƒt‚Ìˆ—.
