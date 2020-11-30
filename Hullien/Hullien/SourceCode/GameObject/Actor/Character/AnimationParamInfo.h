@@ -27,7 +27,11 @@ struct stAnimFrame
 } typedef SAnimFrame;
 
 // アニメーションのフレーム情報のリスト.
-typedef std::vector<SAnimFrame> AAnimFrameList;	
+typedef std::vector<SAnimFrame> AAnimFrameList;
+/*
+AAnimFrameList
+A = arrary
+*/
 
 };
 
