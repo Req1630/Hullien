@@ -18,7 +18,10 @@ namespace STG
 		const int	SHOT_INTERVAL_FRAME	= 15;						// 弾を撃つ間隔フレーム.
 		const D3DXVECTOR3 BULLET_COLOR	= { 1.0f, 1.0f, 1.0f };		// 弾の色.
 		const D3DXVECTOR3 INIT_POSITION = { 0.0f, 0.0f, 70.0f };	// 初期座標.
+		const float MODEL_SCALE_MAX		= 1.0f;						// モデルの最大サイズ.
+		const float MODEL_SCALE_MIN		= 0.0f;						// モデルの最小サイズ.
 
+		const float COLLISION_SCALE		= 2.0f;		// 当たり判定の大きさ.
 		const float SPAWN_END_POS_Z		= 40.0f;	// スポーンの終了座標.
 		const float SPAWN_SPEED_SUB		= 0.005f;	// スポーンの移動速度の減算値.
 

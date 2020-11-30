@@ -68,7 +68,10 @@ void STG::CPlayer::SpawnMove()
 {
 	if( m_IsActive == true ) return;
 	m_vPosition.z -= m_SpawnMoveSpeed;
+	// 移動速度を目的の座標にたどり着くまで減らす.
 	if( m_vPosition.z <= SPAWN_END_POS_Z ) m_SpawnMoveSpeed -= SPAWN_SPEED_SUB;
+
+	// スポーン完了.
 	if( m_SpawnMoveSpeed > 0.0f ) return;
 	m_IsActive = true;
 }
@@ -76,8 +79,10 @@ void STG::CPlayer::SpawnMove()
 // 移動関数.
 void STG::CPlayer::Move()
 {
-	if( m_IsActive == false ) return;
-	if( m_IsDead == true ) return;
+	if( m_IsActive == false ) return;	// アクティブ状態じゃなければ終了.
+	if( m_IsDead == true ) return;		// 死亡していれば終了.
+
+	// ベクトルを使用し、移動する.
 	m_vPosition.x -= m_MoveVector.x * MOVE_SPEED;
 	m_vPosition.z -= m_MoveVector.z * MOVE_SPEED;
 	OutDispMove();	// 画面外に行った際の処理.
@@ -86,16 +91,20 @@ void STG::CPlayer::Move()
 // 死亡後処理.
 void STG::CPlayer::DeadUpdate()
 {
-	if( m_IsDead == false ) return;
+	if( m_IsDead == false ) return;	// 死亡状態じゃなければ終了.
 
+	// モデルのスケール値を減らす.
 	m_vScale.x -= DEAD_SPEED;
 	m_vScale.y -= DEAD_SPEED;
 	m_vScale.z -= DEAD_SPEED;
+	// モデルを回転させる.
 	m_vRotation.y += DEAD_SPEED;
 
-	if( m_vScale.x > 0.0f ) return;
+	if( m_vScale.x > MODEL_SCALE_MIN ) return;
+	// モデルのスケール値が最小値になれば.
+	// 各値を初期化する.
 	m_vRotation.y		= 0.0f;
-	m_vScale			= { 1.0f, 1.0f, 1.0f };
+	m_vScale			= { MODEL_SCALE_MAX, MODEL_SCALE_MAX, MODEL_SCALE_MAX };
 	m_IsDead			= false;
 	m_IsActive			= false;
 	m_SpawnMoveSpeed	= MOVE_SPEED;
@@ -115,10 +124,11 @@ void STG::CPlayer::Controller()
 	m_Direction.x = static_cast<float>(CXInput::RThumbX_Axis());
 	m_Direction.z = static_cast<float>(CXInput::RThumbY_Axis());
 
-	if( GetAsyncKeyState(VK_UP) & 0x8000 )		m_MoveVector.z = IDLE_THUMB_MAX;
-	if( GetAsyncKeyState(VK_DOWN) & 0x8000 )	m_MoveVector.z = IDLE_THUMB_MIN;
-	if( GetAsyncKeyState(VK_RIGHT) & 0x8000 )	m_MoveVector.x = IDLE_THUMB_MAX;
-	if( GetAsyncKeyState(VK_LEFT) & 0x8000 )	m_MoveVector.x = IDLE_THUMB_MIN;
+	// キーボード入力を取得.
+	if( GetAsyncKeyState(VK_UP)		& 0x8000 )	m_MoveVector.z = IDLE_THUMB_MAX;
+	if( GetAsyncKeyState(VK_DOWN)	& 0x8000 )	m_MoveVector.z = IDLE_THUMB_MIN;
+	if( GetAsyncKeyState(VK_RIGHT)	& 0x8000 )	m_MoveVector.x = IDLE_THUMB_MAX;
+	if( GetAsyncKeyState(VK_LEFT)	& 0x8000 )	m_MoveVector.x = IDLE_THUMB_MIN;
 
 	// 各値が有効範囲外なら終了.
 	if( m_MoveVector.x < IDLE_THUMB_MAX && IDLE_THUMB_MIN < m_MoveVector.x &&
@@ -141,33 +151,34 @@ void STG::CPlayer::Controller()
 // 弾を撃つ操作関数.
 void STG::CPlayer::ShotController()
 {
+	bool playShotSE = false;
 	// 押した瞬間にShotCount初期化・弾を撃つ.
 	if( CXInput::R_Button() == CXInput::enPRESSED_MOMENT ){
 		m_ShotCount = 0;
-		if( BulletShot( m_vRotation.y, BULLET_MOVE_SPEED ) == true ){
-			CSoundManager::PlaySE(SHOT_SE_NAME);
-		}
+		playShotSE = BulletShot( m_vRotation.y, BULLET_MOVE_SPEED );
 	}
 	// 長押しの場合弾を撃つ・ShotCountの加算.
 	if( CXInput::R_Button() == CXInput::enPRESS_AND_HOLD || ( GetAsyncKeyState('Z') & 0x8000 )){
 		m_ShotCount++;
 		if( m_ShotCount == SHOT_INTERVAL_FRAME ){
-			if( BulletShot( m_vRotation.y, BULLET_MOVE_SPEED ) == true ){
-				CSoundManager::PlaySE(SHOT_SE_NAME);
-			}
+			playShotSE = BulletShot( m_vRotation.y, BULLET_MOVE_SPEED );
 			m_ShotCount = 0;
 		}
 	}
+
+	// ショットSEを鳴らすか.
+	if( playShotSE == true ) CSoundManager::PlaySE(SHOT_SE_NAME);
 }
 
 // ライフ計算関数.
 void STG::CPlayer::LifeCalculation( const std::function<void(float&)>& proc )
 {
-	proc( m_LifePoint );
-	CSoundManager::PlaySE(HIT_SE_NAME);
+	proc( m_LifePoint );	// ライフを計算する.
+	CSoundManager::PlaySE(HIT_SE_NAME);	// ヒットSEを鳴らす.
 
 	if( m_LifePoint > 0.0f ) return;
-	m_IsDead = true;
+	// ライフが 0 いかに慣れば.
+	m_IsDead = true;	// 死亡フラグを立てる.
 }
 
 // 画面外に行った時の処理.
@@ -184,12 +195,13 @@ void STG::CPlayer::OutDispMove()
 // 当たり判定の作成.
 bool STG::CPlayer::CollisionInit()
 {
+	// カプセルの当たり判定を作成する(今回の場合スフィアになる).
 	if( FAILED( m_pCollManager->InitCapsule(
 		&m_vPosition,
 		&m_vRotation,
 		&m_vScale.x,
 		{0.0f, 0.0f, 0.0f},
-		2.0f,
-		2.0f ))) return false;
+		COLLISION_SCALE,
+		COLLISION_SCALE ))) return false;
 	return true;
 }
