@@ -13,6 +13,8 @@ class CGirl : public CCharacter
 	const float TOLERANCE_RADIAN		= static_cast<float>(D3DXToRadian(10.0));	// 回転の許容範囲.
 	const float THRESHOLD_VALUE_RADIAN	= static_cast<float>(D3DXToRadian(140.0));	// しきい値.
 
+	const float INIT_POSITION_Z			= 4.0f;	// 初期座標.
+	const float WARNING_RENDER_POS_Y	= 5.0f;	// 危険の描画座標の高さ.
 
 	enum enAnimNo
 	{

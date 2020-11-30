@@ -26,8 +26,8 @@ CGirl::CGirl()
 	m_OldAnimNo		= EAnimNo_None;	// 過去のアニメーションは無し.
 	m_pSearchCollManager = std::make_shared<CCollisionManager>();
 	m_pWarning		= std::make_unique<CWarning>();
+	m_vPosition.z	= INIT_POSITION_Z;
 	m_AnimFrameList.resize( EAnimNo_Max );
-	m_vPosition.z = 4.0f;
 }
 
 CGirl::~CGirl()
@@ -124,7 +124,7 @@ void CGirl::SpriteRender()
 	// 女の子が連れ去られている状態または危険な状態ならば警告を描画.
 	if (m_NowState == ENowState::Abduct || m_IsDanger == true)
 	{
-		m_pWarning->SetPosition({ m_vPosition.x, m_vPosition.y+5.0f, m_vPosition.z});
+		m_pWarning->SetPosition({ m_vPosition.x, m_vPosition.y+WARNING_RENDER_POS_Y, m_vPosition.z});
 		m_pWarning->Update();
 		m_pWarning->Render();
 	}
