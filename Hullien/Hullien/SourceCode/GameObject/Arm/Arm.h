@@ -16,6 +16,8 @@ private:
 	const float CLEAN_UP_SUB_VALUE		= 0.015f;	// 片づけ時の減算値.
 	const float CLEAN_UP_COUNT_MIN		= 0.0f;		// 片づけ時の最小数.
 
+	const float SCALE_MAX				= 1.0f;		// モデルサイズの最大値.
+	const float SCALE_MIN				= 0.0f;		// モデルサイズの最小値.
 	const float SCALING_VALUE			= 0.5f;		// 拡縮値.
 	const float SCALING_VALUE_MAX		= 1.0f;		// 拡縮の最大値.
 	const float SCALING_ADD_VALUE		= (1.0f-SCALING_VALUE)*0.04f;	// 拡縮の加算値.

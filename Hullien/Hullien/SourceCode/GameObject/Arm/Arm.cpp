@@ -14,7 +14,7 @@ CArm::CArm()
 	, m_ScalingValue	( SCALING_VALUE )
 	, m_AnimSpeed		( 0.0 )
 {
-	m_vScale = { 0.0f, 0.0f, 0.0f };
+	m_vScale = { SCALE_MIN, SCALE_MIN, SCALE_MIN };
 }
 
 CArm::~CArm()
@@ -70,8 +70,6 @@ void CArm::Render()
 {
 	if( m_pSkinMesh == nullptr ) return;
 
-	m_vRotation.y += 0.001f;
-
 	m_pSkinMesh->SetPosition( m_vPosition );
 	m_pSkinMesh->SetRotation( m_vRotation );
 	m_pSkinMesh->SetScale( m_vScale );
@@ -122,7 +120,7 @@ void CArm::SetCleanUpPreparation()
 // 完全に取り出す
 void CArm::SetAppearance()
 {
-	m_vScale = { 1.0f, 1.0f, 1.0f };
+	m_vScale = { SCALE_MAX, SCALE_MAX, SCALE_MAX };
 	m_pSkinMesh->ChangeAnimSet_StartPos( 0, m_AnimEndFrame, m_pAC );
 	m_NowArmState  = EArmState::End;	// 終了.
 }
@@ -130,7 +128,7 @@ void CArm::SetAppearance()
 // 完全に片づける.
 void CArm::SetCleanUp()
 {
-	m_vScale = { 0.0f, 0.0f, 0.0f };
+	m_vScale = { SCALE_MIN, SCALE_MIN, SCALE_MIN };
 	m_pSkinMesh->ChangeAnimSet_StartPos( 0, 0.0, m_pAC );
 	m_AnimSpeed			= 0.0;				// アニメーション速度変更.
 	m_NowArmState		= EArmState::Start;	// 次の状態へ移動.
