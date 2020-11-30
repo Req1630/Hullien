@@ -10,16 +10,18 @@
 #include <vector>
 #include <random>
 
-class CActor;
-class CUFOLight;
+class CActor;				// アクタークラス.
+class CUFOLight;			// UFOライトクラス.
 class CCollisionManager;	// 当たり判定クラス.
-class CUltemateSing;
+class CUltemateSing;		// 宇宙人Dの警告UIクラス.
 
 class CSpawnUFO : public CGameObject
 {
-	const char* MODEL_NAME = "ufo_mini";	// モデル名.
-	const float COLLISION_RADIUS = 5.0f;
-	const float ADD_POS_POWER = 0.1f;
+	const char* MODEL_NAME			= "ufo_mini";	// モデル名.
+	const float COLLISION_RADIUS	= 5.0f;			// 当たり判定のサイズ.
+	const float ADD_POS_POWER		= 0.1f;			// 座標を上にあげる力.
+	const float LIGHT_HEIGHT		= 1.65f;		// ライトの高さ.
+	const float LIGHT_WEDTH			= 1.4f;			// ライトの幅.
 public:
 	CSpawnUFO();
 	virtual ~CSpawnUFO();

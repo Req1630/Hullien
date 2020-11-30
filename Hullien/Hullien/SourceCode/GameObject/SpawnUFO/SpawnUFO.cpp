@@ -30,7 +30,7 @@ CSpawnUFO::CSpawnUFO()
 	// ランダムシードの初期化.
 	std::random_device rd;
 	m_RandomSeed = std::mt19937( rd() );
-	m_pUFOLight = std::make_shared<CUFOLight>( 1.65f, 1.4f );
+	m_pUFOLight = std::make_shared<CUFOLight>( LIGHT_HEIGHT, LIGHT_WEDTH );
 	m_pUltemateSing = std::make_unique<CUltemateSing>();
 }
 
@@ -41,10 +41,10 @@ CSpawnUFO::~CSpawnUFO()
 // 初期化関数.
 bool CSpawnUFO::Init()
 {
-	if( GetModel() == false ) return false;
-	if( CollisionSetting() == false ) return false;
-	if( m_pUFOLight->Init() == false ) return false;
-	if( m_pUltemateSing->Init() == false ) return false;
+	if( GetModel()				== false ) return false;
+	if( CollisionSetting()		== false ) return false;
+	if( m_pUFOLight->Init()		== false ) return false;
+	if( m_pUltemateSing->Init()	== false ) return false;
 	return true;
 }
 
@@ -66,7 +66,8 @@ D3DXVECTOR3 CSpawnUFO::Collision(CActor * pActor)
 // 更新関数.
 void CSpawnUFO::Update()
 {
-	m_SpawnCount++;
+	m_SpawnCount++;	// スポーンカウントの加算.
+
 	m_pUFOLight->Update();
 	m_pUltemateSing->Update();
 }
@@ -272,7 +273,7 @@ bool CSpawnUFO::CollisionSetting()
 		&m_vRotation,
 		&m_vScale.x,
 		{ 0.0f, 0.0f, 0.0f },
-		COLLISION_RADIUS))) {
+		COLLISION_RADIUS ))) {
 		return false;
 	}
 	return true;
