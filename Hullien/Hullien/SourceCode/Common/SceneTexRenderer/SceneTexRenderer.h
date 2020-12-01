@@ -90,6 +90,9 @@ public:
 	// TransBufferテクスチャを取得.
 	static ID3D11ShaderResourceView* GetTransBaffer(){ return GetInstance()->m_pTransBufferSRV; }
 
+	// ウィンドウサイズが変更された時に呼ぶ.
+	static void Resize();
+
 private:
 	// ShadowBufferの作成.
 	HRESULT InitShadowBufferTex();
@@ -141,6 +144,9 @@ private:
 	ID3D11Buffer*			m_pConstantBuffer;	// コンスタントバッファ.
 	ID3D11Buffer*			m_pVertexBuffer;	// 頂点バッファ.
 	ID3D11SamplerState*		m_pSampleLinear;	// サンプラ:テクスチャに各種フィルタをかける.
+
+	UINT					m_WndWidth;			// ウィンドウ幅.
+	UINT					m_WndHeight;		// ウィンドウ高さ.
 
 	ERenderPass				m_NowRenderPass;	// 現在のレンダリングパス.
 

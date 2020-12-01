@@ -4,6 +4,8 @@
 #include "..\Utility\ImGuiManager\ImGuiManager.h"
 #include "..\Utility\Log\MyLog.h"
 #include "..\XAudio2\SoundManager.h"
+#include "..\Common\D3DX\D3DX11.h"
+#include "..\Common\SceneTexRenderer\SceneTexRenderer.h"
 
 // ImGui‚ÅŽg—p.
 extern LRESULT ImGui_ImplWin32_WndProcHandler( HWND, UINT, WPARAM, LPARAM );
@@ -75,6 +77,10 @@ LRESULT CALLBACK WndProc(
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
+		break;
+	case WM_SIZE:
+		CDirectX11::Resize();
+		CSceneTexRenderer::Resize();
 		break;
 	}
 	return DefWindowProc( hWnd, uMsg, wParam, lParam );

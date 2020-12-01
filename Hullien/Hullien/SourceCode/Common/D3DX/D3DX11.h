@@ -43,6 +43,10 @@ public: //----- 関数 ------.
 	static ID3D11DeviceContext* GetContext() { return GetInstance()->m_pContext11; }
 	// デプスステンシルビューの取得.
 	static ID3D11DepthStencilView* GetDepthSV(){ return GetInstance()->m_pBackBuffer_DSTexDSV; }
+	// ウィンドウサイズの取得.
+	static UINT GetWndWidth(){ return GetInstance()->m_WndWidth; }
+	static UINT GetWndHeight(){ return GetInstance()->m_WndHeight; }
+
 	// BackBufferの設定.
 	static void SetBackBuffer();
 
@@ -57,6 +61,8 @@ public: //----- 関数 ------.
 
 	// フルスクリーンの設定.
 	static bool SetFullScreen( const bool& isOn );
+	// ウィンドウサイズが変更された時に呼ぶ.
+	static void Resize();
 
 private: //----- 関数 ------.
 		 // デバイス11の作成.
@@ -101,6 +107,9 @@ private: //----- 変数 ------.
 	ID3D11RasterizerState*		m_pRsSoldAndBack;	// ソリッドAnd背面を描画しない.
 	ID3D11RasterizerState*		m_pRsSoldAndFront;	// ソリッドand正面を描画しない.
 	ID3D11RasterizerState*		m_pRsWireFrame;		// ワイヤーフレーム描画.
+
+	UINT	m_WndWidth;		// ウィンドウ幅.
+	UINT	m_WndHeight;	// ウィンドウ高さ.
 
 private:
 	// コピー・ムーブコンストラクタ, 代入演算子の削除.

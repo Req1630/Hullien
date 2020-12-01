@@ -25,6 +25,8 @@ CSceneTexRenderer::CSceneTexRenderer()
 	, m_pConstantBuffer			( nullptr )
 	, m_pVertexBuffer			( nullptr )
 	, m_pSampleLinear			( nullptr )
+	, m_WndWidth				( 0 )
+	, m_WndHeight				( 0 )
 	, m_NowRenderPass			( ERenderPass::Shadow )
 {
 }
@@ -46,6 +48,10 @@ HRESULT CSceneTexRenderer::Init()
 {
 	GetInstance()->m_pDevice11 = CDirectX11::GetDevice();
 	GetInstance()->m_pContext11 = CDirectX11::GetContext();
+	GetInstance()->m_WndWidth = CDirectX11::GetWndWidth();
+	GetInstance()->m_WndHeight = CDirectX11::GetWndHeight();
+
+	if( GetInstance()->m_pDevice11 == nullptr ) return E_FAIL;
 
 	if( FAILED( GetInstance()->InitShadowBufferTex()) )		return E_FAIL;
 	if( FAILED( GetInstance()->InitGBufferTex()))			return E_FAIL;
@@ -184,14 +190,21 @@ void CSceneTexRenderer::SetTransBuffer()
 		CDirectX11::GetDepthSV(), D3D11_CLEAR_DEPTH, 1.0f, 0 );
 }
 
+// ウィンドウサイズが変更された時に呼ぶ.
+void CSceneTexRenderer::Resize()
+{
+	GetInstance()->Release();
+	Init();
+}
+
 //-----------------------------------.
 // ShadowBufferの作成.
 //-----------------------------------.
 HRESULT CSceneTexRenderer::InitShadowBufferTex()
 {
 	D3D11_TEXTURE2D_DESC texDesc;
-	texDesc.Width				= WND_W*FULL_SCREEN_MUL;		// 幅.
-	texDesc.Height				= WND_H*FULL_SCREEN_MUL;		// 高さ.
+	texDesc.Width				= GetInstance()->m_WndWidth ;	// 幅.
+	texDesc.Height				= GetInstance()->m_WndHeight;	// 高さ.
 	texDesc.MipLevels			= 1;							// ミップマップレベル:1.
 	texDesc.ArraySize			= 1;							// 配列数:1.
 	texDesc.SampleDesc.Count	= 1;							// 32ビットフォーマット.
@@ -219,8 +232,8 @@ HRESULT CSceneTexRenderer::InitShadowBufferTex()
 HRESULT CSceneTexRenderer::InitGBufferTex()
 {
 	D3D11_TEXTURE2D_DESC texDesc;
-	texDesc.Width				= WND_W*FULL_SCREEN_MUL;			// 幅.
-	texDesc.Height				= WND_H*FULL_SCREEN_MUL;			// 高さ.
+	texDesc.Width				= GetInstance()->m_WndWidth ;		// 幅.
+	texDesc.Height				= GetInstance()->m_WndHeight;		// 高さ.
 	texDesc.MipLevels			= 1;								// ミップマップレベル:1.
 	texDesc.ArraySize			= 1;								// 配列数:1.
 	texDesc.Format				= DXGI_FORMAT_R16G16B16A16_FLOAT;	// 32ビットフォーマット.
@@ -252,8 +265,8 @@ HRESULT CSceneTexRenderer::InitGBufferTex()
 HRESULT CSceneTexRenderer::InitTransBufferTex()
 {
 	D3D11_TEXTURE2D_DESC texDesc;
-	texDesc.Width				= WND_W*FULL_SCREEN_MUL;			// 幅.
-	texDesc.Height				= WND_H*FULL_SCREEN_MUL;			// 高さ.
+	texDesc.Width				= GetInstance()->m_WndWidth ;		// 幅.
+	texDesc.Height				= GetInstance()->m_WndHeight;		// 高さ.
 	texDesc.MipLevels			= 1;								// ミップマップレベル:1.
 	texDesc.ArraySize			= 1;								// 配列数:1.
 	texDesc.Format				= DXGI_FORMAT_R11G11B10_FLOAT;		// 32ビットフォーマット.
@@ -276,8 +289,8 @@ HRESULT CSceneTexRenderer::InitTransBufferTex()
 HRESULT CSceneTexRenderer::InitAntialiasingTex()
 {
 	D3D11_TEXTURE2D_DESC texDesc;
-	texDesc.Width				= WND_W*FULL_SCREEN_MUL;			// 幅.
-	texDesc.Height				= WND_H*FULL_SCREEN_MUL;			// 高さ.
+	texDesc.Width				= GetInstance()->m_WndWidth ;		// 幅.
+	texDesc.Height				= GetInstance()->m_WndHeight;		// 高さ.
 	texDesc.MipLevels			= 1;								// ミップマップレベル:1.
 	texDesc.ArraySize			= 1;								// 配列数:1.
 	texDesc.Format				= DXGI_FORMAT_R11G11B10_FLOAT;		// 32ビットフォーマット.
@@ -469,8 +482,8 @@ HRESULT CSceneTexRenderer::CreateConstantBuffer()
 	D3DXMatrixIdentity( &cb.mW );
 	D3DXMatrixTranspose( &cb.mW, &cb.mW );
 	// ビューポートの幅,高さを渡す.
-	cb.vViewPort.x	= static_cast<float>(WND_W);
-	cb.vViewPort.y	= static_cast<float>(WND_H);
+	cb.vViewPort.x = static_cast<float>(GetInstance()->m_WndWidth);
+	cb.vViewPort.y = static_cast<float>(GetInstance()->m_WndHeight);
 
 	// メモリ領域をコピー.
 	memcpy_s( pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb) );
@@ -482,14 +495,16 @@ HRESULT CSceneTexRenderer::CreateConstantBuffer()
 // モデル作成.
 HRESULT CSceneTexRenderer::CreateModel()
 {
+	const float wnd_w = static_cast<float>(GetInstance()->m_WndWidth);
+	const float wnd_h = static_cast<float>(GetInstance()->m_WndHeight);
 	// 板ポリ(四角形)の頂点を作成.
 	VERTEX vertices[]=
 	{
 		// 頂点座標(x,y,z)				 
-		D3DXVECTOR3( 0.0f, WND_H, 0.0f ),	D3DXVECTOR2( 0.0f, 1.0f ),
+		D3DXVECTOR3( 0.0f, wnd_h, 0.0f ),	D3DXVECTOR2( 0.0f, 1.0f ),
 		D3DXVECTOR3( 0.0f, 0.0f, 0.0f ),	D3DXVECTOR2( 0.0f, 0.0f ),
-		D3DXVECTOR3( WND_W, WND_H, 0.0f ),	D3DXVECTOR2( 1.0f, 1.0f ),
-		D3DXVECTOR3( WND_W, 0.0f, 0.0f ),	D3DXVECTOR2( 1.0f, 0.0f ),
+		D3DXVECTOR3( wnd_w, wnd_h, 0.0f ),	D3DXVECTOR2( 1.0f, 1.0f ),
+		D3DXVECTOR3( wnd_w, 0.0f, 0.0f ),	D3DXVECTOR2( 1.0f, 0.0f ),
 	};
 	// 最大要素数を算出する.
 	UINT uVerMax = sizeof(vertices) / sizeof(vertices[0]);

@@ -19,6 +19,8 @@ CDirectX11::CDirectX11()
 	, m_pRsSoldAndBack			( nullptr )
 	, m_pRsSoldAndFront			( nullptr )
 	, m_pRsWireFrame			( nullptr )
+	, m_WndWidth				( 0 )
+	, m_WndHeight				( 0 )
 {
 }
 
@@ -42,6 +44,9 @@ CDirectX11* CDirectX11::GetInstance()
 HRESULT CDirectX11::Create( HWND hWnd )
 {
 	GetInstance()->m_hWnd = hWnd;
+
+	GetInstance()->m_WndWidth = static_cast<UINT>(WND_W);
+	GetInstance()->m_WndHeight = static_cast<UINT>(WND_H);
 
 	if( FAILED(GetInstance()->InitDevice11()) )		return E_FAIL;
 	if( FAILED(GetInstance()->InitTexRTV()) )		return E_FAIL;
@@ -202,6 +207,74 @@ bool CDirectX11::SetFullScreen( const bool& isOn )
 }
 
 //-----------------------------------.
+// ウィンドウサイズが変更された時に呼ぶ.
+//-----------------------------------.
+void CDirectX11::Resize()
+{
+	if( GetInstance()->m_pContext11 == nullptr ) return;
+
+	// セットしてあるレンダーターゲットを外す.
+	GetInstance()->m_pContext11->OMSetRenderTargets( 0, nullptr, nullptr );
+
+	// 使用していたバックバッファを解放する.
+	SAFE_RELEASE( GetInstance()->m_pBackBuffer_TexRTV );
+	SAFE_RELEASE( GetInstance()->m_pBackBuffer_DSTex );
+	SAFE_RELEASE( GetInstance()->m_pBackBuffer_DSTexDSV );
+
+	// スワップチェーンをリサイズする.
+	// width, height を指定しない場合、hWndを参照し、自動で計算してくれる.
+	if( FAILED( GetInstance()->m_pSwapChain->ResizeBuffers( 0, 0, 0, DXGI_FORMAT_UNKNOWN, 0 ) )){
+		ERROR_MESSAGE( "デプスステンシルビュー作成失敗" );
+		return;
+	}
+
+	// スワップチェーンのバッファの取得.
+	ID3D11Texture2D* pBuufer = nullptr;
+	if( FAILED( GetInstance()->m_pSwapChain->GetBuffer( 0, __uuidof(ID3D11Texture2D), (void**)&pBuufer ) )){
+		ERROR_MESSAGE( "デプスステンシルビュー作成失敗" );
+		return;
+	}
+
+	// テクスチャ情報の取得.
+	D3D11_TEXTURE2D_DESC texDesc = {0};
+	pBuufer->GetDesc( &texDesc );
+	GetInstance()->m_WndWidth	= texDesc.Width;
+	GetInstance()->m_WndHeight	= texDesc.Height;
+	SAFE_RELEASE( pBuufer );
+
+	if( FAILED( GetInstance()->InitTexRTV() )){
+		ERROR_MESSAGE( "デプスステンシルビュー作成失敗" );
+		return;
+	}
+	if( FAILED( GetInstance()->InitDSTex() )){
+		ERROR_MESSAGE( "デプスステンシルビュー作成失敗" );
+		return;
+	}
+
+	// レンダーターゲットの設定.
+	GetInstance()->m_pContext11->OMSetRenderTargets( 
+		1, 
+		&GetInstance()->m_pBackBuffer_TexRTV,
+		GetInstance()->m_pBackBuffer_DSTexDSV );
+	// デプスステンシルバッファ.
+	GetInstance()->m_pContext11->ClearDepthStencilView(
+		GetInstance()->m_pBackBuffer_DSTexDSV,
+		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+		1.0f, 0 );
+
+	// ビューポートの設定.
+	D3D11_VIEWPORT vp;
+	vp.Width	= (FLOAT)GetInstance()->m_WndWidth;
+	vp.Height	= (FLOAT)GetInstance()->m_WndHeight;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0.0f;
+	vp.TopLeftY = 0.0f;
+
+	GetInstance()->m_pContext11->RSSetViewports( 1, &vp );
+}
+
+//-----------------------------------.
 // デバイス11の作成.
 //-----------------------------------.
 HRESULT CDirectX11::InitDevice11()
@@ -278,8 +351,8 @@ HRESULT CDirectX11::InitDevice11()
 	// スワップチェーン構造体.
 	DXGI_SWAP_CHAIN_DESC sd = {0};
 	sd.BufferCount			= 1;								// バックバッファの数.
-	sd.BufferDesc.Width		= WND_W*FULL_SCREEN_MUL;			// バックバッファの幅.
-	sd.BufferDesc.Height	= WND_H*FULL_SCREEN_MUL;			// バックバッファの高さ.
+	sd.BufferDesc.Width		= GetInstance()->m_WndWidth ;		// バックバッファの幅.
+	sd.BufferDesc.Height	= GetInstance()->m_WndHeight;		// バックバッファの高さ.
 	sd.BufferDesc.Format	= DXGI_FORMAT_R8G8B8A8_UNORM;		// フォーマット(32ﾋﾞｯﾄｶﾗｰ).
 	sd.BufferDesc.RefreshRate.Numerator		= 60;				// リフレッシュレート(分母) ※FPS:60.
 	sd.BufferDesc.RefreshRate.Denominator	= 1;				// リフレッシュレート(分子).
@@ -323,6 +396,13 @@ HRESULT CDirectX11::InitDevice11()
 	}
 	pFeatureLevel = nullptr;
 
+	// ALT + Enterでフルスクリーンを無効化する.
+	IDXGIFactory* pFactory = nullptr;
+	// 上で作ったIDXGISwapChainを使う.
+	m_pSwapChain->GetParent( __uuidof(IDXGIFactory), (void**)&pFactory );
+	// 余計な機能を無効にする設定をする.
+	pFactory->MakeWindowAssociation( m_hWnd, DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER );
+	SAFE_RELEASE( pFactory );
 #endif
 
 	return S_OK;
@@ -356,11 +436,9 @@ HRESULT CDirectX11::InitTexRTV()
 //-----------------------------------.
 HRESULT CDirectX11::InitDSTex()
 {
-	int wnd_Width = WND_W;
-	int wnd_Height = WND_H;
 	D3D11_TEXTURE2D_DESC descDepth;
-	descDepth.Width					= WND_W*FULL_SCREEN_MUL;	// 幅.
-	descDepth.Height				= WND_H*FULL_SCREEN_MUL;	// 高さ.
+	descDepth.Width					= GetInstance()->m_WndWidth ;	// 幅.
+	descDepth.Height				= GetInstance()->m_WndHeight;	// 高さ.
 	descDepth.MipLevels				= 1;						// ミップマップレベル:1.
 	descDepth.ArraySize				= 1;						// 配列数:1.
 	descDepth.Format				= DXGI_FORMAT_D32_FLOAT;	// 32ビットフォーマット.
@@ -394,8 +472,8 @@ HRESULT CDirectX11::InitDSTex()
 HRESULT CDirectX11::InitViewports()
 {
 	D3D11_VIEWPORT vp;
-	vp.Width	= (FLOAT)WND_W*FULL_SCREEN_MUL;	// 幅.
-	vp.Height	= (FLOAT)WND_H*FULL_SCREEN_MUL;	// 高さ.
+	vp.Width	= (FLOAT)GetInstance()->m_WndWidth ;	// 幅.
+	vp.Height	= (FLOAT)GetInstance()->m_WndHeight;	// 高さ.
 	vp.MinDepth = 0.0f;			// 最小深度(手前).
 	vp.MaxDepth = 1.0f;			// 最大深度(奥).
 	vp.TopLeftX = 0.0f;			// 左上位置x.
