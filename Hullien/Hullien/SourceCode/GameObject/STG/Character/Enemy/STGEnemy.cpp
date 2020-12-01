@@ -85,7 +85,7 @@ void STG::CEnemy::Render()
 	// ’e‚Ì•`‰æ.
 	BulletRender( m_BulletColor );	// ’e‚Ì•`‰æ.
 
-	if( m_IsActive	== false ) return;	// ‘ŠŽè‚ª“®ì‚µ‚Ä‚È‚¯‚ê‚ÎI—¹.
+	if( m_NowState == STG::EEnemyState::None ) return;
 
 	m_pFont->SetColor( { 1.0f, 1.0f, 1.0f, 1.0f } );
 	m_pFont->SetPosition( m_vPosition );
