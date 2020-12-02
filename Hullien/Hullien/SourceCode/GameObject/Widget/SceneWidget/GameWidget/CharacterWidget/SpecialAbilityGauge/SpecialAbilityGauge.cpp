@@ -96,7 +96,7 @@ bool CSpecialAbilityGauge::SpriteSetting()
 
 	m_GaugeState[0].AnimNum = 0;
 	m_GaugeState[1].AnimNum = 1;
-	m_GaugeState[2].AnimNum = 1;
+	m_GaugeState[2].AnimNum = 0;
 	m_Alpha[1] = 0.0f;
 
 	return true;

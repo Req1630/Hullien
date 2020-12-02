@@ -89,7 +89,7 @@ bool CLifeGauge::SpriteSetting()
 		m_pSprite[sprite] = CSpriteResource::GetSprite( spriteName[sprite] );
 		m_GaugeState.emplace_back();
 		m_GaugeState[sprite].AnimNum = (spriteMax - ONE) - sprite;
-		if( sprite == HP_NAME_NUM ) m_GaugeState[sprite].AnimNum = 1;
+		if( sprite == HP_NAME_NUM ) m_GaugeState[sprite].AnimNum = 0;
 		if ( m_pSprite[sprite] == nullptr ) return false;
 	}
 
