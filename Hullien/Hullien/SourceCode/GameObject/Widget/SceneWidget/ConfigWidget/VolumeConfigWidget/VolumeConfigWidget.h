@@ -16,8 +16,6 @@ class CVolumeConfigWidget : public CWidget
 	const char* SPRITE_BGM_NAME		= "BGMVolume";
 	const char* SPRITE_SE_NAME		= "SEVolume";
 	const char* SPRITE_ICON_NAME	= "SelectIcon";
-	const char* SPRITE_RESET		= "ConfigReset";
-	const char* SPRITE_SAVE			= "ConfigSave";
 
 	const float BAR_POSITION_X = 200.0f;
 	const float DEFALUT_VOLUME = 1.0f;
@@ -44,9 +42,6 @@ class CVolumeConfigWidget : public CWidget
 		ESelectType_BGM,	// BGM.
 		ESelectType_SE,		// SE.
 
-		ESelectType_Reset,	// リセット.
-		ESelectType_Save,	// 保存.
-
 		EVolumeType_End,
 
 		ESelectType_Max,
@@ -64,8 +59,6 @@ class CVolumeConfigWidget : public CWidget
 		ESpriteNo_Master,		// マスター.
 		ESpriteNo_BGM,			// BGM.
 		ESpriteNo_SE,			// SE.
-		ESpriteNo_Reset,		// リセット.
-		ESpriteNo_Save,			// 保存.
 		ESpriteNo_SelectIcon,	// 選択中のアイコン.
 
 		ESpriteNo_Max,

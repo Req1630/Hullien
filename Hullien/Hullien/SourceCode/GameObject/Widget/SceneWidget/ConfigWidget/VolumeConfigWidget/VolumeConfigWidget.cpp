@@ -117,23 +117,7 @@ void CVolumeConfigWidget::SelectType()
 	if( GetAsyncKeyState(VK_DOWN) & 0x0001 || CXInput::LThumbY_Axis() < IDLE_THUMB_MIN ){
 		m_NowSelectVolume++;
 		m_InputWaitTime = INPUT_WAIT_TIME_MAX;
-		m_NowSelectVolume = m_NowSelectVolume >= ESelectType_Save ? ESelectType_Save : m_NowSelectVolume;
-	} 
-	// 左に移動.
-	if( GetAsyncKeyState(VK_LEFT) & 0x0001 || CXInput::LThumbX_Axis() < IDLE_THUMB_MIN ){
-		if( m_NowSelectVolume >= ESelectType_Reset ){
-			m_NowSelectVolume--;
-			m_InputWaitTime = INPUT_WAIT_TIME_MAX;
-			m_NowSelectVolume = m_NowSelectVolume <= ESelectType_Master ? ESelectType_Master : m_NowSelectVolume;
-		}
-	} 
-	// 右に移動.
-	if( GetAsyncKeyState(VK_RIGHT) & 0x0001 || CXInput::LThumbX_Axis() > IDLE_THUMB_MAX ){
-		if( m_NowSelectVolume >= ESelectType_SE ){
-			m_NowSelectVolume++;
-			m_InputWaitTime = INPUT_WAIT_TIME_MAX;
-			m_NowSelectVolume = m_NowSelectVolume >= ESelectType_Save ? ESelectType_Save : m_NowSelectVolume;
-		}
+		m_NowSelectVolume = m_NowSelectVolume >= ESelectType_SE ? ESelectType_SE : m_NowSelectVolume;
 	}
 	// SEを鳴らす.
 	if( m_NowSelectVolume != m_OldSelectVolume ){
@@ -154,20 +138,6 @@ void CVolumeConfigWidget::Determination()
 		// 音量の設定へ移動.
 		m_NowConfigState = EConfigState_Seting;
 		CSoundManager::PlaySE("Determination");
-		break;
-	case ESelectType_Reset:
-		// 音量をリセットする.
-		m_pVolumeSlinders[ESelectType_Master]->SetValue( DEFALUT_VOLUME );
-		m_pVolumeSlinders[ESelectType_BGM]->SetValue( DEFALUT_VOLUME );
-		m_pVolumeSlinders[ESelectType_SE]->SetValue( DEFALUT_VOLUME );
-		CSoundManager::GetInstance()->m_stSound.MasterVolume	= DEFALUT_VOLUME;
-		CSoundManager::GetInstance()->m_stSound.BGMVolume		= DEFALUT_VOLUME;
-		CSoundManager::GetInstance()->m_stSound.SEVolume		= DEFALUT_VOLUME;
-		m_NowSelectVolume = ESelectType_Master;
-		break;
-	case ESelectType_Save:
-		// 音量を保存する.
-		if( CSoundManager::SaveVolume() == true ) m_NowSelectVolume = EVolumeType_End;
 		break;
 	default:
 		break;
@@ -226,6 +196,7 @@ void CVolumeConfigWidget::OffVolumeSeting()
 // 保存終了.
 bool CVolumeConfigWidget::IsSaveEnd()
 {
+	if( CSoundManager::SaveVolume() == true ){}
 	if( m_NowSelectVolume == EVolumeType_End ){
 		m_OldSelectVolume = m_NowSelectVolume = ESelectType_Master;
 		return true;
@@ -241,8 +212,6 @@ bool CVolumeConfigWidget::SpriteSetting()
 		SPRITE_MASTER_NAME,	// マスター.
 		SPRITE_BGM_NAME,	// BGM.
 		SPRITE_SE_NAME,		// SE.
-		SPRITE_RESET,		// リセット.
-		SPRITE_SAVE,		// 保存.
 		SPRITE_ICON_NAME,	// アイコン.
 	};
 	int SpriteMax = sizeof(spriteName) / sizeof(spriteName[0]);
