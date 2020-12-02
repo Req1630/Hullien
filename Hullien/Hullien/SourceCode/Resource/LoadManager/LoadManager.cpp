@@ -52,12 +52,12 @@ void CLoadManager::LoadResource(
 			m_isLoadFailed = true;
 			return;
 		}
+		Sleep(100);
 		if( FAILED( CMeshResorce::Load( hWnd, pDevice11, pContext11, pDevice9 ) )){
 			m_Mutex.unlock();
 			m_isLoadFailed = true;
 			return;
 		}
-//		CEffectResource::Load( pDevice11, pContext11 );
 		m_isLoadEnd = true;
 		m_Mutex.unlock();
 	};
