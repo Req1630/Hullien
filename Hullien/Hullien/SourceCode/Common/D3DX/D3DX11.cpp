@@ -209,6 +209,17 @@ bool CDirectX11::SetFullScreen( const bool& isOn )
 }
 
 //-----------------------------------.
+// フルスクリーン状態か取得.
+//-----------------------------------.
+bool CDirectX11::IsFullScreen()
+{
+	// 現在のスクリーン情報を取得.
+	BOOL isState = FALSE;
+	GetInstance()->m_pSwapChain->GetFullscreenState( &isState, nullptr );
+	return static_cast<bool>(isState);
+}
+
+//-----------------------------------.
 // ウィンドウサイズが変更された時に呼ぶ.
 //-----------------------------------.
 void CDirectX11::Resize()

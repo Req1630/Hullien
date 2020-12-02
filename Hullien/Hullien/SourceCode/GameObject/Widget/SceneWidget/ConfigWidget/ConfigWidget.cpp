@@ -7,6 +7,7 @@
 #include "VolumeConfigWidget/VolumeConfigWidget.h"
 #include "CameraConfigWidget/CameraConfigWidget.h"
 #include "ControllerConfigWidget/ControllerConfigWidget.h"
+#include "GraphicConfigWidget/GraphicConfigWidget.h"
 
 /********************************************
 *	ê›íËUIÉNÉâÉX.
@@ -17,6 +18,7 @@ CConfigWidget::CConfigWidget()
 	, m_pVolumeConfig		( nullptr )
 	, m_pCameraConfig		( nullptr )
 	, m_pControllerConfig	( nullptr )
+	, m_pGraphicConfig		( nullptr )
 	, m_SelectState			( EConfigState_Volume )
 	, m_NowConfigState		( EConfigState_None )
 {
@@ -24,6 +26,7 @@ CConfigWidget::CConfigWidget()
 	m_pVolumeConfig = std::make_unique<CVolumeConfigWidget>();
 	m_pCameraConfig = std::make_unique<CCameraConfigWidget>();
 	m_pControllerConfig = std::make_unique<CControllerConfigWidget>();
+	m_pGraphicConfig = std::make_unique<CGraphicConfigWidget>();
 }
 
 CConfigWidget::~CConfigWidget()
@@ -33,11 +36,12 @@ CConfigWidget::~CConfigWidget()
 // èâä˙âªä÷êî.
 bool CConfigWidget::Init()
 {
-	if( SpriteSetting() == false ) return false;
-	if( m_pCursor->Init() == false ) return false;
-	if( m_pVolumeConfig->Init() == false ) return false;
-	if( m_pCameraConfig->Init()	== false ) return false;
-	if( m_pControllerConfig->Init() == false ) return false;
+	if( SpriteSetting()				== false ) return false;
+	if( m_pCursor->Init()			== false ) return false;
+	if( m_pVolumeConfig->Init()		== false ) return false;
+	if( m_pCameraConfig->Init()		== false ) return false;
+	if( m_pControllerConfig->Init()	== false ) return false;
+	if( m_pGraphicConfig->Init()	== false ) return false;
 	return true;
 }
 
@@ -74,6 +78,10 @@ void CConfigWidget::Update()
 		m_pControllerConfig->Update();
 		if( m_pControllerConfig->IsEnd() == true ) m_NowConfigState = EConfigState_None;
 		break;
+	case EConfigState_Graphic:
+		m_pGraphicConfig->Update();
+		if( m_pGraphicConfig->IsEnd() == true ) m_NowConfigState = EConfigState_None;
+		break;
 	default:
 		break;
 	}
@@ -102,6 +110,9 @@ void CConfigWidget::Render()
 		break;
 	case EConfigState_Controller:
 		m_pControllerConfig->Render();
+		break;
+	case EConfigState_Graphic:
+		m_pGraphicConfig->Render();
 		break;
 	default:
 		break;
@@ -137,8 +148,8 @@ void CConfigWidget::CursorSetting()
 		{
 			m_SelectState++;
 			m_InputWaitTime = INPUT_WAIT_TIME_MAX;
-			if( m_SelectState >= EConfigState_Controller ){
-				m_SelectState = EConfigState_Controller;
+			if( m_SelectState >= EConfigState_Graphic ){
+				m_SelectState = EConfigState_Graphic;
 				m_InputWaitTime = 0.0f;
 			}
 		}
@@ -154,6 +165,9 @@ void CConfigWidget::CursorSetting()
 		break;
 	case EConfigState_Controller:
 		m_vPosition = m_pSprites[CONTROLLER]->GetRenderPos();
+		break;
+	case EConfigState_Graphic:
+		m_vPosition = m_pSprites[GRAPHIC]->GetRenderPos();
 		break;
 	default:
 		break;
@@ -171,6 +185,7 @@ bool CConfigWidget::SpriteSetting()
 		SPRITE_VOLUME,
 		SPRITE_CAMERA,
 		SPRITE_CONTROLLER,
+		SPRITE_GRAPHIC,
 	};
 	int SpriteMax = sizeof(spriteName) / sizeof(spriteName[0]);
 

@@ -61,6 +61,8 @@ public: //----- 関数 ------.
 
 	// フルスクリーンの設定.
 	static bool SetFullScreen( const bool& isOn );
+	// フルスクリーン状態か取得.
+	static bool IsFullScreen();
 	// ウィンドウサイズが変更された時に呼ぶ.
 	static void Resize();
 

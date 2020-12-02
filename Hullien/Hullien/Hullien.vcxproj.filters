@@ -175,6 +175,7 @@
     <ClCompile Include="SourceCode\GameObject\Actor\Item\EditItem\EditItem.cpp" />
     <ClCompile Include="SourceCode\Utility\Command\Command.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\ControllerConfigWidget\ControllerConfigWidget.cpp" />
+    <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\GraphicConfigWidget\GraphicConfigWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\ImGui\imconfig.h" />
@@ -360,6 +361,7 @@
     <ClInclude Include="SourceCode\Common\Mesh\MeshStruct.h" />
     <ClInclude Include="SourceCode\Utility\Command\Command.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\ControllerConfigWidget\ControllerConfigWidget.h" />
+    <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\GraphicConfigWidget\GraphicConfigWidget.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />
