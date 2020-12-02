@@ -103,7 +103,7 @@ void CControllerConfigWidget::Render()
 bool CControllerConfigWidget::IsEnd()
 {
 	if( m_NowConfigState != ESelectState_None ) return false;
-	CFileManager::BinaryReading( CXInput::VIBRATION_CONFIG_FILE_PATH, m_IsVibration );
+	CFileManager::BinaryWriting( CXInput::VIBRATION_CONFIG_FILE_PATH, m_IsVibration );
 	m_NowConfigState = ESelectState_Select;
 	return true;
 }
