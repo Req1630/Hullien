@@ -43,6 +43,8 @@ public:
 	virtual void SetVector( const D3DXVECTOR3& vec ) override;
 	// スポーン.
 	virtual bool Spawn( const D3DXVECTOR3& spawnPos ) = 0;
+	// アニメーションを止める.
+	virtual void StopAnimation() override;
 
 	// ライフ計算関数.
 	virtual void LifeCalculation( const std::function<void(float&,bool&)>& ) override;
@@ -129,8 +131,11 @@ protected:
 	float					m_DeathScale;				// 死亡時の大きさ.
 	float					m_DeathCount;				// 死亡カウント.
 	int						m_KnockBackCount;			// ノックバックカウント.
+	int						m_FrightCount;				// 怯みカウント.
+	int						m_HitCount;					// ヒットカウント.
 	int						m_WaitCount;				// 待機カウント.
 	bool*					m_pIsAlienOtherAbduct;		// 他の宇宙人が連れ去っているかどうか.
+	bool					m_IsFirght;					// 怯み状態か.
 	bool					m_IsBarrierHit;				// バリアに当たっているか.
 	bool					m_IsRisingMotherShip;		// マザーシップに上っているか.
 	bool					m_IsExplosion;				// 爆発するか.

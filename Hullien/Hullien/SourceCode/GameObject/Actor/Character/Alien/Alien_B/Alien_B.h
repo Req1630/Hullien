@@ -29,7 +29,7 @@ public:
 	// 相手座標の設定.
 	virtual void SetTargetPos( CActor& actor ) override;
 	// ライフ計算関数.
-	virtual void LifeCalculation( const std::function<void(float&,bool&)>& ) override;
+//	virtual void LifeCalculation( const std::function<void(float&,bool&)>& ) override;
 private:
 	// プレイヤー座標の設定.
 	void SetPlayerPos( CActor& actor );

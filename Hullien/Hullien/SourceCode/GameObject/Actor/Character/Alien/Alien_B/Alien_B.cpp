@@ -168,34 +168,34 @@ void CAlienB::SetTargetPos( CActor& actor )
 	CAlienB::SetPlayerPos( actor );
 }
 
-// ライフ計算関数.
-void CAlienB::LifeCalculation( const std::function<void(float&,bool&)>& proc )
-{
-	if( m_NowState == alien::EAlienState::Spawn ) return;
-	if( m_NowState == alien::EAlienState::Death ) return;
-	if( m_NowState == alien::EAlienState::Fright ) return;
-
-	bool isAttack = false;
-	proc( m_LifePoint, isAttack );
-	m_NowState = alien::EAlienState::Fright;	// 怯み状態へ遷移.
-	SetAnimation( alien::EAnimNo_Damage, m_pAC );
-	m_AnimSpeed = DEFAULT_ANIM_SPEED;
-	m_pEffects[alien::EEffectNo_Attack]->Stop();
-	m_pEffects[alien::EEffectNo_Hit]->Play( { m_vPosition.x, m_vPosition.y+HIT_EFFECT_HEIGHT, m_vPosition.z });
-	if( m_pArm != nullptr ){
-		// アームを片付けていなければ片付ける.
-		if( m_pArm->IsCleanUp() == false ){
-			m_pArm->SetCleanUp();
-		}
-	}
-
-	if( m_LifePoint > 0.0f ) return;
-	// 体力が 0.0以下なら死亡状態へ遷移.
-	m_NowState = alien::EAlienState::Death;
-	m_NowMoveState = alien::EMoveState::Wait;
-	m_pEffects[alien::EEffectNo_Spawn]->Play( m_vPosition );
-	CAlien::SetAnimation( alien::EAnimNo_Dead, m_pAC );
-}
+//// ライフ計算関数.
+//void CAlienB::LifeCalculation( const std::function<void(float&,bool&)>& proc )
+//{
+//	if( m_NowState == alien::EAlienState::Spawn ) return;
+//	if( m_NowState == alien::EAlienState::Death ) return;
+//	if( m_NowState == alien::EAlienState::Fright ) return;
+//
+//	bool isAttack = false;
+//	proc( m_LifePoint, isAttack );
+//	m_NowState = alien::EAlienState::Fright;	// 怯み状態へ遷移.
+//	SetAnimation( alien::EAnimNo_Damage, m_pAC );
+//	m_AnimSpeed = DEFAULT_ANIM_SPEED;
+//	m_pEffects[alien::EEffectNo_Attack]->Stop();
+//	m_pEffects[alien::EEffectNo_Hit]->Play( { m_vPosition.x, m_vPosition.y+HIT_EFFECT_HEIGHT, m_vPosition.z });
+//	if( m_pArm != nullptr ){
+//		// アームを片付けていなければ片付ける.
+//		if( m_pArm->IsCleanUp() == false ){
+//			m_pArm->SetCleanUp();
+//		}
+//	}
+//
+//	if( m_LifePoint > 0.0f ) return;
+//	// 体力が 0.0以下なら死亡状態へ遷移.
+//	m_NowState = alien::EAlienState::Death;
+//	m_NowMoveState = alien::EMoveState::Wait;
+//	m_pEffects[alien::EEffectNo_Spawn]->Play( m_vPosition );
+//	CAlien::SetAnimation( alien::EAnimNo_Dead, m_pAC );
+//}
 
 // プレイヤー座標の設定.
 void CAlienB::SetPlayerPos( CActor& actor )

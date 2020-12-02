@@ -29,8 +29,11 @@ CAlien::CAlien( const SAlienParam* pParam )
 	, m_DeathScale				( 1.0f )
 	, m_DeathCount				( 0.0f )
 	, m_KnockBackCount			( 0 )
+	, m_FrightCount				( 0 )
+	, m_HitCount				( 0 )
 	, m_WaitCount				( 0 )
 	, m_pIsAlienOtherAbduct		( nullptr )
+	, m_IsFirght				( false )
 	, m_IsBarrierHit			( false )
 	, m_IsRisingMotherShip		( false )
 	, m_IsExplosion				( false )
@@ -74,31 +77,55 @@ void CAlien::SetVector( const D3DXVECTOR3& vec )
 	m_KnockBackCount = 0;
 }
 
+// アニメーションを止める.
+void CAlien::StopAnimation()
+{
+	m_AnimSpeed = 0.0;
+	if( m_pArm == nullptr ) return;
+	m_pArm->SetCleanUp();
+}
+
 // ライフ計算関数.
 void CAlien::LifeCalculation( const std::function<void(float&,bool&)>& proc )
 {
 	if( m_NowState == alien::EAlienState::Spawn ) return;
 	if( m_NowState == alien::EAlienState::Death ) return;
-	if( m_NowState == alien::EAlienState::Fright ) return;
+	if( m_IsFirght == true ) return;
+	if( m_NowState == alien::EAlienState::KnockBack ) return;
+	if( m_IsRisingMotherShip == true ) return;
 
+	const int MAX_HIT_COUNT = 3;
 	bool isAttack = false;
 	proc( m_LifePoint, isAttack );
-	m_NowState = alien::EAlienState::Fright;	// 怯み状態へ遷移.
-	SetAnimation( alien::EAnimNo_Damage, m_pAC );
-	m_AnimSpeed = DEFAULT_ANIM_SPEED;
-	m_pEffects[alien::EEffectNo_Hit]->Play( { m_vPosition.x, m_vPosition.y+HIT_EFFECT_HEIGHT, m_vPosition.z });
-	if( m_pArm != nullptr ){
-		// アームを片付けていなければ片付ける.
-		if( m_pArm->IsCleanUp() == false ){
-			m_pArm->SetCleanUp();
+	m_HitCount++;	// ヒットカウントの加算.
+	if( m_HitCount == MAX_HIT_COUNT ){
+		m_NowState	= alien::EAlienState::KnockBack;	// ノックバック状態へ遷移.
+		m_AnimSpeed	= DEFAULT_ANIM_SPEED;				// デフォルトアニメーション速度を設定.
+		m_HitCount	= 0;								// ヒットカウントの加算.
+		SetAnimation( alien::EAnimNo_Damage, m_pAC );	// ダメージアニメーションを再生.
+		// 宇宙人Dはアームを持ってないので、nullチェック.
+		if( m_pArm != nullptr ){
+			// アームを片付けていなければ片付ける.
+			if( m_pArm->IsCleanUp() == false ) m_pArm->SetCleanUp();
 		}
+	} else {
+		m_IsFirght	= true;
 	}
+	// ヒットエフェクトを再生する.
+	m_pEffects[alien::EEffectNo_Hit]->Play( { m_vPosition.x, m_vPosition.y+HIT_EFFECT_HEIGHT, m_vPosition.z });
+
 
 	if( m_LifePoint > 0.0f ) return;
+	// 宇宙人Dはアームを持ってないので、nullチェック.
+	if( m_pArm != nullptr ){
+		// アームを片付けていなければ片付ける.
+		if( m_pArm->IsCleanUp() == false ) m_pArm->SetCleanUp();
+	}
 	// 体力が 0.0以下なら死亡状態へ遷移.
 	m_NowState = alien::EAlienState::Death;
 	m_pEffects[alien::EEffectNo_Dead]->Play( m_vPosition );
 	CAlien::SetAnimation( alien::EAnimNo_Dead, m_pAC );
+	m_AnimSpeed = DEFAULT_ANIM_SPEED;
 }
 
 // 現在の状態の更新関数.
@@ -116,9 +143,9 @@ void CAlien::CurrentStateUpdate()
 		this->Abduct();
 		break;
 	case alien::EAlienState::KnockBack:
+		this->KnockBack();
 		break;
 	case alien::EAlienState::Fright:
-		this->KnockBack();
 		this->Fright();
 		break;
 	case alien::EAlienState::Death:
@@ -133,6 +160,7 @@ void CAlien::CurrentStateUpdate()
 	default:
 		break;
 	}
+	this->Fright();
 }
 
 // 女の子の座標を設定.
@@ -293,12 +321,11 @@ void CAlien::KnockBack()
 		m_vPosition.x -= m_KnockBackVector.x;
 		m_vPosition.z -= m_KnockBackVector.z;
 	}
-}
 
-// 怯み.
-void CAlien::Fright()
-{
+	if( m_NowAnimNo != alien::EAnimNo_Damage ) m_NowAnimNo = alien::EAnimNo_Damage;
+
 	if( m_AnimFrameList[alien::EAnimNo_Damage].IsNowFrameOver() == false ) return;
+	// ノックバックアニメーションが終了していれば.
 
 	m_KnockBackCount	= 0;	// 無敵カウントの初期化.
 	SetAnimation( alien::EAnimNo_Move, m_pAC );
@@ -306,9 +333,29 @@ void CAlien::Fright()
 	m_NowMoveState		= alien::EMoveState::Rotation;	// 移動の回転状態へ遷移.
 }
 
+// 怯み.
+void CAlien::Fright()
+{
+	if( m_IsFirght == false ) return;
+	m_FrightCount++;
+	const float FRIGHT_SPEED = 0.15f;
+	m_vPosition.x -= sinf( static_cast<float>(D3DX_PI)		* static_cast<float>(m_FrightCount) ) * FRIGHT_SPEED;
+	m_vPosition.z -= sinf( static_cast<float>(D3DX_PI)*0.5f	* static_cast<float>(m_FrightCount) ) * FRIGHT_SPEED;
+
+
+	if( m_FrightCount <= (pPARAMETER->InvincibleTime*0.5f)*FPS ) return;
+	
+	m_IsFirght		= false;
+	m_FrightCount	= 0;
+}
+
 // 死亡.
 void CAlien::Death()
 {
+	if( m_NowAnimNo != alien::EAnimNo_Dead ){
+		m_NowAnimNo = alien::EAnimNo_Dead;
+		m_AnimSpeed = DEFAULT_ANIM_SPEED;
+	}
 	if( m_AnimFrameList[alien::EAnimNo_Dead].IsNowFrameOver() == false ) return;
 
 	m_AnimSpeed = 0.0;
@@ -363,10 +410,13 @@ void CAlien::GirlCollision( CActor* pActor )
 	if( m_NowState == alien::EAlienState::Spawn )		return;	// スポーン状態なら終了.
 	if( m_NowState == alien::EAlienState::Death )		return;	// 死亡していたら終了.
 	if( m_NowState == alien::EAlienState::Fright )		return;	// 怯み状態なら終了.
+	if( m_NowState == alien::EAlienState::KnockBack )	return;
 
 	// 球体の当たり判定.
 	if( m_pCollManager->IsShereToShere( pActor->GetCollManager() ) == false ) return;
+
 	if( m_NowState == alien::EAlienState::Abduct ){
+		if( m_NowAnimNo != alien::EAnimNo_Arm ) m_NowAnimNo = alien::EAnimNo_Arm;
 		if( m_AnimFrameList[alien::EAnimNo_Arm].IsNowFrameOver() == true ) m_AnimSpeed = 0.0;
 		if( m_IsRisingMotherShip == true ){
 			pActor->SetScale( m_vScale );
@@ -394,6 +444,7 @@ void CAlien::GirlCollision( CActor* pActor )
 				m_AnimSpeed = DEFAULT_ANIM_SPEED;
 				SetAnimation( alien::EAnimNo_Move, m_pAC );
 				m_pArm->SetCleanUpPreparation();
+				m_NowMoveState = alien::EMoveState::Wait;	// 待機状態へ遷移.
 			}
 			return;
 		}

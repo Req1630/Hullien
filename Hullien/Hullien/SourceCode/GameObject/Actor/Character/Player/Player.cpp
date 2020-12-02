@@ -303,7 +303,7 @@ void CPlayer::AvoidController()
 	if( bit::IsBitFlag( m_StatusFlag, player::EStatusFlag_KnockBack )		== true ) return;	// ノックバック中は終了.
 	if( bit::IsBitFlag( m_StatusFlag, player::EStatusFlag_EndSPCameraMove ) == true ) return;	// SPカメラ中は終了.
 	if( bit::IsBitFlag( m_StatusFlag, player::EStatusFlag_Dead )			== true ) return;	// 死亡中は終了.
-	if( m_AttackComboCount > player::EAttackNo_None ) return;	// 攻撃中は発動しない.
+//	if( m_AttackComboCount > player::EAttackNo_None ) return;	// 攻撃中は発動しない.
 	// 既に回避アニメーションだったら終了.
 	if( m_NowAnimNo == player::EAnimNo_Avoid ) return;
 
@@ -317,7 +317,9 @@ void CPlayer::AvoidController()
 		m_pEffects[player::EEffectNo_Avoidance]->Play( { m_vPosition.x, m_vPosition.y+10.0f, m_vPosition.z } );
 		// 回避アニメーションの設定.
 		SetAnimationBlend( player::EAnimNo_Avoid );
-
+		// 攻撃キューを全部取り出す.
+		for( int i = 0; i < static_cast<int>(m_AttackDataQueue.size()); i++ ) m_AttackDataQueue.pop();
+		m_AttackComboCount = player::EAttackNo_None;
 		CSoundManager::PlaySE("PlayerAvoidMove");
 		CSoundManager::PlaySE("PlayerVoiceAvoidMove");
 	}
@@ -550,10 +552,13 @@ void CPlayer::AttackCollision( CActor* pActor )
 		return;
 	}
 
-	// プレイヤーの前に当たっり判定を置く.
-	m_AttackPosition.x = m_vPosition.x - sinf( m_vRotation.y ) * ATTACK_COLLISION_DISTANCE;
-	m_AttackPosition.y = ATTACK_COLLISION_HEIGHT;
-	m_AttackPosition.z = m_vPosition.z - cosf( m_vRotation.y ) * ATTACK_COLLISION_DISTANCE;
+	D3DXVECTOR3 littleFingerPos = { 0.0f, 0.0f, 0.0f };
+	D3DXVECTOR3 ringFingerPos = { 0.0f, 0.0f, 0.0f };
+	m_pSkinMesh->GetPosFromBone("kaito_rifa_2_L_yubi_5_1", &littleFingerPos );
+	m_pSkinMesh->GetPosFromBone("kaito_rifa_2_L_yubi_4_1", &ringFingerPos );
+	D3DXVECTOR3 fingerVec = ringFingerPos - littleFingerPos;
+	D3DXVec3Normalize( &fingerVec, &fingerVec );
+	m_AttackPosition = littleFingerPos + fingerVec * ATTACK_COLLISION_DISTANCE;
 
 	// 球体の当たり判定.
 	if( m_pAttackCollManager->IsShereToShere( pActor->GetCollManager() ) == false ) return;
@@ -929,10 +934,16 @@ void CPlayer::LifeCalculation( const std::function<void(float&,bool&)>& proc )
 		bit::OnBitFlag( &m_StatusFlag, player::EStatusFlag_KnockBack );
 		m_vRotation.y	= atan2( m_HitVector.x, m_HitVector.z )+static_cast<float>(D3DX_PI);
 		m_MoveVector	= m_HitVector;
+		// 攻撃キューを全部取り出す.
+		for( int i = 0; i < static_cast<int>(m_AttackDataQueue.size()); i++ ) m_AttackDataQueue.pop();
+		m_AttackComboCount = player::EAttackNo_None;
 	}
 	// 体力がなくなったら.
 	if( m_LifePoint <= 0.0f ){
 		CSoundManager::PlaySE("PlayerVoiceDead");
+		// 攻撃キューを全部取り出す.
+		for( int i = 0; i < static_cast<int>(m_AttackDataQueue.size()); i++ ) m_AttackDataQueue.pop();
+		m_AttackComboCount = player::EAttackNo_None;
 		// 死亡アニメーションを設定.
 		SetAnimation( player::EAnimNo_Dead );
 		bit::OnBitFlag( &m_StatusFlag, player::EStatusFlag_Dead );

@@ -80,10 +80,10 @@ class CPlayer : public CCharacter
 	const float ATTACK3_ADJ_DRAGING_SPEED = 0.3f;
 
 	const D3DXVECTOR3 ATTACK_COLLISION_INVALID_POS = { 0.0f, -10.0f, 0.0f };
-	const float ATTACK1_COLLISION_RADIUS	= 6.0f;
-	const float ATTACK2_COLLISION_RADIUS	= 7.0f;
-	const float ATTACK3_COLLISION_RADIUS	= 8.0f;
-	const float ATTACK_COLLISION_DISTANCE	= 4.0f;
+	const float ATTACK1_COLLISION_RADIUS	= 3.0f;
+	const float ATTACK2_COLLISION_RADIUS	= 4.0f;
+	const float ATTACK3_COLLISION_RADIUS	= 5.0f;
+	const float ATTACK_COLLISION_DISTANCE	= 3.5f;
 	const float ATTACK_COLLISION_HEIGHT		= 4.0f;
 
 
