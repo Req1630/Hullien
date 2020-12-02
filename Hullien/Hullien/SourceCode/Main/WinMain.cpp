@@ -41,6 +41,8 @@ int WINAPI WinMain(
 	
 	CLog::CloseLogTextFile();
 
+	ShowCursor( TRUE );	// マウスを表示する.
+
 	return 0;
 }
 
