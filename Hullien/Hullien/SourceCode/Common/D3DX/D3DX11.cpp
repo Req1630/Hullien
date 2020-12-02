@@ -193,6 +193,7 @@ bool CDirectX11::SetFullScreen( const bool& isOn )
 		if( isState == FALSE ){
 			// フルスクリーンに変更.
 			GetInstance()->m_pSwapChain->SetFullscreenState( TRUE, nullptr );
+			ShowCursor( FALSE );	// マウスを非表示にする.
 		}
 		return true;
 	} else {
@@ -200,6 +201,7 @@ bool CDirectX11::SetFullScreen( const bool& isOn )
 		if( isState == TRUE ){
 			// ウィンドウに変更.
 			GetInstance()->m_pSwapChain->SetFullscreenState( FALSE, nullptr );
+			ShowCursor( TRUE );		// マウスを表示する.
 		}
 		return false;
 	}
@@ -279,7 +281,10 @@ void CDirectX11::Resize()
 //-----------------------------------.
 HRESULT CDirectX11::InitDevice11()
 {
-#if 0	// アンチエイリアス処理.
+// MSAA(アンチエイリアス)を使用しようと思ったが,
+//	輪郭線と相性が悪いため無効にしている.
+//	現在シェーダーのFXAAを使用してアンチエイリアスを行っている.
+#if 0
 	//デバイスの生成
 	HRESULT hr;
 	hr = D3D11CreateDevice(
@@ -419,13 +424,13 @@ HRESULT CDirectX11::InitTexRTV()
 		__uuidof(ID3D11Texture2D),	//__uuidof:式に関連付けされたGUIDを取得.
 		(LPVOID*)&pBackBuffer_Tex);	//(out)バックバッファテクスチャ.
 
-									//そのテクスチャに対してレンダーターゲットビュー(RTV)を作成.
+	//そのテクスチャに対してレンダーターゲットビュー(RTV)を作成.
 	m_pDevice11->CreateRenderTargetView(
 		pBackBuffer_Tex,
 		nullptr,
 		&m_pBackBuffer_TexRTV);	//(out)RTV.
 
-								// バックバッファテクスチャを解放.
+	// バックバッファテクスチャを解放.
 	SAFE_RELEASE(pBackBuffer_Tex);
 
 	return S_OK;
@@ -512,36 +517,37 @@ HRESULT CDirectX11::InitRasterizer()
 //--------------------------------------------.
 HRESULT CDirectX11::InitBlend()
 {
-	// ｱﾙﾌｧﾌﾞﾚﾝﾄﾞ用ﾌﾞﾚﾝﾄﾞｽﾃｰﾄ構造体.
-	// pngﾌｧｲﾙ内にｱﾙﾌｧ情報があるので、透過するようにﾌﾞﾚﾝﾄﾞｽﾃｰﾄで設定する.
+	// アルファブレンド用ブレンドステート構造体.
+	// 画像ファイル内にアルファ情報があるので、透過するようにブレンドステートで設定する.
 	D3D11_BLEND_DESC BlendDesc;
 	ZeroMemory( &BlendDesc, sizeof( BlendDesc ) );
 
-	BlendDesc.IndependentBlendEnable				= false;	
+	BlendDesc.IndependentBlendEnable				= false;
 	BlendDesc.AlphaToCoverageEnable					= false;
 	BlendDesc.RenderTarget[0].BlendEnable			= true;
 	BlendDesc.RenderTarget[0].SrcBlend				= D3D11_BLEND_SRC_ALPHA;
 	BlendDesc.RenderTarget[0].DestBlend				= D3D11_BLEND_INV_SRC_ALPHA;
-	BlendDesc.RenderTarget[0].BlendOp				= D3D11_BLEND_OP_ADD;	
+	BlendDesc.RenderTarget[0].BlendOp				= D3D11_BLEND_OP_ADD;
 	BlendDesc.RenderTarget[0].SrcBlendAlpha			= D3D11_BLEND_ONE;
 	BlendDesc.RenderTarget[0].DestBlendAlpha		= D3D11_BLEND_ZERO;
 	BlendDesc.RenderTarget[0].BlendOpAlpha			= D3D11_BLEND_OP_ADD;
 	BlendDesc.RenderTarget[0].RenderTargetWriteMask	= D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	//ﾌﾞﾚﾝﾄﾞｽﾃｰﾄ作成.
+	// ブレンドステート作成.
 	if( FAILED( m_pDevice11->CreateBlendState( &BlendDesc, &m_pAlphaBlend ) ) ){
 		ERROR_MESSAGE( "BlendState(AlphaBlend) creation failed" );
 		return E_FAIL;
 	}
 
+	// アルファトゥーカバレージをオンにして作成.
 	BlendDesc.AlphaToCoverageEnable = true;
 	if( FAILED( m_pDevice11->CreateBlendState( &BlendDesc, &m_pAlphaToCoverage ) ) ){
 		ERROR_MESSAGE( "BlendState(AlphaToCoverage) creation failed" );
 		return E_FAIL;
 	}
 
-	//ﾌﾞﾚﾝﾄﾞｽﾃｰﾄ作成.
-	BlendDesc.RenderTarget[0].BlendEnable	= false;	//false:ｱﾙﾌｧﾌﾞﾚﾝﾄﾞを使用しない.
+	// ブレンドステート無効状態の作成.
+	BlendDesc.RenderTarget[0].BlendEnable	= false;
 	BlendDesc.AlphaToCoverageEnable			= false;
 	if( FAILED( m_pDevice11->CreateBlendState( &BlendDesc, &m_pNoAlphaBlend ) ) ){
 		ERROR_MESSAGE( "BlendState(NoAlphaBlend) creation failed" );
@@ -565,16 +571,17 @@ HRESULT CDirectX11::InitDeprh()
 	dsDesc.StencilEnable	= FALSE;
 	dsDesc.StencilReadMask	= D3D11_DEFAULT_STENCIL_READ_MASK;
 	dsDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
-	// 深度設定作成.
+
+	// 深度テスト有効状態の作成.
 	if( FAILED( m_pDevice11->CreateDepthStencilState(
 		&dsDesc, &m_pDepthStencilState ))){
 		ERROR_MESSAGE( "Creation of depth setting failed" );
 		return E_FAIL;
 	}
 
-	// 深度テスト(zテスト)を無効にする.
+	// 深度テスト無効状態の作成.
 	dsDesc.DepthEnable = FALSE;	// 無効.
-								// 深度設定作成.
+	// 深度設定作成.
 	if( FAILED( m_pDevice11->CreateDepthStencilState(
 		&dsDesc, &m_pDepthStencilStateOff ))){
 		ERROR_MESSAGE( "Creation of depth setting failed" );
@@ -588,32 +595,34 @@ HRESULT CDirectX11::InitDeprh()
 //--------------------------------------------.
 HRESULT CDirectX11::InitRasterizerState()
 {
-	D3D11_RASTERIZER_DESC rdc;
-	ZeroMemory(&rdc, sizeof(rdc));
-	rdc.FillMode				= D3D11_FILL_SOLID;	// 塗りつぶし(ｿﾘｯﾄﾞ).
-	rdc.CullMode				= D3D11_CULL_NONE;	// BACK:背面を描画しない, FRONT:正面を描画しない.
-	rdc.FrontCounterClockwise	= FALSE;			// ﾎﾟﾘｺﾞﾝの表裏を決定するﾌﾗｸﾞ.
-	rdc.DepthClipEnable			= FALSE;			// 距離についてのｸﾘｯﾋﾟﾝｸﾞ有効.
-
-	auto createRasterizerState = [&]( ID3D11RasterizerState** ppRs )
+	auto createRasterizerState = [&]( const D3D11_RASTERIZER_DESC& rdc, ID3D11RasterizerState** ppRs )
 	{
 		if( FAILED( m_pDevice11->CreateRasterizerState( &rdc, ppRs )) ){
-			_ASSERT_EXPR( false, L"ラスタライザー作成失敗" );
+			ERROR_MESSAGE("ラスタライザー作成失敗");
+			return E_FAIL;
 		}
+		return S_OK;
 	};
-	createRasterizerState( &m_pRsSoldAndNone );
 
-	rdc.FillMode = D3D11_FILL_SOLID;// 塗りつぶし(ｿﾘｯﾄﾞ).
-	rdc.CullMode = D3D11_CULL_BACK;	// BACK:背面を描画しない, FRONT:正面を描画しない.
-	createRasterizerState( &m_pRsSoldAndBack );
+	D3D11_RASTERIZER_DESC rdc = {};
+	rdc.FillMode				= D3D11_FILL_SOLID;	// 塗りつぶし(ソリッド).
+	rdc.CullMode				= D3D11_CULL_NONE;	// BACK:背面を描画しない, FRONT:正面を描画しない.
+	rdc.FrontCounterClockwise	= FALSE;			// ポリゴンの表裏を決定するフラグ.
+	rdc.DepthClipEnable			= FALSE;			// 距離についてのクリッピング有効.
 
-	rdc.FillMode = D3D11_FILL_SOLID;// 塗りつぶし(ｿﾘｯﾄﾞ).
-	rdc.CullMode = D3D11_CULL_FRONT;// BACK:背面を描画しない, FRONT:正面を描画しない.
-	createRasterizerState( &m_pRsSoldAndFront );
+	if( FAILED( createRasterizerState( rdc, &m_pRsSoldAndNone ) )) return E_FAIL;
 
-	rdc.FillMode = D3D11_FILL_WIREFRAME;// 塗りつぶし(ｿﾘｯﾄﾞ).
+	rdc.FillMode = D3D11_FILL_SOLID;// 塗りつぶし(ソリッド).
+	rdc.CullMode = D3D11_CULL_BACK;	// BACK:背面を描画しない,
+	if( FAILED( createRasterizerState( rdc, &m_pRsSoldAndBack ) )) return E_FAIL;
+
+	rdc.FillMode = D3D11_FILL_SOLID;// 塗りつぶし(ソリッド).
+	rdc.CullMode = D3D11_CULL_FRONT;// FRONT:正面を描画しない.
+	if( FAILED( createRasterizerState( rdc, &m_pRsSoldAndFront ) )) return E_FAIL;
+
+	rdc.FillMode = D3D11_FILL_WIREFRAME;// ワイヤーフレーム.
 	rdc.CullMode = D3D11_CULL_NONE;		// BACK:背面を描画しない, FRONT:正面を描画しない.
-	createRasterizerState( &m_pRsWireFrame );
+	if( FAILED( createRasterizerState( rdc, &m_pRsWireFrame ) )) return E_FAIL;
 
 	m_pContext11->RSSetState( m_pRsSoldAndNone );
 
