@@ -42,15 +42,14 @@ namespace STG
 
 	private:
 		std::vector<std::shared_ptr<CBullet>>	m_pBullets;	// 弾.
-		D3DXVECTOR3	m_BulletColor;			// 弾の色.
-		float		m_BulletAddAngle;		// 弾の加算角度.
-		float		m_BulletAngleAccValue;	// 弾の角度の加速値.
+		D3DXVECTOR3	m_BulletColor;				// 弾の色.
+		float		m_BulletAddAngle;			// 弾の加算角度.
+		float		m_BulletAngleAccValue;		// 弾の角度の加速値.
 		float		m_BulletAngleAddAccValue;	// 弾の角度の加速値.
-		float		m_ShotAngle;			// 現在の撃つ角度.
-		int			m_ShotCount;			// 弾を撃つカウント値.
-		int			m_NowShotBulletCount;	// 撃った弾の数.
-		int			m_AngleReverseCount;	// 角度反転用カウント値.
-		bool		m_IsShotEnd;			// 弾が撃ち終わったか.
+		float		m_ShotAngle;				// 現在の撃つ角度.
+		int			m_ShotCount;				// 弾を撃つカウント値.
+		int			m_NowShotBulletCount;		// 撃った弾の数.
+		bool		m_IsShotEnd;				// 弾が撃ち終わったか.
 	};
 };
 

@@ -65,6 +65,9 @@ bool STG::CEnemyFactory::CreateBulletList()
 			case EBulletManagerParamNo_ShotAngle:
 				bulletParam.ShotAngle = static_cast<float>( D3DXToRadian( std::stof(buff) ));
 				break;
+			case EBulletManagerParamNo_BulletAngleAddAccValue:
+				bulletParam.BulletAngleAddAccValue = static_cast<float>( D3DXToRadian( std::stof(buff) ));
+				break;
 			case EBulletManagerParamNo_ShotIntervalFrame:
 				bulletParam.ShotIntervalFrame = std::stoi(buff);
 				break;
@@ -150,7 +153,7 @@ bool STG::CEnemyFactory::CreateEnemyList( std::vector<std::shared_ptr<STG::CEnem
 		std::vector<SBulletManagerParam> bs = 
 		{ 
 			m_BulletParams.at(0),
-//			m_BulletParams.at(1)
+			m_BulletParams.at(1)
 		};
 		enemys.emplace_back( std::make_shared<STG::CEnemy>(enemyParam, bs ) );
 		if( enemys.back()->Init() == false ) return false;

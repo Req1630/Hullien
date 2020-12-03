@@ -8,22 +8,24 @@ namespace STG
 	// ’eŠÇ—ƒpƒ‰ƒ[ƒ^.
 	struct stBulletManagerParam
 	{
-		float		BulletSpeed;		// ’e‚Ì‘¬“x.
-		int			BulletCountMax;		// ’e”.
-		int			AnyBulletCountMax;	// nWay”.
-		float		BulletAngle;		// Šp“x.
-		float		ShotAngle;			// nWayŠp“x.
-		int			ShotIntervalFrame;	// ’e‚ğŒ‚‚ÂŠÔŠu.
-		int			BulletCollDisappear;// ’e‚ªÕ“Ë‚µ‚½Û‚ÉÁ‚¦‚é‚©.
+		float		BulletSpeed;			// ’e‚Ì‘¬“x.
+		int			BulletCountMax;			// ’e”.
+		int			AnyBulletCountMax;		// nWay”.
+		float		BulletAngle;			// Šp“x.
+		float		ShotAngle;				// nWayŠp“x.
+		float		BulletAngleAddAccValue;	// Šp“x‚Ì‰Á‘¬‰ÁZ’l.
+		int			ShotIntervalFrame;		// ’e‚ğŒ‚‚ÂŠÔŠu.
+		int			BulletCollDisappear;	// ’e‚ªÕ“Ë‚µ‚½Û‚ÉÁ‚¦‚é‚©.
 
 		stBulletManagerParam()
-			: BulletSpeed			( 0.0f )
-			, BulletCountMax		( 0 )
-			, AnyBulletCountMax		( 0 )
-			, BulletAngle			( 0.0f )
-			, ShotAngle				( 0.0f )
-			, ShotIntervalFrame		( 0 )
-			, BulletCollDisappear	( 0 )
+			: BulletSpeed				( 0.0f )
+			, BulletCountMax			( 0 )
+			, AnyBulletCountMax			( 0 )
+			, BulletAngle				( 0.0f )
+			, ShotAngle					( 0.0f )
+			, BulletAngleAddAccValue	( 0.0f )
+			, ShotIntervalFrame			( 0 )
+			, BulletCollDisappear		( 0 )
 		{}
 
 		stBulletManagerParam operator = ( const STG::stEnemyParam p )
@@ -46,13 +48,14 @@ namespace STG
 	{
 		EBulletManagerParamNo_None,
 
-		EBulletManagerParamNo_BulletSpeed,			// ’e‚Ì‘¬“x.
-		EBulletManagerParamNo_BulletCountMax,		// ’e‚ÌÅ‘å”.
-		EBulletManagerParamNo_AnyBulletCountMax,	// •¡”’e‚ğŒ‚‚ÂÛ‚ÌÅ‘å”.
-		EBulletManagerParamNo_BulletAngle,			// ’e‚ÌŠp“x.
-		EBulletManagerParamNo_ShotAngle,			// Œ‚‚Â‚ÌŠp“x.
-		EBulletManagerParamNo_ShotIntervalFrame,	// ’e‚ğŒ‚‚ÂŠÔŠuƒtƒŒ[ƒ€.
-		EBulletManagerParamNo_BulletCollDisappear,	// ’e‚ªÕ“Ë‚µ‚½Û‚ÉÁ‚¦‚é‚©.
+		EBulletManagerParamNo_BulletSpeed,				// ’e‚Ì‘¬“x.
+		EBulletManagerParamNo_BulletCountMax,			// ’e‚ÌÅ‘å”.
+		EBulletManagerParamNo_AnyBulletCountMax,		// •¡”’e‚ğŒ‚‚ÂÛ‚ÌÅ‘å”.
+		EBulletManagerParamNo_BulletAngle,				// ’e‚ÌŠp“x.
+		EBulletManagerParamNo_ShotAngle,				// Œ‚‚Â‚ÌŠp“x.
+		EBulletManagerParamNo_BulletAngleAddAccValue,	// Šp“x‚Ì‰Á‘¬‰ÁZ’l.
+		EBulletManagerParamNo_ShotIntervalFrame,		// ’e‚ğŒ‚‚ÂŠÔŠu.
+		EBulletManagerParamNo_BulletCollDisappear,		// ’e‚ªÕ“Ë‚µ‚½Û‚ÉÁ‚¦‚é‚©.
 
 		EBulletManagerParamNo_Max,
 

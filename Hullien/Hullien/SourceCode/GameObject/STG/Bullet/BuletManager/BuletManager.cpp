@@ -6,17 +6,16 @@ STG::CBulletManager::CBulletManager()
 }
 
 STG::CBulletManager::CBulletManager( const SBulletManagerParam& param )
-	: PARAMETER				( param )
-	, m_pBullets			()
-	, m_BulletColor			( 0.0f, 0.0f, 0.0f )
-	, m_BulletAddAngle		( param.BulletAngle )
-	, m_BulletAngleAccValue	( 0.0f )
-	, m_BulletAngleAddAccValue	( -static_cast<float>(D3DXToRadian(0.5)) )
-	, m_ShotAngle			( 0.0f )
-	, m_ShotCount			( 0 )
-	, m_NowShotBulletCount	( 0 )
-	, m_AngleReverseCount	( 0 )
-	, m_IsShotEnd			( false )
+	: PARAMETER					( param )
+	, m_pBullets				()
+	, m_BulletColor				( 0.0f, 0.0f, 0.0f )
+	, m_BulletAddAngle			( param.BulletAngle )
+	, m_BulletAngleAccValue		( 0.0f )
+	, m_BulletAngleAddAccValue	( param.BulletAngleAddAccValue )
+	, m_ShotAngle				( 0.0f )
+	, m_ShotCount				( 0 )
+	, m_NowShotBulletCount		( 0 )
+	, m_IsShotEnd				( false )
 {
 }
 
@@ -88,18 +87,20 @@ void STG::CBulletManager::Shot()
 		m_IsShotEnd = true;
 	}
 
+	m_ShotCount = 0;
 	m_ShotAngle += m_BulletAddAngle;	// Šp“x‚Ì‰ÁŽZ.
 	m_BulletAddAngle += m_BulletAngleAccValue;
 	m_BulletAngleAccValue += m_BulletAngleAddAccValue;
-	m_ShotCount = 0;
 
-	if( fabsf(m_BulletAddAngle) > PARAMETER.BulletAngle ){
-		if( m_BulletAngleAddAccValue > 0.0 ){
-			m_BulletAddAngle = PARAMETER.BulletAngle;
+	if( fabsf(m_BulletAddAngle) > fabsf(PARAMETER.BulletAngle) ){
+		if( m_BulletAngleAccValue > 0.0 ){
+			m_BulletAddAngle = fabsf(PARAMETER.BulletAngle);
 			m_BulletAngleAddAccValue = -m_BulletAngleAddAccValue;
+			m_BulletAngleAccValue = 0.0f;
 		} else {
-			m_BulletAddAngle = PARAMETER.BulletAngle;
+			m_BulletAddAngle = -fabsf(PARAMETER.BulletAngle);
 			m_BulletAngleAddAccValue = -m_BulletAngleAddAccValue;
+			m_BulletAngleAccValue = 0.0f;
 		}
 	}
 }
