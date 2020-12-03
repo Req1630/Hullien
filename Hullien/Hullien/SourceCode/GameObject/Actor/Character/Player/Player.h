@@ -5,10 +5,10 @@
 #include "PlayerParam.h"
 #include <queue>
 
-class CRotLookAtCenter;
-class CCharacterWidget;
-class CEffectManager;
-class CEffectTimer;
+class CRotLookAtCenter;	// カメラクラス.
+class CCharacterWidget;	// キャラクタUIクラス.
+class CEffectManager;	// エフェクトクラス.
+class CEffectTimer;		// アイテムの時間管理クラス.
 
 class CPlayer : public CCharacter
 {
@@ -32,26 +32,6 @@ class CPlayer : public CCharacter
 	const char* RIGHT_FOOT	= "kaito_rifa_2_R_asi_4";
 	const char* LEFT_FOOT	= "kaito_rifa_2_L_asi_4";
 
-	// 声の音量.
-	const float VOICE_VOLUME = 1.5f;
-
-	const float TOLERANCE_RADIAN = static_cast<float>(D3DXToRadian(7.0));
-	const float ROTATIONAL_SPEED = 0.2f;	// 回転速度.
-
-	const float MOVE_SPEED_MUL_VALUE_ADD	= 0.035f;	// 掛け合わせる移動量の加算値.
-	const float MOVE_SPEED_MUL_VALUE_MAX	= 1.0f;		// 掛け合わせる移動量の最大値.
-
-	const float TWO = 2.0f;
-	const float CAMERA_COUNT_MAX			= 100.0f;
-	const float CAMERA_BACK_DIRECTION_X		= 20.0f;
-	const float CAMERA_BACK_DIRECTION_Z		= 10.0f;
-	const float CAMERA_BACK_HEIGHT			= 8.0f;
-	const float CAMERA_BACK_LERP_VALUE		= 0.1f;
-	const float CAMERA_FREQUENCY_LOOKPOS	= 15.0f;	// カメラ注視位置の周波数.
-	const float CAMERA_AMPLITUDE_LOOKPOS	= 0.01f;	// カメラ注視位置の振幅.
-	const float CAMERA_RETURN_COUNT_ADD		= 0.001f;
-	const float CAMERA_RETURN_COUNT_MAX		= 0.1f;
-
 	// アニメーションの調整フレーム.
 	const double ANIM_ADJ_FRAME_Wait	= 0.0;	// 待機.
 	const double ANIM_ADJ_FRAME_Walk	= 0.0;	// 走り.
@@ -67,30 +47,47 @@ class CPlayer : public CCharacter
 	const double ATTACK2_ADJ_ENABLED_END_FRAME	= 0.0;	// 攻撃2の調整用有効フレーム.
 	const double ATTACK3_ADJ_ENABLED_END_FRAME	= 0.0;	// 攻撃3の調整用有効フレーム.
 
-	const double ATTACK1_ADJ_DRAGING_FRAME_START = 0.12;
-	const double ATTACK1_ADJ_DRAGING_FRAME_END = 0.24;
-	const float ATTACK1_ADJ_DRAGING_SPEED = 0.35f;
-
-	const double ATTACK2_ADJ_DRAGING_FRAME_START = 0.01;
-	const double ATTACK2_ADJ_DRAGING_FRAME_END = 0.2;
-	const float ATTACK2_ADJ_DRAGING_SPEED = 0.3f;
-
-	const double ATTACK3_ADJ_DRAGING_FRAME_START = 0.01;
-	const double ATTACK3_ADJ_DRAGING_FRAME_END = 0.2;
-	const float ATTACK3_ADJ_DRAGING_SPEED = 0.3f;
-
-	const D3DXVECTOR3 ATTACK_COLLISION_INVALID_POS = { 0.0f, -10.0f, 0.0f };
-	const float ATTACK1_COLLISION_RADIUS	= 3.0f;
-	const float ATTACK2_COLLISION_RADIUS	= 4.0f;
-	const float ATTACK3_COLLISION_RADIUS	= 5.0f;
-	const float ATTACK_COLLISION_DISTANCE	= 3.5f;
-	const float ATTACK_COLLISION_HEIGHT		= 4.0f;
-
-
+	const double ATTACK1_ADJ_DRAGING_FRAME_START	= 0.12;		// 攻撃1アニメーションのずれを調整するための開始フレーム.
+	const double ATTACK1_ADJ_DRAGING_FRAME_END		= 0.24;		// 攻撃1アニメーションのずれを調整するための終了フレーム.
+	const double ATTACK2_ADJ_DRAGING_FRAME_START	= 0.01;		// 攻撃2アニメーションのずれを調整するための開始フレーム.
+	const double ATTACK2_ADJ_DRAGING_FRAME_END		= 0.2;		// 攻撃2アニメーションのずれを調整するための終了フレーム.
+	const double ATTACK3_ADJ_DRAGING_FRAME_START	= 0.01;		// 攻撃3アニメーションのずれを調整するための開始フレーム.
+	const double ATTACK3_ADJ_DRAGING_FRAME_END		= 0.2;		// 攻撃3アニメーションのずれを調整するための終了フレーム.
 	const double DEAD_CERTAIN_RANGE_ANIM_FRAME_MIN	= 0.18;		// 死亡アニメーションの一定範囲値の最小.
 	const double DEAD_CERTAIN_RANGE_ANIM_FRAME_MAX	= 0.5;		// 死亡アニメーションの一定範囲値の最大.
+
+	const float	ATTACK1_ADJ_DRAGING_SPEED			= 0.35f;	// 攻撃1アニメーションのずれを調整するための移動速度.
+	const float	ATTACK2_ADJ_DRAGING_SPEED			= 0.3f;		// 攻撃2アニメーションのずれを調整するための移動速度.
+	const float	ATTACK3_ADJ_DRAGING_SPEED			= 0.3f;		// 攻撃3アニメーションのずれを調整するための移動速度.
 	const float	DEAD_ANIM_DRAGING_ADJ_SPEED			= 0.05f;	// 死亡アニメーションの引きずりの調整速度.
-	const float DAMAGE_HIT_KNOC_BACK_SPEED			= 0.3f;
+
+	// 攻撃してない時の当たり判定の座標.
+	const D3DXVECTOR3 ATTACK_COLLISION_INVALID_POS = { 0.0f, -10.0f, 0.0f };
+
+	const float ATTACK1_COLLISION_RADIUS	= 3.0f;										// 攻撃1当たり判定の半径.
+	const float ATTACK2_COLLISION_RADIUS	= 4.0f;										// 攻撃2当たり判定の半径.
+	const float ATTACK3_COLLISION_RADIUS	= 5.0f;										// 攻撃3当たり判定の半径.
+	const float ATTACK_COLLISION_DISTANCE	= 3.5f;										// 攻撃当たり判定の距離.
+	const float DAMAGE_HIT_KNOC_BACK_SPEED	= 0.3f;										// ダメージ時のノックバック速度.
+	const float TOLERANCE_RADIAN			= static_cast<float>(D3DXToRadian(7.0));	// 回転の許容範囲.
+	const float ROTATIONAL_SPEED			= 0.2f;										// 回転速度.
+
+	const float MOVE_SPEED_MUL_VALUE_ADD	= 0.035f;	// 掛け合わせる移動量の加算値.
+	const float MOVE_SPEED_MUL_VALUE_MAX	= 1.0f;		// 掛け合わせる移動量の最大値.
+
+	const float TWO = 2.0f;
+	const float CAMERA_COUNT_MAX			= 100.0f;	// カメラのカウント最大値.
+	const float CAMERA_BACK_DIRECTION_X		= 20.0f;	// カメラの距離 : x;
+	const float CAMERA_BACK_DIRECTION_Z		= 10.0f;	// カメラの距離 : z;
+	const float CAMERA_BACK_HEIGHT			= 8.0f;		// カメラの高さ.
+	const float CAMERA_BACK_LERP_VALUE		= 0.1f;		// カメラの補完値.
+	const float CAMERA_FREQUENCY_LOOKPOS	= 15.0f;	// カメラ注視位置の周波数.
+	const float CAMERA_AMPLITUDE_LOOKPOS	= 0.01f;	// カメラ注視位置の振幅.
+	const float CAMERA_RETURN_COUNT_ADD		= 0.001f;	// カメラの戻るときのカウント加算値.
+	const float CAMERA_RETURN_COUNT_MAX		= 0.1f;		// カメラの戻るときのカウント最大値.
+
+	// 声の音量.
+	const float VOICE_VOLUME = 1.5f;
 
 public:
 	CPlayer();
