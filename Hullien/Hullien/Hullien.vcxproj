@@ -227,6 +227,7 @@
     <ClCompile Include="SourceCode\GameObject\MotherShipUFO\MotherShipUFO.cpp" />
     <ClCompile Include="SourceCode\GameObject\SkyDome\SkyDome.cpp" />
     <ClCompile Include="SourceCode\GameObject\SpawnUFO\SpawnUFO.cpp" />
+    <ClCompile Include="SourceCode\GameObject\STG\Bullet\BuletManager\BuletManager.cpp" />
     <ClCompile Include="SourceCode\GameObject\STG\Bullet\STGBullet.cpp" />
     <ClCompile Include="SourceCode\GameObject\STG\Character\Enemy\STGEnemy.cpp" />
     <ClCompile Include="SourceCode\GameObject\STG\Character\Enemy\STGEnemyFactory\STGEnemyFactory.cpp" />
@@ -316,6 +317,8 @@
     <ClInclude Include="SourceCode\GameObject\Actor\Character\Alien\EditAlien\Alien_D\EditAlien_D.h" />
     <ClInclude Include="SourceCode\GameObject\Actor\Character\Alien\EditAlien\EditAlien.h" />
     <ClInclude Include="SourceCode\GameObject\Actor\Item\EditItem\EditItem.h" />
+    <ClInclude Include="SourceCode\GameObject\STG\Bullet\BuletManager\BuletManager.h" />
+    <ClInclude Include="SourceCode\GameObject\STG\Bullet\BuletManager\BulletManagerParam.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\ControllerConfigWidget\ControllerConfigWidget.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\GraphicConfigWidget\GraphicConfigWidget.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\GameWidget\CharacterWidget\BackGauge\BackGauge.h" />

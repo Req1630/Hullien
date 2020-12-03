@@ -10,12 +10,16 @@ class CFont;	// フォントクラス.
 
 namespace STG
 {
+	class CBulletManager;	// 弾管理クラス.
+	struct stBulletManagerParam typedef SBulletManagerParam;
+}
+
+namespace STG
+{
 	class CEnemy : public STG::CCharacter
 	{
 		inline static const float E_WND_OUT_ADJ_SIZE	= 10.0f;
-		inline static const char* BULLET_MODEL_NAME		= "SpawnPoint";
 		inline static const char* DEAD_SE_NAME			= "STGEnemyDead";
-		inline static const float BULLET_COLOR			= 0.4f;
 		inline static const float INIT_POSITION_Z		= -100.0f;	// 初期座標 : Z.
 		inline static const float MOVE_SUB_VALUE		= 0.002f;	// 移動速度を引く値.
 		inline static const float MOVE_SUB_POSITION_Z	= -10.0f;	// 移動速度を引いていく座標.
@@ -39,6 +43,9 @@ namespace STG
 	public:
 		CEnemy();
 		CEnemy( const STG::SEnemyParam& param );
+		CEnemy( 
+			const STG::SEnemyParam& param, 
+			const std::vector<SBulletManagerParam>& bulletParams );
 		virtual ~CEnemy();
 
 		// 初期化関数.
@@ -83,17 +90,15 @@ namespace STG
 	private:
 		std::unique_ptr<CFont>	m_pFont;				// フォントクラス.
 		STG::EEnemyState		m_NowState;				// 現在の状態.
-		D3DXVECTOR3				m_BulletColor;			// 弾の色.
 		D3DXVECTOR3				m_FontRotation;			// フォントの回転値.
 		float					m_MoveSpeed;			// 移動速度.
 		float					m_MoveingDistance;		// 移動距離.
 		float					m_MoveingDistanceMax;	// 移動距離.
-		float					m_ShotAngle;			// 撃つときの角度.
 		float					m_ShakeCount;			// 揺れのカウント.
 		float					m_EscapeCount;			// 逃げるカウント.
 		int						m_SpawnCount;			// スポーンカウント.
-		int						m_NowShotBulletCount;	// 現在の撃った弾の数.
 		bool					m_IsHitShake;			// 当たった時の揺れをするか.
+		std::vector<std::unique_ptr<CBulletManager>>	m_pGuns;
 	};
 }
 

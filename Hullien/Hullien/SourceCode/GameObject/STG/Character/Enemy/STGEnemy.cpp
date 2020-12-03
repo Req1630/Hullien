@@ -7,6 +7,7 @@
 #include "..\..\..\..\Common\Font\Font.h"
 #include "..\..\..\..\Utility\XInput\XInput.h"
 #include "..\..\..\..\XAudio2\SoundManager.h"
+#include "..\..\Bullet\BuletManager\BuletManager.h"
 
 STG::CEnemy::CEnemy()
 	: CEnemy	( STG::SEnemyParam() )
@@ -17,17 +18,15 @@ STG::CEnemy::CEnemy( const STG::SEnemyParam& param )
 	: PARAMETER				( param )
 	, m_pFont				( nullptr )
 	, m_NowState			( STG::EEnemyState::Spawn )
-	, m_BulletColor			( 0.0f, 0.0f, 0.0f )
 	, m_FontRotation		( FONT_ROTATION )
 	, m_MoveSpeed			( 0.0f )
 	, m_MoveingDistance		( 0.0f )
 	, m_MoveingDistanceMax	( 0.0f )
-	, m_ShotAngle			( 0.0f )
 	, m_ShakeCount			( SHAKE_COUNT_MAX )
 	, m_EscapeCount			( ESCAPE_COUNT_MAX )
 	, m_SpawnCount			( 0 )
-	, m_NowShotBulletCount	( 0 )
 	, m_IsHitShake			( false )
+	, m_pGuns				()
 {
 	m_pFont			= std::make_unique<CFont>();
 	m_pCollManager	= std::make_shared<CCollisionManager>();
@@ -37,6 +36,22 @@ STG::CEnemy::CEnemy( const STG::SEnemyParam& param )
 	m_MoveSpeed		= PARAMETER.MoveSpeed;
 	m_LifePoint		= PARAMETER.LifePoint;
 	m_vScale		= { PARAMETER.TextSize, PARAMETER.TextSize, PARAMETER.TextSize };
+
+	SBulletManagerParam s = {};
+	m_pGuns.emplace_back( std::make_unique<CBulletManager>( s ) );
+}
+
+STG::CEnemy::CEnemy( 
+	const STG::SEnemyParam& param, 
+	const std::vector<SBulletManagerParam>& bulletParams )
+	: CEnemy	( param )
+{
+	m_pGuns.resize( bulletParams.size() );
+	auto it = bulletParams.begin();
+	for( auto& g : m_pGuns ){
+		g = std::make_unique<CBulletManager>( *it );
+		it++;
+	}
 }
 
 STG::CEnemy::~CEnemy()
@@ -47,24 +62,17 @@ STG::CEnemy::~CEnemy()
 bool STG::CEnemy::Init()
 {
 	if( CollisionInit()	== false ) return false;
-	if( BulletInit( m_pBullets, PARAMETER.BulletCountMax, BULLET_MODEL_NAME ) == false )	return false;
+	for( auto& g : m_pGuns ) if( g->Init()	== false ) return false;
 	if( FAILED( m_pFont->Init( CDirectX11::GetDevice(), CDirectX11::GetContext() ) ))	return false;
-	// 衝突時、弾を消すかどうか設定.
-	if( PARAMETER.BulletCollDisappear == 1 ) for( auto& b : m_pBullets ) b->SetCollDisappear();
-	// 弾の色を取得.
-	m_BulletColor =
-	{ 
-		1.0f,
-		PARAMETER.BulletCollDisappear*BULLET_COLOR, 
-		PARAMETER.BulletCollDisappear*BULLET_COLOR
-	};
+
 	return true;
 }
 
 // 更新関数.
 void STG::CEnemy::Update()
 {
-	BulletUpdate();	// 弾の更新.
+	// 弾の更新.
+	for( auto& g : m_pGuns ) g->Update();
 
 	switch( m_NowState )
 	{
@@ -83,7 +91,7 @@ void STG::CEnemy::Update()
 void STG::CEnemy::Render()
 {
 	// 弾の描画.
-	BulletRender( m_BulletColor );	// 弾の描画.
+	for( auto& g : m_pGuns ) g->Render();
 
 	if( m_NowState == STG::EEnemyState::None ) return;
 
@@ -104,8 +112,8 @@ void STG::CEnemy::Render()
 void STG::CEnemy::Collision( STG::CActor* pActor )
 {
 	if( pActor->GetActive()	== false ) return;	// 相手が動作してなければ終了.
-	// 弾の数だけあたり判定を行う.
-	for( auto& b : m_pBullets ) b->Collision( pActor );
+	// 弾の当たり判定.
+	for( auto& g : m_pGuns ) g->Collision( pActor );
 
 	if( m_IsActive			== false ) return;	// 自分が動作してなければ終了.
 	// カプセルの当たり判定.
@@ -134,37 +142,21 @@ void STG::CEnemy::Move()
 
 	m_NowState = STG::EEnemyState::Shot;
 
-	// 相手の角度を取得.
-	m_ShotAngle = atan2(
-		m_vPosition.x - m_TargetPositon.x,
-		m_vPosition.z - m_TargetPositon.z );
-	m_ShotAngle -=
-		static_cast<float>(PARAMETER.AnyBulletCountMax-1) * 0.5f * PARAMETER.ShotAngle;	
+	// 初期角度を設定.
+	for( auto& g : m_pGuns ) g->SetInitAngle( m_vPosition, m_TargetPositon );
 }
 
 // 弾を撃つ.
 void STG::CEnemy::Shot()
 {
-	m_ShotCount++;	// ショットカウントを加算.
-	// ショットカウントが一定値に達すれば、弾を撃つ.
-	if( m_ShotCount != PARAMETER.ShotIntervalFrame ) return;
-
-	float angle = m_ShotAngle;	// 弾の角度を設定.
-	// nWay数分ループ.
-	for( int i = 0; i < PARAMETER.AnyBulletCountMax; i++ ){
-		if( m_NowShotBulletCount < PARAMETER.BulletCountMax ){
-			// 弾を撃つ.
-			STG::CCharacter::BulletShot( angle, PARAMETER.BulletSpeed );
-			angle += PARAMETER.ShotAngle;	// nWayの角度を加算.
-			m_NowShotBulletCount++;			// 現在撃った弾を加算.
-		}
+	for( auto& g : m_pGuns ) g->SetPosition( m_vPosition );
+	for( auto& g : m_pGuns ) g->Shot();
+	bool isEnd = true;
+	for( auto& g : m_pGuns ){
+		if( g->IsShotEnd() == false ) isEnd = false;
 	}
-	// 撃っ弾の数が最大数になれば逃げる.
-	if( m_NowShotBulletCount == PARAMETER.BulletCountMax ){
-		m_NowState = STG::EEnemyState::Escape;
-	}
-	m_ShotAngle += PARAMETER.BulletAngle;	// 角度の加算.
-	m_ShotCount = 0;
+	if( isEnd == false ) return;
+	m_NowState = STG::EEnemyState::Escape;
 }
 
 // 逃げる.
@@ -253,8 +245,7 @@ void STG::CEnemy::SearchRandomMoveVector()
 	// 最大移動距離をランダムから取得.
 	m_MoveingDistanceMax = fabsf(cosf( static_cast<float>(rand()) )) * ESCAPE_MOVE_DISTANCE;
 	m_MoveingDistance = 0.0f;
-	BulletShot( m_ShotAngle, PARAMETER.BulletSpeed );
-	m_ShotAngle += PARAMETER.ShotAngle;	// 角度の加算.
+	m_pGuns[0]->RandomShot();
 }
 
 // 当たり判定の作成.

@@ -18,7 +18,6 @@ STG::CEnemyManager::~CEnemyManager()
 bool STG::CEnemyManager::Init()
 {
 	if( m_pEnemyFactory->Create( m_Enemys ) == false ) return false;
-	for( auto& e : m_Enemys ) if( e->Init() == false ) return false;
 	m_EndEnemySpawnTime = m_Enemys.back()->GetSpawnTime();
 
 	return true;
