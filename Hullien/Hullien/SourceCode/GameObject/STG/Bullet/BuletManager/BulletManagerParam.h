@@ -28,19 +28,6 @@ namespace STG
 			, BulletCollDisappear		( 0 )
 		{}
 
-		stBulletManagerParam operator = ( const STG::stEnemyParam p )
-		{
-			this->BulletSpeed			= p.BulletSpeed;
-			this->BulletCountMax		= p.BulletCountMax;
-			this->AnyBulletCountMax		= p.AnyBulletCountMax;
-			this->BulletAngle			= p.BulletAngle;
-			this->ShotAngle				= p.ShotAngle;
-			this->ShotIntervalFrame		= p.ShotIntervalFrame;
-			this->BulletCollDisappear	= p.BulletCollDisappear;
-			
-			return *this;
-		}
-
 	} typedef SBulletManagerParam;
 
 	// ’e‚Ìƒpƒ‰ƒ[ƒ^”Ô†.

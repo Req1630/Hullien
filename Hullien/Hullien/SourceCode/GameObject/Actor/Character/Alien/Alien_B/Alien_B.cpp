@@ -75,7 +75,6 @@ void CAlienB::Render()
 		m_pAttackMesh->SetPosition( m_vPosition );
 		m_pAttackMesh->SetRotation( m_vRotation );
 		m_pAttackMesh->SetScale( m_vScale );
-		m_pAttackMesh->SetColor( { 0.8f, 0.2f, 0.2f, 1.0f } );
 		m_pAttackMesh->SetRasterizerState( ERS_STATE::Back );
 		m_pAttackMesh->Render();
 		m_pAttackMesh->SetRasterizerState( ERS_STATE::None );
@@ -83,7 +82,6 @@ void CAlienB::Render()
 		m_pSkinMesh->SetPosition( m_vPosition );
 		m_pSkinMesh->SetRotation( m_vRotation );
 		m_pSkinMesh->SetScale( m_vScale );
-		m_pSkinMesh->SetColor( { 0.8f, 0.2f, 0.2f, 1.0f } );
 		m_pSkinMesh->SetAnimSpeed( m_AnimSpeed );
 		m_pSkinMesh->SetRasterizerState( ERS_STATE::Back );
 		m_pSkinMesh->Render( m_pAC );
@@ -93,7 +91,6 @@ void CAlienB::Render()
 	m_pSkinMesh->SetPosition( m_vPosition );
 	m_pSkinMesh->SetRotation( m_vRotation );
 	m_pSkinMesh->SetScale( m_vScale );
-	m_pSkinMesh->SetColor( { 0.8f, 0.2f, 0.2f, 1.0f } );
 	m_pSkinMesh->SetAnimSpeed( m_AnimSpeed );
 	m_pSkinMesh->SetRasterizerState( ERS_STATE::Back );
 	m_pSkinMesh->Render( m_pAC );

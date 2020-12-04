@@ -8,26 +8,167 @@
     	* { padding: 0; margin: 0; }
     	canvas { background: #333333; display: block; margin: 0 auto; }
 	</style>
+	<style type="text/css">
+		.Main {
+			margin:auto;
+		}
+		.Info {
+			padding: 10px;
+			background-color: aliceblue;
+			border: 3px solid #808080;
+			display: inline-block;
+		}
+		.Info h3 {
+			border-bottom: 1px solid #808080;
+		}
+		.Info span {
+			display: inline-block;
+			width: 8em;
+		}
+
+		.edit {
+			padding: 10px;
+			background-color: aliceblue;
+			border: 3px solid #808080;
+			display: inline-block;
+		}
+
+		.buttonList {
+			background-color: azure;
+			border: 3px solid #808080;
+			padding: 5px;
+			float: left;
+		}
+		.buttonList input {
+			height: 25px;
+			font-size: 20px;
+			padding: 1px;
+		}
+		.buttonList button {
+			height: 30px;
+			font-size: 15px;
+		}
+
+		.view {
+			border: 5px solid #808080;
+			float: left;
+		}
+
+		.Calculator {
+			padding: 10px;
+			background-color: #253941;
+			border: 3px solid #808080;
+			float: left;
+		}
+		.Calculator p {
+			color:aliceblue;
+		}
+
+		.CalculatorOut {
+			padding: 1px;
+			font-size: 30px;
+			height: 30px;
+			width: 170px;
+			background-color: darkgray;
+		}
+
+		.Number {
+			height: 40px;
+			width: 40px;
+			font-size: 30px;
+			color: aliceblue;
+			padding: 1px;
+			background-color: darkslategray;
+		}
+
+		
+	</style>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.2/xlsx.full.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
 </head>
-	<body>
-		<input type="text" id="no"> 出現番号</br>
-		<input type="text" id="text"> テキスト</br>
-		<input type="number" id="textsize"> テキストサイズ</br>
-		<input type="number" id="hp"> 体力</br>
-		<input type="number" id="moveSpeed"> 移動速度</br>
-		<input type="number" id="bulletSpeed"> 弾の速度</br>
-		<input type="number" id="bulletNum"> 弾数</br>
-		<input type="number" id="nWayNum"> nWay数</br>
-		<input type="number" id="angle"> 角度</br>
-		<input type="number" id="nWayAngle"> nWay角度</br>
-		<input type="number" id="intrval"> 間隔</br>
-		<input type="number" id="dips"> 衝突時消えるか</br>
-		<button type="button" value="true" id="play">再生</button>
-		<button type="button" value="true" id="stop">停止</button>
-		<button type="button" value="true" id="save">保存</button>
-		<canvas id="myCanvas" width="480" height="320"></canvas>
-		<script type="text/javascript" src="index.js"></script>
-	</body>
+<body>
+	<div class="Main">
+		<!-------- 説明 -------->
+		<div class="Info">
+			<h3>説明</h3>
+			<p><span>再生 </span> : 弾の軌道を確認できる</p>
+			<p><span>停止 </span> : 再生している弾の軌道を止める</p>
+			<p><span>データをコピー </span> : 入力したデータをコピーする</p>
+			<p><span></span> : コピーしたデータを"EnemyListTool.xlsm → BulletCreateシート"にペーストする</p>
+		</div>
+		<!-------- エディタ -------->
+		<div class="edit">
+			<!-------- 電卓の表示 -------->
+			<div class="Calculator">
+
+				<p> 角度計算用電卓 </p>
+				<input class="CalculatorOut" type="text" id="result">
+				<div>
+					<input class="Number" type="button" value=" " onclick="edit(this)">
+					<input class="Number" type="button" value=" " onclick="edit(this)">
+					<input class="Number" type="button" value="C" onclick="edit(this)">
+					<input class="Number" type="button" value="/" onclick="edit(this)">
+				</div>
+				<div>
+					<input class="Number" type="button" value="7" onclick="edit(this)">
+					<input class="Number" type="button" value="8" onclick="edit(this)">
+					<input class="Number" type="button" value="9" onclick="edit(this)">
+					<input class="Number" type="button" value="*" onclick="edit(this)">
+				</div>
+				<div>
+					<input class="Number" type="button" value="4" onclick="edit(this)">
+					<input class="Number" type="button" value="5" onclick="edit(this)">
+					<input class="Number" type="button" value="6" onclick="edit(this)">
+					<input class="Number" type="button" value="-" onclick="edit(this)">
+				</div>
+				<div>
+					<input class="Number" type="button" value="1" onclick="edit(this)">
+					<input class="Number" type="button" value="2" onclick="edit(this)">
+					<input class="Number" type="button" value="3" onclick="edit(this)">
+					<input class="Number" type="button" value="+" onclick="edit(this)">
+				</div>
+				<div>
+					<input class="Number" type="button" value=" " onclick="edit(this)">
+					<input class="Number" type="button" value="0" onclick="edit(this)">
+					<input class="Number" type="button" value="." onclick="edit(this)">
+					<input class="Number" type="button" value="=" onclick="calc()">
+				</div>
+				<script language="javascript" type="text/javascript">
+				var result = document.getElementById("result");
+				function edit(elem) {
+					if (elem.value == " ") return;
+					if (elem.value == "C") {
+						result.value = "";
+						return;
+					}
+					result.value = result.value + elem.value;
+				}
+				function calc() {
+					result.value = new Function("return " + result.value)();
+				}
+				</script>
+			</div>
+
+
+			<div class="buttonList">
+				<input type="number" id="index"> 番号<br>
+				<input type="number" id="bulletSpeed"> 弾の速度<br>
+				<input type="number" id="bulletNum"> 弾数<br>
+				<input type="number" id="nWayNum"> nWay数<br>
+				<input type="number" id="angle"> 角度<br>
+				<input type="number" id="nWayAngle"> nWay角度<br>
+				<input type="number" id="angleAddAccValue"> 角度の加算加速度<br>
+				<input type="number" id="intrval"> 間隔<br>
+				<input type="number" id="dips"> 衝突時消えるか<br>
+				<button type="button" value="true" id="play">再生</button>
+				<button type="button" value="true" id="stop">停止</button>
+				<button type="button" value="true" id="copy">データをコピー</button>
+			</div>
+			<div class="view">
+				<canvas id="myCanvas" width="480" height="320"></canvas>
+				<script type="text/javascript" src="index.js"></script>
+			</div>
+		</div>
+	</div>
+</body>
 </html>

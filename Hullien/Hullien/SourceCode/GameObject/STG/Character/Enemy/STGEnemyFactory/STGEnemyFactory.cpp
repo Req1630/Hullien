@@ -102,6 +102,7 @@ bool STG::CEnemyFactory::CreateEnemyList( std::vector<std::shared_ptr<STG::CEnem
 
 		int no = STG::EEnemyParamNo::EEnemyParamNo_Start;
 		STG::SEnemyParam enemyParam;
+		std::vector<SBulletManagerParam> bulletList;	// 使用する弾のリスト.
 		// デフォルト ',' 区切りで文字を取得.
 		while( std::getline( stream, buff, ',' ) ){
 			switch( no )
@@ -124,38 +125,24 @@ bool STG::CEnemyFactory::CreateEnemyList( std::vector<std::shared_ptr<STG::CEnem
 			case EEnemyParamNo_MoveSpeed:
 				enemyParam.MoveSpeed = std::stof(buff);
 				break;
-			case EEnemyParamNo_BulletSpeed:
-				enemyParam.BulletSpeed = std::stof(buff) * 2.0f;
-				break;
-			case EEnemyParamNo_BulletCountMax:
-				enemyParam.BulletCountMax = std::stoi(buff);
-				break;
-			case EEnemyParamNo_AnyBulletCountMax:
-				enemyParam.AnyBulletCountMax = std::stoi(buff);
-				break;
-			case EEnemyParamNo_BulletAngle:
-				enemyParam.BulletAngle =  static_cast<float>( D3DXToRadian( std::stof(buff) ));
-				break;
-			case EEnemyParamNo_ShotAngle:
-				enemyParam.ShotAngle = static_cast<float>( D3DXToRadian( std::stof(buff) ));
-				break;
-			case EEnemyParamNo_ShotIntervalFrame:
-				enemyParam.ShotIntervalFrame = std::stoi(buff);
-				break;
-			case EEnemyParamNo_BulletCollDisappear:
-				enemyParam.BulletCollDisappear = std::stoi(buff);
+			case EEnemyParamNo_BulletIndex:
+			{
+				// 使用する弾の番号を取得.
+				std::istringstream bulletIndexList( buff );
+				std::string s_index;
+				while( std::getline( bulletIndexList, s_index, '&' ) ){
+					const int index = std::stoi(s_index)-1;
+					if( index >= static_cast<int>(m_BulletParams.size()) ) break;
+					bulletList.emplace_back( m_BulletParams.at(index) );
+				}
+			}
 				break;
 			default:
 				break;
 			}
 			no++;
 		}
-		std::vector<SBulletManagerParam> bs = 
-		{ 
-			m_BulletParams.at(0),
-			m_BulletParams.at(1)
-		};
-		enemys.emplace_back( std::make_shared<STG::CEnemy>(enemyParam, bs ) );
+		enemys.emplace_back( std::make_shared<STG::CEnemy>(enemyParam, bulletList ) );
 		if( enemys.back()->Init() == false ) return false;
 
 		enemys.back()->SetPositionY( posY );
