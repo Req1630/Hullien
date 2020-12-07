@@ -288,6 +288,7 @@
     <ClCompile Include="SourceCode\Scene\Scenes\Game\Game.cpp" />
     <ClCompile Include="SourceCode\Scene\Scenes\Title\Title.cpp" />
     <ClCompile Include="SourceCode\Utility\ImGuiManager\ImGuiManager.cpp" />
+    <ClCompile Include="SourceCode\Utility\KeyInput\KeyInput.cpp" />
     <ClCompile Include="SourceCode\Utility\Log\MyLog.cpp" />
     <ClCompile Include="SourceCode\Utility\Mouse\Mouse.cpp" />
     <ClCompile Include="SourceCode\Utility\XInput\XInput.cpp" />
@@ -464,6 +465,7 @@
     <ClInclude Include="SourceCode\Global.h" />
     <ClInclude Include="SourceCode\Main\Main.h" />
     <ClInclude Include="SourceCode\Utility\ImGuiManager\ImGuiManager.h" />
+    <ClInclude Include="SourceCode\Utility\KeyInput\KeyInput.h" />
     <ClInclude Include="SourceCode\Utility\Log\MyLog.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>

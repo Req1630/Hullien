@@ -177,6 +177,7 @@
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\ControllerConfigWidget\ControllerConfigWidget.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\GraphicConfigWidget\GraphicConfigWidget.cpp" />
     <ClCompile Include="SourceCode\GameObject\STG\Bullet\BuletManager\BuletManager.cpp" />
+    <ClCompile Include="SourceCode\Utility\KeyInput\KeyInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\ImGui\imconfig.h" />
@@ -365,6 +366,7 @@
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\GraphicConfigWidget\GraphicConfigWidget.h" />
     <ClInclude Include="SourceCode\GameObject\STG\Bullet\BuletManager\BuletManager.h" />
     <ClInclude Include="SourceCode\GameObject\STG\Bullet\BuletManager\BulletManagerParam.h" />
+    <ClInclude Include="SourceCode\Utility\KeyInput\KeyInput.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />
