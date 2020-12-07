@@ -1,8 +1,12 @@
 #ifndef KEY_INPUT_H
 #define KEY_INPUT_H
 
+#include <Windows.h>
+
 /*******************************
 * キー入力を取得するクラス.
+*	2020/12/07
+*	現在調整中：使用しても動作がおかしくなるかも.
 **/
 class CKeyInput
 {
@@ -12,10 +16,10 @@ public:
 	// キーの状態.
 	enum enKeyState : unsigned char
 	{
-		EKeyState_NotPress	= 0,		// 何も押していない.
-		EKeyState_Press		= 1 << 0,	// 押した瞬間.
-		EKeyState_Hold		= 1 << 1,	// 押し続けている.
-		EKeyState_Releae	= 1 << 2,	// 離した瞬間.
+		EKeyState_NotPress	= 1 << 0,	// 何も押していない.
+		EKeyState_Press		= 1 << 1,	// 押した瞬間.
+		EKeyState_Hold		= 1 << 2,	// 押し続けている.
+		EKeyState_Releae	= 1 << 3,	// 離した瞬間.
 	} typedef EKeyState;
 	typedef char KeyState;
 

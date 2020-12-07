@@ -19,13 +19,13 @@ void CKeyInput::Update()
 // ƒL[‚Ìó‘Ô‚ÌŽæ“¾.
 CKeyInput::KeyState CKeyInput::GetState( const unsigned char& key )
 {
-	if( GetAsyncKeyState(key) & 0x8000 ){
-		if( GetInstance()->m_InputState[key] & EKeyState_Press )	GetInstance()->m_InputState[key] = EKeyState_Hold;
-		if(!(GetInstance()->m_InputState[key] & EKeyState_Hold ))	GetInstance()->m_InputState[key] = EKeyState_Press;
-	} else {
-		if( GetInstance()->m_InputState[key] & EKeyState_Releae )	GetInstance()->m_InputState[key] = EKeyState_NotPress;
-		if( GetInstance()->m_InputState[key] != EKeyState_NotPress )GetInstance()->m_InputState[key] = EKeyState_Releae;
-	}
+	//if( GetAsyncKeyState(key) & 0x8000 ){
+	//	if( GetInstance()->m_InputState[key] & EKeyState_Press )	GetInstance()->m_InputState[key] = EKeyState_Hold;
+	//	if(!(GetInstance()->m_InputState[key] & EKeyState_Hold ))	GetInstance()->m_InputState[key] = EKeyState_Press;
+	//} else {
+	//	if( GetInstance()->m_InputState[key] & EKeyState_Releae )	GetInstance()->m_InputState[key] = EKeyState_NotPress;
+	//	if( GetInstance()->m_InputState[key] != EKeyState_NotPress )GetInstance()->m_InputState[key] = EKeyState_Releae;
+	//}
 	return GetInstance()->m_InputState[key];
 }
 
@@ -40,7 +40,7 @@ CKeyInput* CKeyInput::GetInstance()
 void CKeyInput::KeyStateUpdate()
 {
 	for( int i = 0; i < KEY_MAX; i++ ){
-		if( GetKeyState(i) & 0x8001 ){
+		if( GetKeyState(i) & 0x8000 ){
 			if( m_InputState[i] & EKeyState_Press )	m_InputState[i] = EKeyState_Hold;
 			if(!(m_InputState[i] & EKeyState_Hold ))m_InputState[i] = EKeyState_Press;
 		} else {
