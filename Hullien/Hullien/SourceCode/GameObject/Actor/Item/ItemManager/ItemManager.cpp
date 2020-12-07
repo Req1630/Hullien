@@ -74,7 +74,7 @@ void CItemManager::Update( std::function<void(CActor*)> updateProc )
 	for( size_t i = 0; i < m_ItemList.size(); i++ ){
 		updateProc( m_ItemList[i].get() );
 		// アイテムをリストから消去.
-		if( m_ItemList[i]->IsHitDisappear() == true || 
+		if( /*m_ItemList[i]->IsHitDisappear() == true || */
 			m_ItemList[i]->IsDelete() == true ){
 			m_ItemList[i] = m_ItemList.back();
 			m_ItemList.pop_back();

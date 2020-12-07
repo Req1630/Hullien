@@ -240,6 +240,7 @@ int CSpawnUFO::CreateAlienNo( const int& min, const int& max, const int& outVal 
 // アイテムを取得する.
 EItemList CSpawnUFO::ProbabilityGetItem( const bool& isAlienD )
 {
+	return EItemList::SPEffectTime;
 	// 乱数が確率値より少ない場合　または　宇宙人Dの場合.
 	if(( (rand()%100) < m_SpawnParameter.ProbabilityItem ) || ( isAlienD == true )){
 		// ランダム値の最大と最小の値を設定.

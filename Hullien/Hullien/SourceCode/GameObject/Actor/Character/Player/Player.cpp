@@ -819,7 +819,7 @@ void CPlayer::AttackAnimation()
 			return;
 		}
 		// エフェクトを再生.
-		m_pEffects[m_AttackComboCount-1]->Play( m_vPosition );
+		m_pEffects[m_AttackComboCount-1]->Play( {m_vPosition.x, m_vPosition.y+5.0f, m_vPosition.z } );
 		float attackCollisionRadius = 0.0f;	// 攻撃の当たり判定.
 		// 攻撃SEを鳴らす.
 		CSoundManager::PlaySE("PlayerAttack");

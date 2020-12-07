@@ -142,6 +142,7 @@ protected:
 	bool					m_IsDelete;					// è¡ãéÇ∑ÇÈÇ©Ç«Ç§Ç©.
 
 	std::shared_ptr<CDX9StaticMesh>	m_pTempStaticMesh;
+	int count;
 };
 
 #endif	// #ifndef ALIEN_H.

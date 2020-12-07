@@ -109,7 +109,8 @@ void CItemBase::Collision( CActor* pActor )
 	CSoundManager::PlaySE("GetItem");
 	// 当たった際の効果を与える.
 	this->GiveEffect( pActor );
-	m_pEffects[static_cast<int>(EEffectNumber::Hit)]->Play( m_vPosition );
+	m_pEffects[static_cast<int>(EEffectNumber::Hit)]->SetSpeed( 0.7f );
+	m_pEffects[static_cast<int>(EEffectNumber::Hit)]->Play( pActor->GetPosition() );
 	m_NowState = ENowState::HitDisappear;	// 現在の状態を当たった時に消す状態に変更.
 }
 
@@ -124,7 +125,8 @@ void CItemBase::Drop( const D3DXVECTOR3& vPos )
 	m_HitEffectCount	= 0.0f;
 	m_NowState = ENowState::Drop;
 	this->m_vPosition = vPos;
-	m_pEffects[static_cast<int>(EEffectNumber::DropAndActive)]->Play( { vPos.x, 0.001f, vPos.z } );
+	m_pEffects[static_cast<int>(EEffectNumber::DropAndActive)]->SetSpeed( 0.3f );
+	m_pEffects[static_cast<int>(EEffectNumber::DropAndActive)]->Play( { vPos.x, 0.01f, vPos.z } );
 	CSoundManager::PlaySE("DropItem");
 }
 
@@ -274,6 +276,6 @@ void CItemBase::HitEffectRender()
 	if( m_NowState != ENowState::HitDisappear ) return;
 
 	// エフェクトの描画.
-	m_pEffects[static_cast<int>(EEffectNumber::Hit)]->SetLocation( m_vPosition );
+//	m_pEffects[static_cast<int>(EEffectNumber::Hit)]->SetLocation( m_vPosition );
 	m_pEffects[static_cast<int>(EEffectNumber::Hit)]->Render();
 }

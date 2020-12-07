@@ -40,6 +40,10 @@ public:
 
 	// 当たり判定取得関数.
 	inline CCollisionManager* GetCollManager(){ return m_pCollManager.get(); }
+	// 当たり判定を行えるかどうか.
+	inline bool IsPossibleToHit(){ return m_IsPossibleToHit; }
+	// ヒットストップの時間の設定.
+	inline void SetHitStopTime( const int& time ){ m_HitStopTime = time; }
 
 protected:
 	// 壁に衝突したか.
@@ -50,8 +54,12 @@ protected:
 	bool IsCrashedWallZ();
 
 protected:
-	std::shared_ptr<CCollisionManager>	m_pCollManager;	// 当たり判定クラス.
-	SBoxWall*							m_pBoxWall;		// 見えない壁 : 外部からポインタで取得.
+	std::shared_ptr<CCollisionManager>	m_pCollManager;		// 当たり判定クラス.
+	SBoxWall*							m_pBoxWall;			// 見えない壁 : 外部からポインタで取得.
+	int									m_HitStopCount;		// ヒットストップのカウント.
+	int									m_HitStopTime;		// ヒットストップの時間.
+	bool								m_IsHitStop;
+	bool								m_IsPossibleToHit;	// 当たり判定が行えるかどうか.
 };
 
 #endif	// #ifndef ACTOR_H.
