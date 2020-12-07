@@ -47,6 +47,10 @@ class CPlayer : public CCharacter
 	const double ATTACK2_ADJ_ENABLED_END_FRAME	= 0.0;	// 攻撃2の調整用有効フレーム.
 	const double ATTACK3_ADJ_ENABLED_END_FRAME	= 0.0;	// 攻撃3の調整用有効フレーム.
 
+	const double ATTACK1_ADJ_COLL_ENABLED_END_FRAME	= 0.14;	// 攻撃1の調整用有効フレーム.
+	const double ATTACK2_ADJ_COLL_ENABLED_END_FRAME	= 0.25;	// 攻撃2の調整用有効フレーム.
+	const double ATTACK3_ADJ_COLL_ENABLED_END_FRAME	= 0.15;	// 攻撃3の調整用有効フレーム.
+
 	const double ATTACK1_ADJ_DRAGING_FRAME_START	= 0.12;		// 攻撃1アニメーションのずれを調整するための開始フレーム.
 	const double ATTACK1_ADJ_DRAGING_FRAME_END		= 0.24;		// 攻撃1アニメーションのずれを調整するための終了フレーム.
 	const double ATTACK2_ADJ_DRAGING_FRAME_START	= 0.01;		// 攻撃2アニメーションのずれを調整するための開始フレーム.

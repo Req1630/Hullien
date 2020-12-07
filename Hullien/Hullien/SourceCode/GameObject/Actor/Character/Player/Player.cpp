@@ -99,26 +99,35 @@ void CPlayer::Update()
 	// アニメーションフレームの更新.
 	m_AnimFrameList[m_NowAnimNo].UpdateFrame( m_AnimSpeed );
 
-	// 麻痺タイマーが動作してなければ.
-	if( m_pEffectTimers[player::EEffectTimerNo_Paralysis]->IsUpdate() == false ){
-		Controller();			// 操作.
-		AttackController();		// 攻撃操作.
-		SPController();			// 特殊能力操作.
-		AvoidController();		// 回避操作.
-		AttackAnimation();		// 攻撃アニメーション.
-		Move();					// 移動.
-		AttackMove();			// 攻撃移動.
-		AvoidMove();			// 回避動作.
-		KnockBack();			// ノックバック動作関数.
-		Dead();					// 死亡関数.
+	if( m_IsHitStop == false ){
+		// 麻痺タイマーが動作してなければ.
+		if( m_pEffectTimers[player::EEffectTimerNo_Paralysis]->IsUpdate() == false ){
+			Controller();			// 操作.
+			AttackController();		// 攻撃操作.
+			SPController();			// 特殊能力操作.
+			AvoidController();		// 回避操作.
+			AttackAnimation();		// 攻撃アニメーション.
+			Move();					// 移動.
+			AttackMove();			// 攻撃移動.
+			AvoidMove();			// 回避動作.
+			KnockBack();			// ノックバック動作関数.
+			Dead();					// 死亡関数.
+		} else {
+			ParalysisUpdate();		// 麻痺時の更新.
+		}
+		CameraController();			// カメラ操作.
+		SPCameraUpdate();			// 特殊能力時のカメラ動作.
+		SpecialAbilityUpdate();		// 特殊能力回復更新.
+		AttackUpUpdate();			// 攻撃力UP更新.
+		MoveSpeedUpUpdate();		// 移動速度UP更新.
 	} else {
-		ParalysisUpdate();		// 麻痺時の更新.
+		m_HitStopCount++;
+		if( m_HitStopCount > m_HitStopTime ){
+			m_IsHitStop		= false;
+			m_HitStopCount	= 0;
+			m_AnimSpeed		= DEFAULT_ANIM_SPEED;
+		}
 	}
-	CameraController();			// カメラ操作.
-	SPCameraUpdate();			// 特殊能力時のカメラ動作.
-	SpecialAbilityUpdate();		// 特殊能力回復更新.
-	AttackUpUpdate();			// 攻撃力UP更新.
-	MoveSpeedUpUpdate();		// 移動速度UP更新.
 
 	CameraUpdate();				// カメラの更新.
 
@@ -151,6 +160,8 @@ void CPlayer::Render()
 #if _DEBUG
 	if( m_pCollManager == nullptr ) return;
 	m_pCollManager->DebugRender();
+	if( m_AttackDataQueue.empty() == true ) return;
+	if( m_AnimFrameList[m_NowAnimNo].NowFrame >= m_AttackDataQueue.front().AttackCollEndFrame ) return;
 	if( m_pAttackCollManager == nullptr ) return;
 	m_pAttackCollManager->DebugRender();
 #endif	// #if _DEBUG.
@@ -546,16 +557,20 @@ void CPlayer::EffectRender()
 // 攻撃の当たり判定.
 void CPlayer::AttackCollision( CActor* pActor )
 {
-	if( m_AttackComboCount <= player::EAttackNo_None ){
-		// 攻撃してない場合、攻撃用当たり判定座標をしたのほうに設定.
-		m_AttackPosition = ATTACK_COLLISION_INVALID_POS;
-		return;
-	}
+	// 攻撃用当たり判定座標をゲーム範囲外に設定.
+	m_AttackPosition = ATTACK_COLLISION_INVALID_POS;
+	// 攻撃してない場合なら終了.
+	if( m_AttackComboCount <= player::EAttackNo_None ) return;
+	// 現在のアニメーションフレームが当たり判定の有効範囲外なら終了.
+	if( m_AnimFrameList[m_NowAnimNo].NowFrame >= m_AttackDataQueue.front().AttackCollEndFrame ) return;
+	if( pActor->IsPossibleToHit() == false ) return;
 
-	D3DXVECTOR3 littleFingerPos = { 0.0f, 0.0f, 0.0f };
-	D3DXVECTOR3 ringFingerPos = { 0.0f, 0.0f, 0.0f };
+	D3DXVECTOR3 littleFingerPos = { 0.0f, 0.0f, 0.0f };	// 小指ボーンの座標.
+	D3DXVECTOR3 ringFingerPos = { 0.0f, 0.0f, 0.0f };	// 薬指のボーン座標.
+	// 指のボーン座標を取得.
 	m_pSkinMesh->GetPosFromBone("kaito_rifa_2_L_yubi_5_1", &littleFingerPos );
 	m_pSkinMesh->GetPosFromBone("kaito_rifa_2_L_yubi_4_1", &ringFingerPos );
+	// 指のベクトルを取得して当たり判定の座標を計算.
 	D3DXVECTOR3 fingerVec = ringFingerPos - littleFingerPos;
 	D3DXVec3Normalize( &fingerVec, &fingerVec );
 	m_AttackPosition = littleFingerPos + fingerVec * ATTACK_COLLISION_DISTANCE;
@@ -563,6 +578,7 @@ void CPlayer::AttackCollision( CActor* pActor )
 	// 球体の当たり判定.
 	if( m_pAttackCollManager->IsShereToShere( pActor->GetCollManager() ) == false ) return;
 
+	// ノックバック用のベクトルを計算.
 	D3DXVECTOR3 vec =
 	{
 		m_AttackPosition.x - pActor->GetPosition().x,
@@ -580,6 +596,13 @@ void CPlayer::AttackCollision( CActor* pActor )
 		life	-= m_AttackPower;
 		isAttack = true;
 	});
+
+	if( m_IsHitStop == false ){
+		m_IsHitStop		= true;
+		m_HitStopTime	= m_AttackComboCount*2+1;
+		m_AnimSpeed		= 0.0;
+	}
+	pActor->SetHitStopTime( m_HitStopTime );
 	
 	// 音声を鳴らしてない状態なら.
 	if( bit::IsBitFlag( m_StatusFlag, player::EStatusFlag_AttackSE ) == false ){
@@ -865,11 +888,15 @@ bool CPlayer::IsPushAttack()
 
 	player::SAttackData tmpAttackData;	// 仮データを用意.
 	// 仮データの設定.
-	const auto setAttackData = [&]( const player::EAnimNo& animNo, const double& adjEndFrame )
+	const auto setAttackData = [&]( 
+		const player::EAnimNo& animNo,			// アニメーション番号.
+		const double& adjEndFrame,				// 終了の調整フレーム.
+		const double& attackCollAdjEndFrame )	// 攻撃終了の調整フレーム.
 	{
 		tmpAttackData.AnimNo			= animNo;
 		tmpAttackData.EnabledEndFrame	= m_AnimFrameList[animNo].EndFrame - adjEndFrame;
 		tmpAttackData.EndFrame			= m_AnimFrameList[animNo].EndFrame;
+		tmpAttackData.AttackCollEndFrame= m_AnimFrameList[animNo].EndFrame - attackCollAdjEndFrame;
 	};
 
 	switch( m_AttackComboCount )
@@ -882,7 +909,7 @@ bool CPlayer::IsPushAttack()
 			&m_vScale.x,
 			m_Parameter.SphereAdjPos,
 			ATTACK1_COLLISION_RADIUS ) )) return false;
-		setAttackData( player::EAnimNo_Attack1, ATTACK1_ADJ_ENABLED_END_FRAME );
+		setAttackData( player::EAnimNo_Attack1, ATTACK1_ADJ_ENABLED_END_FRAME, ATTACK1_ADJ_COLL_ENABLED_END_FRAME );
 		// 最初の攻撃はアニメーションを設定する.
 		SetAnimation( tmpAttackData.AnimNo );
 		m_pEffects[m_AttackComboCount-1]->Play( m_vPosition );
@@ -892,11 +919,11 @@ bool CPlayer::IsPushAttack()
 		break;
 
 	case player::EAttackNo_Two:	// 攻撃2.
-		setAttackData( player::EAnimNo_Attack2, ATTACK2_ADJ_ENABLED_END_FRAME );
+		setAttackData( player::EAnimNo_Attack2, ATTACK2_ADJ_ENABLED_END_FRAME, ATTACK2_ADJ_COLL_ENABLED_END_FRAME );
 		break;
 
 	case player::EAttackNo_Three:// 攻撃3.
-		setAttackData( player::EAnimNo_Attack3, ATTACK3_ADJ_ENABLED_END_FRAME );
+		setAttackData( player::EAnimNo_Attack3, ATTACK3_ADJ_ENABLED_END_FRAME, ATTACK3_ADJ_COLL_ENABLED_END_FRAME );
 		break;
 
 	default:

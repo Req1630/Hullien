@@ -41,6 +41,7 @@ CAlien::CAlien( const SAlienParam* pParam )
 {
 	m_vScale = { SCALE_MIN, SCALE_MIN, SCALE_MIN };
 	m_AnimFrameList.resize( alien::EAnimNo_Max );
+	count = 0;
 }
 
 CAlien::~CAlien()
@@ -113,7 +114,11 @@ void CAlien::LifeCalculation( const std::function<void(float&,bool&)>& proc )
 	}
 	// ヒットエフェクトを再生する.
 	m_pEffects[alien::EEffectNo_Hit]->Play( { m_vPosition.x, m_vPosition.y+HIT_EFFECT_HEIGHT, m_vPosition.z });
-
+	if( m_IsHitStop == false ){
+		m_AnimSpeed = 0.0;
+		m_IsHitStop = true;
+	}
+	m_IsPossibleToHit = false;
 
 	if( m_LifePoint > 0.0f ) return;
 	// 宇宙人Dはアームを持ってないので、nullチェック.
@@ -126,41 +131,62 @@ void CAlien::LifeCalculation( const std::function<void(float&,bool&)>& proc )
 	m_pEffects[alien::EEffectNo_Dead]->Play( m_vPosition );
 	CAlien::SetAnimation( alien::EAnimNo_Dead, m_pAC );
 	m_AnimSpeed = DEFAULT_ANIM_SPEED;
+	if( m_IsHitStop == true ){
+		m_AnimSpeed = 0.0;
+	}
 }
 
 // 現在の状態の更新関数.
 void CAlien::CurrentStateUpdate()
 {
-	switch( m_NowState )
-	{
-	case alien::EAlienState::Spawn:
-		this->Spawning();
-		break;
-	case alien::EAlienState::Move:
-		this->Move();
-		break;
-	case alien::EAlienState::Abduct:
-		this->Abduct();
-		break;
-	case alien::EAlienState::KnockBack:
-		this->KnockBack();
-		break;
-	case alien::EAlienState::Fright:
+	if( m_IsHitStop == false ){
+		switch( m_NowState )
+		{
+		case alien::EAlienState::Spawn:
+			this->Spawning();
+			break;
+		case alien::EAlienState::Move:
+			this->Move();
+			break;
+		case alien::EAlienState::Abduct:
+			this->Abduct();
+			break;
+		case alien::EAlienState::KnockBack:
+			this->KnockBack();
+			break;
+		case alien::EAlienState::Fright:
+			this->Fright();
+			break;
+		case alien::EAlienState::Death:
+			this->Death();
+			break;
+		case alien::EAlienState::Escape:
+			this->Escape();
+			break;
+		case alien::EAlienState::RisingMotherShip:
+			this->RisingMotherShip();
+			break;
+		default:
+			break;
+		}
 		this->Fright();
-		break;
-	case alien::EAlienState::Death:
-		this->Death();
-		break;
-	case alien::EAlienState::Escape:
-		this->Escape();
-		break;
-	case alien::EAlienState::RisingMotherShip:
-		this->RisingMotherShip();
-		break;
-	default:
-		break;
+	} else {
+		m_HitStopCount++;
+		if( m_HitStopCount > m_HitStopTime ){
+			m_HitStopCount = 0;
+			m_IsHitStop = false;
+			m_AnimSpeed = DEFAULT_ANIM_SPEED;
+		}
 	}
-	this->Fright();
+	if( m_IsPossibleToHit == false ){
+		if( m_NowAnimNo != alien::EAnimNo_Dead ){
+			count++;
+			if( count >= 80 ){
+				count = 0;
+				m_IsPossibleToHit = true;
+			}
+		}
+	}
 }
 
 // 女の子の座標を設定.

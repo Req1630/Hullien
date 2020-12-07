@@ -139,12 +139,14 @@ struct stAttackData
 	double		Frame;				// 経過フレーム.
 	double		EnabledEndFrame;	// 有効終了フレーム.
 	double		EndFrame;			// 終了フレーム.
+	double		AttackCollEndFrame;	// 攻撃当たり判定の終了フレーム.
 
 	stAttackData()
 		: AnimNo			( EAnimNo_None )
 		, Frame				( 0.0 )
 		, EnabledEndFrame	( 1.0 )
 		, EndFrame			( 2.0 )
+		, AttackCollEndFrame( 0.0 )
 	{}
 } typedef SAttackData;
 

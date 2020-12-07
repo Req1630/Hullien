@@ -58,7 +58,7 @@ protected:
 	SBoxWall*							m_pBoxWall;			// 見えない壁 : 外部からポインタで取得.
 	int									m_HitStopCount;		// ヒットストップのカウント.
 	int									m_HitStopTime;		// ヒットストップの時間.
-	bool								m_IsHitStop;
+	bool								m_IsHitStop;		// ヒットストップしているか.
 	bool								m_IsPossibleToHit;	// 当たり判定が行えるかどうか.
 };
 

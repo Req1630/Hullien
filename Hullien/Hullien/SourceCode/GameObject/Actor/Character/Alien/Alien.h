@@ -141,7 +141,6 @@ protected:
 	bool					m_IsExplosion;				// ”š”­‚·‚é‚©.
 	bool					m_IsDelete;					// Á‹‚·‚é‚©‚Ç‚¤‚©.
 
-	std::shared_ptr<CDX9StaticMesh>	m_pTempStaticMesh;
 	int count;
 };
 
