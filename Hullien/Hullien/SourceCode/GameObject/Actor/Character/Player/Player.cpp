@@ -45,6 +45,7 @@ CPlayer::CPlayer()
 	, m_AttackPower					( 0.0f )
 	, m_MoveSpeed					( 0.0f )
 	, m_MoveSpeedMulValue			( 0.0f )
+	, m_HitStopCameraPosition		( 0.0f, 0.0f, 0.0f )
 	, m_CameraPosition				( 0.0f, 0.0f, 0.0f )
 	, m_CameraLookPosition			( 0.0f, 0.0f, 0.0f )
 	, m_CameraCount					( CAMERA_COUNT_MAX )
@@ -120,16 +121,12 @@ void CPlayer::Update()
 		SpecialAbilityUpdate();		// 特殊能力回復更新.
 		AttackUpUpdate();			// 攻撃力UP更新.
 		MoveSpeedUpUpdate();		// 移動速度UP更新.
+
+		CameraUpdate();				// カメラの更新.
 	} else {
-		m_HitStopCount++;
-		if( m_HitStopCount > m_HitStopTime ){
-			m_IsHitStop		= false;
-			m_HitStopCount	= 0;
-			m_AnimSpeed		= DEFAULT_ANIM_SPEED;
-		}
+		HitStopUpdate();			// ヒットストップの更新.
 	}
 
-	CameraUpdate();				// カメラの更新.
 
 	// 攻撃範囲のフラグを下す.
 	bit::OffBitFlag( &m_StatusFlag, player::EStatusFlag_AttackRange );
@@ -599,8 +596,9 @@ void CPlayer::AttackCollision( CActor* pActor )
 
 	if( m_IsHitStop == false ){
 		m_IsHitStop		= true;
-		m_HitStopTime	= m_AttackComboCount*2+1;
+		m_HitStopTime	= m_AttackComboCount*2;
 		m_AnimSpeed		= 0.0;
+		m_HitStopCameraPosition = m_pCamera->GetPosition();
 	}
 	pActor->SetHitStopTime( m_HitStopTime );
 	
@@ -776,6 +774,34 @@ void CPlayer::SPCameraUpdate()
 	// 特殊能力カメラ用の座標と視点座標を設定.
 	m_pSPCamera->SetLookPosition( m_CameraLookPosition );
 	m_pSPCamera->SetPosition( m_CameraPosition );
+}
+
+// ヒットストップの更新.
+void CPlayer::HitStopUpdate()
+{
+	if( m_IsHitStop == false ) return;
+
+	m_HitStopCount++;
+	const float shakeValue = 
+		sinf( static_cast<float>(D3DX_PI)*TWO / static_cast<float>(m_HitStopCount)*TWO ) *
+		static_cast<float>(m_HitStopTime*m_HitStopTime)/TWO * 0.08f;
+
+	const D3DXVECTOR3 lookPosition = { m_vPosition.x, m_Parameter.CameraLookHeight, m_vPosition.z };
+	D3DXVECTOR3 vec = lookPosition - m_pCamera->GetPosition();
+	D3DXVec3Normalize( &vec, &vec );
+	m_HitStopCameraPosition.x += vec.x * shakeValue;
+	m_HitStopCameraPosition.z += vec.z * shakeValue;
+
+	m_pSPCamera->SetLookPosition( lookPosition );
+	m_pSPCamera->SetPosition( m_HitStopCameraPosition );
+	// 特殊能力用のカメラをマネージャーに設定.
+	CCameraManager::SetCamera( m_pSPCamera );
+
+	if( m_HitStopCount < m_HitStopTime ) return;
+
+	m_IsHitStop		= false;
+	m_HitStopCount	= 0;
+	m_AnimSpeed		= DEFAULT_ANIM_SPEED;
 }
 
 // 特殊能力回復更新関数.
