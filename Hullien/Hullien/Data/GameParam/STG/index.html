@@ -6,59 +6,111 @@
 	<title>Gamedev Canvas Workshop</title>
 	<style>
     	* { padding: 0; margin: 0; }
-    	canvas { background: #333333; display: block; margin: 0 auto; }
+    	canvas { background: #111111; display: block; margin: 0 auto; }
 	</style>
 	<style type="text/css">
 		.Main {
-			margin:auto;
+			align-content: center;
+			background-size: 192vw 108vh;
+			background-image: url(Image/backGround.png);
+			animation: bgscroll 150s linear infinite;
+			height: 108vh;
 		}
+
+		@-webkit-keyframes bgscroll {
+			0% {
+				background-position: 0 0;
+			}
+
+			100% {
+				background-position: 192vw 0;
+			}
+		}
+
+		@keyframes bgscroll {
+			0% {
+				background-position: 0 0;
+			}
+
+			100% {
+				background-position: 192vw 0;
+			}
+		}
+
 		.Info {
 			padding: 10px;
-			background-color: aliceblue;
-			border: 3px solid #808080;
-			display: inline-block;
+			background-color: #464646;
+			border: 3px solid #000000;
+			width: 1000px;
+			margin: 0 auto;
+			color:#e9e9e9;
 		}
+
 		.Info h3 {
-			border-bottom: 1px solid #808080;
+			border-bottom: 1px solid #000000;
+			text-align: center;
 		}
+
 		.Info span {
 			display: inline-block;
 			width: 8em;
 		}
 
+		.Info p {
+			padding-top:5px;
+		}
+
 		.edit {
 			padding: 10px;
-			background-color: aliceblue;
-			border: 3px solid #808080;
-			display: inline-block;
+			background-color: #464646;
+			border: 3px solid #000000;
+			width: 990px;
+			height: 400px;
+			margin: 0 auto;
 		}
 
 		.buttonList {
-			background-color: azure;
-			border: 3px solid #808080;
+			background-color: #464646;
+			border: 3px solid #000000;
 			padding: 5px;
 			float: left;
+			color: #e9e9e9;
 		}
+
+		.buttonList span {
+			display: inline-block;
+			width: 9em;
+		}
+
 		.buttonList input {
+			background-color: darkgray;
 			height: 25px;
+			width:120px;
 			font-size: 20px;
 			padding: 1px;
+			text-align: right;
 		}
+
 		.buttonList button {
+			margin-top: 10px;
+			width: auto;
 			height: 30px;
 			font-size: 15px;
+			border: 0;
+			cursor: pointer;
 		}
 
 		.view {
-			border: 5px solid #808080;
+			border: 5px solid #000000;
 			float: left;
 		}
 
 		.Calculator {
 			padding: 10px;
 			background-color: #253941;
-			border: 3px solid #808080;
+			border: 3px solid #000000;
 			float: left;
+			text-align: center;
 		}
 		.Calculator p {
 			color:aliceblue;
@@ -80,9 +132,9 @@
 			padding: 1px;
 			background-color: darkslategray;
 		}
-
 		
 	</style>
+	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.2/xlsx.full.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
 </head>
@@ -149,21 +201,33 @@
 				</script>
 			</div>
 
-
+			<!-------- ボタンリストの表示 -------->
 			<div class="buttonList">
-				<input type="number" id="index"> 番号<br>
-				<input type="number" id="bulletSpeed"> 弾の速度<br>
-				<input type="number" id="bulletNum"> 弾数<br>
-				<input type="number" id="nWayNum"> nWay数<br>
-				<input type="number" id="angle"> 角度<br>
-				<input type="number" id="nWayAngle"> nWay角度<br>
-				<input type="number" id="angleAddAccValue"> 角度の加算加速度<br>
-				<input type="number" id="intrval"> 間隔<br>
-				<input type="number" id="dips"> 衝突時消えるか<br>
-				<button type="button" value="true" id="play">再生</button>
-				<button type="button" value="true" id="stop">停止</button>
-				<button type="button" value="true" id="copy">データをコピー</button>
+				<span>番号</span>
+				<input type="number" id="index" step="1"><br>
+				<span>弾の速度</span>
+				<input type="number" id="bulletSpeed" step="0.01"><br>
+				<span>弾数</span>
+				<input type="number" id="bulletNum" step="1"><br>
+				<span>nWay数</span>
+				<input type="number" id="nWayNum" step="1"><br>
+				<span>角度</span>
+				<input type="number" id="angle" step="0.01"><br>
+				<span>nWay角度</span>
+				<input type="number" id="nWayAngle" step="0.01"><br>
+				<span>角度の加算加速度</span>
+				<input type="number" id="angleAddAccValue" step="0.01"><br>
+				<span>間隔</span>
+				<input type="number" id="intrval" step="0.01"><br>
+				<span>衝突時消えるか</span>
+				<input type="number" id="dips"><br>
+
+				<button type="button" value="true" id="play"><img src="Image/Play.bmp" alt="再生" /></button>
+				<button type="button" value="true" id="stop"><img src="Image/Stop.bmp" alt="停止" /></button>
+				<button type="button" value="true" id="copy"><img src="Image/Copy.bmp" alt="データをコピーする" /></button>
 			</div>
+
+			<!-------- キャンバスの表示 -------->
 			<div class="view">
 				<canvas id="myCanvas" width="480" height="320"></canvas>
 				<script type="text/javascript" src="index.js"></script>
