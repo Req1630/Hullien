@@ -5,9 +5,9 @@
 
 class CTransition : public CCommon
 {
-	const char* SHADER_NAME = "Data\\Shader\\Transition.hlsl";
-	const char* TEXTURE_NAME = "Data\\Mesh\\rule1080p\\rule1080p\\171.png";
-	const char* NAME = "Data\\Mesh\\171.png";
+	const char* SHADER_NAME		= "Data\\Shader\\Transition.hlsl";
+	const char* TEXTURE_NAME	= "Data\\Mesh\\171Mask.png";
+	const char* NAME			= "Data\\Mesh\\171.png";
 	struct CBUFFER_PER_INIT
 	{
 		ALIGN16 D3DXMATRIX	mW;				// ÉèÅ[ÉãÉhçsóÒ.

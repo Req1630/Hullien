@@ -60,24 +60,6 @@ void CTransition::Release()
 // レンダリング.
 void CTransition::Render()
 {
-	static int index = 1;
-	if( GetAsyncKeyState('T') & 0x0001 ){
-		index++;
-		if (index > 312) index = 1;
-		std::string i;
-		if( index < 10 ){
-			i = "00" + std::to_string(index);
-		} else if ( index < 100 ){
-			i = "0" + std::to_string(index);
-		} else {
-			i = std::to_string(index);
-		}
-
-		std::string name = "Data\\Mesh\\rule1080p\\rule1080p\\" + i + ".png";
-		if( FAILED( InitTexture(name.c_str()) ))	return;
-
-	}
-
 	if( GetAsyncKeyState('K') & 0x8000 ) m_vColor.w += 0.01f;
 	if( GetAsyncKeyState('L') & 0x8000 ) m_vColor.w -= 0.01f;
 	if( m_vColor.w > 1.0f ) m_vColor.w = 1.0f;
@@ -164,8 +146,8 @@ HRESULT CTransition::InitModel()
 	InitData.pSysMem = vertices;	// 板ポリの頂点をセット.
 
 	// 頂点バッファの作成.
-	if (FAILED(m_pDevice11->CreateBuffer(
-		&bd, &InitData, &m_pVertexBuffer))) {
+	if( FAILED( m_pDevice11->CreateBuffer(
+		&bd, &InitData, &m_pVertexBuffer ))) {
 		_ASSERT_EXPR(false, L"頂点ﾊﾞｯﾌｧ作成失敗");
 		return E_FAIL;
 	}
@@ -219,33 +201,40 @@ HRESULT CTransition::InitShader()
 #ifdef _DEBUG
 	uCompileFlag =
 		D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION;
-#endif//#ifdef _DEBUG
+#endif	// #ifdef _DEBUG
 
-	//HLSLからﾊﾞｰﾃｯｸｽｼｪｰﾀﾞのﾌﾞﾛﾌﾞを作成.
+	// HLSLからバーテックスシェーダーのブロブﾞを作成.
 	if( FAILED( D3DX11CompileFromFile(
-			SHADER_NAME, nullptr, nullptr, "VS_Main", "vs_5_0",
-			uCompileFlag, 0, nullptr, &pCompiledShader, &pErrors, nullptr)))
-	{
-		_ASSERT_EXPR(false, L"hlsl読み込み失敗");
+		SHADER_NAME, 
+		nullptr,
+		nullptr,
+		"VS_Main",
+		"vs_5_0",
+		uCompileFlag, 
+		0, 
+		nullptr, 
+		&pCompiledShader, 
+		&pErrors, 
+		nullptr ))){
+		_ASSERT_EXPR( false, L"hlsl読み込み失敗" );
 		return E_FAIL;
 	}
-	SAFE_RELEASE(pErrors);
+	SAFE_RELEASE( pErrors );
 
-	//上記で作成したﾌﾞﾛﾌﾞから「ﾊﾞｰﾃｯｸｽｼｪｰﾀﾞ」を作成.
-	if (FAILED(
+	// 上記で作成したブロブから「バーテックスシェーダー」を作成.
+	if( FAILED(
 		m_pDevice11->CreateVertexShader(
 			pCompiledShader->GetBufferPointer(),
 			pCompiledShader->GetBufferSize(),
 			nullptr,
-			&m_pVertexShader)))	//(out)ﾊﾞｰﾃｯｸｽｼｪｰﾀﾞ.
-	{
+			&m_pVertexShader ))){	//(out)ﾊﾞｰﾃｯｸｽｼｪｰﾀﾞ.
 		_ASSERT_EXPR(false, L"ﾊﾞｰﾃｯｸｽｼｪｰﾀﾞ作成失敗");
 		return E_FAIL;
 	}
 
-	//頂点ｲﾝﾌﾟｯﾄﾚｲｱｳﾄを定義.
+	// 頂点インプットレイアウトを定義.
 	D3D11_INPUT_ELEMENT_DESC layout[3];
-	//頂点ｲﾝﾌﾟｯﾄﾚｲｱｳﾄの配列要素数を算出.
+	// 頂点インプットレイアウトの配列要素数を算出.
 	UINT numElements = 0;
 	
 	D3D11_INPUT_ELEMENT_DESC tmp[] =
@@ -258,43 +247,49 @@ HRESULT CTransition::InitShader()
 		tmp, sizeof(D3D11_INPUT_ELEMENT_DESC)*numElements);
 
 
-	//頂点ｲﾝﾌﾟｯﾄﾚｲｱｳﾄを作成.
-	if (FAILED(
+	// 頂点インプットレイアウトを作成.
+	if( FAILED(
 		m_pDevice11->CreateInputLayout(
 			layout,
 			numElements,
 			pCompiledShader->GetBufferPointer(),
 			pCompiledShader->GetBufferSize(),
-			&m_pVertexLayout)))	//(out)頂点ｲﾝﾌﾟｯﾄﾚｲｱｳﾄ.
-	{
-		_ASSERT_EXPR(false, L"頂点ｲﾝﾌﾟｯﾄﾚｲｱｳﾄ作成失敗");
+			&m_pVertexLayout ))){	//(out)頂点インプットレイアウト.
+		_ASSERT_EXPR( false, L"頂点ｲﾝﾌﾟｯﾄﾚｲｱｳﾄ作成失敗" );
 		return E_FAIL;
 	}
-	SAFE_RELEASE(pCompiledShader);
+	SAFE_RELEASE( pCompiledShader );
 
-	//HLSLからﾋﾟｸｾﾙｼｪｰﾀﾞのﾌﾞﾛﾌﾞを作成.
-	if (FAILED(
+	// HLSLからピクセルシェーダーのブロブを作成.
+	if( FAILED(
 		D3DX11CompileFromFile(
-			SHADER_NAME, nullptr, nullptr, "PS_Main", "ps_5_0",
-			uCompileFlag, 0, nullptr, &pCompiledShader, &pErrors, nullptr)))
-	{
+			SHADER_NAME,
+			nullptr, 
+			nullptr, 
+			"PS_Main", 
+			"ps_5_0",
+			uCompileFlag, 
+			0, 
+			nullptr, 
+			&pCompiledShader, 
+			&pErrors, 
+			nullptr ))){
 		_ASSERT_EXPR(false, L"hlsl読み込み失敗");
 		return E_FAIL;
 	}
 	SAFE_RELEASE(pErrors);
 
-	//上記で作成したﾌﾞﾛﾌﾞから「ﾋﾟｸｾﾙｼｪｰﾀﾞ」を作成.
-	if (FAILED(
+	// 上記で作成したブロブから「ピクセルシェーダー」を作成.
+	if( FAILED(
 		m_pDevice11->CreatePixelShader(
 			pCompiledShader->GetBufferPointer(),
 			pCompiledShader->GetBufferSize(),
 			nullptr,
-			&m_pPixelShader)))	//(out)ﾋﾟｸｾﾙｼｪｰﾀﾞ.
-	{
-		_ASSERT_EXPR(false, L"ﾋﾟｸｾﾙｼｪｰﾀﾞ作成失敗");
+			&m_pPixelShader ))){	// (out)ピクセルシェーダー.
+		_ASSERT_EXPR( false, L"ﾋﾟｸｾﾙｼｪｰﾀﾞ作成失敗" );
 		return E_FAIL;
 	}
-	SAFE_RELEASE(pCompiledShader);
+	SAFE_RELEASE( pCompiledShader );
 
 	return S_OK;
 }
@@ -302,20 +297,22 @@ HRESULT CTransition::InitShader()
 // サンプラの作成.
 HRESULT CTransition::InitSampler()
 {
-	//ﾃｸｽﾁｬ用のｻﾝﾌﾟﾗ構造体.
+	// テクスチャ用のサンプラ構造体.
 	D3D11_SAMPLER_DESC samDesc;
 	ZeroMemory(&samDesc, sizeof(samDesc));
-	samDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;	//ﾘﾆｱﾌｨﾙﾀ(線形補間).
-															//POINT:高速だが粗い.
-	samDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;	//ﾗｯﾋﾟﾝｸﾞﾓｰﾄﾞ(WRAP:繰り返し).
+	samDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;	// リニアフィルタ(線形補間).
+														// POINT:高速だが粗い.
+	samDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;		// ラッピングモード(WRAP:繰り返し).
 	samDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	samDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	// MIRROR: 反転繰り返し.
 	// CLAMP : 端の模様を引き伸ばす.
 	// BORDER: 別途境界色を決める.
-	// ｻﾝﾌﾟﾗ作成.
-	if (FAILED(m_pDevice11->CreateSamplerState(&samDesc, &m_pSampleLinear))) {
-		_ASSERT_EXPR(false, L"ｻﾝﾌﾟﾗ作成失敗");
+	// サンプラ作成.
+	if( FAILED( m_pDevice11->CreateSamplerState(
+		&samDesc, 
+		&m_pSampleLinear ))) {
+		_ASSERT_EXPR( false, L"ｻﾝﾌﾟﾗ作成失敗" );
 		return E_FAIL;
 	}
 	return S_OK;
@@ -371,7 +368,7 @@ void CTransition::SetConstantBufferInit()
 
 		// ワールド行列を渡す.
 		cb.mW	= mWVP;
-		D3DXMatrixTranspose(&cb.mW, &cb.mW); // 行列を転置する.
+		D3DXMatrixTranspose( &cb.mW, &cb.mW ); // 行列を転置する.
 
 		// ビューポートの幅,高さを渡す.
 		cb.vViewPort.x	= static_cast<float>(WND_W);
