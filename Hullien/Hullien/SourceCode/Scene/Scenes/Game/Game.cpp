@@ -22,15 +22,16 @@
 #include "..\..\..\Resource\EffectResource\EffectResource.h"
 
 CGame::CGame( CSceneManager* pSceneManager )
-	: CSceneBase		( pSceneManager )
-	, m_GameObjManager	( nullptr )
-	, m_WidgetManager	( nullptr )
-	, m_ContinueWidget	( nullptr )
-	, m_NowEventScene	( EEventSceneState::GameStart )
-	, m_NextSceneState	( ENextSceneState::None )
-	, m_WaitCount		( 0.0f )
-	, m_IsPlayGameBGM	( false )
-	, m_IsPlayDangerBGM	( false )
+	: CSceneBase			( pSceneManager )
+	, m_GameObjManager		( nullptr )
+	, m_WidgetManager		( nullptr )
+	, m_ContinueWidget		( nullptr )
+	, m_NowEventScene		( EEventSceneState::GameStart )
+	, m_NextSceneState		( ENextSceneState::None )
+	, m_WaitCount			( 0.0f )
+	, m_IsContinueSelect	( false )
+	, m_IsPlayGameBGM		( false )
+	, m_IsPlayDangerBGM		( false )
 {
 	m_GameObjManager		= std::make_unique<CGameActorManager>();
 	m_WidgetManager			= std::make_unique<CGameWidgetManager>();
@@ -243,6 +244,8 @@ void CGame::ContinueUpdate()
 	m_ContinueWidget->Update();
 
 	if (m_ContinueWidget->GetIsDrawing() == true) return;
+	if( m_IsContinueSelect == true ) return;
+
 	switch (m_ContinueWidget->GetSelectState())
 	{
 	case CContinueWidget::ESelectState::Yes:
@@ -251,6 +254,7 @@ void CGame::ContinueUpdate()
 		{
 			CSoundManager::PlaySE("Determination");
 			m_NextSceneState = ENextSceneState::Game;
+			m_IsContinueSelect = true;
 		}
 		break;
 	case CContinueWidget::ESelectState::No:
@@ -259,6 +263,7 @@ void CGame::ContinueUpdate()
 		{
 			CSoundManager::PlaySE("CancelDetermination");
 			m_NextSceneState = ENextSceneState::GameOver;
+			m_IsContinueSelect = true;
 		}
 		break;
 	default:

@@ -207,7 +207,10 @@ void CGameOverEvent::NextStep()
 // スキップ.
 void CGameOverEvent::Skip()
 {
-	if( m_EventStep == EEventStep::Move_Back_UFO ) return;
+	if (m_EventStep == EEventStep::Move_Back_UFO) return;
+	if (m_EventStep == EEventStep::MoveLeft_UFO) return;
+	if (m_EventStep == EEventStep::MoveRight_UFO_Second) return;
+	if (m_EventStep == EEventStep::EventEnd) return;
 	if (m_IsSkip == true) return;
 	CFade::SetFadeIn();
 

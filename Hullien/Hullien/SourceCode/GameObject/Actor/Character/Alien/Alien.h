@@ -25,7 +25,7 @@ protected:
 	inline static const char* HIT_EEFECT_NAME		= "hiteffekt";		// ヒットエフェクト.
 	inline static const char* SPAWN_EFFECT_NAME		= "uvtest";			// スポーンエフェクト.
 	inline static const char* DEAD_EFFECT_NAME		= "uvtest";			// 死亡エフェクト.
-	inline static const char* ATTACK_EFFECT_NAME	= "uvtest";			// 攻撃エフェクト.
+	inline static const char* ATTACK_EFFECT_NAME	= "b_attackeffkt";	// 攻撃エフェクト.
 
 	const SAlienParam*	pPARAMETER;	// パラメータのポインタ : 外部から取得.
 

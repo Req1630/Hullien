@@ -112,6 +112,7 @@ void CAlien::LifeCalculation( const std::function<void(float&,bool&)>& proc )
 	} else {
 		m_IsFirght	= true;
 	}
+	m_pEffects[alien::EEffectNo_Attack]->Stop();
 	// ヒットエフェクトを再生する.
 	m_pEffects[alien::EEffectNo_Hit]->Play( { m_vPosition.x, m_vPosition.y+HIT_EFFECT_HEIGHT, m_vPosition.z });
 	if( m_IsHitStop == false ){
