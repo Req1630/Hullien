@@ -146,6 +146,11 @@ document.getElementById("copy").onclick = function () {
 	document.body.removeChild(area);
 }
 
+// データのコピー.
+document.getElementById("addTable").onclick = function () {
+
+}
+
 var data = new CData(1, 0.1, 120, 5, 36, 12, 1, 10, 1);
 
 document.getElementById("index").value				= data.index;

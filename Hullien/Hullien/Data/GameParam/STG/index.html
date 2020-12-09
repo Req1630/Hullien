@@ -139,53 +139,53 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
 </head>
 <body>
-	<div class="Main">
-		<!-------- 説明 -------->
-		<div class="Info">
-			<h3>説明</h3>
-			<p><span>再生 </span> : 弾の軌道を確認できる</p>
-			<p><span>停止 </span> : 再生している弾の軌道を止める</p>
-			<p><span>データをコピー </span> : 入力したデータをコピーする</p>
-			<p><span></span> : コピーしたデータを"EnemyListTool.xlsm → BulletCreateシート"にペーストする</p>
-		</div>
-		<!-------- エディタ -------->
-		<div class="edit">
-			<!-------- 電卓の表示 -------->
-			<div class="Calculator">
+    <div class="Main">
+        <!-------- 説明 -------->
+        <div class="Info">
+            <h3>説明</h3>
+            <p><span>再生 </span> : 弾の軌道を確認できる</p>
+            <p><span>停止 </span> : 再生している弾の軌道を止める</p>
+            <p><span>データをコピー </span> : 入力したデータをコピーする</p>
+            <p><span></span> : コピーしたデータを"EnemyListTool.xlsm → BulletCreateシート"にペーストする</p>
+        </div>
+        <!-------- エディタ -------->
+        <div class="edit">
+            <!-------- 電卓の表示 -------->
+            <div class="Calculator">
 
-				<p> 角度計算用電卓 </p>
-				<input class="CalculatorOut" type="text" id="result">
-				<div>
-					<input class="Number" type="button" value=" " onclick="edit(this)">
-					<input class="Number" type="button" value=" " onclick="edit(this)">
-					<input class="Number" type="button" value="C" onclick="edit(this)">
-					<input class="Number" type="button" value="/" onclick="edit(this)">
-				</div>
-				<div>
-					<input class="Number" type="button" value="7" onclick="edit(this)">
-					<input class="Number" type="button" value="8" onclick="edit(this)">
-					<input class="Number" type="button" value="9" onclick="edit(this)">
-					<input class="Number" type="button" value="*" onclick="edit(this)">
-				</div>
-				<div>
-					<input class="Number" type="button" value="4" onclick="edit(this)">
-					<input class="Number" type="button" value="5" onclick="edit(this)">
-					<input class="Number" type="button" value="6" onclick="edit(this)">
-					<input class="Number" type="button" value="-" onclick="edit(this)">
-				</div>
-				<div>
-					<input class="Number" type="button" value="1" onclick="edit(this)">
-					<input class="Number" type="button" value="2" onclick="edit(this)">
-					<input class="Number" type="button" value="3" onclick="edit(this)">
-					<input class="Number" type="button" value="+" onclick="edit(this)">
-				</div>
-				<div>
-					<input class="Number" type="button" value=" " onclick="edit(this)">
-					<input class="Number" type="button" value="0" onclick="edit(this)">
-					<input class="Number" type="button" value="." onclick="edit(this)">
-					<input class="Number" type="button" value="=" onclick="calc()">
-				</div>
-				<script language="javascript" type="text/javascript">
+                <p> 角度計算用電卓 </p>
+                <input class="CalculatorOut" type="text" id="result">
+                <div>
+                    <input class="Number" type="button" value=" " onclick="edit(this)">
+                    <input class="Number" type="button" value=" " onclick="edit(this)">
+                    <input class="Number" type="button" value="C" onclick="edit(this)">
+                    <input class="Number" type="button" value="/" onclick="edit(this)">
+                </div>
+                <div>
+                    <input class="Number" type="button" value="7" onclick="edit(this)">
+                    <input class="Number" type="button" value="8" onclick="edit(this)">
+                    <input class="Number" type="button" value="9" onclick="edit(this)">
+                    <input class="Number" type="button" value="*" onclick="edit(this)">
+                </div>
+                <div>
+                    <input class="Number" type="button" value="4" onclick="edit(this)">
+                    <input class="Number" type="button" value="5" onclick="edit(this)">
+                    <input class="Number" type="button" value="6" onclick="edit(this)">
+                    <input class="Number" type="button" value="-" onclick="edit(this)">
+                </div>
+                <div>
+                    <input class="Number" type="button" value="1" onclick="edit(this)">
+                    <input class="Number" type="button" value="2" onclick="edit(this)">
+                    <input class="Number" type="button" value="3" onclick="edit(this)">
+                    <input class="Number" type="button" value="+" onclick="edit(this)">
+                </div>
+                <div>
+                    <input class="Number" type="button" value=" " onclick="edit(this)">
+                    <input class="Number" type="button" value="0" onclick="edit(this)">
+                    <input class="Number" type="button" value="." onclick="edit(this)">
+                    <input class="Number" type="button" value="=" onclick="calc()">
+                </div>
+                <script language="javascript" type="text/javascript">
 				var result = document.getElementById("result");
 				function edit(elem) {
 					if (elem.value == " ") return;
@@ -198,41 +198,67 @@
 				function calc() {
 					result.value = new Function("return " + result.value)();
 				}
-				</script>
-			</div>
+                </script>
+            </div>
 
-			<!-------- ボタンリストの表示 -------->
-			<div class="buttonList">
-				<span>番号</span>
-				<input type="number" id="index" step="1"><br>
-				<span>弾の速度</span>
-				<input type="number" id="bulletSpeed" step="0.01"><br>
-				<span>弾数</span>
-				<input type="number" id="bulletNum" step="1"><br>
-				<span>nWay数</span>
-				<input type="number" id="nWayNum" step="1"><br>
-				<span>角度</span>
-				<input type="number" id="angle" step="0.01"><br>
-				<span>nWay角度</span>
-				<input type="number" id="nWayAngle" step="0.01"><br>
-				<span>角度の加算加速度</span>
-				<input type="number" id="angleAddAccValue" step="0.01"><br>
-				<span>間隔</span>
-				<input type="number" id="intrval" step="0.01"><br>
-				<span>衝突時消えるか</span>
-				<input type="number" id="dips"><br>
+            <!-------- ボタンリストの表示 -------->
+            <div class="buttonList">
+                <span>番号</span>
+                <input type="number" id="index" step="1"><br>
+                <span>弾の速度</span>
+                <input type="number" id="bulletSpeed" step="0.01"><br>
+                <span>弾数</span>
+                <input type="number" id="bulletNum" step="1"><br>
+                <span>nWay数</span>
+                <input type="number" id="nWayNum" step="1"><br>
+                <span>角度</span>
+                <input type="number" id="angle" step="0.01"><br>
+                <span>nWay角度</span>
+                <input type="number" id="nWayAngle" step="0.01"><br>
+                <span>角度の加算加速度</span>
+                <input type="number" id="angleAddAccValue" step="0.01"><br>
+                <span>間隔</span>
+                <input type="number" id="intrval" step="0.01"><br>
+                <span>衝突時消えるか</span>
+                <input type="number" id="dips"><br>
 
-				<button type="button" value="true" id="play"><img src="Image/Play.bmp" alt="再生" /></button>
-				<button type="button" value="true" id="stop"><img src="Image/Stop.bmp" alt="停止" /></button>
-				<button type="button" value="true" id="copy"><img src="Image/Copy.bmp" alt="データをコピーする" /></button>
-			</div>
+                <button type="button" value="true" id="play"><img src="Image/Play.bmp" alt="再生" /></button>
+                <button type="button" value="true" id="stop"><img src="Image/Stop.bmp" alt="停止" /></button>
+                <button type="button" value="true" id="copy"><img src="Image/Copy.bmp" alt="データをコピーする" /></button>
+            </div>
 
-			<!-------- キャンバスの表示 -------->
-			<div class="view">
-				<canvas id="myCanvas" width="480" height="320"></canvas>
-				<script type="text/javascript" src="index.js"></script>
-			</div>
-		</div>
-	</div>
+            <!-------- キャンバスの表示 -------->
+            <div class="view">
+                <canvas id="myCanvas" width="480" height="320"></canvas>
+            </div>
+        </div>
+
+        <!-------- エディタ -------->
+        <div>
+
+            <input type="text" id="addText"><br>
+
+            <!-------- テーブルの表示 -------->
+            <table id="table" border="1">
+                <tr>
+                    <td>番号</td>
+                    <td>弾の速度</td>
+                    <td>弾数</td>
+                    <td>nWay数</td>
+                    <td>角度</td>
+                    <td>nWay角度</td>
+                    <td>角度の加算加速度</td>
+                    <td>間隔</td>
+                    <td>衝突時消えるか</td>
+                </tr>
+            </table>
+
+            <button type="button" value="true" id="addTable"><img src="Image/Copy.bmp" alt="データをコピーする" /></button>
+
+
+        </div>
+    </div>
+    <script type="text/javascript" src="index.js"></script>
 </body>
+
 </html>
