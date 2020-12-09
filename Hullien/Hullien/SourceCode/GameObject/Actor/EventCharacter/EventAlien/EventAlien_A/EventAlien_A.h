@@ -30,6 +30,9 @@ public:
 	// アームを完全にとりだす.
 	void SetArmAppearance();
 
+	// アニメーションを止める.
+	virtual void StopAnimation(){ m_AnimSpeed = 0.0; }
+
 private:
 	// スポーン.
 	virtual void Spawning() override;

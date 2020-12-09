@@ -450,6 +450,7 @@ void CGameStartEvent::GetCaughtGirl()
 	// 女の子が捕まったらプレイヤーを回転させる.
 	if (m_pGirl->GetIsDanger() == true && m_pPlayer->IsEndDamageAnim() == true )
 	{
+		m_pAlienA->StopAnimation();
 		// 女の子の方へ向くようにする.
 		const float rot = atan2f(
 			m_stPlayer.vPosition.x - m_stGirl.vPosition.x,
