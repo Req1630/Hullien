@@ -25,9 +25,13 @@ namespace STG
 		const float SPAWN_END_POS_Z		= 40.0f;	// スポーンの終了座標.
 		const float SPAWN_SPEED_SUB		= 0.005f;	// スポーンの移動速度の減算値.
 
+		const float INIT_MOVE_COUNT		= (MOVE_SPEED / SPAWN_SPEED_SUB)*2.0f;
+		const float INIT_MOVE_ROT_ADD	= static_cast<float>(D3DX_PI) / (INIT_MOVE_COUNT*0.5f);
+
 		const float OUT_POSITION_X		= 100.0f;	// 画面外の座標 : X.
 		const float OUT_POSITION_Z		= 55.0f;	// 画面外の座標 : Z.
 		const float DEAD_SPEED			= 0.02f;	// 死亡速度.
+
 	public:
 		CPlayer();
 		virtual ~CPlayer();
@@ -65,7 +69,9 @@ namespace STG
 	private:
 		D3DXVECTOR3 m_Direction;		// 方向.
 		float		m_SpawnMoveSpeed;	// スポーン時の移動速度.
+		float		m_InitMoveCount;	// 初期移動カウント.
 		bool		m_IsDead;			// 死亡したか.
+		bool		m_IsInitMoveEnd;	// 初期移動が終了したか.
 	};
 };
 

@@ -71,6 +71,20 @@ D3DXVECTOR3 CCameraManager::GetLookPosition()
 	return GetInstance()->m_pCamera->GetLookPosition();
 }
 
+// 座標の設定.
+void CCameraManager::SetPosition( const D3DXVECTOR3& pos )
+{
+	if( GetInstance()->m_pCamera == nullptr ) return;
+	GetInstance()->m_pCamera->SetPosition( pos );
+}
+
+// 視点座標の設定.
+void CCameraManager::SetLookPosition( const D3DXVECTOR3& pos )
+{
+	if( GetInstance()->m_pCamera == nullptr ) return;
+	GetInstance()->m_pCamera->SetLookPosition( pos );
+}
+
 //---------------------------.
 // インスタンスの取得.
 //---------------------------.

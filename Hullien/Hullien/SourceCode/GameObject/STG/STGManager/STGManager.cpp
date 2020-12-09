@@ -14,6 +14,7 @@ CSTGManager::CSTGManager()
 	, m_STGEndFrame		( 0.0f )
 	, m_STGNowFrame		( 0.0f )
 	, m_SkyDomeRotX		( 0.0f )
+	, m_EndCount		( 0 )
 {
 	m_pCamera		= std::make_shared<CCamera>();
 	m_pSkyDome		= std::make_unique<CSkyDome>();
@@ -83,5 +84,10 @@ void CSTGManager::Render()
 // シューティングが終了したか.
 bool CSTGManager::IsSTGEnd()
 {
-	return m_pEnemyManager->IsEndEnmeyDead();
+	if( m_pEnemyManager->IsEndEnmeyDead() == false ) return false;
+
+	m_EndCount++;
+
+	if( m_EndCount < STG_END_FRAME ) return false;
+	return true;
 }

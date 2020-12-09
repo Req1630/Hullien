@@ -8,6 +8,7 @@
 #include "..\..\..\..\Utility\XInput\XInput.h"
 #include "..\..\..\..\XAudio2\SoundManager.h"
 #include "..\..\Bullet\BuletManager\BuletManager.h"
+#include "..\..\..\..\Camera\CameraManager\CameraManager.h"
 
 STG::CEnemy::CEnemy()
 	: CEnemy	( STG::SEnemyParam() )
@@ -16,8 +17,10 @@ STG::CEnemy::CEnemy()
 
 STG::CEnemy::CEnemy( const STG::SEnemyParam& param )
 	: PARAMETER				( param )
+	, m_pGuns				()
 	, m_pFont				( nullptr )
 	, m_NowState			( STG::EEnemyState::Spawn )
+	, m_DeadUpParam			()
 	, m_FontRotation		( FONT_ROTATION )
 	, m_MoveSpeed			( 0.0f )
 	, m_MoveingDistance		( 0.0f )
@@ -26,7 +29,7 @@ STG::CEnemy::CEnemy( const STG::SEnemyParam& param )
 	, m_EscapeCount			( ESCAPE_COUNT_MAX )
 	, m_SpawnCount			( 0 )
 	, m_IsHitShake			( false )
-	, m_pGuns				()
+	, m_IsMySpawnLast		( false )
 {
 	m_pFont			= std::make_unique<CFont>();
 	m_pCollManager	= std::make_shared<CCollisionManager>();
@@ -189,17 +192,72 @@ void STG::CEnemy::Escape()
 // 死亡.
 void STG::CEnemy::Dead()
 {
-	m_IsActive	= false;		// 動作終了.
-	m_vScale.x -= DEAD_SCALE_SUB_VALUE;	// スケールを加算.
-	m_vScale.y -= DEAD_SCALE_SUB_VALUE;	// スケールを加算.
-	m_vScale.z -= DEAD_SCALE_SUB_VALUE;	// スケールを加算.
+	if( m_IsMySpawnLast == false ){
+		m_IsActive	= false;		// 動作終了.
+		m_vScale.x -= DEAD_SCALE_SUB_VALUE;	// スケールを加算.
+		m_vScale.y -= DEAD_SCALE_SUB_VALUE;	// スケールを加算.
+		m_vScale.z -= DEAD_SCALE_SUB_VALUE;	// スケールを加算.
+		m_FontRotation.z += DEAD_ROTATION_SPEED;	// 回転させる.
+
+		if( m_vScale.x > 0.0f ) return;
+		// スケールが 0.0 以下になれば.
+		m_NowState	= STG::EEnemyState::None;	// 何もない状態へ遷移.
+		// 座標を画面外へ.
+		m_vPosition	= { INIT_POSITION_Z, 0.0f, INIT_POSITION_Z };
+	} else {
+		// スポーンラストの際の死亡処理
+		SpawnLastDead();
+	}
+}
+
+// スポーンラストの際の死亡処理.
+void STG::CEnemy::SpawnLastDead()
+{
+	D3DXVECTOR3 cameraPos = CCameraManager::GetPosition();	// カメラの座標.
+	D3DXVECTOR3 vec = cameraPos - m_vPosition;	// 目的の座標へのベクトル.
+	vec.y = 0.0f;
+	float length = 0.0f;
+	// 目的の座標との距離が一定以上なら.
+	//	目的の座標に近づける.
+	length = D3DXVec3Length( &vec );
+	if( length >= DEAD_TARGET_POSITION_LENGTH && m_DeadUpParam.IsMoveEnd == false ){
+		D3DXVec3Normalize( &vec, &vec );
+		const float moveSpeed = length * DEAD_TARGET_MOVE_SPEED;
+		m_vPosition.x += vec.x * moveSpeed;
+		m_vPosition.z += vec.z * moveSpeed;
+	}
 	m_FontRotation.z += DEAD_ROTATION_SPEED;	// 回転させる.
 
-	if( m_vScale.x > 0.0f ) return;
-	// スケールが 0.0 以下になれば.
-	m_NowState	= STG::EEnemyState::None;	// 何もない状態へ遷移.
-	// 座標を画面外へ.
-	m_vPosition	= { INIT_POSITION_Z, 0.0f, INIT_POSITION_Z };
+	// 移動加速値の加算.
+	m_DeadUpParam.MoveAccValue += DEAD_MOVE_ACC_ADD_VALUE;
+	if( m_DeadUpParam.MoveAccValue >= DEAD_MOVE_ACC_VALUE_MAX ) 
+		m_DeadUpParam.MoveAccValue = DEAD_MOVE_ACC_VALUE_MAX;
+
+	// 座標を上にあげる.
+	m_vPosition.y += m_DeadUpParam.MoveSpeed + m_DeadUpParam.MoveAccValue;
+	if( m_vPosition.y >= cameraPos.y-DEAD_POSITION_Y_ADJ_VALUE ){
+		m_vPosition.y = cameraPos.y-DEAD_POSITION_Y_ADJ_VALUE;
+		m_FontRotation.z -= DEAD_ROTATION_SPEED;
+
+		m_DeadUpParam.IsMoveEnd = true;
+	}
+
+	// カメラの揺れ.
+	if( m_DeadUpParam.IsMoveEnd == true ){
+		D3DXVECTOR3 cameraLookPos = CCameraManager::GetLookPosition();
+		m_DeadUpParam.CameraShakeCount--;
+		if( m_DeadUpParam.CameraShakeCount <= 0.0f ) m_DeadUpParam.CameraShakeCount = 0.0f;
+
+		// 揺れ値の取得.
+		const float SHAKE_VALUE =  m_DeadUpParam.GetShakeValue();
+		cameraPos.x		+= SHAKE_VALUE;
+		cameraPos.z		+= SHAKE_VALUE;
+		cameraLookPos.x	+= SHAKE_VALUE * DEAD_CAMERA_SHAKE_ADJ_VALUE;
+		cameraLookPos.z	+= SHAKE_VALUE * DEAD_CAMERA_SHAKE_ADJ_VALUE;
+
+		CCameraManager::SetPosition( cameraPos );
+		CCameraManager::SetLookPosition( cameraLookPos );
+	}
 }
 
 // 当たった時の揺れ.

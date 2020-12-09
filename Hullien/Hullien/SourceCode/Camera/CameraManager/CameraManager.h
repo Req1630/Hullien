@@ -32,6 +32,12 @@ public:
 	// カメラ注視座標取得関数.
 	static D3DXVECTOR3 GetLookPosition();
 
+	// 座標の設定.
+	static void SetPosition( const D3DXVECTOR3& pos );
+
+	// 視点座標の設定.
+	static void SetLookPosition( const D3DXVECTOR3& pos );
+
 private:
 	std::shared_ptr<CCamera> m_pCamera;	// カメラクラス.
 

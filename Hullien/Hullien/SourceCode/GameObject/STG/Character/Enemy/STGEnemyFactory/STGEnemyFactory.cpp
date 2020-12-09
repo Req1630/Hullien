@@ -149,7 +149,10 @@ bool STG::CEnemyFactory::CreateEnemyList( std::vector<std::shared_ptr<STG::CEnem
 		// おんなじ座標で重なるとおかしくなるので、
 		// 少し座標を足して、調整する.
 		posY += POSITION_HEIGHT_ADD_VALUE;
-		return true;
 	}
+
+	// 最後の敵なので、フラグを立てる.
+	enemys.back()->SetLastSpawn();
+
 	return true;
 }

@@ -18,8 +18,8 @@ namespace STG
 {
 	class CEnemy : public STG::CCharacter
 	{
-		inline static const float E_WND_OUT_ADJ_SIZE	= 10.0f;
 		inline static const char* DEAD_SE_NAME			= "STGEnemyDead";
+		inline static const float E_WND_OUT_ADJ_SIZE	= 10.0f;
 		inline static const float INIT_POSITION_Z		= -100.0f;	// 初期座標 : Z.
 		inline static const float MOVE_SUB_VALUE		= 0.002f;	// 移動速度を引く値.
 		inline static const float MOVE_SUB_POSITION_Z	= -10.0f;	// 移動速度を引いていく座標.
@@ -37,8 +37,37 @@ namespace STG
 			0.0f, 
 			static_cast<float>(D3DXToRadian(180))
 		};
+		inline static const float DEAD_TARGET_POSITION_LENGTH	= 0.5f;		// 死亡時のターゲットとの距離.
+		inline static const float DEAD_TARGET_MOVE_SPEED		= 0.045f;	// 死亡時のターゲットとの移動速度.
+		inline static const float DEAD_MOVE_ACC_ADD_VALUE		= 0.1f;		// 死亡移動加速加算値.
+		inline static const float DEAD_MOVE_ACC_VALUE_MAX		= 1.5f;		// 死亡移動加速度最大値.
+		inline static const float DEAD_POSITION_Y_ADJ_VALUE		= 10.0f;	// 死亡座標の調整値.
+		inline static const float DEAD_CAMERA_SHAKE_ADJ_VALUE	= 10.0f;	// 死亡カメラ揺れ値.
 
 		const STG::SEnemyParam PARAMETER;	// パラメータ.
+
+		// 死亡した際のカメラアップパラメータ.
+		struct stDeadUpParam
+		{
+			float	MoveSpeed;			// 移動速度.
+			float	MoveAccValue;		// 移動加速値.
+			float	CameraShakeCount;	// カメラの揺れカウント.
+			bool	IsMoveEnd;			// 移動が終了したか.
+
+			stDeadUpParam()
+				: MoveSpeed			( 0.2f )
+				, MoveAccValue		( 0.0f )
+				, CameraShakeCount	( 40.0f )
+				, IsMoveEnd			( false )
+			{}
+
+			inline float GetShakeValue() const
+			{
+				return sinf( static_cast<float>(D3DX_PI) * 2.0f / 3.0f * this->CameraShakeCount ) *
+					( this->CameraShakeCount*0.005f );
+			}
+
+		} typedef SDeadUpParam;
 
 	public:
 		CEnemy();
@@ -58,10 +87,14 @@ namespace STG
 		virtual void Collision( STG::CActor* pActor ) override;
 		// スポーン時間の取得.
 		inline float GetSpawnTime() const { return PARAMETER.SpawnTime; }
+		// y座標の設定.
 		inline void SetPositionY( const float& posY ){ m_vPosition.y = posY; }
 
 		// 死亡したか.
-		inline bool IsDead() const { return m_NowState == STG::EEnemyState::Dead; }
+		inline bool IsDead() const { return m_DeadUpParam.CameraShakeCount <= 0.0f; }
+
+		// 最後のスポーンフラグの設定.
+		inline void SetLastSpawn(){ m_IsMySpawnLast = true; }
 
 	private:
 		// スポーン.
@@ -74,6 +107,8 @@ namespace STG
 		void Escape();
 		// 死亡.
 		void Dead();
+		// スポーンラストの際の死亡処理.
+		void SpawnLastDead();
 
 		// 当たった時の揺れ.
 		void HitShake();
@@ -88,8 +123,10 @@ namespace STG
 		bool CollisionInit();
 
 	private:
+		std::vector<std::unique_ptr<CBulletManager>>	m_pGuns;
 		std::unique_ptr<CFont>	m_pFont;				// フォントクラス.
 		STG::EEnemyState		m_NowState;				// 現在の状態.
+		SDeadUpParam			m_DeadUpParam;			// 死亡時のカメラアップパラメータ.
 		D3DXVECTOR3				m_FontRotation;			// フォントの回転値.
 		float					m_MoveSpeed;			// 移動速度.
 		float					m_MoveingDistance;		// 移動距離.
@@ -98,7 +135,7 @@ namespace STG
 		float					m_EscapeCount;			// 逃げるカウント.
 		int						m_SpawnCount;			// スポーンカウント.
 		bool					m_IsHitShake;			// 当たった時の揺れをするか.
-		std::vector<std::unique_ptr<CBulletManager>>	m_pGuns;
+		bool					m_IsMySpawnLast;		// 自分が最後のスポーン.
 	};
 }
 

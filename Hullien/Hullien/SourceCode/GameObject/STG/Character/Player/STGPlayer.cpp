@@ -9,7 +9,9 @@
 STG::CPlayer::CPlayer()
 	: m_Direction		( 0.0f, 0.0f, 0.0f )
 	, m_SpawnMoveSpeed	( MOVE_SPEED )
+	, m_InitMoveCount	( 0.0f )
 	, m_IsDead			( false )
+	, m_IsInitMoveEnd	( false )
 {
 	m_pCollManager	= std::make_shared<CCollisionManager>();
 	m_vPosition		= INIT_POSITION;
@@ -73,7 +75,26 @@ void STG::CPlayer::SpawnMove()
 
 	// スポーン完了.
 	if( m_SpawnMoveSpeed > 0.0f ) return;
-	m_IsActive = true;
+	m_SpawnMoveSpeed = 0.0f;
+
+	// 初期移動が終了してなければ.
+	if( m_IsInitMoveEnd == false ){
+		m_ShotCount++;
+		if( m_ShotCount == SHOT_INTERVAL_FRAME ){
+			BulletShot( m_vRotation.y, BULLET_MOVE_SPEED );
+			m_ShotCount = 0;
+			CSoundManager::PlaySE( SHOT_SE_NAME );
+		}
+		m_vRotation.y += INIT_MOVE_ROT_ADD;
+		m_InitMoveCount++;
+	}
+
+	if( m_InitMoveCount > INIT_MOVE_COUNT || m_IsInitMoveEnd == true ){
+		m_IsActive		= true;
+		m_IsInitMoveEnd	= true;
+		m_ShotCount		= 0;
+		m_vRotation.y	= 0.0f;
+	}
 }
 
 // 移動関数.
