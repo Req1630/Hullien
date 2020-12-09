@@ -12,7 +12,6 @@ CSceneManager::CSceneManager()
 	: m_hWnd					( nullptr )
 	, m_pScene					( nullptr )
 	, m_pCommand				( nullptr )
-	, m_pTransition				( nullptr )
 	, m_NowBGMName				()
 	, m_NowScene				( EScene::Start )
 	, m_NextScene				( EScene::Start )
@@ -25,7 +24,6 @@ CSceneManager::CSceneManager()
 {
 	NextSceneMove();
 	m_pCommand = std::make_unique<CCommand>();
-	m_pTransition = std::make_unique<CTransition>();
 }
 
 CSceneManager::~CSceneManager()
