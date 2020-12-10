@@ -90,14 +90,18 @@ void CVolumeConfigWidget::Render()
 			m_pVolumeSlinders[i]->Render();
 		}
 		m_pSprites[i]->SetDeprh( false );
+		m_pSprites[i]->SetBlend( true );
 		m_pSprites[i]->RenderUI();
+		m_pSprites[i]->SetBlend( false );
 		m_pSprites[i]->SetDeprh( true );
 	}
 	// 選択中のアイコンの表示.
 	if( m_NowConfigState == EConfigState_Seting ){
 		m_pSprites[ESpriteNo_SelectIcon]->SetPosition( m_pVolumeSlinders[m_NowSelectVolume]->GetIconPosition() );
 		m_pSprites[ESpriteNo_SelectIcon]->SetDeprh( false );
+		m_pSprites[ESpriteNo_SelectIcon]->SetBlend( true );
 		m_pSprites[ESpriteNo_SelectIcon]->RenderUI();
+		m_pSprites[ESpriteNo_SelectIcon]->SetBlend( false );
 		m_pSprites[ESpriteNo_SelectIcon]->SetDeprh( true );
 	}
 }

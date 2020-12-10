@@ -112,7 +112,9 @@ void CCameraConfigWidget::Render()
 			s->SetPosition( pos );
 		}
 		s->SetDeprh(false);
+		s->SetBlend(true);
 		s->RenderUI();
+		s->SetBlend(false);
 		s->SetDeprh(true);
 		no++;
 	}

@@ -92,7 +92,9 @@ void CConfigWidget::Render()
 {
 	for( size_t i = 0; i < m_pSprites.size(); i++ ){
 		m_pSprites[i]->SetDeprh(false);
+		m_pSprites[i]->SetBlend(true);
 		m_pSprites[i]->RenderUI();
+		m_pSprites[i]->SetBlend(false);
 		m_pSprites[i]->SetDeprh(false);
 		if( m_NowConfigState != EConfigState_None || i != BACKGROUND ) continue;
 		m_pCursor->SetPosition( m_vPosition );

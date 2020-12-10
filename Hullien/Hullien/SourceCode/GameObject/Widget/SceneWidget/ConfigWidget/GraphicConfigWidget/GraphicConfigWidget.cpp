@@ -11,7 +11,7 @@
 CGraphicConfigWidget::CGraphicConfigWidget()
 	: m_pSprites			()
 	, m_pCursor				( nullptr )
-	, m_IsFullScreen			( true )
+	, m_IsFullScreen		( true )
 	, m_NowSelectState		( ESelectState_FullSC )
 	, m_OldNowSelectState	( ESelectState_FullSC )
 	, m_NowConfigState		( ESelectState_Select )
@@ -93,7 +93,9 @@ void CGraphicConfigWidget::Render()
 			s->SetPosition( pos );
 		}
 		s->SetDeprh(false);
+		s->SetBlend(true);
 		s->RenderUI();
+		s->SetBlend(false);
 		s->SetDeprh(true);
 		no++;
 	}
