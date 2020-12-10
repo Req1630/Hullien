@@ -113,9 +113,7 @@ void STG::CBulletManager::RandomShot()
 // èâä˙äpìxÇÃê›íË.
 void STG::CBulletManager::SetInitAngle( const D3DXVECTOR3& pos, const D3DXVECTOR3& targetPos )
 {
-	m_ShotAngle = atan2(
-		pos.x - targetPos.x,
-		pos.z - targetPos.z );
+	m_ShotAngle = static_cast<float>(D3DX_PI);
 	m_ShotAngle -=
 		static_cast<float>(PARAMETER.AnyBulletCountMax-1) * 0.5f * PARAMETER.ShotAngle;	
 }

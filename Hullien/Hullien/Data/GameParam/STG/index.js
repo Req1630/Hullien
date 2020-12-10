@@ -1,6 +1,7 @@
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 
+
 class CBullet
 {
 	constructor( x, y )
@@ -39,6 +40,83 @@ class CBullet
 	}
 }
 
+class CWepon
+{
+    constructor( data )
+    {
+        this.data = data;
+        this.b = [];
+        this.shotFrame = 0;
+        this.shotCount = 0;
+        this.shotAngle = 0;
+        this.bulletAddAngle = 0;
+        this.bulletAngleAccValue = 0;
+        this.bulletAngleAddAccValue = 0;
+    }
+
+    init()
+    {
+        // 弾の初期化.
+        for (var i = 0; i < this.data.bulletNum; i++) {
+            this.b[i] = new CBullet(240, 100);
+        }
+        this.isPlay = true;
+        this.shotFrame = 0;
+        this.shotCount = 0;
+        this.shotAngle = 0;
+        this.bulletAddAngle = this.data.angle;
+        this.bulletAngleAccValue = 0;
+        this.bulletAngleAddAccValue = this.data.bulletAngleAddAccValue;
+
+        return this.data.bulletNum * this.data.intrval + 10;
+    }
+
+    update( ctx )
+    {
+        //------------------------------------------.
+        if (this.shotFrame % this.data.intrval == 0) {
+			var n;
+			var a = this.shotAngle;
+			for (n = 0; n < this.data.nWayNum; n++) {
+			    if (this.shotCount < this.data.bulletNum) {
+			        this.b[this.shotCount].shoot(a, this.data.bulletSpeed);
+			        a += this.data.nWayAngle;
+				} else {
+			        if (this.shotCount != this.data.bulletNum) {
+						isStart = false;
+						alert("弾数とnWay数が合いません");
+					}
+					break;
+				}
+			    this.shotCount++;
+			}
+			this.shotAngle += this.bulletAddAngle;	// 角度の加算.
+			this.bulletAddAngle += this.bulletAngleAccValue;
+			this.bulletAngleAccValue += this.bulletAngleAddAccValue;
+			
+			if (Math.abs(this.bulletAddAngle) > Math.abs(this.data.angle)) {
+			    if (this.bulletAngleAccValue > 0.0) {
+			        this.bulletAddAngle = Math.abs(this.data.angle);
+			        this.bulletAngleAddAccValue = -this.bulletAngleAddAccValue;
+			        this.bulletAngleAccValue = 0.0;
+				} else {
+			        this.bulletAddAngle = -Math.abs(this.data.angle);
+			        this.bulletAngleAddAccValue = -this.bulletAngleAddAccValue;
+			        this.bulletAngleAccValue = 0.0;
+				}
+			}
+
+		}
+		//------------------------------------------.
+		
+		// 弾の更新.
+        for (var i = 0; i < this.shotCount; i++) {
+            this.b[i].update(ctx);
+		}
+        this.shotFrame++;
+    }
+}
+
 class CData
 {
 	constructor(
@@ -66,13 +144,10 @@ class CData
 
 
 var isPlay = false;	// 再生しているかどうか.
-var b = [];
-var shotFrame = 0;
-var shotCount = 0;
-var shotAngle = 0;
-var bulletAddAngle = 0;
-var bulletAngleAccValue = 0;
-var bulletAngleAddAccValue = 0;
+var endCount = 0;   // 終了カウント.
+var endFrame = 0;   // 終了フレーム.
+var wepon = [];
+var weponNum = 0;   
 
 //-------------------------------------------------.
 // ボタンを押したときのコールバックを設定.
@@ -80,29 +155,27 @@ var bulletAngleAddAccValue = 0;
 
 // 再生.
 document.getElementById("play").onclick = function () {
-	//------------------------------------------.
-	// パラメータの取得.
-	data.index					= Number(document.getElementById("index").value);
-	data.bulletSpeed			= Number(document.getElementById("bulletSpeed").value)*20;
-	data.bulletNum				= Number(document.getElementById("bulletNum").value);
-	data.nWayNum				= Number(document.getElementById("nWayNum").value);
-	data.angle					= Number(document.getElementById("angle").value) * (Math.PI / 180.0);
-	data.nWayAngle				= Number(document.getElementById("nWayAngle").value) * (Math.PI / 180.0);
-	data.bulletAngleAddAccValue	= Number(document.getElementById("angleAddAccValue").value) * (Math.PI / 180.0);
-	data.intrval				= Number(document.getElementById("intrval").value);
-	data.dips					= Number(document.getElementById("dips").value);
-	
-	// 弾の初期化.
-	for (var i = 0; i < data.bulletNum; i++) {
-		b[i] = new CBullet(240, 100);
-	}
-	isPlay = true;
-	shotFrame = 0;
-	shotCount = 0;
-	shotAngle = 0;
-	bulletAddAngle = data.angle;
-	bulletAngleAccValue = 0;
-	bulletAngleAddAccValue = data.bulletAngleAddAccValue;
+    wepon = [];
+    //------------------------------------------.
+    // パラメータの取得.
+    data.index                  = Number(document.getElementById("index").value);
+    data.bulletSpeed            = Number(document.getElementById("bulletSpeed").value) * 20;
+    data.bulletNum              = Number(document.getElementById("bulletNum").value);
+    data.nWayNum                = Number(document.getElementById("nWayNum").value);
+    data.angle                  = Number(document.getElementById("angle").value) * (Math.PI / 180.0);
+    data.nWayAngle              = Number(document.getElementById("nWayAngle").value) * (Math.PI / 180.0);
+    data.bulletAngleAddAccValue = Number(document.getElementById("angleAddAccValue").value) * (Math.PI / 180.0);
+    data.intrval                = Number(document.getElementById("intrval").value);
+    data.dips                   = Number(document.getElementById("dips").value);
+
+    // 弾の初期化.
+    for (var i = 0; i < 1; i++) {
+        wepon[i] = new CWepon(data);
+        endFrame = wepon[i].init();
+    }
+    isPlay = true;
+    endCount = 0;
+    weponNum = wepon.length;
 }
 
 // 停止.
@@ -110,28 +183,72 @@ document.getElementById("stop").onclick = function () {
 	isPlay = false;
 }
 
+// 再生.
+document.getElementById("anyPlay").onclick = function () {
+    wepon = [];
+    //------------------------------------------.
+    // パラメータの取得.
+    var table = document.getElementById("addTable");
+
+    var frame = 0;
+    var i = 0;
+    var onceSkip = false;
+    for(var row of table.rows) {
+        if (onceSkip == false)
+        {
+            onceSkip = true;
+            continue;
+        }
+        var tmpDate = new CData(1, 0.1, 120, 5, 36, 12, 1, 10, 1);
+        tmpDate.index       = Number(row.cells[0].innerHTML);
+        tmpDate.bulletSpeed = Number(row.cells[1].innerHTML) * 20;
+        tmpDate.bulletNum   = Number(row.cells[2].innerHTML);
+        tmpDate.nWayNum     = Number(row.cells[3].innerHTML);
+        tmpDate.angle       = Number(row.cells[4].innerHTML) * (Math.PI / 180.0);
+        tmpDate.nWayAngle   = Number(row.cells[5].innerHTML) * (Math.PI / 180.0);
+        tmpDate.bulletAngleAddAccValue  = Number(row.cells[6].innerHTML) * (Math.PI / 180.0);
+        tmpDate.intrval                 = Number(row.cells[7].innerHTML);
+        tmpDate.dips                    = Number(row.cells[8].innerHTML);
+
+        wepon[i] = new CWepon(tmpDate);
+        frame = wepon[i].init();
+        if (frame > endFrame) endFrame = frame;
+        i++;
+    }
+
+    isPlay = true;
+    weponNum = wepon.length;
+    endCount = 0;
+}
+
+// 停止.
+document.getElementById("anyStop").onclick = function () {
+    isPlay = false;
+}
+
 // データのコピー.
 document.getElementById("copy").onclick = function () {
-	// データの取得.
-	data.index					= Number(document.getElementById("index").value);
-	data.bulletSpeed			= Number(document.getElementById("bulletSpeed").value);
-	data.bulletNum				= Number(document.getElementById("bulletNum").value);
-	data.nWayNum				= Number(document.getElementById("nWayNum").value);
-	data.angle					= Number(document.getElementById("angle").value);
-	data.nWayAngle				= Number(document.getElementById("nWayAngle").value);
-	data.bulletAngleAddAccValue	= Number(document.getElementById("angleAddAccValue").value);
-	data.intrval				= Number(document.getElementById("intrval").value);
-	data.dips					= Number(document.getElementById("dips").value);
+    // データの取得.
+    var tmpDate = new CData(1, 0.1, 120, 5, 36, 12, 1, 10, 1);
+    tmpDate.index           = Number(document.getElementById("index").value);
+    tmpDate.bulletSpeed     = Number(document.getElementById("bulletSpeed").value);
+    tmpDate.bulletNum       = Number(document.getElementById("bulletNum").value);
+    tmpDate.nWayNum         = Number(document.getElementById("nWayNum").value);
+    tmpDate.angle           = Number(document.getElementById("angle").value);
+    tmpDate.nWayAngle       = Number(document.getElementById("nWayAngle").value);
+    tmpDate.bulletAngleAddAccValue  = Number(document.getElementById("angleAddAccValue").value);
+    tmpDate.intrval                 = Number(document.getElementById("intrval").value);
+    tmpDate.dips                    = Number(document.getElementById("dips").value);
 	var target =
-		String(data.index)					+ "\n" +
-		String(data.bulletSpeed)			+ "\n" +
-		String(data.bulletNum)				+ "\n" +
-		String(data.nWayNum)				+ "\n" +
-		String(data.angle)					+ "\n" +
-		String(data.nWayAngle)				+ "\n" +
-		String(data.bulletAngleAddAccValue)	+ "\n" +
-		String(data.intrval)				+ "\n" +
-		String(data.dips);
+		String(tmpDate.index)					+ "\n" +
+		String(tmpDate.bulletSpeed)			    + "\n" +
+		String(tmpDate.bulletNum)				+ "\n" +
+		String(tmpDate.nWayNum)				    + "\n" +
+		String(tmpDate.angle)					+ "\n" +
+		String(tmpDate.nWayAngle)				+ "\n" +
+		String(tmpDate.bulletAngleAddAccValue)	+ "\n" +
+		String(tmpDate.intrval)				    + "\n" +
+		String(tmpDate.dips);
 
 	// textareaを作成.
 	var area = document.createElement("textarea");	
@@ -146,9 +263,86 @@ document.getElementById("copy").onclick = function () {
 	document.body.removeChild(area);
 }
 
-// データのコピー.
-document.getElementById("addTable").onclick = function () {
+// テーブルにデータを追加.
+document.getElementById("addTableButton").onclick = function () {
 
+    // テキストの文字を配列にして取得.
+    var table = document.getElementById("addText");
+    var textValue = table.value;
+    var list = textValue.split(/,|\s| |\t/);
+    var listMax = list.length;
+
+    // 無効な文字がないか確認.
+    if (listMax < 9) return;
+    for (i = 0; i < listMax; i++) if (isNaN(list[i]) == true) return;
+
+    // テーブルに行を追加する.
+    var table = document.getElementById("addTable");
+    var newRow = table.insertRow();
+
+    function addCell( s ) {
+        var newCell = newRow.insertCell();
+        var newText = document.createTextNode(s);
+        newCell.appendChild(newText);
+    }
+
+    var i = 0;
+    for (i = 0; i < listMax; i++) {
+        addCell(list[i]);
+    }
+
+
+    var select = document.getElementById("tableNum");
+    select.innerHTML = '';
+    for (var i = 0; i < table.rows.length - 1; i++) {
+        var option = document.createElement("option");
+        option.text = String(i+1);
+        option.value = i + 1;
+        select.appendChild(option);
+    }
+
+}
+
+// テーブルのデータを削除.
+document.getElementById("numClearTableButton").onclick = function () {
+
+    var select = document.getElementById("tableNum");
+
+    var num = select.value;
+    if (num == "") return;
+    var table = document.getElementById('addTable');  //表のオブジェクトを取得
+    var row_num = table.rows.length;    //表の行数を取得
+    if (num < row_num) {
+        //表に二行以上あるとき末尾行を削除（見出し行は削除しない）
+        table.deleteRow(num);   //末尾行を削除
+    }
+
+    select.innerHTML = '';
+    for (var i = 0; i < table.rows.length - 1; i++) {
+        var option = document.createElement("option");
+        option.text = String(i + 1);
+        option.value = i + 1;
+        select.appendChild(option);
+    }
+}
+
+// テーブルのデータを全削除.
+document.getElementById("clearTableButton").onclick = function () {
+
+    var table = document.getElementById("addTable");
+    var rowLen = table.rows.length;
+    //上の行から削除していくと下の行がずれていくので下から検査
+    for (var i = rowLen - 1; i > 0; i--) {
+        table.deleteRow(i);
+    }
+    var select = document.getElementById("tableNum");
+    select.innerHTML = '';
+    for (var i = 0; i < table.rows.length - 1; i++) {
+        var option = document.createElement("option");
+        option.text = String(i + 1);
+        option.value = i + 1;
+        select.appendChild(option);
+    }
 }
 
 var data = new CData(1, 0.1, 120, 5, 36, 12, 1, 10, 1);
@@ -167,54 +361,15 @@ function main()
 {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	
-	// 再生していた場合弾などの更新をする.
 	if (isPlay == true) {
-		//------------------------------------------.
-		if (shotFrame % data.intrval == 0) {
-			var n;
-			var a = shotAngle;
-			for (n = 0; n < data.nWayNum; n++) {
-				if (shotCount < data.bulletNum) {
-					b[shotCount].shoot(a, data.bulletSpeed);
-					a += data.nWayAngle;
-				} else {
-					if (shotCount != data.bulletNum) {
-						isStart = false;
-						alert("弾数とnWay数が合いません");
-					}
-					break;
-				}
-				shotCount++;
-			}
-			shotAngle += bulletAddAngle;	// 角度の加算.
-			bulletAddAngle += bulletAngleAccValue;
-			bulletAngleAccValue += bulletAngleAddAccValue;
-			
-			if (Math.abs(bulletAddAngle) > Math.abs(data.angle)) {
-				if (bulletAngleAccValue > 0.0) {
-					bulletAddAngle = Math.abs(data.angle);
-					bulletAngleAddAccValue = -bulletAngleAddAccValue;
-					bulletAngleAccValue = 0.0;
-				} else {
-					bulletAddAngle = -Math.abs(data.angle);
-					bulletAngleAddAccValue = -bulletAngleAddAccValue;
-					bulletAngleAccValue = 0.0;
-				}
-			}
-
-		}
-		//------------------------------------------.
-		
-		// 弾の更新.
-		for( var i = 0; i < shotCount; i++ ){
-			b[i].update( ctx );
-		}
-		// フレームが一定値に達したら終了.
-		if (shotFrame == (data.intrval * data.bulletNum) + 100) {
-			isStart = false;
-		}
-		shotFrame++;
+	    var i = 0;
+	    for (i = 0; i < weponNum; i++ ){
+	        wepon[i].update(ctx);  
+	    }
 	}
+
+	endCount++;
+	if (endCount >= endFrame) isPlay = false;
 }
 
 var interval = setInterval( main, 10 );

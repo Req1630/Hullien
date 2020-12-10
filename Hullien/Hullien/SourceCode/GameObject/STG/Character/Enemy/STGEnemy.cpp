@@ -234,12 +234,17 @@ void STG::CEnemy::SpawnLastDead()
 		m_DeadUpParam.MoveAccValue = DEAD_MOVE_ACC_VALUE_MAX;
 
 	// À•W‚ðã‚É‚ ‚°‚é.
-	m_vPosition.y += m_DeadUpParam.MoveSpeed + m_DeadUpParam.MoveAccValue;
-	if( m_vPosition.y >= cameraPos.y-DEAD_POSITION_Y_ADJ_VALUE ){
+	if( m_vPosition.y < cameraPos.y-DEAD_POSITION_Y_ADJ_VALUE ){
+		m_vPosition.y += m_DeadUpParam.MoveSpeed + m_DeadUpParam.MoveAccValue;
+	} else {
 		m_vPosition.y = cameraPos.y-DEAD_POSITION_Y_ADJ_VALUE;
 		m_FontRotation.z -= DEAD_ROTATION_SPEED;
 
 		m_DeadUpParam.IsMoveEnd = true;
+		if( m_DeadUpParam.IsPlaySE == false ){
+			CSoundManager::PlaySE("camaeraHit");
+			m_DeadUpParam.IsPlaySE = true;
+		}
 	}
 
 	// ƒJƒƒ‰‚Ì—h‚ê.

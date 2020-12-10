@@ -53,12 +53,14 @@ namespace STG
 			float	MoveAccValue;		// 移動加速値.
 			float	CameraShakeCount;	// カメラの揺れカウント.
 			bool	IsMoveEnd;			// 移動が終了したか.
+			bool	IsPlaySE;			// SEを鳴らしたか.
 
 			stDeadUpParam()
 				: MoveSpeed			( 0.2f )
 				, MoveAccValue		( 0.0f )
 				, CameraShakeCount	( 40.0f )
 				, IsMoveEnd			( false )
+				, IsPlaySE			( false )
 			{}
 
 			inline float GetShakeValue() const
