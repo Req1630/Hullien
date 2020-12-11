@@ -261,5 +261,7 @@ PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
 	output.Color = color;
 	output.Normal = float4(input.Normal, 1.0f);
 	output.ZDepth = input.Pos.z / input.Pos.w;
+	if (output.Color.a <= 0.0f) discard;
+	
 	return output;
 }
