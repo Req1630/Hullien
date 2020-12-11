@@ -522,7 +522,7 @@ HRESULT CSceneTexRenderer::CreateModel()
 	D3D11_SUBRESOURCE_DATA InitData;
 	InitData.pSysMem = vertices;	// 板ポリの頂点をセット.
 
-									// 頂点バッファの作成.
+	// 頂点バッファの作成.
 	if( FAILED( m_pDevice11->CreateBuffer(
 		&bd, 
 		&InitData, 

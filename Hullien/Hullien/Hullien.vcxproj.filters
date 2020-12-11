@@ -180,6 +180,7 @@
     <ClCompile Include="SourceCode\GameObject\STG\Bullet\BuletManager\BuletManager.cpp" />
     <ClCompile Include="SourceCode\Utility\KeyInput\KeyInput.cpp" />
     <ClCompile Include="SourceCode\Common\Transition\Transition.cpp" />
+    <ClCompile Include="SourceCode\GameObject\Widget\Switch\Switch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\ImGui\imconfig.h" />
@@ -370,6 +371,7 @@
     <ClInclude Include="SourceCode\GameObject\STG\Bullet\BuletManager\BulletManagerParam.h" />
     <ClInclude Include="SourceCode\Utility\KeyInput\KeyInput.h" />
     <ClInclude Include="SourceCode\Common\Transition\Transition.h" />
+    <ClInclude Include="SourceCode\GameObject\Widget\Switch\Switch.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

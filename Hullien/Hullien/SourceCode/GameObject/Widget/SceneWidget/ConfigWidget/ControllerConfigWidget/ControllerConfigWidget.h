@@ -5,15 +5,12 @@
 #include "..\..\..\..\..\Camera\RotLookAtCenter\RotLookAtCenter.h"
 #include <vector>
 
-class CCursor;
-class CSlinder;
+class CCursor;	// カーソルクラス.
+class CSwitch;	// スイッチクラス.
 
 class CControllerConfigWidget : public CWidget
 {
 	const char* SPRITE_CONTROL_NAME		= "Vibration";
-	const char* SPRITE_CHOICE_NAME		= "Choice";
-	const char* SPRITE_ON_NAME		= "VibrationOn";
-	const char* SPRITE_OFF_NAME	= "VibrationOff";
 	const float INPUT_WAIT_TIME_MAX		= 30.0;
 	// 選択状態.
 	enum enSelectState
@@ -26,24 +23,11 @@ class CControllerConfigWidget : public CWidget
 		ESelectState_Max,
 	} typedef ESelectState;
 
-	enum enControlllerState
-	{
-		EControlllerState_None,
-
-		EControlllerState_VibrationOn,	// バイブOn.
-		EControlllerState_VibrationOff,	// バイブOff.
-
-		EControlllerState_Max,
-	} typedef EControlllerState;
-
 	enum enSpriteNo
 	{
 		ESpriteNo_None = -1,
 
 		ESpriteNo_Control,	// 操作.
-		ESpriteNo_Choise,	// 選択.
-		ESpriteNo_On,		// On.
-		ESpriteNo_Off,		// Off.
 
 		ESpriteNo_Max,
 	} typedef ESpriteNo;
@@ -75,11 +59,10 @@ private:
 private:
 	std::vector<std::shared_ptr<CSprite>>	m_pSprites;	// 画像.
 	std::unique_ptr<CCursor>				m_pCursor;
-	bool	m_IsVibration;
+	std::unique_ptr<CSwitch>				m_pSwitch;
 	int		m_NowSelectState;
 	int		m_OldNowSelectState;
 	int		m_NowConfigState;
-	int		m_NowControlState;
 	float	m_InputWaitTime;
 };
 

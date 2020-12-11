@@ -11,7 +11,7 @@ CWidget::CWidget()
 	, m_Alpha			(0.0f)
 	, m_AlphaMax		(ALPHA_MAX)
 	, m_FadeState		(CWidget::enFadeState::Finish)
-	, m_AlphaSpeed	(0.0f)
+	, m_AlphaSpeed		(0.0f)
 {
 }
 
