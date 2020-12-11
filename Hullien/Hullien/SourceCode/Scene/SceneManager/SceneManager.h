@@ -5,6 +5,7 @@
 #include "..\..\GameObject\Widget\Fade\Fade.h"
 
 class CCommand;
+class CGage;
 
 // ƒV[ƒ“‚Ìí—Ş.
 enum class enSceneNo

@@ -9,6 +9,8 @@ CCursor::CCursor()
 	:	m_pSelectSprite(nullptr)
 	,	m_vOldPosition(D3DXVECTOR3( 0.0f, 0.0f ,0.0f ))
 	,	m_Acceleration( 0.0f )
+	,	m_TargetWidth(0.0f)
+	,	m_IsSetting(false)
 {
 	m_vScale.x = 0.0f;
 }
@@ -36,8 +38,10 @@ void CCursor::Render()
 {
 	if (m_pSprite == nullptr) return;
 
-	m_vPosition.x -= 67.0f;
-	m_vPosition.y -= 5.0f;
+	if( m_IsSetting == true ){
+		m_vPosition.x -= m_TargetWidth*0.5f+ADJ_POSITOIN_X_MAIN;
+		m_IsSetting = false;
+	}
 	m_pSprite->SetPosition( m_vPosition );
 	m_pSprite->SetScale( m_vScale );
 
@@ -48,7 +52,7 @@ void CCursor::Render()
 	m_pSprite->SetDeprh( true );
 
 	m_SlectPosition = m_vPosition;
-	m_SlectPosition.x -= 10.0f;
+	m_SlectPosition.x += ADJ_POSITOIN_X_SIDE;
 	m_pSelectSprite->SetPosition( m_SlectPosition );
 	m_pSelectSprite->SetDeprh( false );
 	m_pSelectSprite->SetBlend( true );

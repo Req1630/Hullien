@@ -7,12 +7,12 @@
 
 class CCursor;
 class CSlinder;
+class CSwitch;
 
 class CCameraConfigWidget : public CWidget
 {
 	const char* SPRITE_CONTROL_NAME		= "CmaeraControl";
 	const char* SPRITE_SPEED_NAME		= "CmaeraSpeed";
-	const char* SPRITE_CHOICE_NAME		= "Choice";
 	const char* SPRITE_NORMAL_NAME		= "CameraNormal";
 	const char* SPRITE_INVERSION_NAME	= "CameraInversion";
 	const char* SPRITE_ICON_NAME		= "SelectIcon";
@@ -29,25 +29,12 @@ class CCameraConfigWidget : public CWidget
 		ESelectState_Max,
 	} typedef ESelectState;
 
-	enum enCameraControlState
-	{
-		ECameraControlState_None,
-
-		ECameraControlState_Normal,		// ノーマル.
-		ECameraControlState_Inversion,	// 反転.
-
-		ECameraControlState_Max,
-	} typedef ECameraControlState;
-
 	enum enSpriteNo
 	{
 		ESpriteNo_None = -1,
 
 		ESpriteNo_Control,		// 操作.
 		ESpriteNo_Speed,		// 速度.
-		ESpriteNo_Choise,		// 選択.
-		ESpriteNo_Normal,		// 通常.
-		ESpriteNo_Inversoin,	// 反転.
 		ESpriteNo_Icon,			// アイコン.
 
 		ESpriteNo_Max,
@@ -83,6 +70,7 @@ private:
 	std::vector<std::shared_ptr<CSprite>>	m_pSprites;	// 画像.
 	std::unique_ptr<CCursor>				m_pCursor;
 	std::unique_ptr<CSlinder>				m_pSpeedSlinder;
+	std::unique_ptr<CSwitch>				m_pSwitch;
 	CRotLookAtCenter::SConfigState			m_ConfigState;
 	D3DXVECTOR3								m_SlinderPosition;
 	bool	m_IsOlsReverse;

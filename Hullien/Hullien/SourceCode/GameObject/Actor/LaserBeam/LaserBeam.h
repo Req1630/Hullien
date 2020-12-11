@@ -14,7 +14,7 @@ class CLaserBeam : public CActor
 	const int	MAX_TRAJECTORY_COUNT		= 50;	// 軌跡の最大頂点数.
 	const int	TRAJECTORY_TIME				= 1;	// 軌跡の頂点加算時間.
 	const int	TRAJECTORY_END_ADD_VALUE	= 8;	// 軌跡が終了する際の加算値.
-	const char*	EFFECT_NAME					= "b_attackeffkt";
+	const char*	EFFECT_NAME					= "ultemateAttackEffeck";
 	const float DEFAULT_ATTACK_COLLISION_SCALE		= 1.0f;	// 攻撃当たり判定のサイズ.
 	const float ATTACK_COLLISION_SCALE;						// 攻撃当たり判定のサイズ.
 public:

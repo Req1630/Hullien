@@ -4,8 +4,16 @@
 #include "..\..\..\Utility\XInput\XInput.h"
 
 CSwitch::CSwitch()
+	: CSwitch( SPRITE_ON_NAME, SPRITE_OFF_NAME )
+{
+}
+
+CSwitch::CSwitch( const char* onName, const char* offName )
 	: m_pSprites		()
+	, m_OnSpriteName	( onName )
+	, m_OffSpriteName	( offName )
 	, m_InputWaitTime	( 0 )
+	, m_MaxSpriteWidth	( 0.0f )
 	, m_ArrowParams		( ESpriteNo_End - ESpriteNo_Begin )
 	, m_SelectNo		( EArrowNo_None )
 	, m_IsActive		( false )
@@ -95,9 +103,9 @@ void CSwitch::SetPosition( const D3DXVECTOR3& vPos )
 
 	// 矢印の座標の設定.
 	m_ArrowParams[EArrowNo_Right].vPos		= m_vPosition;
-	m_ArrowParams[EArrowNo_Right].vPos.x	+= ARROW_ADJ_POSITION_X;
+	m_ArrowParams[EArrowNo_Right].vPos.x	+= m_MaxSpriteWidth;
 	m_ArrowParams[EArrowNo_Left].vPos		= m_vPosition;
-	m_ArrowParams[EArrowNo_Left].vPos.x		-= ARROW_ADJ_POSITION_X;
+	m_ArrowParams[EArrowNo_Left].vPos.x		-= m_MaxSpriteWidth;
 }
 
 // スプライトの設定関数.
@@ -105,8 +113,8 @@ bool CSwitch::SpriteSetting()
 {
 	const char* spriteName[] =
 	{
-		SPRITE_ON_NAME,
-		SPRITE_OFF_NAME,
+		m_OnSpriteName.c_str(),
+		m_OffSpriteName.c_str(),
 		SPRITE_CHOICE_NAME,
 		SPRITE_ARROW_RIGHT,
 		SPRITE_ARROW_LEFT,
@@ -118,6 +126,10 @@ bool CSwitch::SpriteSetting()
 	for( int sprite = 0; sprite < SpriteMax; sprite++ ){
 		m_pSprites.emplace_back(CSpriteResource::GetSprite(spriteName[sprite]));
 		if( m_pSprites[sprite] == nullptr ) return false;
+		if( m_MaxSpriteWidth <= m_pSprites[sprite]->GetSpriteSize().x ){
+			m_MaxSpriteWidth = m_pSprites[sprite]->GetSpriteSize().x;
+		}
 	}
+	m_MaxSpriteWidth *= ARROW_ADJ_POSITION_X;
 	return true;
 }

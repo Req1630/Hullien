@@ -12,8 +12,8 @@ class CSwitch : public CWidget
 	inline static const char* SPRITE_CHOICE_NAME	= "Choice";		// 選択画像.
 	inline static const char* SPRITE_ARROW_RIGHT	= "arrowRight";	// 矢印画像.
 	inline static const char* SPRITE_ARROW_LEFT		= "arrowLeft";	// 矢印画像.
-	inline static const float ADJ_POSITION_X		= 200.0f;		// x座標調整値.
-	inline static const float ARROW_ADJ_POSITION_X	= 50.0f;		// x座標調整値.
+	inline static const float ADJ_POSITION_X		= 250.0f;		// x座標調整値.
+	inline static const float ARROW_ADJ_POSITION_X	= 0.3f;		// x座標調整値.
 	inline static const int	INPUT_WAIT_TIME_MAX		= 30;			// 入力待機フレーム.
 	inline static const int	CHANGE_FRAME			= INPUT_WAIT_TIME_MAX/2;
 	inline static const float ARROW_SCALE			= 1.0f;
@@ -61,6 +61,7 @@ class CSwitch : public CWidget
 
 public:
 	CSwitch();
+	CSwitch( const char* onName, const char* offName );
 	virtual ~CSwitch();
 
 	// 初期化関数.
@@ -88,7 +89,10 @@ private:
 private:
 	std::vector<std::shared_ptr<CSprite>>	m_pSprites;
 	std::vector<SArrowParam>				m_ArrowParams;
+	std::string	m_OnSpriteName;
+	std::string	m_OffSpriteName;
 	int			m_InputWaitTime;
+	float		m_MaxSpriteWidth;
 	EArrowNo	m_SelectNo;
 	bool		m_IsActive;
 	bool		m_IsValue;

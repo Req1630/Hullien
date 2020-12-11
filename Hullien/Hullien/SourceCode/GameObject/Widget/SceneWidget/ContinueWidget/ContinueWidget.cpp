@@ -82,7 +82,6 @@ void CContinueWidget::Render()
 
 		if (sprite != 0) continue;
 		// ƒJ[ƒ\ƒ‹.
-		m_pCursor->SetPosition(m_vPosition);
 		m_pCursor->Render();
 	}
 }
@@ -133,9 +132,13 @@ void CContinueWidget::CursorSetting()
 	{
 	case CContinueWidget::ESelectState::Yes:
 		m_vPosition = m_pSprite[YES]->GetRenderPos();
+		m_pCursor->SetWidth( m_pSprite[YES]->GetSpriteSize().x );
+		m_pCursor->SetPosition(m_vPosition);
 		break;
 	case CContinueWidget::ESelectState::No:
 		m_vPosition = m_pSprite[NO]->GetRenderPos();
+		m_pCursor->SetWidth( m_pSprite[NO]->GetSpriteSize().x );
+		m_pCursor->SetPosition(m_vPosition);
 		break;
 	}
 

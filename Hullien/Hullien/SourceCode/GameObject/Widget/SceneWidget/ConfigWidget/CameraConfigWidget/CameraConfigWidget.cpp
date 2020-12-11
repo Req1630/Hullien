@@ -5,24 +5,26 @@
 #include "..\..\..\..\..\XAudio2\SoundManager.h"	
 #include "..\..\..\Cursor\Cursor.h"
 #include "..\..\..\Slider\Slider.h"
+#include "..\..\..\Switch\Switch.h"
 #include "..\..\..\..\..\Utility\FileManager\FileManager.h"
 
 CCameraConfigWidget::CCameraConfigWidget()
 	: m_pSprites			()
 	, m_pCursor				( nullptr )
 	, m_pSpeedSlinder		( nullptr )
-	, m_ConfigState		()
+	, m_pSwitch				( nullptr )
+	, m_ConfigState			()
 	, m_SlinderPosition		( 0.0f, 0.0f, 0.0f )
 	, m_IsOlsReverse		( false )
 	, m_OldMoveSpeed		( 0.0f )
 	, m_NowSelectState		( ESelectState_CameraControl )
 	, m_OldNowSelectState	( ESelectState_CameraControl )
 	, m_NowConfigState		( ESelectState_Select )
-	, m_NowControlState		( ECameraControlState_Normal )
 	, m_InputWaitTime		( 0.0f )
 {
 	m_pCursor = std::make_unique<CCursor>();
 	m_pSpeedSlinder = std::make_unique<CSlinder>( 0.1f, 0.005f );
+	m_pSwitch = std::make_unique<CSwitch>( SPRITE_NORMAL_NAME, SPRITE_INVERSION_NAME );
 }
 
 CCameraConfigWidget::~CCameraConfigWidget()
@@ -35,9 +37,11 @@ bool CCameraConfigWidget::Init()
 	if( SpriteSetting()			== false ) return false;
 	if( m_pCursor->Init()		== false ) return false;
 	if( m_pSpeedSlinder->Init() == false ) return false;
+	if( m_pSwitch->Init()		== false ) return false;
 	if( CFileManager::BinaryReading( CRotLookAtCenter::CONFIG_FILE_PATH, m_ConfigState ) == false ) return false;
 	m_pSpeedSlinder->SetValue( m_ConfigState.MoveSpeed );
-	
+	m_pSwitch->SetValue( !m_ConfigState.IsReverse );
+
 	return true;
 }
 
@@ -58,6 +62,7 @@ void CCameraConfigWidget::Update()
 		}
 		break;
 	case ESelectState_CameraControl:
+		m_pSwitch->Update();
 		CameraControlUpdate();	// カメラ操作設定の更新.
 		break;
 	case ESelectState_CameraSpeed:
@@ -82,13 +87,11 @@ void CCameraConfigWidget::Render()
 		m_pSprites[ESpriteNo_Icon]->SetPosition( { -500.0f, 0.0f, 0.0f } );
 
 		// カーソルの座標を現在選択している場所に設定.
+		m_pCursor->SetWidth( m_pSprites[m_NowSelectState-2]->GetSpriteSize().x );
 		m_pCursor->SetPosition( m_pSprites[m_NowSelectState-2]->GetRenderPos() );
 		m_pCursor->Render();
 		break;
 	case ESelectState_CameraControl:
-		// カーソルの座標を現在選択している場所に設定.
-		m_pCursor->SetPosition( m_pSprites[ESpriteNo_Choise+m_NowControlState]->GetRenderPos() );
-		m_pCursor->Render();
 		break;
 	case ESelectState_CameraSpeed:
 		// アイコンの座標をスライダーのアイコンの座標に設定する.
@@ -98,26 +101,16 @@ void CCameraConfigWidget::Render()
 		break;
 	}
 
-	int no = 0;
 	for( auto& s : m_pSprites ){
-		if( no == 2 ){
-			// 通常か反転かの選択しているカーソルの座標を調整する.
-			D3DXVECTOR3 pos;
-			if( m_ConfigState.IsReverse == false ){
-				pos = m_pSprites[ESpriteNo_Normal]->GetRenderPos();
-			} else {
-				pos = m_pSprites[ESpriteNo_Inversoin]->GetRenderPos();
-			}
-			pos.y += s->GetSpriteSize().y/2.3f;
-			s->SetPosition( pos );
-		}
 		s->SetDeprh(false);
 		s->SetBlend(true);
 		s->RenderUI();
 		s->SetBlend(false);
 		s->SetDeprh(true);
-		no++;
 	}
+	
+	m_pSwitch->SetPosition( m_pSprites[ESpriteNo_Control]->GetRenderPos() );
+	m_pSwitch->Render();
 }
 
 // 終了したか.
@@ -161,7 +154,7 @@ void CCameraConfigWidget::Determination()
 	{
 	case ESelectState_CameraControl:
 		m_NowConfigState = ESelectState_CameraControl;
-		m_IsOlsReverse = m_ConfigState.IsReverse;
+		m_pSwitch->SetNowValue();
 		break;
 	case ESelectState_CameraSpeed:
 		m_NowConfigState = ESelectState_CameraSpeed;
@@ -176,31 +169,17 @@ void CCameraConfigWidget::Determination()
 // カメラ操作の更新.
 void CCameraConfigWidget::CameraControlUpdate()
 {
-	// 右に移動.
-	if( GetAsyncKeyState(VK_RIGHT) & 0x0001 || CXInput::LThumbX_Axis() > IDLE_THUMB_MAX ){
-		m_NowControlState++;
-		m_InputWaitTime = INPUT_WAIT_TIME_MAX;
-		m_NowControlState = m_NowControlState >= ECameraControlState_Inversion ? ECameraControlState_Inversion : m_NowControlState;
-		m_ConfigState.IsReverse = true;
-	}
-	// 左に移動.
-	if( GetAsyncKeyState(VK_LEFT) & 0x0001 || CXInput::LThumbX_Axis() < IDLE_THUMB_MIN ){
-		m_NowControlState--;
-		m_InputWaitTime = INPUT_WAIT_TIME_MAX;
-		m_NowControlState = m_NowControlState <= ECameraControlState_Normal ? ECameraControlState_Normal : m_NowControlState;
-		m_ConfigState.IsReverse = false;
-	} 
-
 	// 決定.
 	if( GetAsyncKeyState(VK_RETURN) & 0x0001 || CXInput::B_Button() == CXInput::enPRESSED_MOMENT ){
 		CSoundManager::PlaySE("Determination");
+		m_ConfigState.IsReverse = !m_pSwitch->GetValue();
 		m_NowConfigState = ESelectState_Select;
 	}
 	// キャンセル.
 	if( GetAsyncKeyState(VK_BACK) & 0x0001 || CXInput::A_Button() == CXInput::enPRESSED_MOMENT ){
 		CSoundManager::PlaySE("CancelDetermination");
 		m_NowConfigState = ESelectState_Select;
-		m_ConfigState.IsReverse = m_IsOlsReverse;
+		m_pSwitch->ReSetValue();
 	}
 }
 
@@ -241,9 +220,6 @@ bool CCameraConfigWidget::SpriteSetting()
 	{
 		SPRITE_CONTROL_NAME,
 		SPRITE_SPEED_NAME,
-		SPRITE_CHOICE_NAME,
-		SPRITE_NORMAL_NAME,
-		SPRITE_INVERSION_NAME,
 		SPRITE_ICON_NAME,
 	};
 	int SpriteMax = sizeof(spriteName) / sizeof(spriteName[0]);

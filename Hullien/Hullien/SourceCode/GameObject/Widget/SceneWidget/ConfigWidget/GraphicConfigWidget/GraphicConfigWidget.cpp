@@ -70,6 +70,7 @@ void CGraphicConfigWidget::Render()
 	{
 	case ESelectState_Select:
 		// カーソルの座標を現在選択している場所に設定.
+		m_pCursor->SetWidth( m_pSprites[m_NowSelectState-2]->GetSpriteSize().x );
 		m_pCursor->SetPosition( m_pSprites[m_NowSelectState-2]->GetRenderPos() );
 		m_pCursor->Render();
 		break;

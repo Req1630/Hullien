@@ -97,7 +97,6 @@ void CConfigWidget::Render()
 		m_pSprites[i]->SetBlend(false);
 		m_pSprites[i]->SetDeprh(false);
 		if( m_NowConfigState != EConfigState_None || i != BACKGROUND ) continue;
-		m_pCursor->SetPosition( m_vPosition );
 		m_pCursor->Render();
 	}
 	switch( m_NowConfigState )
@@ -161,15 +160,23 @@ void CConfigWidget::CursorSetting()
 	{
 	case EConfigState_Volume:
 		m_vPosition = m_pSprites[VOLUME]->GetRenderPos();
+		m_pCursor->SetWidth( m_pSprites[VOLUME]->GetSpriteSize().x );
+		m_pCursor->SetPosition( m_vPosition );
 		break;
 	case EConfigState_Camera:
+		m_pCursor->SetWidth( m_pSprites[CAMERA]->GetSpriteSize().x );
 		m_vPosition = m_pSprites[CAMERA]->GetRenderPos();
+		m_pCursor->SetPosition( m_vPosition );
 		break;
 	case EConfigState_Controller:
+		m_pCursor->SetWidth( m_pSprites[CONTROLLER]->GetSpriteSize().x );
 		m_vPosition = m_pSprites[CONTROLLER]->GetRenderPos();
+		m_pCursor->SetPosition( m_vPosition );
 		break;
 	case EConfigState_Graphic:
+		m_pCursor->SetWidth( m_pSprites[GRAPHIC]->GetSpriteSize().x );
 		m_vPosition = m_pSprites[GRAPHIC]->GetRenderPos();
+		m_pCursor->SetPosition( m_vPosition );
 		break;
 	default:
 		break;

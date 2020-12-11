@@ -13,6 +13,7 @@
     <FxCompile Include="Data\Shader\FXAA.hlsl" />
     <FxCompile Include="Data\Shader\SkyDome.hlsl" />
     <FxCompile Include="Data\Shader\Transition.hlsl" />
+    <FxCompile Include="Data\Shader\Gage.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\ImGui\imgui.cpp" />
@@ -181,6 +182,7 @@
     <ClCompile Include="SourceCode\Utility\KeyInput\KeyInput.cpp" />
     <ClCompile Include="SourceCode\Common\Transition\Transition.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\Switch\Switch.cpp" />
+    <ClCompile Include="SourceCode\Common\Gage\Gage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\ImGui\imconfig.h" />
@@ -372,6 +374,7 @@
     <ClInclude Include="SourceCode\Utility\KeyInput\KeyInput.h" />
     <ClInclude Include="SourceCode\Common\Transition\Transition.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\Switch\Switch.h" />
+    <ClInclude Include="SourceCode\Common\Gage\Gage.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

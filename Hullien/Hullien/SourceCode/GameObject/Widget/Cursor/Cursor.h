@@ -11,9 +11,11 @@ class CCursor : public CWidget
 private:
 	const char* SPRITE_NAME = "select1";	//スプライトのファイル名.
 	const char* SPRITE_NAME2 = "select2";	//スプライトのファイル名.
-	const float SCALE_MAX	= 1.0f;						//拡大最大値.
-	const float SCALE_SPEED = 0.05f;						//拡大速度.
-	const float ACC_SPEED   = 0.0011f;					//加速度.
+	const float SCALE_MAX	= 1.0f;			//拡大最大値.
+	const float SCALE_SPEED = 0.05f;		//拡大速度.
+	const float ACC_SPEED   = 0.0011f;		//加速度.
+	const float ADJ_POSITOIN_X_MAIN = 15.0f; 
+	const float ADJ_POSITOIN_X_SIDE = -10.0f; 
 
 public:
 	CCursor();
@@ -25,6 +27,13 @@ public:
 	virtual void Update() override;
 	//描画関数.
 	virtual void Render() override;
+
+	// 選択する横幅のサイズ取得.
+	void SetWidth( const float& width )
+	{
+		m_TargetWidth = width; 
+		m_IsSetting = true;
+	}
 
 private:
 	// スプライト設定関数.
@@ -39,6 +48,8 @@ private:
 	D3DXVECTOR3	m_SlectPosition;
 	D3DXVECTOR3	m_vOldPosition;	//移動前の座標.
 	float		m_Acceleration;	//加速値.
+	float		m_TargetWidth;
+	bool		m_IsSetting;
 };
 
 #endif	//#ifndef CURSOR_H.

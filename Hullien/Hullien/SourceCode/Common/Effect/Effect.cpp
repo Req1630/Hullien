@@ -4,9 +4,9 @@
 
 //▓Х░■░И▄╬.
 //∙`┴Ф≈p╡щ╫ющ╫(╫лъв╡д)█е▒Е░■.
-const int RENDER_SPRITE_MAX = 2000;
+const int RENDER_SPRITE_MAX = 20000;
 //╢л╙╦д┼г≈²≈p╡щ╫ющ╫█е▒Е░■.
-const int EFFECT_INSTANCE_MAX = 1000;
+const int EFFECT_INSTANCE_MAX = 10000;
 
 //╨щ╫дв╦ю.
 CEffect::CEffect()

@@ -58,7 +58,6 @@ void CTitleWidget::Render()
 
 		if (sprite != BACKGROUND) continue;
 		// ƒJ[ƒ\ƒ‹.
-		m_pCursor->SetPosition(m_vPosition);
 		m_pCursor->Render();
 	}
 }
@@ -120,14 +119,20 @@ void CTitleWidget::CursorSetting()
 	{
 	case CTitleWidget::ESelectState::Start:
 		m_vPosition = m_pSprite[START]->GetRenderPos();
+		m_pCursor->SetWidth( m_pSprite[START]->GetSpriteSize().x );
+		m_pCursor->SetPosition(m_vPosition);
 		break;
 #ifndef IS_CONFIG_RENDER
 	case CTitleWidget::ESelectState::Config:
 		m_vPosition = m_pSprite[CONFIG]->GetRenderPos();
+		m_pCursor->SetWidth( m_pSprite[CONFIG]->GetSpriteSize().x );
+		m_pCursor->SetPosition(m_vPosition);
 		break;
 #endif	// #ifndef IS_CONFIG_RENDER.
 	case CTitleWidget::ESelectState::End:
 		m_vPosition = m_pSprite[END]->GetRenderPos();
+		m_pCursor->SetWidth( m_pSprite[END]->GetSpriteSize().x );
+		m_pCursor->SetPosition(m_vPosition);
 		break;
 	default:
 		break;

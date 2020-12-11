@@ -80,6 +80,7 @@ void CVolumeConfigWidget::Update()
 void CVolumeConfigWidget::Render()
 {
 	// カーソルの座標設定.
+	m_pCursor->SetWidth( m_pSprites[m_NowSelectVolume]->GetSpriteSize().x );
 	m_pCursor->SetPosition( m_pSprites[m_NowSelectVolume]->GetRenderPos() );
 	m_pCursor->Render();
 	// スライダーの描画.
