@@ -125,12 +125,111 @@ float4 PS_Main(VS_OUTPUT input) : SV_Target
 	return lerp( color, input.OutLineColor, grayScale);
 }
 
+float rand(float2 co) {
+	return frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453);
+}
+ 
+float2 mod(float2 a, float2 b)
+{
+	return a - floor(a / b) * b;
+}
+
 // ピクセルシェーダ.
 float4 PS_LastMain(VS_OUTPUT input) : SV_Target
 {
 	FxaaTex tex = { g_SamLinear, g_TextureLast };
 	float4 color = float4( FxaaPixelShader( input.Tex, tex, float2( 1.0f/g_vViewPort.x, 1.0f/g_vViewPort.y ) ), 1.0f );
+
+/*
+	// ブラウン管テレビのノイズの処理.
+	float2 inUV = input.Tex;
+	float2 uv = input.Tex - 0.5;
+				
+	// UV座標を再計算し、画面を歪ませる
+	float vignet = length(uv);
+	uv /= 1 - vignet * 0.2;
+	float2 texUV = uv + 0.5;
+ 
+	// 画面外なら描画しない
+	if (max(abs(uv.y) - 0.5, abs(uv.x) - 0.5) > 0)
+	{
+		return float4(0, 0, 0, 1);
+	}
 	
+	float	_NoiseX = 0.0f;
+	float2	_Offset = float2(0.0f, 0.0f);
+	float	_RGBNoise = 0.04f;
+	float	_SinNoiseWidth = 1.0f;
+	float	_SinNoiseScale = 0.0f;
+	float	_SinNoiseOffset = 1.0f;
+	float	_ScanLineTail = 1.0f;
+	float	_ScanLineSpeed = 160.0f;
+ 
+	// 色を計算
+	float3 col;
+	float2 _Time = float2( input.Tex.x+0.005f, 0.01f );
+	float2 _ScreenParams;
+	float imageSizeW, imageSizeh, levels;
+	// テクスチャのサイズを取得.
+	g_TextureLast.GetDimensions(0, imageSizeW, imageSizeh, levels);
+	_ScreenParams.x = 1.0f / imageSizeW;
+	_ScreenParams.y = 1.0f / imageSizeh;
+ 
+	// ノイズ、オフセットを適用
+	texUV.x += sin(texUV.y * _SinNoiseWidth + _SinNoiseOffset) * _SinNoiseScale;
+	texUV += _Offset;
+	texUV.x += (rand(floor(texUV.y * 100) + _Time.y) - 0) * _NoiseX;
+	texUV = mod(texUV, 1);
+	texUV.x = clamp(texUV.x, 0.0f, 1.0f);
+ 
+	// 色を取得、RGBを少しずつずらす
+	col.r = g_TextureLast.Sample(g_SamLinear, texUV).r;
+	col.g = g_TextureLast.Sample(g_SamLinear, texUV).g;
+	col.b = g_TextureLast.Sample(g_SamLinear, texUV).b;
+ 
+	
+	// RGBノイズ
+	if (rand((rand(floor(texUV.y * 500) + _Time.y) - 0.5) + _Time.y) < _RGBNoise)
+	{
+		col.r = rand(uv + float2(123 + _Time.y, 0));
+		col.g = rand(uv + float2(123 + _Time.y, 1));
+		col.b = rand(uv + float2(123 + _Time.y, 2));
+	}
+ 
+	// ピクセルごとに描画するRGBを決める
+	float floorX = fmod(inUV.x * _ScreenParams.x * 0.25f, 1);
+	col.r *= floorX > 0.3333;
+	col.g *= floorX < 0.3333 || floorX > 0.3333;
+	col.b *= floorX < 0.3333;
+ 
+	// スキャンラインを描画
+	float scanLineColor = sin(_Time.y * 10 + uv.y * 500) / 2 + 0.2;
+	col *= 0.5 + clamp(scanLineColor + 0.5, 0, 1) * 0.5;
+ 
+	// スキャンラインの残像を描画
+	float tail = clamp((frac(uv.y + _Time.y * _ScanLineSpeed) - 1 + _ScanLineTail) / min(_ScanLineTail, 1), 1, 1);
+	col *= tail;
+ 
+	// 画面端を暗くする
+	col *= 1 - vignet * 1.3;
+				
+	return float4(col, 1);
+*/	
+/*	
+	//--------------------------.
+	// ブラウン管の湾曲の部分.
+	const float dipsEdgeWidth = 0.1f;
+	float2 inUV = input.Tex;
+	float2 uv = input.Tex-0.5f;
+	
+	float vignet = length(uv);
+	uv /= 1 - vignet * dipsEdgeWidth;
+	
+	if(max(abs(uv.y)-0.5f, abs(uv.x)-0.5f) > 0.0f){
+		return float4(0.05, 0.05, 0.05f, 1.0f);
+	}
+	//--------------------------.
+*/
 	//float imageSizeW, imageSizeh, levels;
 	//// テクスチャのサイズを取得.
 	//g_TextureNormal.GetDimensions(0, imageSizeW, imageSizeh, levels);
