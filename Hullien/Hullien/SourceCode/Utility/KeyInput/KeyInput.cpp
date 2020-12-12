@@ -5,7 +5,9 @@
 
 CKeyInput::CKeyInput()
 	: m_InputState() 
-{}
+{
+	for( auto& k : m_InputState ) k = EKeyState_NotPress;
+}
 
 CKeyInput::~CKeyInput()
 {}
@@ -19,15 +21,39 @@ void CKeyInput::Update()
 // キーの状態の取得.
 CKeyInput::KeyState CKeyInput::GetState( const unsigned char& key )
 {
-	//if( GetAsyncKeyState(key) & 0x8000 ){
-	//	if( GetInstance()->m_InputState[key] & EKeyState_Press )	GetInstance()->m_InputState[key] = EKeyState_Hold;
-	//	if(!(GetInstance()->m_InputState[key] & EKeyState_Hold ))	GetInstance()->m_InputState[key] = EKeyState_Press;
-	//} else {
-	//	if( GetInstance()->m_InputState[key] & EKeyState_Releae )	GetInstance()->m_InputState[key] = EKeyState_NotPress;
-	//	if( GetInstance()->m_InputState[key] != EKeyState_NotPress )GetInstance()->m_InputState[key] = EKeyState_Releae;
-	//}
 	return GetInstance()->m_InputState[key];
 }
+
+// 押されているとき.
+bool CKeyInput::IsPress( const unsigned char& key )
+{
+	return GetState( key ) == EKeyState_Moment || GetState( key ) == EKeyState_Hold;
+}
+
+// 押された瞬間.
+bool CKeyInput::IsMomentPress( const unsigned char& key )
+{
+	return GetState( key ) == EKeyState_Moment;
+}
+
+// 長押ししているとき.
+bool CKeyInput::IsHold( const unsigned char& key )
+{
+	return GetState( key ) == EKeyState_Hold;
+}
+
+// 離した瞬間.
+bool CKeyInput::IsRelease( const unsigned char& key )
+{
+	return GetState( key ) == EKeyState_Release;
+}
+
+// 押していない.
+bool CKeyInput::NotPress( const unsigned char& key )
+{
+	return GetState( key ) == EKeyState_NotPress;
+}
+
 
 // インスタンスの取得.
 CKeyInput* CKeyInput::GetInstance()
@@ -39,13 +65,21 @@ CKeyInput* CKeyInput::GetInstance()
 // キーの状態の更新.
 void CKeyInput::KeyStateUpdate()
 {
+	BYTE keyState[KEY_MAX];
+	GetKeyboardState( keyState );
 	for( int i = 0; i < KEY_MAX; i++ ){
-		if( GetKeyState(i) & 0x8000 ){
-			if( m_InputState[i] & EKeyState_Press )	m_InputState[i] = EKeyState_Hold;
-			if(!(m_InputState[i] & EKeyState_Hold ))m_InputState[i] = EKeyState_Press;
+		if( keyState[i] & 0x80 ){
+			if( m_InputState[i] & EKeyState::EKeyState_NotPress ){
+				m_InputState[i] = EKeyState::EKeyState_Moment;
+			} else {
+				m_InputState[i] = EKeyState::EKeyState_Hold;
+			}
 		} else {
-			if( m_InputState[i] & EKeyState_Releae )	m_InputState[i] = EKeyState_NotPress;
-			if( m_InputState[i] != EKeyState_NotPress )	m_InputState[i] = EKeyState_Releae;
+			if( m_InputState[i] == EKeyState::EKeyState_Release ){
+				m_InputState[i] = EKeyState::EKeyState_NotPress;
+			} else if( m_InputState[i] != EKeyState::EKeyState_NotPress ){
+				m_InputState[i] = EKeyState::EKeyState_Release;
+			}
 		}
 	}
 };

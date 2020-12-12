@@ -5,8 +5,6 @@
 
 /*******************************
 * キー入力を取得するクラス.
-*	2020/12/07
-*	現在調整中：使用しても動作がおかしくなるかも.
 **/
 class CKeyInput
 {
@@ -17,9 +15,9 @@ public:
 	enum enKeyState : unsigned char
 	{
 		EKeyState_NotPress	= 1 << 0,	// 何も押していない.
-		EKeyState_Press		= 1 << 1,	// 押した瞬間.
+		EKeyState_Moment	= 1 << 1,	// 押した瞬間.
 		EKeyState_Hold		= 1 << 2,	// 押し続けている.
-		EKeyState_Releae	= 1 << 3,	// 離した瞬間.
+		EKeyState_Release	= 1 << 3,	// 離した瞬間.
 	} typedef EKeyState;
 	typedef char KeyState;
 
@@ -32,6 +30,17 @@ public:
 
 	// キーの状態の取得.
 	static KeyState GetState( const unsigned char& key );
+
+	// 押されているとき.
+	static bool IsPress( const unsigned char& key );
+	// 押された瞬間.
+	static bool IsMomentPress( const unsigned char& key );
+	// 長押ししているとき.
+	static bool IsHold( const unsigned char& key );
+	// 離した瞬間.
+	static bool IsRelease( const unsigned char& key );
+	// 押していない.
+	static bool NotPress( const unsigned char& key );
 
 private:
 	// インスタンスの取得.

@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 #include "..\Scenes\SceneList.h"
 #include "..\..\Utility\XInput\XInput.h"
+#include "..\..\Utility\KeyInput\KeyInput.h"
 #include "..\..\Utility\ImGuiManager\ImGuiManager.h"
 #include "..\..\Editor\EditRenderer\EditRenderer.h"
 #include "..\..\GameObject\Widget\Fade\Fade.h"
@@ -39,6 +40,7 @@ void CSceneManager::Update()
 	if( m_pScene == nullptr ) return;
 
 	CXInput::StatsUpdate();	// コントローラーの更新.
+	CKeyInput::Update();
 
 	if( m_IsLoadEnd == false ){
 		// 読み込みが終了していない場合.
