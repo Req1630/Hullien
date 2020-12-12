@@ -125,6 +125,7 @@ float4 PS_Main(VS_OUTPUT input) : SV_Target
 	return lerp( color, input.OutLineColor, grayScale);
 }
 
+/*
 float rand(float2 co) {
 	return frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453);
 }
@@ -133,6 +134,7 @@ float2 mod(float2 a, float2 b)
 {
 	return a - floor(a / b) * b;
 }
+*/
 
 // ピクセルシェーダ.
 float4 PS_LastMain(VS_OUTPUT input) : SV_Target
