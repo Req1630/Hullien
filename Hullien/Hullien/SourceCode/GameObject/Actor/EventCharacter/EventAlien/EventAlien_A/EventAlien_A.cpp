@@ -53,7 +53,6 @@ void CEventAlienA::Render()
 	m_pSkinMesh->SetPosition(m_vPosition);
 	m_pSkinMesh->SetRotation(m_vRotation);
 	m_pSkinMesh->SetScale(m_vScale);
-	m_pSkinMesh->SetColor({ 0.5f, 0.8f, 0.5f, m_Parameter.ModelAlpha });
 	m_pSkinMesh->SetRasterizerState(ERS_STATE::Back);
 	m_pSkinMesh->SetAnimSpeed( m_AnimSpeed );
 	m_pSkinMesh->Render();
