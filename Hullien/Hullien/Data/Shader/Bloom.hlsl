@@ -46,5 +46,5 @@ float4 PS_Main(VS_OUTPUT input) : SV_Target
 		g_Texture.Sample( g_SamLinear, input.Tex*g_Ratio + offset.xw ).rgb + 
 		g_Texture.Sample( g_SamLinear, input.Tex*g_Ratio + offset.zw ).rgb;
 	
-	return float4( sum*0.25f, 1.0f );
+	return float4( sum*0.125f, 1.0f );
 }

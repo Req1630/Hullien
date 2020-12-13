@@ -114,7 +114,7 @@ void CSceneTexRenderer::Release()
 void CSceneTexRenderer::Render()
 {
 	const float softThrshold = 1.0f;
-	static float thrshold = 1.0f;
+	static float thrshold = 0.46f;
 	if( CKeyInput::IsHold('C') ) thrshold += 0.001f;
 	if( CKeyInput::IsHold('V') ) thrshold -= 0.001f;
 	if( thrshold >= 1.0f ) thrshold = 1.0f;
