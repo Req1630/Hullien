@@ -6,6 +6,8 @@
 
 #include <vector>
 
+class CBloom;
+
 class CSceneTexRenderer
 {
 public:
@@ -88,7 +90,7 @@ public:
 	// G-Bufferテクスチャを取得.
 	static std::vector<ID3D11ShaderResourceView*> GetGBuffer(){ return GetInstance()->m_pGBufferSRV; }
 	// TransBufferテクスチャを取得.
-	static ID3D11ShaderResourceView* GetTransBaffer(){ return GetInstance()->m_pTransBufferSRV; }
+	static ID3D11ShaderResourceView* GetTransBaffer(){ return GetInstance()->m_pDownLuminanceSRV; }
 
 	// ウィンドウサイズが変更された時に呼ぶ.
 	static void Resize();
@@ -102,6 +104,8 @@ private:
 	HRESULT InitTransBufferTex();
 	// Antialiasingの作成.
 	HRESULT InitAntialiasingTex();
+	// 輝度用の作成.
+	HRESULT InitDownLuminanceTex();
 	// シェーダ作成.
 	HRESULT CreateShader();
 	// サンプラの作成.
@@ -121,6 +125,8 @@ private:
 	ID3D11Device*			m_pDevice11;	// デバイスオブジェクト.
 	ID3D11DeviceContext*	m_pContext11;	// デバイスコンテキスト.
 
+	std::unique_ptr<CBloom>	m_pBloom;
+
 	std::vector<ID3D11RenderTargetView*>	m_pShadowBufferRTV;	// シャドウマップ用バッファのレンダーターゲットビュー.
 	std::vector<ID3D11ShaderResourceView*>	m_pShadowBufferSRV;	// シャドウマップ用バッファのステンシルビュー.
 	std::vector<ID3D11Texture2D*>			m_pShadowBufferTex;	// シャドウマップ用バッファのテクスチャー2D.
@@ -136,6 +142,10 @@ private:
 	ID3D11RenderTargetView*		m_pAntialiasingRTV;	// アンチエイリアスのレンダーターゲットビュー.
 	ID3D11ShaderResourceView*	m_pAntialiasingSRV;	// アンチエイリアスのシェーダーリソースビュー.
 	ID3D11Texture2D*			m_pAntialiasingTex;	// アンチエイリアスのテクスチャ2D.
+
+	ID3D11RenderTargetView*		m_pDownLuminanceRTV;	// 輝度を落としたテクスチャのレンダーターゲットビュー.
+	ID3D11ShaderResourceView*	m_pDownLuminanceSRV;	// 輝度を落としたテクスチャのシェーダーリソースビュー.
+	ID3D11Texture2D*			m_pDownLuminanceTex;	// 輝度を落としたテクスチャのテクスチャ2D.
 
 	ID3D11VertexShader*		m_pVertexShader;	// 頂点シェーダー.
 	ID3D11PixelShader*		m_pPixelShader;		// ピクセルシェーダー.

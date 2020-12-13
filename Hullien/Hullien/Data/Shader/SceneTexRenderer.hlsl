@@ -7,6 +7,7 @@ Texture2D g_TextureNormal	: register(t1);	// 法線情報.
 Texture2D g_TextureDepth	: register(t2);	// 深度情報.
 Texture2D g_TextureTrans	: register(t3);	// アルファ情報.
 Texture2D g_TextureLast		: register(t4);	// 輪郭線などを描画したテクスチャ.
+Texture2D g_TextureBloom[6]	: register(t5);
 //ｻﾝﾌﾟﾗは、ﾚｼﾞｽﾀ s(n).
 SamplerState g_SamLinear : register(s0);
 
@@ -44,8 +45,14 @@ VS_OUTPUT VS_Main(
 	return output;
 }
 
+struct PS_OUTPUT
+{
+	float4 Color : SV_Target0;
+	float4 Bloom : SV_Target1;
+};
+
 // ピクセルシェーダ.
-float4 PS_Main(VS_OUTPUT input) : SV_Target
+PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
 {
 	// 魚眼レンズ.
 	/*
@@ -122,7 +129,29 @@ float4 PS_Main(VS_OUTPUT input) : SV_Target
 	{
 		grayScale *= 0.0f;
 	}
-	return lerp( color, input.OutLineColor, grayScale);
+	PS_OUTPUT output = (PS_OUTPUT) 0;
+	output.Color = lerp( color, input.OutLineColor, grayScale);
+	
+	const float hold = 2.0f;
+	const float knee = hold*0.8f;
+	const float4 param = 
+		float4( 
+			hold, 
+			hold-knee, 
+			knee*2.0f, 
+			0.25f/(knee+0.00001f) );
+	
+	// テクスチャの明度を落とす.
+	float3 texColor = g_TextureColor.Sample(g_SamLinear, input.Tex).rgb;
+	half b = max(texColor.r, max(texColor.g, texColor.b));
+	half soft = b - param.y;
+	soft = clamp(soft, 0, param.z);
+	soft = soft*soft*param.w;
+	half c = max(soft, b-param.x);
+	c /= max(b, 0.00001f);
+	output.Bloom = float4(texColor*c, 1.0f);
+	
+	return output;
 }
 
 /*
@@ -142,6 +171,11 @@ float4 PS_LastMain(VS_OUTPUT input) : SV_Target
 	FxaaTex tex = { g_SamLinear, g_TextureLast };
 	float4 color = float4( FxaaPixelShader( input.Tex, tex, float2( 1.0f/g_vViewPort.x, 1.0f/g_vViewPort.y ) ), 1.0f );
 
+	
+	for( int i = 0; i < 6; i++ ){
+		color += g_TextureBloom[i].Sample(g_SamLinear, input.Tex);
+	}
+	
 /*
 	// ブラウン管テレビのノイズの処理.
 	float2 inUV = input.Tex;

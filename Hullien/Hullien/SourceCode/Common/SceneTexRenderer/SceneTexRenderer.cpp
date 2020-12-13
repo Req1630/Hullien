@@ -1,11 +1,13 @@
 #include "SceneTexRenderer.h"
 #include "..\D3DX\D3DX11.h"
+#include "..\Bloom\Bloom.h"
 
 const int FULL_SCREEN_MUL = 1;
 
 CSceneTexRenderer::CSceneTexRenderer()
 	: m_pDevice11				( nullptr )
 	, m_pContext11				( nullptr )
+	, m_pBloom					( nullptr )
 	, m_pShadowBufferRTV		( MAX_CASCADE )
 	, m_pShadowBufferSRV		( MAX_CASCADE )
 	, m_pShadowBufferTex		( MAX_CASCADE )
@@ -18,6 +20,9 @@ CSceneTexRenderer::CSceneTexRenderer()
 	, m_pAntialiasingRTV		( nullptr )
 	, m_pAntialiasingSRV		( nullptr )
 	, m_pAntialiasingTex		( nullptr )
+	, m_pDownLuminanceRTV		( nullptr )
+	, m_pDownLuminanceSRV		( nullptr )
+	, m_pDownLuminanceTex		( nullptr )
 	, m_pVertexShader			( nullptr )
 	, m_pPixelShader			( nullptr )
 	, m_pLastPixelShader		( nullptr )
@@ -29,10 +34,12 @@ CSceneTexRenderer::CSceneTexRenderer()
 	, m_WndHeight				( 0 )
 	, m_NowRenderPass			( ERenderPass::Shadow )
 {
+	m_pBloom = std::make_unique<CBloom>();
 }
 
 CSceneTexRenderer::~CSceneTexRenderer()
 {
+	m_pBloom->Release();
 	Release();
 }
 
@@ -52,11 +59,12 @@ HRESULT CSceneTexRenderer::Init()
 	GetInstance()->m_WndHeight = CDirectX11::GetWndHeight();
 
 	if( GetInstance()->m_pDevice11 == nullptr ) return E_FAIL;
-
+	if( FAILED( GetInstance()->m_pBloom->Init( GetInstance()->m_pDevice11, GetInstance()->m_pContext11 ) )) return E_FAIL;
 	if( FAILED( GetInstance()->InitShadowBufferTex()) )		return E_FAIL;
 	if( FAILED( GetInstance()->InitGBufferTex()))			return E_FAIL;
 	if( FAILED( GetInstance()->InitTransBufferTex()))		return E_FAIL;
 	if( FAILED( GetInstance()->InitAntialiasingTex()))		return E_FAIL;
+	if( FAILED( GetInstance()->InitDownLuminanceTex()))		return E_FAIL;
 	if( FAILED( GetInstance()->CreateShader() ))			return E_FAIL;
 	if( FAILED( GetInstance()->CreateModel() ))				return E_FAIL;
 	if( FAILED( GetInstance()->InitSample() ))				return E_FAIL;
@@ -76,6 +84,10 @@ void CSceneTexRenderer::Release()
 	for( auto& srv : GetInstance()->m_pShadowBufferSRV ) SAFE_RELEASE(srv);
 	for( auto& tex : GetInstance()->m_pShadowBufferTex ) SAFE_RELEASE(tex);
 
+	SAFE_RELEASE( GetInstance()->m_pDownLuminanceRTV );
+	SAFE_RELEASE( GetInstance()->m_pDownLuminanceSRV );
+	SAFE_RELEASE( GetInstance()->m_pDownLuminanceTex );
+
 	SAFE_RELEASE( GetInstance()->m_pAntialiasingSRV );
 	SAFE_RELEASE( GetInstance()->m_pAntialiasingTex );
 	SAFE_RELEASE( GetInstance()->m_pAntialiasingRTV );
@@ -87,8 +99,10 @@ void CSceneTexRenderer::Release()
 	SAFE_RELEASE( GetInstance()->m_pSampleLinear );
 	SAFE_RELEASE( GetInstance()->m_pVertexBuffer );
 	SAFE_RELEASE( GetInstance()->m_pConstantBuffer );
-	SAFE_RELEASE( GetInstance()->m_pPixelShader );
+	SAFE_RELEASE( GetInstance()->m_pPixelShader );	
+	SAFE_RELEASE( GetInstance()->m_pLastPixelShader );
 	SAFE_RELEASE( GetInstance()->m_pVertexLayout );
+	SAFE_RELEASE( GetInstance()->m_pVertexShader );
 	SAFE_RELEASE( GetInstance()->m_pVertexShader );
 
 	GetInstance()->m_pContext11 = nullptr;
@@ -98,8 +112,13 @@ void CSceneTexRenderer::Release()
 // 描画関数.
 void CSceneTexRenderer::Render()
 {
+	ID3D11RenderTargetView* rtv[] =
+	{
+		GetInstance()->m_pAntialiasingRTV,
+		GetInstance()->m_pDownLuminanceRTV,
+	};
 	// レンダーターゲットの設定.
-	GetInstance()->m_pContext11->OMSetRenderTargets( 1, &GetInstance()->m_pAntialiasingRTV, CDirectX11::GetDepthSV() );
+	GetInstance()->m_pContext11->OMSetRenderTargets( 2, &rtv[0], CDirectX11::GetDepthSV() );
 	// デプスステンシルバッファ.
 	GetInstance()->m_pContext11->ClearDepthStencilView( CDirectX11::GetDepthSV(), D3D11_CLEAR_DEPTH, 1.0f, 0 );
 
@@ -125,9 +144,27 @@ void CSceneTexRenderer::Render()
 	GetInstance()->m_pContext11->PSSetShaderResources( 3, 1, &GetInstance()->m_pTransBufferSRV );	// Trans.
 	GetInstance()->m_pContext11->Draw( 4, 0 );
 
+	// bloom のサンプリング.
+	GetInstance()->m_pBloom->Sampling( GetInstance()->m_pDownLuminanceSRV );
+
+	// 使用するシェーダのセット.
+	GetInstance()->m_pContext11->VSSetShader( GetInstance()->m_pVertexShader, nullptr, 0 );	// 頂点シェーダ.
+	GetInstance()->m_pContext11->PSSetShader( GetInstance()->m_pPixelShader, nullptr, 0 );	// ピクセルシェーダ.
+	GetInstance()->m_pContext11->PSSetSamplers( 0, 1, &GetInstance()->m_pSampleLinear );	// サンプラのセット.
+
+	// コンスタントバッファの値は変化しないので、
+	// 初めに設定したコンスタントバッファを送る.
+	GetInstance()->m_pContext11->VSSetConstantBuffers( 0, 1, &GetInstance()->m_pConstantBuffer );	// 頂点シェーダ.
+	GetInstance()->m_pContext11->PSSetConstantBuffers( 0, 1, &GetInstance()->m_pConstantBuffer );	// ピクセルシェーダー.
+
+	GetInstance()->m_pContext11->IASetVertexBuffers( 0, 1, &GetInstance()->m_pVertexBuffer, &stride, &offset );
+	GetInstance()->m_pContext11->IASetInputLayout( GetInstance()->m_pVertexLayout );
+	GetInstance()->m_pContext11->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
+
 	CDirectX11::SetBackBuffer();
 	GetInstance()->m_pContext11->PSSetShader( GetInstance()->m_pLastPixelShader, nullptr, 0 );	// ピクセルシェーダ.
-	GetInstance()->m_pContext11->PSSetShaderResources( 4, 1, &GetInstance()->m_pAntialiasingSRV );	// Trans.
+	GetInstance()->m_pContext11->PSSetShaderResources( 4, 1, &GetInstance()->m_pAntialiasingSRV );
+	GetInstance()->m_pContext11->PSSetShaderResources( 5, 6, &GetInstance()->m_pBloom->GetBlurTex()[0] );
 	GetInstance()->m_pContext11->Draw( 4, 0 );
 }
 
@@ -148,6 +185,9 @@ void CSceneTexRenderer::ClearBuffer()
 	// Antialiasingテクスチャのクリア.
 	GetInstance()->m_pContext11->ClearRenderTargetView( 
 		GetInstance()->m_pAntialiasingRTV, GetInstance()->CLEAR_BACK_COLOR );
+	// DownLuminanceテクスチャのクリア.
+	GetInstance()->m_pContext11->ClearRenderTargetView( 
+		GetInstance()->m_pDownLuminanceRTV, GetInstance()->CLEAR_BACK_COLOR );
 }
 
 // Shadowバッファの設定.
@@ -244,20 +284,18 @@ HRESULT CSceneTexRenderer::InitGBufferTex()
 	texDesc.CPUAccessFlags		= 0;								// CPUからはアクセスしない.
 	texDesc.MiscFlags			= 0;								// その他の設定なし.
 
-	for( int i = 0; i < EGBufferNo::enGBufferNo_MAX-1; i++ ){
+	for( int i = 0; i < EGBufferNo::enGBufferNo_MAX; i++ ){
+		if( i == EGBufferNo::enGBufferNo_Z_DEPTH ){
+			texDesc.Format = DXGI_FORMAT_R32_FLOAT;
+		} else {
+			texDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		}
 		if( FAILED( CreateBufferTex(
 			texDesc,
 			&m_pGBufferRTV[i],
 			&m_pGBufferSRV[i],
 			&m_pGBufferTex[i] ))) return E_FAIL;
 	}
-	// 深度用のフォーマットに変更.
-	texDesc.Format				= DXGI_FORMAT_R32_FLOAT;// 32ﾋﾞｯﾄﾌｫｰﾏｯﾄ.
-	if( FAILED( CreateBufferTex(
-		texDesc,
-		&m_pGBufferRTV[EGBufferNo::enGBufferNo_Z_DEPTH],
-		&m_pGBufferSRV[EGBufferNo::enGBufferNo_Z_DEPTH],
-		&m_pGBufferTex[EGBufferNo::enGBufferNo_Z_DEPTH] ))) return E_FAIL;
 	return S_OK;
 }
 
@@ -306,6 +344,30 @@ HRESULT CSceneTexRenderer::InitAntialiasingTex()
 		&m_pAntialiasingRTV,
 		&m_pAntialiasingSRV,
 		&m_pAntialiasingTex ))) return E_FAIL;
+	return S_OK;
+}
+
+// 輝度用の作成.
+HRESULT CSceneTexRenderer::InitDownLuminanceTex()
+{
+	D3D11_TEXTURE2D_DESC texDesc;
+	texDesc.Width				= GetInstance()->m_WndWidth ;		// 幅.
+	texDesc.Height				= GetInstance()->m_WndHeight;		// 高さ.
+	texDesc.MipLevels			= 1;								// ミップマップレベル:1.
+	texDesc.ArraySize			= 1;								// 配列数:1.
+	texDesc.Format				= DXGI_FORMAT_R11G11B10_FLOAT;		// 32ビットフォーマット.
+	texDesc.SampleDesc.Count	= 1;								// マルチサンプルの数.
+	texDesc.SampleDesc.Quality	= 0;								// マルチサンプルのクオリティ.
+	texDesc.Usage				= D3D11_USAGE_DEFAULT;				// 使用方法:デフォルト.
+	texDesc.BindFlags			= D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;	// レンダーターゲット、シェーダーリソース.
+	texDesc.CPUAccessFlags		= 0;								// CPUからはアクセスしない.
+	texDesc.MiscFlags			= 0;								// その他の設定なし.
+
+	if( FAILED( CreateBufferTex(
+		texDesc,
+		&m_pDownLuminanceRTV,
+		&m_pDownLuminanceSRV,
+		&m_pDownLuminanceTex ))) return E_FAIL;
 	return S_OK;
 }
 

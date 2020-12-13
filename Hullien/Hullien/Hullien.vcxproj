@@ -154,6 +154,7 @@
     <ClCompile Include="SourceCode\Collider\Colliders\Sphere\SphereCollision.cpp" />
     <ClCompile Include="SourceCode\Collider\Colliders\Sphere\SphereModel.cpp" />
     <ClCompile Include="SourceCode\Collider\CollsionManager\CollsionManager.cpp" />
+    <ClCompile Include="SourceCode\Common\Bloom\Bloom.cpp" />
     <ClCompile Include="SourceCode\Common\Common.cpp" />
     <ClCompile Include="SourceCode\Common\D3DX\D3DX11.cpp" />
     <ClCompile Include="SourceCode\Common\D3DX\D3DX9.cpp" />
@@ -312,6 +313,7 @@
     <ClInclude Include="Library\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Library\ImGui\imstb_textedit.h" />
     <ClInclude Include="Library\ImGui\imstb_truetype.h" />
+    <ClInclude Include="SourceCode\Common\Bloom\Bloom.h" />
     <ClInclude Include="SourceCode\Common\Gage\Gage.h" />
     <ClInclude Include="SourceCode\Common\Mesh\MeshStruct.h" />
     <ClInclude Include="SourceCode\Common\SkyDomeModel\SkyDomeModel.h" />
@@ -498,6 +500,18 @@
     <ClInclude Include="SourceCode\XAudio2\XAudio2WaveLoad\XAudio2WaveLoad.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Data\Shader\Bloom.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">VS_Main</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">VS_Main</EntryPointName>
+    </FxCompile>
     <FxCompile Include="Data\Shader\DebugText.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">VS_Main</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
