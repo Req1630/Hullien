@@ -5,7 +5,6 @@
 
 class CBloom : public CCommon
 {
-	const int SAMPLE_BLUR_MAX = 6;
 	const char* SHADER_NAME = "Data\\Shader/Bloom.hlsl";
 	// コンスタントバッファ.
 	struct C_BUFFER
@@ -22,6 +21,9 @@ class CBloom : public CCommon
 		D3DXVECTOR2 Tex;	// テクスチャ座標.
 	};
 public:
+	const int SAMPLE_BLUR_MAX = 6;
+
+public:
 	CBloom();
 	virtual ~CBloom();
 
@@ -37,8 +39,6 @@ public:
 	std::vector<ID3D11ShaderResourceView*> GetBlurTex(){ return m_pBlurBufferSRV; }
 
 private:
-	// 輝度用の作成.
-	HRESULT InitDownLuminanceTex();
 	// ブラー用の作成.
 	HRESULT InitBlurTex();
 	// シェーダ作成.
@@ -57,9 +57,6 @@ private:
 		ID3D11ShaderResourceView**	ppSRV,
 		ID3D11Texture2D**			ppTex );
 private:
-	ID3D11RenderTargetView*		m_pDownLuminanceRTV;	// 輝度を落としたテクスチャのレンダーターゲットビュー.
-	ID3D11ShaderResourceView*	m_pDownLuminanceSRV;	// 輝度を落としたテクスチャのシェーダーリソースビュー.
-	ID3D11Texture2D*			m_pDownLuminanceTex;	// 輝度を落としたテクスチャのテクスチャ2D.
 
 	std::vector<ID3D11RenderTargetView*>	m_pBlurBufferRTV;	// ブラー用バッファのレンダーターゲットビュー.
 	std::vector<ID3D11ShaderResourceView*>	m_pBlurBufferSRV;	// ブラー用バッファのステンシルビュー.

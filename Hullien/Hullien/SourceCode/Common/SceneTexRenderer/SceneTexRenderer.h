@@ -42,10 +42,14 @@ public:
 	//	構造体.
 	//======================================
 	// コンスタントバッファ.
-	struct C_BUFFER
+	struct C_BUFFER_PER_INIT
 	{
 		ALIGN16 D3DXMATRIX	mW;				// ワールド行列.
 		ALIGN16 D3DXVECTOR2	vViewPort;		// UV座標.
+	};
+	struct C_BUFFER_PER_FRAME
+	{
+		D3DXVECTOR4 SoftKneePram;
 	};
 	// 頂点の構造体.
 	struct VERTEX
@@ -151,7 +155,8 @@ private:
 	ID3D11PixelShader*		m_pPixelShader;		// ピクセルシェーダー.
 	ID3D11PixelShader*		m_pLastPixelShader;	// ピクセルシェーダー.
 	ID3D11InputLayout*		m_pVertexLayout;	// 頂点レイアウト.
-	ID3D11Buffer*			m_pConstantBuffer;	// コンスタントバッファ.
+	ID3D11Buffer*			m_pConstantBufferInit;	// コンスタントバッファ.
+	ID3D11Buffer*			m_pConstantBufferFrame;	// コンスタントバッファ.
 	ID3D11Buffer*			m_pVertexBuffer;	// 頂点バッファ.
 	ID3D11SamplerState*		m_pSampleLinear;	// サンプラ:テクスチャに各種フィルタをかける.
 

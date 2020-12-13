@@ -7,15 +7,20 @@ Texture2D g_TextureNormal	: register(t1);	// 法線情報.
 Texture2D g_TextureDepth	: register(t2);	// 深度情報.
 Texture2D g_TextureTrans	: register(t3);	// アルファ情報.
 Texture2D g_TextureLast		: register(t4);	// 輪郭線などを描画したテクスチャ.
-Texture2D g_TextureBloom[6]	: register(t5);
+Texture2D g_TextureBloom[6]	: register(t5);	// Bloom用テクスチャ.
 //ｻﾝﾌﾟﾗは、ﾚｼﾞｽﾀ s(n).
 SamplerState g_SamLinear : register(s0);
 
 //ｺﾝｽﾀﾝﾄﾊﾞｯﾌｧ.
-cbuffer cBuffer : register(b0)
+cbuffer PerInit : register(b0)
 {
 	matrix g_mW			: packoffset(c0); // ﾜｰﾙﾄﾞ行列.
 	float2 g_vViewPort	: packoffset(c4); // ビューポート幅.
+};
+
+cbuffer PerFrame : register(b1)
+{
+	float4 g_SoftKneePram;
 };
 
 //構造体.
@@ -73,10 +78,10 @@ PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
 	// テクスチャのサイズを取得.
 	g_TextureNormal.GetDimensions(0, imageSizeW, imageSizeh, levels);
 	
-	const float s = 0.25f;	// サンプリングする強さ.
+	float s = 0.125f;	// サンプリングする強さ.
 	const float dx = 1.0f / imageSizeW;
 	const float dy = 1.0f / imageSizeh;
-	const float px = s * dx, py = s * dx;
+	float px = s * dx, py = s * dx;
 	
 	//----------------------------------------------------------------.
 	// 法線の情報を取得.
@@ -91,6 +96,8 @@ PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
 	normColor += g_TextureNormal.Sample(g_SamLinear, input.Tex + float2( 0 * px,	 py)).xyz; // 下.
 	normColor += g_TextureNormal.Sample(g_SamLinear, input.Tex + float2(	 px,	 py)).xyz; // 右下.
 	
+	s = 1.0f;	// サンプリングする強さ.
+	px = s * dx, py = s * dx;
 	//----------------------------------------------------------------.
 	// 深度値の情報を取得.
 	float z = g_TextureDepth.Sample(g_SamLinear, input.Tex + float2(0 * dx, 0 * dy)).x; // 自分.
@@ -121,7 +128,7 @@ PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
 	grayScale = 1.0f - saturate(grayScale);
 	
 	// 法線情報と、深度値の情報が一定以上なら輪郭線を表示.
-	if (length(normColor) >= 0.72f || abs(depth) < 0.8f)
+	if (length(normColor) >= 0.45f || abs(depth) < 0.8f)
 	{
 		grayScale *= 1.0f;
 	}
@@ -132,24 +139,28 @@ PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
 	PS_OUTPUT output = (PS_OUTPUT) 0;
 	output.Color = lerp( color, input.OutLineColor, grayScale);
 	
-	const float hold = 2.0f;
-	const float knee = hold*0.8f;
-	const float4 param = 
-		float4( 
-			hold, 
-			hold-knee, 
-			knee*2.0f, 
-			0.25f/(knee+0.00001f) );
-	
 	// テクスチャの明度を落とす.
-	float3 texColor = g_TextureColor.Sample(g_SamLinear, input.Tex).rgb;
-	half b = max(texColor.r, max(texColor.g, texColor.b));
-	half soft = b - param.y;
-	soft = clamp(soft, 0, param.z);
-	soft = soft*soft*param.w;
-	half c = max(soft, b-param.x);
-	c /= max(b, 0.00001f);
-	output.Bloom = float4(texColor*c, 1.0f);
+	// --- softknee ---.
+	// https://light11.hatenadiary.com/entry/2018/02/15/011155.
+	// https://light11.hatenadiary.com/entry/2018/03/15/000022.
+	
+	// 明度を落とした色.
+	half source = max(color.r, max(color.g, color.b));
+	
+	half soft = clamp(source - g_SoftKneePram.y, 0, g_SoftKneePram.z);
+	soft = soft * soft * g_SoftKneePram.w;
+	// 計算式.
+	//		   (min(knee*2[param.z], max(0, source-threshold+knee[param.y])))2.
+	//	soft = ---------------------------------------------------------------.
+	//							4 * knee + 0.00001[param.w].
+	
+	half contribution = max(source-g_SoftKneePram.x, soft);
+	contribution /= max(source, 0.0001f);
+	// 計算式.
+	//				 (max(source - threshold[param.x], soft)).
+	// contribution = ---------------------------------------.
+	//							max(source, 0.0001f).
+	output.Bloom = float4(color.rgb*contribution, 1.0f);
 	
 	return output;
 }

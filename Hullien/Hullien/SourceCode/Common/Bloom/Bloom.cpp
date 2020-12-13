@@ -1,13 +1,8 @@
 #include "Bloom.h"
 #include "..\D3DX\D3DX11.h"
-#include "..\..\Editor\EditRenderer\EditRenderer.h"
-#include "..\..\Utility\ImGuiManager\ImGuiManager.h"
 
 CBloom::CBloom()
-	: m_pDownLuminanceRTV	( nullptr )
-	, m_pDownLuminanceSRV	( nullptr )
-	, m_pDownLuminanceTex	( nullptr )
-	, m_pBlurBufferRTV		( SAMPLE_BLUR_MAX )
+	: m_pBlurBufferRTV		( SAMPLE_BLUR_MAX )
 	, m_pBlurBufferSRV		( SAMPLE_BLUR_MAX )
 	, m_pBlurBufferTex		( SAMPLE_BLUR_MAX )
 	, m_pVertexShader		( nullptr )
@@ -33,7 +28,6 @@ HRESULT CBloom::Init( ID3D11Device* pDevice11, ID3D11DeviceContext* pContext11 )
 	m_WndWidth = CDirectX11::GetWndWidth();
 	m_WndHeight = CDirectX11::GetWndHeight();
 
-	if( FAILED( InitDownLuminanceTex() ))	return E_FAIL;
 	if( FAILED( InitBlurTex() ))			return E_FAIL;
 	if( FAILED( CreateShader() ))			return E_FAIL;
 	if( FAILED( CreateModel() ))			return E_FAIL;
@@ -46,10 +40,6 @@ HRESULT CBloom::Init( ID3D11Device* pDevice11, ID3D11DeviceContext* pContext11 )
 // 解放.
 void CBloom::Release()
 {
-	SAFE_RELEASE( m_pDownLuminanceRTV );
-	SAFE_RELEASE( m_pDownLuminanceSRV );
-	SAFE_RELEASE( m_pDownLuminanceTex );
-
 	for( auto& rtv : m_pBlurBufferRTV ) SAFE_RELEASE(rtv);
 	for( auto& srv : m_pBlurBufferSRV ) SAFE_RELEASE(srv);
 	for( auto& tex : m_pBlurBufferTex ) SAFE_RELEASE(tex);
@@ -66,7 +56,7 @@ void CBloom::Release()
 void CBloom::Sampling( ID3D11ShaderResourceView* tex )
 {
 	ID3D11ShaderResourceView* srv = tex;
-	int i = -1;
+	int i = 0;
 	for( auto& rtv : m_pBlurBufferRTV ){
 		// レンダーターゲットの設定.
 		m_pContext11->OMSetRenderTargets( 1, &rtv, CDirectX11::GetDepthSV() );
@@ -78,57 +68,21 @@ void CBloom::Sampling( ID3D11ShaderResourceView* tex )
 		m_pContext11->PSSetShader( m_pPixelShader, nullptr, 0 );	// ピクセルシェーダ.
 		m_pContext11->PSSetSamplers( 0, 1, &m_pSampleLinear );		// サンプラのセット.
 
-		m_pContext11->VSSetConstantBuffers( 0, 1, &m_pConstantBuffer[i+1] );	// 頂点シェーダ.
-		m_pContext11->PSSetConstantBuffers( 0, 1, &m_pConstantBuffer[i+1] );	// ピクセルシェーダー.
+		m_pContext11->VSSetConstantBuffers( 0, 1, &m_pConstantBuffer[i] );	// 頂点シェーダ.
+		m_pContext11->PSSetConstantBuffers( 0, 1, &m_pConstantBuffer[i] );	// ピクセルシェーダー.
 
 		UINT stride = sizeof(VERTEX);
 		UINT offset = 0;
-		m_pContext11->IASetVertexBuffers( 0, 1, &m_pVertexBuffer[i+1], &stride, &offset );
+		m_pContext11->IASetVertexBuffers( 0, 1, &m_pVertexBuffer[i], &stride, &offset );
 		m_pContext11->IASetInputLayout( m_pVertexLayout );
 		m_pContext11->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
 
 		m_pContext11->PSSetShaderResources( 0, 1, &srv );
 		m_pContext11->Draw( 4, 0 );
 
-		srv = m_pBlurBufferSRV[i+1];
+		srv = m_pBlurBufferSRV[i];
 		i++;
 	}
-
-	CEditRenderer::PushRenderProc( 
-		[&]()
-		{
-			ImGui::Image( m_pBlurBufferSRV[0], ImVec2(800, 400) );
-			ImGui::Image( m_pBlurBufferSRV[1], ImVec2(800, 400) );
-			ImGui::Image( m_pBlurBufferSRV[2], ImVec2(800, 400) );
-			ImGui::Image( m_pBlurBufferSRV[3], ImVec2(800, 400) );
-			ImGui::Image( m_pBlurBufferSRV[4], ImVec2(800, 400) );
-			ImGui::Image( m_pBlurBufferSRV[5], ImVec2(800, 400) );
-		});
-}
-
-// 輝度用の作成.
-HRESULT CBloom::InitDownLuminanceTex()
-{
-	D3D11_TEXTURE2D_DESC texDesc;
-	texDesc.Width				= m_WndWidth;						// 幅.
-	texDesc.Height				= m_WndHeight;						// 高さ.
-	texDesc.MipLevels			= 1;								// ミップマップレベル:1.
-	texDesc.ArraySize			= 1;								// 配列数:1.
-	texDesc.Format				= DXGI_FORMAT_R11G11B10_FLOAT;		// 32ビットフォーマット.
-	texDesc.SampleDesc.Count	= 1;								// マルチサンプルの数.
-	texDesc.SampleDesc.Quality	= 0;								// マルチサンプルのクオリティ.
-	texDesc.Usage				= D3D11_USAGE_DEFAULT;				// 使用方法:デフォルト.
-	texDesc.BindFlags			= D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;	// レンダーターゲット、シェーダーリソース.
-	texDesc.CPUAccessFlags		= 0;								// CPUからはアクセスしない.
-	texDesc.MiscFlags			= 0;								// その他の設定なし.
-
-	if( FAILED( CreateBufferTex(
-		texDesc,
-		&m_pDownLuminanceRTV,
-		&m_pDownLuminanceSRV,
-		&m_pDownLuminanceTex ))) return E_FAIL;
-
-	return S_OK;
 }
 
 // ブラー用の作成.

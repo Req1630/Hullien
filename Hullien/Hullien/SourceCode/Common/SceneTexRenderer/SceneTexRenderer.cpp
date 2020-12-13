@@ -1,8 +1,7 @@
 #include "SceneTexRenderer.h"
 #include "..\D3DX\D3DX11.h"
 #include "..\Bloom\Bloom.h"
-
-const int FULL_SCREEN_MUL = 1;
+#include "..\..\Utility\KeyInput\KeyInput.h"
 
 CSceneTexRenderer::CSceneTexRenderer()
 	: m_pDevice11				( nullptr )
@@ -27,7 +26,8 @@ CSceneTexRenderer::CSceneTexRenderer()
 	, m_pPixelShader			( nullptr )
 	, m_pLastPixelShader		( nullptr )
 	, m_pVertexLayout			( nullptr )
-	, m_pConstantBuffer			( nullptr )
+	, m_pConstantBufferInit		( nullptr )
+	, m_pConstantBufferFrame	( nullptr )
 	, m_pVertexBuffer			( nullptr )
 	, m_pSampleLinear			( nullptr )
 	, m_WndWidth				( 0 )
@@ -98,7 +98,8 @@ void CSceneTexRenderer::Release()
 
 	SAFE_RELEASE( GetInstance()->m_pSampleLinear );
 	SAFE_RELEASE( GetInstance()->m_pVertexBuffer );
-	SAFE_RELEASE( GetInstance()->m_pConstantBuffer );
+	SAFE_RELEASE( GetInstance()->m_pConstantBufferInit );
+	SAFE_RELEASE( GetInstance()->m_pConstantBufferFrame );
 	SAFE_RELEASE( GetInstance()->m_pPixelShader );	
 	SAFE_RELEASE( GetInstance()->m_pLastPixelShader );
 	SAFE_RELEASE( GetInstance()->m_pVertexLayout );
@@ -112,10 +113,35 @@ void CSceneTexRenderer::Release()
 // 描画関数.
 void CSceneTexRenderer::Render()
 {
+	const float softThrshold = 1.0f;
+	static float thrshold = 1.0f;
+	if( CKeyInput::IsHold('C') ) thrshold += 0.001f;
+	if( CKeyInput::IsHold('V') ) thrshold -= 0.001f;
+	if( thrshold >= 1.0f ) thrshold = 1.0f;
+	if( thrshold <= 0.0f ) thrshold = 0.0f;
+
+	// シェーダーのコンスタントバッファに各種データを渡す.
+	D3D11_MAPPED_SUBRESOURCE pData;
+	// バッファ内のデータの書き換え開始時にMap.
+	if( SUCCEEDED( GetInstance()->m_pContext11->Map( 
+		GetInstance()->m_pConstantBufferFrame, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData ))){
+		C_BUFFER_PER_FRAME cb;
+
+		const float knee = softThrshold*thrshold;
+		cb.SoftKneePram.x = thrshold;
+		cb.SoftKneePram.y = thrshold+knee;
+		cb.SoftKneePram.z = knee*2.0f;
+		cb.SoftKneePram.w = 0.25f*knee*0.00001f;
+
+		// メモリ領域をコピー.
+		memcpy_s( pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb) );
+		GetInstance()->m_pContext11->Unmap( GetInstance()->m_pConstantBufferFrame, 0 );
+	}
+
 	ID3D11RenderTargetView* rtv[] =
 	{
-		GetInstance()->m_pAntialiasingRTV,
-		GetInstance()->m_pDownLuminanceRTV,
+		GetInstance()->m_pAntialiasingRTV,	// アンチエイリアシング用.
+		GetInstance()->m_pDownLuminanceRTV,	// 輝度用.
 	};
 	// レンダーターゲットの設定.
 	GetInstance()->m_pContext11->OMSetRenderTargets( 2, &rtv[0], CDirectX11::GetDepthSV() );
@@ -127,10 +153,10 @@ void CSceneTexRenderer::Render()
 	GetInstance()->m_pContext11->PSSetShader( GetInstance()->m_pPixelShader, nullptr, 0 );	// ピクセルシェーダ.
 	GetInstance()->m_pContext11->PSSetSamplers( 0, 1, &GetInstance()->m_pSampleLinear );	// サンプラのセット.
 
-	// コンスタントバッファの値は変化しないので、
-	// 初めに設定したコンスタントバッファを送る.
-	GetInstance()->m_pContext11->VSSetConstantBuffers( 0, 1, &GetInstance()->m_pConstantBuffer );	// 頂点シェーダ.
-	GetInstance()->m_pContext11->PSSetConstantBuffers( 0, 1, &GetInstance()->m_pConstantBuffer );	// ピクセルシェーダー.
+	GetInstance()->m_pContext11->VSSetConstantBuffers( 0, 1, &GetInstance()->m_pConstantBufferInit );	// 頂点シェーダ.
+	GetInstance()->m_pContext11->PSSetConstantBuffers( 0, 1, &GetInstance()->m_pConstantBufferInit );	// ピクセルシェーダー.
+	GetInstance()->m_pContext11->VSSetConstantBuffers( 1, 1, &GetInstance()->m_pConstantBufferFrame );	// 頂点シェーダ.
+	GetInstance()->m_pContext11->PSSetConstantBuffers( 1, 1, &GetInstance()->m_pConstantBufferFrame );	// ピクセルシェーダー.
 
 	UINT stride = sizeof(VERTEX);
 	UINT offset = 0;
@@ -144,18 +170,21 @@ void CSceneTexRenderer::Render()
 	GetInstance()->m_pContext11->PSSetShaderResources( 3, 1, &GetInstance()->m_pTransBufferSRV );	// Trans.
 	GetInstance()->m_pContext11->Draw( 4, 0 );
 
-	// bloom のサンプリング.
+	//-------------------------.
+	// Bloom のサンプリング
 	GetInstance()->m_pBloom->Sampling( GetInstance()->m_pDownLuminanceSRV );
 
+	//-----------------------------.
+	// 最終レンダリング.
+	//-----------------------------.
+	
 	// 使用するシェーダのセット.
 	GetInstance()->m_pContext11->VSSetShader( GetInstance()->m_pVertexShader, nullptr, 0 );	// 頂点シェーダ.
 	GetInstance()->m_pContext11->PSSetShader( GetInstance()->m_pPixelShader, nullptr, 0 );	// ピクセルシェーダ.
 	GetInstance()->m_pContext11->PSSetSamplers( 0, 1, &GetInstance()->m_pSampleLinear );	// サンプラのセット.
 
-	// コンスタントバッファの値は変化しないので、
-	// 初めに設定したコンスタントバッファを送る.
-	GetInstance()->m_pContext11->VSSetConstantBuffers( 0, 1, &GetInstance()->m_pConstantBuffer );	// 頂点シェーダ.
-	GetInstance()->m_pContext11->PSSetConstantBuffers( 0, 1, &GetInstance()->m_pConstantBuffer );	// ピクセルシェーダー.
+	GetInstance()->m_pContext11->VSSetConstantBuffers( 0, 1, &GetInstance()->m_pConstantBufferInit );	// 頂点シェーダ.
+	GetInstance()->m_pContext11->PSSetConstantBuffers( 0, 1, &GetInstance()->m_pConstantBufferInit );	// ピクセルシェーダー.
 
 	GetInstance()->m_pContext11->IASetVertexBuffers( 0, 1, &GetInstance()->m_pVertexBuffer, &stride, &offset );
 	GetInstance()->m_pContext11->IASetInputLayout( GetInstance()->m_pVertexLayout );
@@ -164,7 +193,7 @@ void CSceneTexRenderer::Render()
 	CDirectX11::SetBackBuffer();
 	GetInstance()->m_pContext11->PSSetShader( GetInstance()->m_pLastPixelShader, nullptr, 0 );	// ピクセルシェーダ.
 	GetInstance()->m_pContext11->PSSetShaderResources( 4, 1, &GetInstance()->m_pAntialiasingSRV );
-	GetInstance()->m_pContext11->PSSetShaderResources( 5, 6, &GetInstance()->m_pBloom->GetBlurTex()[0] );
+	GetInstance()->m_pContext11->PSSetShaderResources( 5, GetInstance()->m_pBloom->SAMPLE_BLUR_MAX, &GetInstance()->m_pBloom->GetBlurTex()[0] );
 	GetInstance()->m_pContext11->Draw( 4, 0 );
 }
 
@@ -520,13 +549,18 @@ HRESULT CSceneTexRenderer::CreateConstantBuffer()
 {
 	D3D11_BUFFER_DESC cbDesc;
 	cbDesc.BindFlags			= D3D11_BIND_CONSTANT_BUFFER;
-	cbDesc.ByteWidth			= sizeof(C_BUFFER);
+	cbDesc.ByteWidth			= sizeof(C_BUFFER_PER_FRAME);
 	cbDesc.CPUAccessFlags		= D3D11_CPU_ACCESS_WRITE;
 	cbDesc.MiscFlags			= 0;
 	cbDesc.StructureByteStride	= 0;
 	cbDesc.Usage				= D3D11_USAGE_DYNAMIC;
+	if( FAILED(  m_pDevice11->CreateBuffer( &cbDesc, nullptr, &m_pConstantBufferFrame ))){
+		ERROR_MESSAGE( "Buffer creation failed" );
+		return E_FAIL;
+	}
 
-	if( FAILED(  m_pDevice11->CreateBuffer( &cbDesc, nullptr, &m_pConstantBuffer ))){
+	cbDesc.ByteWidth			= sizeof(C_BUFFER_PER_INIT);
+	if( FAILED(  m_pDevice11->CreateBuffer( &cbDesc, nullptr, &m_pConstantBufferInit ))){
 		ERROR_MESSAGE( "Buffer creation failed" );
 		return E_FAIL;
 	}
@@ -535,12 +569,12 @@ HRESULT CSceneTexRenderer::CreateConstantBuffer()
 	D3D11_MAPPED_SUBRESOURCE pData;
 
 	// バッファ内のデータの書き換え開始時にMap.
-	if( FAILED( m_pContext11->Map( m_pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData ))){
+	if( FAILED( m_pContext11->Map( m_pConstantBufferInit, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData ))){
 		ERROR_MESSAGE( "ConstantBuffer Map failed" );
 		return E_FAIL;
 	}
 
-	C_BUFFER cb;	// コンスタントバッファ.
+	C_BUFFER_PER_INIT cb;	// コンスタントバッファ.
 	D3DXMatrixIdentity( &cb.mW );
 	D3DXMatrixTranspose( &cb.mW, &cb.mW );
 	// ビューポートの幅,高さを渡す.
@@ -549,7 +583,7 @@ HRESULT CSceneTexRenderer::CreateConstantBuffer()
 
 	// メモリ領域をコピー.
 	memcpy_s( pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb) );
-	m_pContext11->Unmap( m_pConstantBuffer, 0 );
+	m_pContext11->Unmap( m_pConstantBufferInit, 0 );
 
 	return S_OK;
 }
