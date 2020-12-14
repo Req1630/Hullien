@@ -1,6 +1,7 @@
 #include "EditCamera.h"
 #include "..\..\Utility\Mouse\Mouse.h"
 #include "..\..\Utility\XInput\XInput.h"
+#include "..\..\Utility\KeyInput\KeyInput.h"
 
 namespace
 {
@@ -41,22 +42,22 @@ void CEditCamera::Updata()
 	D3DXVec3TransformCoord( &vecAxisZ, &vecAxisZ, &mRot );
 
 	// 前進.
-	if( GetAsyncKeyState('W') & 0x8000 || CXInput::LThumbY_Axis() > IDLE_THUMB_MAX )
+	if( CKeyInput::IsHold('W') == true || CXInput::LThumbY_Axis() > IDLE_THUMB_MAX )
 		m_vPosition += vecAxisZ;
 	// 後退.
-	if( GetAsyncKeyState('S') & 0x8000 || CXInput::LThumbY_Axis() < IDLE_THUMB_MIN )
+	if( CKeyInput::IsHold('S') == true || CXInput::LThumbY_Axis() < IDLE_THUMB_MIN )
 		m_vPosition -= vecAxisZ;
 	// 右に移動.
-	if( GetAsyncKeyState('D') & 0x8000 || CXInput::LThumbX_Axis() > IDLE_THUMB_MAX )
+	if( CKeyInput::IsHold('D') == true || CXInput::LThumbX_Axis() > IDLE_THUMB_MAX )
 		m_vPosition += vecAxisX;
 	// 左に移動.
-	if( GetAsyncKeyState('A') & 0x8000 || CXInput::LThumbX_Axis() < IDLE_THUMB_MIN )
+	if( CKeyInput::IsHold('A') == true || CXInput::LThumbX_Axis() < IDLE_THUMB_MIN )
 		m_vPosition -= vecAxisX;
 	// 上昇.
-	if( GetAsyncKeyState('Q') & 0x8000 || CXInput::RTrigger() > IDLE_TIGGER_MAX ) 
+	if( CKeyInput::IsHold('E') == true || CXInput::RTrigger() > IDLE_TIGGER_MAX ) 
 		m_vPosition.y += CAMERA_MOVE_SPEED;
 	// 下降.
-	if( GetAsyncKeyState('E') & 0x8000 || CXInput::LTrigger() > IDLE_TIGGER_MAX )
+	if( CKeyInput::IsHold('Q') == true || CXInput::LTrigger() > IDLE_TIGGER_MAX )
 		m_vPosition.y -= CAMERA_MOVE_SPEED;
 
 	MouseUpdate();
@@ -78,7 +79,7 @@ void CEditCamera::MouseUpdate()
 	if( CXInput::RThumbY_Axis() < IDLE_THUMB_MIN ) ySub = -static_cast<float>(CXInput::RThumbY_Axis());
 	if( CXInput::RThumbX_Axis() > IDLE_THUMB_MAX ) xSub = static_cast<float>(CXInput::RThumbX_Axis());
 	if( CXInput::RThumbX_Axis() < IDLE_THUMB_MIN ) xSub = static_cast<float>(CXInput::RThumbX_Axis());
-	if(!( GetAsyncKeyState(VK_LBUTTON) & 0x8000 )){
+	if( CKeyInput::NotPress(VK_LBUTTON) == true ){
 		moveSpeed *= 0.5f;	// 移動速度を半分にする.
 	} else {
 		// マウスが画面外なら終了.
