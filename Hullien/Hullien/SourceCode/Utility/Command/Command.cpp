@@ -1,7 +1,11 @@
 #include "Command.h"
 #include "..\XInput\XInput.h"
+#include "..\KeyInput\KeyInput.h"
 
 CCommand::CCommand()
+	: m_KeyQueue			()
+	, m_TimeCount			( 0 )
+	, m_isSuccessCommand	( false )
 {
 }
 
@@ -24,25 +28,25 @@ void CCommand::Update()
 // ÉLÅ[(buttonÇÃì¸óÕ).
 void CCommand::InputKey()
 {
-	if( GetAsyncKeyState(VK_UP)		& 0x0001 || CXInput::DPadUp()	== CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress(VK_UP) == true || CXInput::DPadUp()	== CXInput::enPRESSED_MOMENT )
 		PushKey( EKey_Up );
-	if( GetAsyncKeyState(VK_DOWN)	& 0x0001 || CXInput::DPadDown()	== CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress(VK_DOWN) == true || CXInput::DPadDown()	== CXInput::enPRESSED_MOMENT )
 		PushKey( EKey_Down );
-	if( GetAsyncKeyState(VK_RIGHT)	& 0x0001 || CXInput::DPadRIGHT()== CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress(VK_RIGHT) == true || CXInput::DPadRIGHT()== CXInput::enPRESSED_MOMENT )
 		PushKey( EKey_Right );
-	if( GetAsyncKeyState(VK_LEFT)	& 0x0001 || CXInput::DPadLEFT()	== CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress(VK_LEFT) == true || CXInput::DPadLEFT()	== CXInput::enPRESSED_MOMENT )
 		PushKey( EKey_Left );
-	if( GetAsyncKeyState('A') & 0x0001 || CXInput::A_Button() == CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress('A') == true || CXInput::A_Button() == CXInput::enPRESSED_MOMENT )
 		PushKey( EKey_A );
-	if( GetAsyncKeyState('B') & 0x0001 || CXInput::B_Button() == CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress('B') == true || CXInput::B_Button() == CXInput::enPRESSED_MOMENT )
 		PushKey( EKey_B );
-	if( GetAsyncKeyState('X') & 0x0001 || CXInput::X_Button() == CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress('X') == true || CXInput::X_Button() == CXInput::enPRESSED_MOMENT )
 		PushKey( EKey_X );
-	if( GetAsyncKeyState('Y') & 0x0001 || CXInput::Y_Button() == CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress('Y') == true || CXInput::Y_Button() == CXInput::enPRESSED_MOMENT )
 		PushKey( EKey_Y );
-	if( GetAsyncKeyState('R') & 0x0001 || CXInput::R_Button() == CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress('R') == true || CXInput::R_Button() == CXInput::enPRESSED_MOMENT )
 		PushKey( EKey_RB );
-	if( GetAsyncKeyState('L') & 0x0001 || CXInput::L_Button() == CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress('L') == true || CXInput::L_Button() == CXInput::enPRESSED_MOMENT )
 		PushKey( EKey_LB );
 }
 
