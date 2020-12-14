@@ -229,7 +229,7 @@ private:
 	float			m_MoveSpeed;				// 移動速度.
 	float			m_MoveSpeedMulValue;		// 移動速度に掛け合わせる値.
 
-	D3DXVECTOR3		m_HitStopCameraPosition;	// ヒットストップ用のカメラの座標.
+//	D3DXVECTOR3		m_HitStopCameraPosition;	// ヒットストップ用のカメラの座標.
 	D3DXVECTOR3		m_CameraNextPosition;		// カメラの座標.
 	D3DXVECTOR3		m_CameraPosition;			// カメラの座標.
 	D3DXVECTOR3		m_CameraLookPosition;		// カメラの視点座標.

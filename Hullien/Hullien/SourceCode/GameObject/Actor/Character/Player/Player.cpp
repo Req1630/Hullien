@@ -45,7 +45,7 @@ CPlayer::CPlayer()
 	, m_AttackPower					( 0.0f )
 	, m_MoveSpeed					( 0.0f )
 	, m_MoveSpeedMulValue			( 0.0f )
-	, m_HitStopCameraPosition		( 0.0f, 0.0f, 0.0f )
+//	, m_HitStopCameraPosition		( 0.0f, 0.0f, 0.0f )
 	, m_CameraPosition				( 0.0f, 0.0f, 0.0f )
 	, m_CameraLookPosition			( 0.0f, 0.0f, 0.0f )
 	, m_CameraCount					( CAMERA_COUNT_MAX )
@@ -100,32 +100,32 @@ void CPlayer::Update()
 	// アニメーションフレームの更新.
 	m_AnimFrameList[m_NowAnimNo].UpdateFrame( m_AnimSpeed );
 
-	if( m_IsHitStop == false ){
-		// 麻痺タイマーが動作してなければ.
-		if( m_pEffectTimers[player::EEffectTimerNo_Paralysis]->IsUpdate() == false ){
-			Controller();			// 操作.
-			AttackController();		// 攻撃操作.
-			SPController();			// 特殊能力操作.
-			AvoidController();		// 回避操作.
-			AttackAnimation();		// 攻撃アニメーション.
-			Move();					// 移動.
-			AttackMove();			// 攻撃移動.
-			AvoidMove();			// 回避動作.
-			KnockBack();			// ノックバック動作関数.
-			Dead();					// 死亡関数.
-		} else {
-			ParalysisUpdate();		// 麻痺時の更新.
-		}
-		CameraController();			// カメラ操作.
-		SPCameraUpdate();			// 特殊能力時のカメラ動作.
-		SpecialAbilityUpdate();		// 特殊能力回復更新.
-		AttackUpUpdate();			// 攻撃力UP更新.
-		MoveSpeedUpUpdate();		// 移動速度UP更新.
-
-		CameraUpdate();				// カメラの更新.
+//	if( m_IsHitStop == false ){
+	// 麻痺タイマーが動作してなければ.
+	if( m_pEffectTimers[player::EEffectTimerNo_Paralysis]->IsUpdate() == false ){
+		Controller();			// 操作.
+		AttackController();		// 攻撃操作.
+		SPController();			// 特殊能力操作.
+		AvoidController();		// 回避操作.
+		AttackAnimation();		// 攻撃アニメーション.
+		Move();					// 移動.
+		AttackMove();			// 攻撃移動.
+		AvoidMove();			// 回避動作.
+		KnockBack();			// ノックバック動作関数.
+		Dead();					// 死亡関数.
 	} else {
-		HitStopUpdate();			// ヒットストップの更新.
+		ParalysisUpdate();		// 麻痺時の更新.
 	}
+	CameraController();			// カメラ操作.
+	SPCameraUpdate();			// 特殊能力時のカメラ動作.
+	SpecialAbilityUpdate();		// 特殊能力回復更新.
+	AttackUpUpdate();			// 攻撃力UP更新.
+	MoveSpeedUpUpdate();		// 移動速度UP更新.
+
+	CameraUpdate();				// カメラの更新.
+//	} else {
+//		HitStopUpdate();			// ヒットストップの更新.
+//	}
 
 
 	// 攻撃範囲のフラグを下す.
@@ -594,13 +594,13 @@ void CPlayer::AttackCollision( CActor* pActor )
 		isAttack = true;
 	});
 
-	if( m_IsHitStop == false ){
-		m_IsHitStop		= true;
-		m_HitStopTime	= m_AttackComboCount*2;
-		m_AnimSpeed		= 0.0;
-		m_HitStopCameraPosition = m_pCamera->GetPosition();
-	}
-	pActor->SetHitStopTime( m_HitStopTime );
+//	if( m_IsHitStop == false ){
+//		m_IsHitStop		= true;
+//		m_HitStopTime	= m_AttackComboCount*2;
+//		m_AnimSpeed		= 0.0;
+//		m_HitStopCameraPosition = m_pCamera->GetPosition();
+//	}
+//	pActor->SetHitStopTime( m_HitStopTime );
 	
 	// 音声を鳴らしてない状態なら.
 	if( bit::IsBitFlag( m_StatusFlag, player::EStatusFlag_AttackSE ) == false ){
@@ -779,29 +779,29 @@ void CPlayer::SPCameraUpdate()
 // ヒットストップの更新.
 void CPlayer::HitStopUpdate()
 {
-	if( m_IsHitStop == false ) return;
-
-	m_HitStopCount++;
-	const float shakeValue = 
-		sinf( static_cast<float>(D3DX_PI)*TWO / static_cast<float>(m_HitStopCount)*TWO ) *
-		static_cast<float>(m_HitStopTime*m_HitStopTime)/TWO * 0.08f;
-
-	const D3DXVECTOR3 lookPosition = { m_vPosition.x, m_Parameter.CameraLookHeight, m_vPosition.z };
-	D3DXVECTOR3 vec = lookPosition - m_pCamera->GetPosition();
-	D3DXVec3Normalize( &vec, &vec );
-	m_HitStopCameraPosition.x += vec.x * shakeValue;
-	m_HitStopCameraPosition.z += vec.z * shakeValue;
-
-	m_pSPCamera->SetLookPosition( lookPosition );
-	m_pSPCamera->SetPosition( m_HitStopCameraPosition );
-	// 特殊能力用のカメラをマネージャーに設定.
-	CCameraManager::SetCamera( m_pSPCamera );
-
-	if( m_HitStopCount < m_HitStopTime ) return;
-
-	m_IsHitStop		= false;
-	m_HitStopCount	= 0;
-	m_AnimSpeed		= DEFAULT_ANIM_SPEED;
+//	if( m_IsHitStop == false ) return;
+//
+//	m_HitStopCount++;
+//	const float shakeValue = 
+//		sinf( static_cast<float>(D3DX_PI)*TWO / static_cast<float>(m_HitStopCount)*TWO ) *
+//		static_cast<float>(m_HitStopTime*m_HitStopTime)/TWO * 0.08f;
+//
+//	const D3DXVECTOR3 lookPosition = { m_vPosition.x, m_Parameter.CameraLookHeight, m_vPosition.z };
+//	D3DXVECTOR3 vec = lookPosition - m_pCamera->GetPosition();
+//	D3DXVec3Normalize( &vec, &vec );
+//	m_HitStopCameraPosition.x += vec.x * shakeValue;
+//	m_HitStopCameraPosition.z += vec.z * shakeValue;
+//
+//	m_pSPCamera->SetLookPosition( lookPosition );
+//	m_pSPCamera->SetPosition( m_HitStopCameraPosition );
+//	// 特殊能力用のカメラをマネージャーに設定.
+//	CCameraManager::SetCamera( m_pSPCamera );
+//
+//	if( m_HitStopCount < m_HitStopTime ) return;
+//
+//	m_IsHitStop		= false;
+//	m_HitStopCount	= 0;
+//	m_AnimSpeed		= DEFAULT_ANIM_SPEED;
 }
 
 // 特殊能力回復更新関数.

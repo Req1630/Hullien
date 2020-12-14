@@ -13,6 +13,10 @@ class CEffectManager;	// エフェクトクラス.
 class CAlien : public CCharacter
 {
 protected:
+	inline static const char* HIT_EEFECT_NAME			= "hiteffekt";		// ヒットエフェクト.
+	inline static const char* SPAWN_EFFECT_NAME			= "uvtest";			// スポーンエフェクト.
+	inline static const char* DEAD_EFFECT_NAME			= "uvtest";			// 死亡エフェクト.
+	inline static const char* ATTACK_EFFECT_NAME		= "b_attackeffkt";	// 攻撃エフェクト.
 	inline static const float TOLERANCE_RADIAN			= static_cast<float>(D3DXToRadian(10.0));	// 回転の許容範囲.
 	inline static const float BARRIER_HIT_MOVE_SPEED	= -5.0f;									// バリアと衝突時の移動速度.
 	inline static const float SCALE_MIN					= 0.0f;										// モデルの最小値.
@@ -22,10 +26,8 @@ protected:
 
 	inline static const float HIT_EFFECT_SCALE		= 2.0f;				// ヒットエフェクトのサイズ.
 	inline static const float HIT_EFFECT_HEIGHT		= 4.0f;				// ヒットエフェクトの高さ.
-	inline static const char* HIT_EEFECT_NAME		= "hiteffekt";		// ヒットエフェクト.
-	inline static const char* SPAWN_EFFECT_NAME		= "uvtest";			// スポーンエフェクト.
-	inline static const char* DEAD_EFFECT_NAME		= "uvtest";			// 死亡エフェクト.
-	inline static const char* ATTACK_EFFECT_NAME	= "b_attackeffkt";	// 攻撃エフェクト.
+
+	inline static const int	POSSIBLE_TIME = 80;
 
 	const SAlienParam*	pPARAMETER;	// パラメータのポインタ : 外部から取得.
 
@@ -134,6 +136,7 @@ protected:
 	int						m_FrightCount;				// 怯みカウント.
 	int						m_HitCount;					// ヒットカウント.
 	int						m_WaitCount;				// 待機カウント.
+	int						m_PossibleCount;			// 当たり判定無効カウント.
 	bool*					m_pIsAlienOtherAbduct;		// 他の宇宙人が連れ去っているかどうか.
 	bool					m_IsFirght;					// 怯み状態か.
 	bool					m_IsBarrierHit;				// バリアに当たっているか.
@@ -141,7 +144,6 @@ protected:
 	bool					m_IsExplosion;				// 爆発するか.
 	bool					m_IsDelete;					// 消去するかどうか.
 
-	int count;
 };
 
 #endif	// #ifndef ALIEN_H.
