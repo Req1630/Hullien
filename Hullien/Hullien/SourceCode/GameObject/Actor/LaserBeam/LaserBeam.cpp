@@ -31,6 +31,7 @@ CLaserBeam::CLaserBeam( const float& collRad )
 	, m_ControlPointList		()
 	, m_VertexPointList			()
 	, m_VertexAddTimeCount		( 0 )
+	, m_IsPlayEffect			( false )
 {
 	m_ObjectTag = EObjectTag::LaserBeam;
 	m_pTrajectory = std::make_unique<CTrajectory>();
@@ -61,6 +62,11 @@ void CLaserBeam::Update()
 
 	if( m_IsInAttack == false ) return;
 
+	if( m_VertexPointList.size() == 5 && m_IsPlayEffect == false ){
+//		m_pEffect->Play( m_vPosition );
+//		m_IsPlayEffect = true;
+	}
+
 	// 操作座標のサイズで比較.
 	switch( m_ControlPointList.size() )
 	{
@@ -81,7 +87,10 @@ void CLaserBeam::Update()
 	// カウントがタイム以上になればショットフラグを下す.
 	if( m_FrameCount >= m_FrameTime ){
 		m_IsEndAttack = true;
-		m_pEffect->Play( m_vPosition );
+		if( m_IsPlayEffect == false ){
+			m_pEffect->Play( m_vPosition );
+			m_IsPlayEffect = true;
+		}
 	}
 }
 
@@ -107,6 +116,7 @@ void CLaserBeam::Render()
 // エフェクトの描画.
 void CLaserBeam::EffectRender()
 {
+	m_pEffect->SetLocation( m_vPosition );
 	m_pEffect->Render();
 }
 
@@ -151,6 +161,8 @@ void CLaserBeam::Shot( const D3DXVECTOR3& pos )
 	m_FrameCount	= 0.0f;
 	m_VertexAddTimeCount	= 0;
 	m_VertexPointList.clear();
+	m_IsPlayEffect = false;
+//	m_pEffect->Play( m_vPosition );
 }
 
 // パラメータを初期に戻す.

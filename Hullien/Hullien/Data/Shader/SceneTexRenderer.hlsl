@@ -144,6 +144,7 @@ PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
 	// https://light11.hatenadiary.com/entry/2018/02/15/011155.
 	// https://light11.hatenadiary.com/entry/2018/03/15/000022.
 	
+	if( color.a <= 0.0f ) color.a = 1.0f;
 	// –¾“x‚ð—Ž‚Æ‚µ‚½F.
 	half source = max(color.r, max(color.g, color.b)) + (1 - color.a);
 	

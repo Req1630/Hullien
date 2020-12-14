@@ -84,6 +84,7 @@ private:
 	std::vector<D3DXVECTOR3>	m_ControlPointList;		// 制御座標.
 	std::vector<D3DXVECTOR3>	m_VertexPointList;		// 頂点の座標のリスト.
 	int							m_VertexAddTimeCount;	// 頂点を加算する時間のカウント.
+	bool						m_IsPlayEffect;
 };
 
 #endif	// #ifndef LASER_BEAM_H.

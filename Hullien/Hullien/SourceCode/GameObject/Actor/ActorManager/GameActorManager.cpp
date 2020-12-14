@@ -141,8 +141,6 @@ void CGameActorManager::Render()
 	m_pAlienManager->EffectRender();	// 宇宙人のエフェクト描画.
 	m_pItemManager->EffectRender();		// アイテムのエフェクト描画.
 	m_pBarrier->EffectRender();			// バリアエフェクト描画.
-	// 仮　後で移動.
-	m_pAlienManager->SpriteRender();	// スプライトの描画.
 }
 
 // スプライトの描画.
@@ -150,6 +148,7 @@ void CGameActorManager::SpriteRender()
 {
 	m_pGirl->SpriteRender();	//女の子のスプライト描画.
 	m_pPlayer->SpriteRender();	//プレイヤーのスプライト描画.
+	m_pAlienManager->SpriteRender();	// スプライトの描画.
 }
 
 // ゲームオーバーかどうか.

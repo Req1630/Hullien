@@ -86,6 +86,8 @@ void CAlienD::EffectRender()
 
 	// レーザーエフェクト.
 	m_pLaserBeam->EffectRender();
+
+	AttackRangeSpriteRender();
 }
 
 // 当たり判定関数.
@@ -123,7 +125,7 @@ bool CAlienD::Spawn( const D3DXVECTOR3& spawnPos )
 // スプライトの描画.
 void CAlienD::SpriteRender()
 {
-	AttackRangeSpriteRender();
+	
 }
 
 // モデルの描画.
