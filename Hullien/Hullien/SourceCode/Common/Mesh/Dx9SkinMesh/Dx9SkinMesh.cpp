@@ -423,9 +423,6 @@ HRESULT CDX9SkinMesh::CreateAppMeshFromD3DXMesh( LPD3DXFRAME p )
 
 	//アプリメッシュ(・・・ここにメッシュデータをコピーする).
 	SKIN_PARTS_MESH* pAppMesh = new SKIN_PARTS_MESH();
-	//パーツメッシュに設定.
-	pFrame->pPartsMesh = pAppMesh;
-	m_pReleaseMaterial = pAppMesh;
 	pAppMesh->bTex = false;
 
 	//事前に頂点数、ポリゴン数等を調べる.
@@ -438,7 +435,6 @@ HRESULT CDX9SkinMesh::CreateAppMeshFromD3DXMesh( LPD3DXFRAME p )
 		MessageBox( NULL,
 			"Direct3Dは、UVの数だけ頂点が必要です(UVを置く場所が必要です)テクスチャは正しく貼られないと思われます",
 			"Error", MB_OK );
-		SAFE_DELETE( pAppMesh );
 		return E_FAIL;
 	}
 	//一時的なメモリ確保(頂点バッファとインデックスバッファ).
@@ -472,8 +468,8 @@ HRESULT CDX9SkinMesh::CreateAppMeshFromD3DXMesh( LPD3DXFRAME p )
 	}
 	//マテリアル読み込み.
 	pAppMesh->dwNumMaterial	= m_pD3dxMesh->GetNumMaterials( pContainer );
-
 	pAppMesh->pMaterial		= new MY_SKINMATERIAL[pAppMesh->dwNumMaterial]();
+
 	//マテリアルの数だけインデックスバッファを作成.
 	pAppMesh->ppIndexBuffer = new ID3D11Buffer*[pAppMesh->dwNumMaterial]();
 	//掛け算ではなく「ID3D11Buffer*」の配列という意味.
@@ -518,9 +514,8 @@ HRESULT CDX9SkinMesh::CreateAppMeshFromD3DXMesh( LPD3DXFRAME p )
 					m_pDevice11, pAppMesh->pMaterial[i].TextureName,
 					NULL, NULL, &pAppMesh->pMaterial[i].pTexture, NULL )))
 		{
-			MessageBox( NULL, "テクスチャ読み込み失敗", "Error", MB_OK );
-			SAFE_DELETE( piFaceBuffer );
-			SAFE_DELETE( pvVB );
+			MessageBox( NULL, "テクスチャ読み込み失敗",
+				"Error", MB_OK );
 			return E_FAIL;
 		}
 		//そのマテリアルであるインデックス配列内の開始インデックスを調べる.
@@ -592,9 +587,17 @@ HRESULT CDX9SkinMesh::CreateAppMeshFromD3DXMesh( LPD3DXFRAME p )
 		hRslt = E_FAIL;
 	}
 
+	//パーツメッシュに設定.
+	pFrame->pPartsMesh = pAppMesh;
+	m_pReleaseMaterial = pAppMesh;
+
 	//一時的な入れ物は不要なるので削除.
-	SAFE_DELETE( piFaceBuffer );
-	SAFE_DELETE( pvVB );
+	if( piFaceBuffer ){
+		delete[] piFaceBuffer;
+	}
+	if( pvVB ){
+		delete[] pvVB;
+	}
 
 	return hRslt;
 }

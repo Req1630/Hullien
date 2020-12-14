@@ -1,5 +1,5 @@
 #include "XInput.h"
-#include "..\FileManager\FileManager.h"
+#include "..\..\FileManager\FileManager.h"
 #include <algorithm>
 
 CXInput::CXInput()
