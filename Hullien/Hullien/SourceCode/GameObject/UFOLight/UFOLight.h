@@ -7,7 +7,7 @@ class CUFOLight : public CGameObject
 {
 	const char* MODEL_NAME = "light";	// モデル名.
 
-	const float MODEL_ALPHA					= 0.5f;		// モデルアルファ値.
+	const float MODEL_ALPHA					= 0.4f;		// モデルアルファ値.
 	const float SCALE_UP_HEIGHT_SPEED		= 0.2f;		// デフォルト高さ拡大速度.
 	const float SCALE_UP_WEDTH_SPEED		= 0.02f;	// デフォルト幅拡大速度.
 	const float DEFAULT_SCALE_HEIGHT_MAX	= 1.0f;		// 高さの最大サイズ.

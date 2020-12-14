@@ -197,14 +197,16 @@ PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
 
 	color.rgb = color.rgb * alphas + g_Fog.FogColor.rgb * (1.0f - alphas);
 	
-	if (length(input.Normal) <= 0.0)
+	if (length(input.Normal) <= 0.0){
 		color = g_Texture.Sample(g_SamLinear, input.Tex) * g_Color;
+	}
 	
 	PS_OUTPUT output = (PS_OUTPUT) 0;
 	output.Color = color;
 	output.Normal = float4(input.Normal, 1.0f);
 	output.ZDepth = input.Pos.z / input.Pos.w;
-	if (output.Color.a <= 0.0f) discard;
+	if (output.Color.a <= 0.0f)
+		discard;
 	
 	return output;
 }

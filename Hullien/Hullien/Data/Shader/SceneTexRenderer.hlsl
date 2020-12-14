@@ -145,7 +145,7 @@ PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
 	// https://light11.hatenadiary.com/entry/2018/03/15/000022.
 	
 	// ñæìxÇóéÇ∆ÇµÇΩêF.
-	half source = max(color.r, max(color.g, color.b));
+	half source = max(color.r, max(color.g, color.b)) + (1 - color.a);
 	
 	half soft = clamp(source - g_SoftKneePram.y, 0, g_SoftKneePram.z);
 	soft = soft * soft * g_SoftKneePram.w;

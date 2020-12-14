@@ -275,8 +275,8 @@ HRESULT CBloom::CreateConstantBuffer()
 		cb.vPixelSize.x = 1.0f / static_cast<float>(width);
 		cb.vPixelSize.y = 1.0f / static_cast<float>(height);
 
-		cb.vRatio.x = m_WndWidth/width;
-		cb.vRatio.y = m_WndHeight/height;
+		cb.vRatio.x = static_cast<float>(m_WndWidth/width);
+		cb.vRatio.y = static_cast<float>(m_WndHeight/height);
 
 		// ƒƒ‚ƒŠ—Ìˆæ‚ğƒRƒs[.
 		memcpy_s( pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb) );

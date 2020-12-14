@@ -114,7 +114,7 @@ void CSceneTexRenderer::Release()
 void CSceneTexRenderer::Render()
 {
 	const float softThrshold = 1.0f;
-	static float thrshold = 0.46f;
+	static float thrshold = 0.7f;
 	if( CKeyInput::IsHold('C') ) thrshold += 0.001f;
 	if( CKeyInput::IsHold('V') ) thrshold -= 0.001f;
 	if( thrshold >= 1.0f ) thrshold = 1.0f;
@@ -614,7 +614,7 @@ HRESULT CSceneTexRenderer::CreateModel()
 	bd.MiscFlags			= 0;	// その他のフラグ(未使用).
 	bd.StructureByteStride	= 0;	// 構造体のサイズ(未使用).
 
-									// サブリソースデータ構造体.
+	// サブリソースデータ構造体.
 	D3D11_SUBRESOURCE_DATA InitData;
 	InitData.pSysMem = vertices;	// 板ポリの頂点をセット.
 
