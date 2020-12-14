@@ -1,6 +1,6 @@
 #include "..\SceneList.h"
 #include "..\..\..\GameObject\Widget\SceneWidget\GameOverWidget\GameOverWidget.h"
-#include "..\..\..\Utility\XInput\XInput.h"
+#include "..\..\..\Utility\Input\XInput\XInput.h"
 #include "..\..\..\XAudio2\SoundManager.h"
 
 CGameOver::CGameOver( CSceneManager* pSceneManager )

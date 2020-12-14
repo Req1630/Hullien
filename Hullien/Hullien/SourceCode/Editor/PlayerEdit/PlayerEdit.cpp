@@ -1,6 +1,6 @@
 #include "PlayerEdit.h"
 #include "..\..\Utility\FileManager\FileManager.h"
-#include "..\..\Utility\XInput\XInput.h"
+#include "..\..\Utility\Input\XInput\XInput.h"
 
 CPlayerEdit::CPlayerEdit()	
 	: m_pPlayer			( nullptr )

@@ -1,6 +1,6 @@
 #include "Command.h"
-#include "..\XInput\XInput.h"
-#include "..\KeyInput\KeyInput.h"
+#include "..\Input\XInput\XInput.h"
+#include "..\Input\KeyInput\KeyInput.h"
 
 CCommand::CCommand()
 	: m_KeyQueue			()

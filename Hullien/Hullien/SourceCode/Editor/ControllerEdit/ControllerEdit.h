@@ -2,7 +2,7 @@
 #define CONTROLLER_EDIT_H
 
 #include "..\..\Utility\ImGuiManager\ImGuiManager.h"
-#include "..\..\Utility\XInput\XInput.h"
+#include "..\..\Utility\Input\XInput\XInput.h"
 
 #include <filesystem>
 

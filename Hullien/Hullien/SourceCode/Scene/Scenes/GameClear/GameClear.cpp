@@ -2,7 +2,7 @@
 #include "..\..\..\GameObject\Widget\SceneWidget\ClearWidget\ClearWidget.h"
 #include "..\..\..\GameObject\STG\STGManager\STGManager.h"
 #include "..\..\..\GameObject\Widget\Fade\Fade.h"
-#include "..\..\..\Utility\XInput\XInput.h"
+#include "..\..\..\Utility\Input\XInput\XInput.h"
 #include "..\..\..\XAudio2\SoundManager.h"
 #include "..\..\..\Common\SceneTexRenderer\SceneTexRenderer.h"
 #include "..\..\..\Common\D3DX\D3DX11.h"

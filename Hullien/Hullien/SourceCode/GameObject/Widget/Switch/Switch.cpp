@@ -1,7 +1,7 @@
 #include "Switch.h"
 #include "..\..\..\Common\Sprite\CSprite.h"
 #include "..\..\..\Resource\SpriteResource\SpriteResource.h"
-#include "..\..\..\Utility\XInput\XInput.h"
+#include "..\..\..\Utility\Input\XInput\XInput.h"
 
 CSwitch::CSwitch()
 	: CSwitch( SPRITE_ON_NAME, SPRITE_OFF_NAME )

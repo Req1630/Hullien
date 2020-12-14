@@ -1,7 +1,7 @@
 #include "EditCamera.h"
 #include "..\..\Utility\Mouse\Mouse.h"
-#include "..\..\Utility\XInput\XInput.h"
-#include "..\..\Utility\KeyInput\KeyInput.h"
+#include "..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\Utility\Input\KeyInput\KeyInput.h"
 
 namespace
 {

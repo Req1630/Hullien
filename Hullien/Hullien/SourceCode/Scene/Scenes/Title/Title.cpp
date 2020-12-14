@@ -7,7 +7,7 @@
 #include "..\..\..\Common\DebugText\DebugText.h"
 #include "..\..\..\GameObject\Widget\SceneWidget\TItleWidget\TitleWidget.h"
 #include "..\..\..\GameObject\Widget\Fade\Fade.h"
-#include "..\..\..\Utility\XInput\XInput.h"
+#include "..\..\..\Utility\Input\XInput\XInput.h"
 #include "..\..\..\XAudio2\SoundManager.h"
 
 CTitle::CTitle( CSceneManager* pSceneManager )

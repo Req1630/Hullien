@@ -4,7 +4,7 @@
 #include "..\..\..\..\Resource\MeshResource\MeshResource.h"
 #include "..\..\..\..\Collider\CollsionManager\CollsionManager.h"
 #include "..\..\..\Actor\Actor.h"
-#include "..\...\..\..\..\..\Utility\XInput\XInput.h"
+#include "..\...\..\..\..\..\Utility\Input\XInput\XInput.h"
 #include "..\..\..\..\XAudio2\SoundManager.h"
 
 /********************************

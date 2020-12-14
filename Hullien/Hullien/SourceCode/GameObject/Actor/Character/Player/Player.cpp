@@ -2,7 +2,7 @@
 #include "..\..\..\..\Common\Mesh\Dx9SkinMesh\Dx9SkinMesh.h"
 #include "..\..\..\..\Common\Mesh\Dx9StaticMesh\Dx9StaticMesh.h"
 #include "..\..\..\..\Resource\MeshResource\MeshResource.h"
-#include "..\..\..\..\Utility\XInput\XInput.h"
+#include "..\..\..\..\Utility\Input\XInput\XInput.h"
 #include "..\..\..\..\Camera\RotLookAtCenter\RotLookAtCenter.h"
 #include "..\..\..\..\Camera\CameraManager\CameraManager.h"
 #include "..\..\..\..\Collider\CollsionManager\CollsionManager.h"

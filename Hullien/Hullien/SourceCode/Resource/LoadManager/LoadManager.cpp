@@ -47,12 +47,13 @@ void CLoadManager::LoadResource(
 		LPDIRECT3DDEVICE9 pDevice9 )
 	{
 		m_Mutex.lock();
+		Sleep(200);
 		if( FAILED( CSpriteResource::Load( pDevice11, pContext11 ) )){
 			m_Mutex.unlock();
 			m_isLoadFailed = true;
 			return;
 		}
-		Sleep(100);
+		Sleep(200);
 		if( FAILED( CMeshResorce::Load( hWnd, pDevice11, pContext11, pDevice9 ) )){
 			m_Mutex.unlock();
 			m_isLoadFailed = true;

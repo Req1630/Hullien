@@ -5,7 +5,7 @@
 #include "..\..\..\..\Collider\CollsionManager\CollsionManager.h"
 #include "..\..\..\..\Common\D3DX\D3DX11.h"
 #include "..\..\..\..\Common\Font\Font.h"
-#include "..\..\..\..\Utility\XInput\XInput.h"
+#include "..\..\..\..\Utility\Input\XInput\XInput.h"
 #include "..\..\..\..\XAudio2\SoundManager.h"
 #include "..\..\Bullet\BuletManager\BuletManager.h"
 #include "..\..\..\..\Camera\CameraManager\CameraManager.h"

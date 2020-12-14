@@ -1,7 +1,7 @@
 #include "SceneTexRenderer.h"
 #include "..\D3DX\D3DX11.h"
 #include "..\Bloom\Bloom.h"
-#include "..\..\Utility\KeyInput\KeyInput.h"
+#include "..\..\Utility\Input\KeyInput\KeyInput.h"
 
 CSceneTexRenderer::CSceneTexRenderer()
 	: m_pDevice11				( nullptr )

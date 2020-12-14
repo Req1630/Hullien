@@ -111,8 +111,6 @@
     <ClCompile Include="SourceCode\Scene\Scenes\Title\Title.cpp" />
     <ClCompile Include="SourceCode\Utility\ImGuiManager\ImGuiManager.cpp" />
     <ClCompile Include="SourceCode\Utility\Log\MyLog.cpp" />
-    <ClCompile Include="SourceCode\Utility\XInput\XInput.cpp" />
-    <ClCompile Include="SourceCode\Utility\XInput\XinputConfig.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\GameWidget\Warning\Warning.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\GameWidget\UltemateSign\UltemateSign.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\GameWidget\GameWidgetManager\GameWidgetManager.cpp" />
@@ -180,11 +178,14 @@
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\ControllerConfigWidget\ControllerConfigWidget.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\GraphicConfigWidget\GraphicConfigWidget.cpp" />
     <ClCompile Include="SourceCode\GameObject\STG\Bullet\BuletManager\BuletManager.cpp" />
-    <ClCompile Include="SourceCode\Utility\KeyInput\KeyInput.cpp" />
     <ClCompile Include="SourceCode\Common\Transition\Transition.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\Switch\Switch.cpp" />
     <ClCompile Include="SourceCode\Common\Gage\Gage.cpp" />
     <ClCompile Include="SourceCode\Common\Bloom\Bloom.cpp" />
+    <ClCompile Include="SourceCode\Utility\Input\Input.cpp" />
+    <ClCompile Include="SourceCode\Utility\Input\XInput\XInput.cpp" />
+    <ClCompile Include="SourceCode\Utility\Input\XInput\XinputConfig.cpp" />
+    <ClCompile Include="SourceCode\Utility\Input\KeyInput\KeyInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\ImGui\imconfig.h" />
@@ -291,8 +292,6 @@
     <ClInclude Include="SourceCode\Scene\Scenes\Game\Game.h" />
     <ClInclude Include="SourceCode\Scene\Scenes\SceneList.h" />
     <ClInclude Include="SourceCode\Scene\Scenes\Title\Title.h" />
-    <ClInclude Include="SourceCode\Utility\XInput\XInput.h" />
-    <ClInclude Include="SourceCode\Utility\XInput\XinputConfig.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\GameWidget\Warning\Warning.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\GameWidget\UltemateSign\UltemateSign.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\GameWidget\GameWidgetManager\GameWidgetManager.h" />
@@ -373,11 +372,14 @@
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\GraphicConfigWidget\GraphicConfigWidget.h" />
     <ClInclude Include="SourceCode\GameObject\STG\Bullet\BuletManager\BuletManager.h" />
     <ClInclude Include="SourceCode\GameObject\STG\Bullet\BuletManager\BulletManagerParam.h" />
-    <ClInclude Include="SourceCode\Utility\KeyInput\KeyInput.h" />
     <ClInclude Include="SourceCode\Common\Transition\Transition.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\Switch\Switch.h" />
     <ClInclude Include="SourceCode\Common\Gage\Gage.h" />
     <ClInclude Include="SourceCode\Common\Bloom\Bloom.h" />
+    <ClInclude Include="SourceCode\Utility\Input\Input.h" />
+    <ClInclude Include="SourceCode\Utility\Input\XInput\XInput.h" />
+    <ClInclude Include="SourceCode\Utility\Input\XInput\XinputConfig.h" />
+    <ClInclude Include="SourceCode\Utility\Input\KeyInput\KeyInput.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

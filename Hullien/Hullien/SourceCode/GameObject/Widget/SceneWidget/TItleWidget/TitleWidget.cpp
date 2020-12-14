@@ -3,7 +3,7 @@
 #include "..\..\Cursor\Cursor.h"
 #include "..\..\..\..\Common\Sprite\CSprite.h"
 #include "..\..\..\..\Resource\SpriteResource\SpriteResource.h"
-#include "..\..\..\..\Utility\XInput\XInput.h"
+#include "..\..\..\..\Utility\Input\XInput\XInput.h"
 #include "..\..\..\..\XAudio2\SoundManager.h"
 
 /************************************

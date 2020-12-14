@@ -1,5 +1,5 @@
 #include "XinputConfig.h"
-#include "..\FileManager\FileManager.h"
+#include "..\..\FileManager\FileManager.h"
 
 CXInputConfig::CXInputConfig()
 	: m_Button		()
