@@ -63,12 +63,16 @@ void CCommand::Check()
 	// キューのサイズをリストのサイズを比較.
 	if( COMMAND_LIST.size() != m_KeyQueue.size() ) return;
 
+	bool faild = false;
 	for( int i = 0; i < static_cast<int>(COMMAND_LIST.size()); i++ ){
 		if( COMMAND_LIST[i] == m_KeyQueue.front() ){
 			m_isSuccessCommand = true;
 		} else {
 			m_isSuccessCommand = false;
+			faild = true;
 		}
 		m_KeyQueue.pop();
 	}
+	if( faild == false ) return;
+	m_isSuccessCommand = false;
 }

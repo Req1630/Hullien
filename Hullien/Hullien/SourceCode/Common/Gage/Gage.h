@@ -6,7 +6,7 @@
 class CGage : public CCommon
 {
 	const char* SHADER_NAME		= "Data\\Shader\\Gage.hlsl";
-	const char* TEXTURE_NAME	= "Data\\Mesh\\select1.png";
+	const char* TEXTURE_NAME	= "Data\\Mesh\\gage.png";
 
 	struct CBUFFER_PER_FRAME
 	{

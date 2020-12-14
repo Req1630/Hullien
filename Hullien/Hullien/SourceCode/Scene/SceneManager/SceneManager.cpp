@@ -9,6 +9,7 @@
 #include "..\..\Camera\CameraManager\CameraManager.h"
 #include "..\..\Utility\Command\Command.h"
 #include "..\..\Common\Gage\Gage.h"
+#include "..\..\Common\Gage\CircleGage.h"
 
 CSceneManager::CSceneManager()
 	: m_hWnd					( nullptr )
@@ -62,14 +63,14 @@ void CSceneManager::Update()
 
 	ChangeEditScene();	// エディットシーンに切り替える.
 
-	//static CGage* gage = new CGage();
-	//static bool once = false;
-	//if( once == false ){
-	//	once = true;
-	//	gage->Init( CDirectX11::GetDevice(), CDirectX11::GetContext() );
-	//} else {
-	//	gage->Render();
-	//}
+	static CCircleGage* gage = new CCircleGage();
+	static bool once = false;
+	if( once == false ){
+		once = true;
+		gage->Init( CDirectX11::GetDevice(), CDirectX11::GetContext() );
+	} else {
+		gage->Render();
+	}
 
 	// フェードの描画.
 	if (CFade::Init() == false) return;

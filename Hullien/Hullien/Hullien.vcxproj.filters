@@ -15,6 +15,7 @@
     <FxCompile Include="Data\Shader\Transition.hlsl" />
     <FxCompile Include="Data\Shader\Gage.hlsl" />
     <FxCompile Include="Data\Shader\Bloom.hlsl" />
+    <FxCompile Include="Data\Shader\CircleGage.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\ImGui\imgui.cpp" />
@@ -186,6 +187,7 @@
     <ClCompile Include="SourceCode\Utility\Input\XInput\XInput.cpp" />
     <ClCompile Include="SourceCode\Utility\Input\XInput\XinputConfig.cpp" />
     <ClCompile Include="SourceCode\Utility\Input\KeyInput\KeyInput.cpp" />
+    <ClCompile Include="SourceCode\Common\Gage\CircleGage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\ImGui\imconfig.h" />
@@ -380,6 +382,7 @@
     <ClInclude Include="SourceCode\Utility\Input\XInput\XInput.h" />
     <ClInclude Include="SourceCode\Utility\Input\XInput\XinputConfig.h" />
     <ClInclude Include="SourceCode\Utility\Input\KeyInput\KeyInput.h" />
+    <ClInclude Include="SourceCode\Common\Gage\CircleGage.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

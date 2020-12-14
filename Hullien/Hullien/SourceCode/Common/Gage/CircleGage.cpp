@@ -1,6 +1,7 @@
-#include "Gage.h"
+#include "CircleGage.h"
+#include <algorithm>
 
-CGage::CGage()
+CCircleGage::CCircleGage()
 	: m_pVertexShader			( nullptr )
 	, m_pPixelShader			( nullptr )
 	, m_pVertexLayout			( nullptr )
@@ -8,15 +9,18 @@ CGage::CGage()
 	, m_pVertexBuffer			( nullptr )
 	, m_pSampleLinear			( nullptr )
 	, m_pTexture				( nullptr )
+	, m_pMaskTexture			( nullptr )
+	, m_Value					( 0.0f )
 {
 }
 
-CGage::~CGage()
+CCircleGage::~CCircleGage()
 {
+	Release();
 }
 
 // 初期化.
-HRESULT CGage::Init(
+HRESULT CCircleGage::Init(
 	ID3D11Device* pDevice11,
 	ID3D11DeviceContext* pContext11)
 {
@@ -26,8 +30,8 @@ HRESULT CGage::Init(
 	if( m_pDevice11 == nullptr ) return E_FAIL;
 	if( m_pContext11 == nullptr ) return E_FAIL;
 
+	if( FAILED( InitTexture() ))	return E_FAIL;
 	if( FAILED( InitModel() ))		return E_FAIL;
-	if( FAILED( InitTexture(TEXTURE_NAME) ))	return E_FAIL;
 	if( FAILED( InitShader() ))		return E_FAIL;
 	if( FAILED( InitSampler() ))	return E_FAIL;
 	if( FAILED( CreateCBuffer( &m_pConstantBufferFrame, sizeof(CBUFFER_PER_FRAME) ) )) return E_FAIL;
@@ -36,7 +40,7 @@ HRESULT CGage::Init(
 }
 
 // 解放.
-void CGage::Release()
+void CCircleGage::Release()
 {
 	SAFE_RELEASE( m_pVertexShader );
 	SAFE_RELEASE( m_pPixelShader );
@@ -44,6 +48,7 @@ void CGage::Release()
 	SAFE_RELEASE( m_pConstantBufferFrame );
 	SAFE_RELEASE( m_pSampleLinear );
 	SAFE_RELEASE( m_pTexture );
+	SAFE_RELEASE( m_pMaskTexture );
 	SAFE_RELEASE( m_pVertexBuffer );
 
 	m_pDevice11 = nullptr;
@@ -51,15 +56,12 @@ void CGage::Release()
 }
 
 // レンダリング.
-void CGage::Render()
+void CCircleGage::Render()
 {
-	static float value = 0.5f;
-	if( GetAsyncKeyState('K') & 0x8000 ) value += 0.01f;
-	if( GetAsyncKeyState('L') & 0x8000 ) value -= 0.01f;
-	if( value > 1.0f ) value = 1.0f;
-	if( value < 0.0f ) value = 0.0f;
-	m_vPos.x = 200.0f;
-	m_vPos.y = 200.0f;
+	if( GetAsyncKeyState('K') & 0x8000 ) m_Value += 0.01f;
+	if( GetAsyncKeyState('L') & 0x8000 ) m_Value -= 0.01f;
+	if( m_Value > 1.0f ) m_Value = 1.0f;
+	if( m_Value < 0.0f ) m_Value = 0.0f;
 
 	//　ワールド行列, スケール行列, 回転行列, 平行移動行列.
 	D3DXMATRIX mWVP, mScale, mRot, mTran;
@@ -86,17 +88,20 @@ void CGage::Render()
 		cb.mW	= mWVP;
 		D3DXMatrixTranspose( &cb.mW, &cb.mW ); // 行列を転置する.
 
-		cb.vColor = m_vColor;
-
 		// ビューポートの幅,高さを渡す.
 		cb.vViewPort.x	= static_cast<float>(WND_W);
 		cb.vViewPort.y	= static_cast<float>(WND_H);
 
-		cb.ImageWidth	= 169.0f;
-		cb.DispPos		= m_vPos.x;
-		cb.Value		= 1.0f;
-		cb.RangeValue	= static_cast<float>( (D3DX_PI*2.0)*value );
+		// 円の中心座標.
+		// 0~1までなので、0.5が中心.
+		cb.vCenterPos = { 0.5f, 0.5f };
 
+		// 円の開始ベクトル.
+		// 2Dなので、上向きがマイナス.
+		cb.vStartVecotr = { 0.0, -1.0f };
+
+		// 値 0~1 をradianとして渡す.
+		cb.Value	= static_cast<float>( (D3DX_PI*2.0)*std::clamp(m_Value, 0.0f, 1.0f) );
 
 		memcpy_s( pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb) );
 
@@ -125,6 +130,7 @@ void CGage::Render()
 	// テクスチャをシェーダーに渡す.
 	m_pContext11->PSSetSamplers( 0, 1, &m_pSampleLinear );
 	m_pContext11->PSSetShaderResources( 0, 1, &m_pTexture );
+	m_pContext11->PSSetShaderResources( 1, 1, &m_pMaskTexture );
 
 	// レンダリング.
 	SetDeprh( false );
@@ -135,11 +141,18 @@ void CGage::Render()
 }
 
 // モデル(ポリゴン)の作成.
-HRESULT CGage::InitModel()
+HRESULT CCircleGage::InitModel()
 {
-	float w = 160.0f*3.0f;
-	float h = 160.0f*3.0f;//42.0f;
-
+	// 読み込んだテクスチャのサイズを取得する.
+	ID3D11Texture2D *pTextureInterface = nullptr;
+	m_pTexture->GetResource((ID3D11Resource**)&pTextureInterface);
+	D3D11_TEXTURE2D_DESC desc = {};
+	if( pTextureInterface != nullptr ){
+		pTextureInterface->GetDesc( &desc );
+	}
+	float w = static_cast<float>(desc.Width);
+	float h = static_cast<float>(desc.Height);
+	
 	// 板ポリ(四角形)の頂点を作成.
 	VERTEX vertices[] =
 	{
@@ -160,12 +173,12 @@ HRESULT CGage::InitModel()
 	bd.MiscFlags			= 0;						// その他のフラグ(未使用).
 	bd.StructureByteStride	= 0;						// 構造体のサイズ(未使用).
 
-														// サブリソース構造体.
+	// サブリソース構造体.
 	D3D11_SUBRESOURCE_DATA InitData;
 	// サブリソース構造体.
 	InitData.pSysMem = vertices;	// 板ポリの頂点をセット.
 
-									// 頂点バッファの作成.
+	// 頂点バッファの作成.
 	if( FAILED( m_pDevice11->CreateBuffer(
 		&bd, &InitData, &m_pVertexBuffer ))) {
 		_ASSERT_EXPR(false, L"頂点ﾊﾞｯﾌｧ作成失敗");
@@ -176,18 +189,33 @@ HRESULT CGage::InitModel()
 }
 
 // テクスチャの作成.
-HRESULT CGage::InitTexture( const char* filename )
+HRESULT CCircleGage::InitTexture()
 {
-	// マスク用のテクスチャ作成.
+	// テクスチャ作成.
 	if( FAILED(
 		D3DX11CreateShaderResourceViewFromFile(
 			m_pDevice11,	// リソースを使用するデバイスのポインタ.
-			filename,		// ファイル名.
+			TEXTURE_NAME,	// ファイル名.
 			nullptr,
 			nullptr,
 			&m_pTexture,	// (out)テクスチャ.
-			nullptr ))) {
-		std::string err = filename;
+			nullptr ))){
+		std::string err = TEXTURE_NAME;
+		err += " : テクスチャ読み込み失敗";
+		ERROR_MESSAGE(err);
+		return E_FAIL;
+	}
+
+	// マスク用のテクスチャ作成.
+	if( FAILED(
+		D3DX11CreateShaderResourceViewFromFile(
+			m_pDevice11,		// リソースを使用するデバイスのポインタ.
+			MASK_TEXTURE_NAME,	// ファイル名.
+			nullptr,
+			nullptr,
+			&m_pMaskTexture,	// (out)テクスチャ.
+			nullptr ))){
+		std::string err = MASK_TEXTURE_NAME;
 		err += " : テクスチャ読み込み失敗";
 		ERROR_MESSAGE(err);
 		return E_FAIL;
@@ -198,7 +226,7 @@ HRESULT CGage::InitTexture( const char* filename )
 
 
 // シェーダーの作成.
-HRESULT CGage::InitShader()
+HRESULT CCircleGage::InitShader()
 {
 	ID3DBlob* pCompiledShader = nullptr;
 	ID3DBlob* pErrors = nullptr;
@@ -300,7 +328,7 @@ HRESULT CGage::InitShader()
 }
 
 // サンプラの作成.
-HRESULT CGage::InitSampler()
+HRESULT CCircleGage::InitSampler()
 {
 	// テクスチャ用のサンプラ構造体.
 	D3D11_SAMPLER_DESC samDesc;
@@ -324,7 +352,7 @@ HRESULT CGage::InitSampler()
 }
 
 // コンスタントバッファ作成関数.
-HRESULT CGage::CreateCBuffer( ID3D11Buffer** pConstantBuffer, UINT size )
+HRESULT CCircleGage::CreateCBuffer( ID3D11Buffer** pConstantBuffer, UINT size )
 {
 	D3D11_BUFFER_DESC cb;
 
