@@ -222,6 +222,9 @@ void CAlienB::Move()
 		CAlien::VectorMove( m_MoveSpeed );		// ˆÚ“®.
 		CAlien::WaitMove();		// ‘Ò‹@.
 	}
+	if( m_NowMoveState == alien::EMoveState::Move ){
+		SetAnimation( alien::EAnimNo_Move, m_pAC );
+	}
 
 	if( *m_pIsAlienOtherAbduct == false ) return;
 	if( m_NowState == alien::EAlienState::Abduct ) return;

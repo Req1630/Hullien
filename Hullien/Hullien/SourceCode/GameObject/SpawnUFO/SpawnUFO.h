@@ -17,11 +17,12 @@ class CUltemateSing;		// 宇宙人Dの警告UIクラス.
 
 class CSpawnUFO : public CGameObject
 {
-	const char* MODEL_NAME			= "ufo_mini";	// モデル名.
-	const float COLLISION_RADIUS	= 5.0f;			// 当たり判定のサイズ.
-	const float ADD_POS_POWER		= 0.1f;			// 座標を上にあげる力.
-	const float LIGHT_HEIGHT		= 1.65f;		// ライトの高さ.
-	const float LIGHT_WEDTH			= 1.4f;			// ライトの幅.
+	inline static const char*	MODEL_NAME			= "ufo_mini";	// モデル名.
+	inline static const float	COLLISION_RADIUS	= 5.0f;			// 当たり判定のサイズ.
+	inline static const float	ADD_POS_POWER		= 0.1f;			// 座標を上にあげる力.
+	inline static const float	LIGHT_HEIGHT		= 1.65f;		// ライトの高さ.
+	inline static const float	LIGHT_WEDTH			= 1.4f;			// ライトの幅.
+	inline static const int		SPAWN_SUB_TIME		= 3*FPS;		// 最初のスポーン時間調整用.
 public:
 	CSpawnUFO();
 	virtual ~CSpawnUFO();

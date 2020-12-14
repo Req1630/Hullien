@@ -28,6 +28,7 @@ protected:
 	inline static const float HIT_EFFECT_HEIGHT		= 4.0f;				// ヒットエフェクトの高さ.
 
 	inline static const int	POSSIBLE_TIME = 80;
+	inline static const int MAX_HIT_COUNT = 3;
 
 	const SAlienParam*	pPARAMETER;	// パラメータのポインタ : 外部から取得.
 

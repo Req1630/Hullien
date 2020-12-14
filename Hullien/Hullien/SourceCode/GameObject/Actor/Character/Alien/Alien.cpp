@@ -95,7 +95,6 @@ void CAlien::LifeCalculation( const std::function<void(float&,bool&)>& proc )
 	if( m_NowState == alien::EAlienState::KnockBack ) return;
 	if( m_IsRisingMotherShip == true ) return;
 
-	const int MAX_HIT_COUNT = 3;
 	bool isAttack = false;
 	proc( m_LifePoint, isAttack );
 	m_HitCount++;	// ヒットカウントの加算.
@@ -115,6 +114,8 @@ void CAlien::LifeCalculation( const std::function<void(float&,bool&)>& proc )
 	m_pEffects[alien::EEffectNo_Attack]->Stop();
 	// ヒットエフェクトを再生する.
 	m_pEffects[alien::EEffectNo_Hit]->Play( { m_vPosition.x, m_vPosition.y+HIT_EFFECT_HEIGHT, m_vPosition.z });
+
+//	ヒットストップ処理.
 //	if( m_IsHitStop == false ){
 //		m_AnimSpeed = 0.0;
 //		m_IsHitStop = true;
@@ -357,7 +358,7 @@ void CAlien::KnockBack()
 	m_KnockBackCount	= 0;	// 無敵カウントの初期化.
 	SetAnimation( alien::EAnimNo_Move, m_pAC );
 	m_NowState			= alien::EAlienState::Move;	// 移動状態へ遷移.
-	m_NowMoveState		= alien::EMoveState::Rotation;	// 移動の回転状態へ遷移.
+	m_NowMoveState		= alien::EMoveState::Wait;	// 移動の待機状態へ遷移.
 }
 
 // 怯み.
@@ -440,11 +441,15 @@ void CAlien::GirlCollision( CActor* pActor )
 	if( m_NowState == alien::EAlienState::KnockBack )	return;
 
 	// 球体の当たり判定.
-	if( m_pCollManager->IsShereToShere( pActor->GetCollManager() ) == false ) return;
+	if( m_pCollManager->IsShereToShere( pActor->GetCollManager() ) == false ){
+		return;
+	}
 
+	// 自分が女の子を連れ去っている状態.
 	if( m_NowState == alien::EAlienState::Abduct ){
 		if( m_NowAnimNo != alien::EAnimNo_Arm ) m_NowAnimNo = alien::EAnimNo_Arm;
 		if( m_AnimFrameList[alien::EAnimNo_Arm].IsNowFrameOver() == true ) m_AnimSpeed = 0.0;
+
 		if( m_IsRisingMotherShip == true ){
 			pActor->SetScale( m_vScale );
 			m_pArm->SetCleanUpScale( m_vScale );
@@ -464,7 +469,7 @@ void CAlien::GirlCollision( CActor* pActor )
 		pActor->SetRotationY( m_vRotation.y );
 		return;
 	} else {
-		// 既に連れ去っているか.
+		// 既に他の宇宙人が連れ去っているか.
 		if( *m_pIsAlienOtherAbduct == true ){
 			// アームを片付けていなければ片付ける.
 			if( m_pArm->IsCleanUp() == false ){

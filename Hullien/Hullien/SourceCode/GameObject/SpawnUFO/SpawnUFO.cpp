@@ -137,7 +137,7 @@ void CSpawnUFO::SetSpawnParameter( const SSpawnUFOParam& param )
 	m_SpawnParameter = param;
 	m_SpawnPoint	= m_vPosition = m_SpawnParameter.Position;
 	m_SpawnPoint.y	= m_SpawnParameter.SpawnPointHight;
-	m_SpawnCount = m_SpawnParameter.SpawnTime*FPS/2;
+	m_SpawnCount = m_SpawnParameter.SpawnTime*FPS-SPAWN_SUB_TIME;
 }
 
 // ƒ‰ƒCƒg‚ğæ‚èo‚·.
