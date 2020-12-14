@@ -17,7 +17,6 @@ struct VS_OUTPUT
 {
 	float4 Pos	: SV_Position;	// WVPでの座標.
 	float2 Tex	: TEXCOORD0;	// ワールド座標.
-	float  Height : TEXCOORD1;	// テクスチャ座標.
 };
 
 // 頂点シェーダー.
@@ -26,7 +25,6 @@ VS_OUTPUT VS_Main( VS_INPUT input )
 	VS_OUTPUT Out	= (VS_OUTPUT) 0;
 	input.Pos.w		= 1.0f;
 	Out.Pos			= mul(input.Pos, g_mWVP);
-	Out.Height = input.Pos.y <= 0.0f ? 0.0f : input.Pos.y;
 	Out.Tex			= input.Tex;
 	return Out;
 }
@@ -34,7 +32,5 @@ VS_OUTPUT VS_Main( VS_INPUT input )
 // ピクセルシェーダー.
 float4 PS_Main( VS_OUTPUT input ) : SV_Target
 {
-	float4 color = g_Texture.Sample(g_SamLinear, input.Tex);
-	color = lerp(color, float4(1.0f, 1.0f, 1.0f, 1.0f), input.Height);
-	return color;
+	return g_Texture.Sample(g_SamLinear, input.Tex);
 }

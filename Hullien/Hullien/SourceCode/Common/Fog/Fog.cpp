@@ -6,7 +6,7 @@ namespace
 	static const float FOG_TEX_ADD_VALUE_W	= 0.0003f;	// フォグのテクスチャ加算値.
 	static const float FOG_TEX_MAX			= 1.0f;		// フォグのテクスチャ座標最大値.
 	static const float FOG_TEX_SCALE		= 0.003f;	// フォグのテクセルスケール値.
-	static const D3DXVECTOR4 FOG_COLOR		= {0.0f,0.0f,0.0f,1.0f};	// フォグの色.
+	static const D3DXVECTOR4 FOG_COLOR		= {0.7f,0.7f,0.7f,1.0f};	// フォグの色.
 	static const float FOG_MIN_HEIGHT		= 0.0f;		// フォグの最小高さ.
 	static const float FOG_MAX_HEIGHT		= 6.0f;		// フォグの最大高さ.
 }

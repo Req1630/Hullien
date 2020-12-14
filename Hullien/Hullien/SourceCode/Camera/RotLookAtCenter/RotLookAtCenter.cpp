@@ -11,6 +11,7 @@ CRotLookAtCenter::CRotLookAtCenter()
 	, m_VerticalMin		( DEFAULT_VERTICAL_MIN )
 	, m_RightMoveSpeed	( DEFAULT_MOVE_SPEED )
 	, m_LeftMoveSpeed	(-DEFAULT_MOVE_SPEED )
+	, m_AddValue			( 0.0f, 0.0f, 0.0f )
 {
 }
 
@@ -56,6 +57,8 @@ void CRotLookAtCenter::RotationLookAtObject( const D3DXVECTOR3& vLookPos, const 
 	pos.z = m_vLookPosition.z + ( cosf(m_vDegree.x) * m_Length );
 	// lerp減衰. ( out, 現在の座標, 本来到達している座標, 補正値 ).
 	D3DXVec3Lerp( &m_vPosition, &m_vPosition, &pos, attenRate );
+	m_vPosition += m_AddValue;
+	m_AddValue = { 0.0f, 0.0f, 0.0f };
 }
 
 //-------------------------------.
@@ -134,4 +137,12 @@ void CRotLookAtCenter::SetVerticalDegree( const float& max, const float& min )
 {	
 	m_VerticalMax = max;
 	m_VerticalMin = min;
+}
+
+//-------------------------------.
+// 座標に足し合わせる値の設定.
+//-------------------------------.
+void CRotLookAtCenter::SetAddPositionValue( const D3DXVECTOR3& addValue )
+{
+	m_AddValue = addValue;
 }

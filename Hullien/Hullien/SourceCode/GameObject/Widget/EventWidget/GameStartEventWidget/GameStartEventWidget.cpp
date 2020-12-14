@@ -12,6 +12,7 @@ CGameStartEventWidget::CGameStartEventWidget()
 	, m_ButtonPos	( 0.0f, 0.0f, 0.0f )
 	, m_WidgetState	( EWidgetState::None )
 	, m_Alpha		( 0.0f )
+	, m_HeightScale	( 1.0f )
 	, m_WaitCount	( 0.0f ) 
 	, m_IsDispEnd	( false )
 {
@@ -57,14 +58,22 @@ void CGameStartEventWidget::Update()
 
 	case CGameStartEventWidget::EWidgetState::Preserve_Girl:
 		if (m_IsDisp[PRESERVE_GIRL] == false) m_IsDisp[PRESERVE_GIRL] = true;
+		if (m_IsDisp[PRESERVE_GIRL+1] == false){
+			m_HeightScale = 0.0f;
+			m_IsDisp[PRESERVE_GIRL+1] = true;
+		}
 
-		if (m_WaitCount == 0 && m_Alpha < ALPHA_MAX) m_Alpha += ALPHA_SPEED;
+		if (m_WaitCount == 0 && m_Alpha < ALPHA_MAX){
+			m_Alpha += ALPHA_SPEED;
+			m_HeightScale += ALPHA_SPEED;
+		}
 		else {
 			m_WaitCount++;
 
 			if (m_WaitCount >= WAITCOUNT_MAX)
 			{
 				m_Alpha -= ALPHA_SPEED;
+				m_HeightScale -= ALPHA_SPEED;
 				if (m_Alpha <= 0.0f) { m_WidgetState = EWidgetState::None; }
 			}
 		}
@@ -84,6 +93,7 @@ void CGameStartEventWidget::Render()
 
 		// “§‰ß’l‚ÌÝ’è.
 		m_pSprites[sprite]->SetAlpha( m_Alpha );
+		m_pSprites[sprite]->SetScale( {1, m_HeightScale, 0.0f } );
 		if( sprite == 0 ){
 			m_pSprites[sprite]->SetPosition( m_ButtonPos );
 			m_pSprites[sprite]->SetScale( 1.0f );
@@ -114,7 +124,8 @@ bool CGameStartEventWidget::SpriteSetting()
 		SPRITE_BUTTON_NAME,
 		SPRITE_PUSH_NAME,
 		SPRITE_EXCLAMATION_NAME,
-		SPRITE_PRESERVE_GIRL_NAME
+		SPRITE_PRESERVE_BAR_NAME,
+		SPRITE_PRESERVE_GIRL_NAME,
 	};
 	int SpriteMax = sizeof(spriteName) / sizeof(spriteName[0]);
 

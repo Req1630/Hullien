@@ -57,6 +57,8 @@ public:  //------ 関数 -------.
 	void SetHorizontalDegree( const float& max, const float& min );
 	// 縦方向の最大、最小の設定.
 	void SetVerticalDegree( const float& max, const float& min );
+	// 座標に足し合わせる値の設定.
+	void SetAddPositionValue( const D3DXVECTOR3& addValue );
 
 private: //------ 変数 -------.
 	D3DXVECTOR2		m_vDegree;			// カメラの角度.
@@ -67,6 +69,7 @@ private: //------ 変数 -------.
 	float			m_VerticalMin;		// 縦方向の最小サイズ.
 	float			m_RightMoveSpeed;	// 右の移動速度.
 	float			m_LeftMoveSpeed;	// 左の移動速度.
+	D3DXVECTOR3		m_AddValue;
 };
 
 #endif	// #ifndef ROTATION_LOOK_AT_CENTER_CAMERA_H.

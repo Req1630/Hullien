@@ -51,6 +51,7 @@ CPlayer::CPlayer()
 	, m_CameraCount					( CAMERA_COUNT_MAX )
 	, m_CameraLerp					( 0.0f )
 	, m_NowSPCameraStete			( player::ESPCameraState_Start )
+	, m_ParalysisCameraShakeCount	( 0 )
 	, m_OneStepCmaeraSeting			( false )
 {
 	m_ObjectTag = EObjectTag::Player;	// プレイヤータグを設定.
@@ -99,7 +100,6 @@ void CPlayer::Update()
 {
 	// アニメーションフレームの更新.
 	m_AnimFrameList[m_NowAnimNo].UpdateFrame( m_AnimSpeed );
-
 //	if( m_IsHitStop == false ){
 	// 麻痺タイマーが動作してなければ.
 	if( m_pEffectTimers[player::EEffectTimerNo_Paralysis]->IsUpdate() == false ){
@@ -113,6 +113,8 @@ void CPlayer::Update()
 		AvoidMove();			// 回避動作.
 		KnockBack();			// ノックバック動作関数.
 		Dead();					// 死亡関数.
+		m_ParalysisCameraShakeCount = FPS*2;
+		m_HitStopCameraPosition = m_pCamera->GetPosition();
 	} else {
 		ParalysisUpdate();		// 麻痺時の更新.
 	}
@@ -779,29 +781,29 @@ void CPlayer::SPCameraUpdate()
 // ヒットストップの更新.
 void CPlayer::HitStopUpdate()
 {
-//	if( m_IsHitStop == false ) return;
-//
-//	m_HitStopCount++;
-//	const float shakeValue = 
-//		sinf( static_cast<float>(D3DX_PI)*TWO / static_cast<float>(m_HitStopCount)*TWO ) *
-//		static_cast<float>(m_HitStopTime*m_HitStopTime)/TWO * 0.08f;
-//
-//	const D3DXVECTOR3 lookPosition = { m_vPosition.x, m_Parameter.CameraLookHeight, m_vPosition.z };
-//	D3DXVECTOR3 vec = lookPosition - m_pCamera->GetPosition();
-//	D3DXVec3Normalize( &vec, &vec );
-//	m_HitStopCameraPosition.x += vec.x * shakeValue;
-//	m_HitStopCameraPosition.z += vec.z * shakeValue;
-//
-//	m_pSPCamera->SetLookPosition( lookPosition );
-//	m_pSPCamera->SetPosition( m_HitStopCameraPosition );
-//	// 特殊能力用のカメラをマネージャーに設定.
-//	CCameraManager::SetCamera( m_pSPCamera );
-//
-//	if( m_HitStopCount < m_HitStopTime ) return;
-//
-//	m_IsHitStop		= false;
-//	m_HitStopCount	= 0;
-//	m_AnimSpeed		= DEFAULT_ANIM_SPEED;
+	//if( m_IsHitStop == false ) return;
+
+	//m_HitStopCount++;
+	//const float shakeValue = 
+	//	sinf( static_cast<float>(D3DX_PI)*TWO / static_cast<float>(m_HitStopCount)*TWO ) *
+	//	static_cast<float>(m_HitStopTime*m_HitStopTime)/TWO * 0.08f;
+
+	//const D3DXVECTOR3 lookPosition = { m_vPosition.x, m_Parameter.CameraLookHeight, m_vPosition.z };
+	//D3DXVECTOR3 vec = lookPosition - m_pCamera->GetPosition();
+	//D3DXVec3Normalize( &vec, &vec );
+	//m_HitStopCameraPosition.x += vec.x * shakeValue;
+	//m_HitStopCameraPosition.z += vec.z * shakeValue;
+
+	//m_pSPCamera->SetLookPosition( lookPosition );
+	//m_pSPCamera->SetPosition( m_HitStopCameraPosition );
+	//// 特殊能力用のカメラをマネージャーに設定.
+	//CCameraManager::SetCamera( m_pSPCamera );
+
+	//if( m_HitStopCount < m_HitStopTime ) return;
+
+	//m_IsHitStop		= false;
+	//m_HitStopCount	= 0;
+	//m_AnimSpeed		= DEFAULT_ANIM_SPEED;
 }
 
 // 特殊能力回復更新関数.
@@ -839,6 +841,14 @@ void CPlayer::MoveSpeedUpUpdate()
 // 麻痺中の更新関数.
 void CPlayer::ParalysisUpdate()
 {
+	if( m_pEffectTimers[player::EEffectTimerNo_Paralysis]->IsUpdate() == true ){
+		m_ParalysisCameraShakeCount--;
+		if( m_ParalysisCameraShakeCount < 0 ) m_ParalysisCameraShakeCount = 0;
+		const float SHAKE_VALUE = 
+			cosf(static_cast<float>(D3DX_PI) * TWO / 15.0f * m_ParalysisCameraShakeCount) * (m_ParalysisCameraShakeCount * 0.01f);
+		const D3DXVECTOR3 lookPosition = { m_vPosition.x, m_Parameter.CameraLookHeight, m_vPosition.z };
+		m_pCamera->SetAddPositionValue( { SHAKE_VALUE, 0.0f, SHAKE_VALUE } );
+	}
 	if( m_pEffectTimers[player::EEffectTimerNo_Paralysis]->Update() == false ) return;
 	m_AnimSpeed = DEFAULT_ANIM_SPEED;
 	m_pEffects[player::EEffectNo_Paralysis]->Stop();

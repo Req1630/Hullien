@@ -195,6 +195,7 @@ private:
 	float									m_DecelerationY;	// y座標減速度.
 	float									m_DecelerationZ;	// z座標減速度.
 	float									m_Count;			// カウント.
+	int										m_EndNextCount;
 
 	CEventCharacter::SOptionalState			m_stPlayer;			//プレイヤーの情報.
 	CEventCharacter::SOptionalState			m_stGirl;			//女の子の情報.

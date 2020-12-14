@@ -40,6 +40,7 @@ CGameStartEvent::CGameStartEvent()
 	, m_DecelerationY		( 0.0f )
 	, m_DecelerationZ		( 0.0f )
 	, m_Count				( 0.0f )
+	, m_EndNextCount		( 0 )
 	, m_stPlayer			()
 	, m_stGirl				()
 	, m_stAlien				()
@@ -673,6 +674,8 @@ void CGameStartEvent::GameStart()
 	// 女の子のアニメーションを待機にさせる.
 	m_pGirl->SetAnimationBlend( girl::EAnimNo_Wait );
 	CSoundManager::FadeOutBGM("StartEventBGM");
+	m_EndNextCount++;
+	if( m_EndNextCount < WAIT_COUNT-50 ) return;
 	m_IsEventEnd = true;
 }
 

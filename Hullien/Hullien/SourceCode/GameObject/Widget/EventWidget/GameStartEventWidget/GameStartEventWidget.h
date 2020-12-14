@@ -12,12 +12,13 @@ class CGameStartEventWidget : public CEventWidget
 	const char* SPRITE_BUTTON_NAME			= "buttonY";	//スプライトのファイル名.
 	const char* SPRITE_PUSH_NAME			= "push";	//スプライトのファイル名.
 	const char* SPRITE_EXCLAMATION_NAME		= "exclamation";
+	const char* SPRITE_PRESERVE_BAR_NAME	= "bar";
 	const char* SPRITE_PRESERVE_GIRL_NAME	= "PreserveGirl";
 
 	const int	PUSH_YBUTTON	= 0;		// Yボタン指示の配列番号.
 	const int	PRESERVE_GIRL	= 3;		// 女の子を守る指示の配列番号.
 	const float ALPHA_SPEED		= 0.05f;	// 透過速度.
-	const float WAITCOUNT_MAX	= 100.0f;	// 待機カウント最大.
+	const float WAITCOUNT_MAX	= 180.0f;	// 待機カウント最大.
 
 public:
 	// UIの情報.
@@ -57,6 +58,7 @@ private:
 	EWidgetState							m_WidgetState;		// UIの情報.
 	float									m_Alpha;			// 透過値.
 	float									m_WaitCount;		// 待機カウント.
+	float									m_HeightScale;
 	bool									m_IsDispEnd;		// 描画終了.
 };
 
