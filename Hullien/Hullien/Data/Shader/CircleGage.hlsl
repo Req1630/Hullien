@@ -48,7 +48,8 @@ float4 PS_Main( VS_OUTPUT input ) : SV_Target
 {
 	float maskColor = g_MaskTexture.Sample(g_samLinear, input.Tex).r;
 	float4 texColor = g_Texture.Sample(g_samLinear, input.Tex);
-	
+	texColor.r += 0.3f;
+	texColor.b += 0.5f;
 	// 対象ピクセル座標と中心の座標のベクトルを求める.
     float2 endVector = normalize(input.Tex - g_CenterPos);
 	// 二つのベクトルの内積を求める.
@@ -62,5 +63,5 @@ float4 PS_Main( VS_OUTPUT input ) : SV_Target
 	}
     if (Deg >= g_Value) discard;
 	
-	return texColor*maskColor;
+	return texColor * maskColor;
 }
