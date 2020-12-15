@@ -36,7 +36,7 @@ private:
 
 private:
 	std::vector<fs::path> m_LabelList;
-	std::vector<CXInput::enBUTTON_LIST> m_ItemList;
+	std::vector<EInputState> m_ItemList;
 };
 
 #endif	// #ifndef CONTROLLER_EDIT_H.

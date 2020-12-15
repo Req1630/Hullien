@@ -7,7 +7,7 @@
 #include "..\..\..\Common\DebugText\DebugText.h"
 #include "..\..\..\GameObject\Widget\SceneWidget\TItleWidget\TitleWidget.h"
 #include "..\..\..\GameObject\Widget\Fade\Fade.h"
-#include "..\..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\..\Utility\Input\Input.h"
 #include "..\..\..\XAudio2\SoundManager.h"
 
 CTitle::CTitle( CSceneManager* pSceneManager )
@@ -64,9 +64,7 @@ void CTitle::Render()
 void CTitle::ChangeScene()
 {
 	// ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½.
-	if (GetAsyncKeyState(VK_RETURN) & 0x0001
-		|| CXInput::B_Button() == CXInput::enSEPARATED)
-	{
+	if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
 		if (m_IsChangeScene == true) return;
 		CFade::SetFadeIn();
 		switch (m_pWidget->GetSelectState())

@@ -1,5 +1,5 @@
 #include "GameClearEvent.h"
-#include "..\..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\..\Utility\Input\Input.h"
 #include "..\..\..\GameObject\GroundStage\GroundStage.h"
 #include "..\..\..\GameObject\SpawnUFO\SpawnUFO.h"
 #include "..\..\..\GameObject\Actor\EventCharacter\EventPlayer\EventPlayer.h"
@@ -225,10 +225,8 @@ void CGameClearEvent::SceneSetting()
 	}
 
 	// スキップ.
-	if (GetAsyncKeyState(VK_RETURN) & 0x8000
-		|| CXInput::B_Button() == CXInput::enPRESS_AND_HOLD) {
+	if( CInput::IsHold( EKeyBind::Skip ) == true ){
 		m_SkipWaitCount++;
-
 	}
 	else {
 		if (m_SkipWaitCount < SKIP_WAIT_COUNT) m_SkipWaitCount = 0;

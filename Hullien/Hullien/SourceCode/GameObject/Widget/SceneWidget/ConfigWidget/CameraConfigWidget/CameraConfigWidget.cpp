@@ -1,7 +1,7 @@
 #include "CameraConfigWidget.h"
 #include "..\..\..\..\..\Common\Sprite\CSprite.h"
 #include "..\..\..\..\..\Resource\SpriteResource\SpriteResource.h"
-#include "..\..\..\..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\..\..\..\Utility\Input\Input.h"
 #include "..\..\..\..\..\XAudio2\SoundManager.h"	
 #include "..\..\..\Cursor\Cursor.h"
 #include "..\..\..\Slider\Slider.h"
@@ -55,8 +55,7 @@ void CCameraConfigWidget::Update()
 	case ESelectState_Select:
 		SelectType();
 		Determination();
-		if( GetAsyncKeyState(VK_BACK) & 0x0001 ||
-			CXInput::A_Button() == CXInput::enPRESSED_MOMENT ){
+		if( CInput::IsMomentPress( EKeyBind::Cancel ) == true ){
 			CSoundManager::PlaySE("CancelDetermination");
 			m_NowConfigState = ESelectState_None;
 		}
@@ -149,34 +148,35 @@ void CCameraConfigWidget::SelectType()
 // 決定.
 void CCameraConfigWidget::Determination()
 {
-	if(!(GetAsyncKeyState(VK_RETURN) & 0x0001 ) && CXInput::B_Button() != CXInput::enPRESSED_MOMENT ) return;
-	switch( m_NowSelectState )
-	{
-	case ESelectState_CameraControl:
-		m_NowConfigState = ESelectState_CameraControl;
-		m_pSwitch->SetNowValue();
-		break;
-	case ESelectState_CameraSpeed:
-		m_NowConfigState = ESelectState_CameraSpeed;
-		m_OldMoveSpeed = m_ConfigState.MoveSpeed;
-		break;
-	default:
-		break;
+	if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
+		switch( m_NowSelectState )
+		{
+		case ESelectState_CameraControl:
+			m_NowConfigState = ESelectState_CameraControl;
+			m_pSwitch->SetNowValue();
+			break;
+		case ESelectState_CameraSpeed:
+			m_NowConfigState = ESelectState_CameraSpeed;
+			m_OldMoveSpeed = m_ConfigState.MoveSpeed;
+			break;
+		default:
+			break;
+		}
+		CSoundManager::PlaySE("Determination");
 	}
-	CSoundManager::PlaySE("Determination");
 }
 
 // カメラ操作の更新.
 void CCameraConfigWidget::CameraControlUpdate()
 {
 	// 決定.
-	if( GetAsyncKeyState(VK_RETURN) & 0x0001 || CXInput::B_Button() == CXInput::enPRESSED_MOMENT ){
+	if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
 		CSoundManager::PlaySE("Determination");
 		m_ConfigState.IsReverse = !m_pSwitch->GetValue();
 		m_NowConfigState = ESelectState_Select;
 	}
 	// キャンセル.
-	if( GetAsyncKeyState(VK_BACK) & 0x0001 || CXInput::A_Button() == CXInput::enPRESSED_MOMENT ){
+	if( CInput::IsMomentPress( EKeyBind::Cancel ) == true ){
 		CSoundManager::PlaySE("CancelDetermination");
 		m_NowConfigState = ESelectState_Select;
 		m_pSwitch->ReSetValue();
@@ -194,15 +194,14 @@ void CCameraConfigWidget::CameraSpeedUpdate()
 		m_pSpeedSlinder->SubValue( 0.001f );
 
 	// 決定.
-	if( GetAsyncKeyState(VK_RETURN) & 0x0001 ||
-		CXInput::B_Button() == CXInput::enPRESSED_MOMENT ){
+	if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
 		CSoundManager::PlaySE("Determination");
 		m_NowConfigState = ESelectState_Select;
 		m_ConfigState.MoveSpeed = m_pSpeedSlinder->GetValue();
 	}
 
 	// キャンセル.
-	if( GetAsyncKeyState(VK_BACK) & 0x0001 || CXInput::A_Button() == CXInput::enPRESSED_MOMENT ){
+	if( CInput::IsMomentPress( EKeyBind::Cancel ) == true ){
 		CSoundManager::PlaySE("CancelDetermination");
 		m_NowConfigState = ESelectState_Select;
 		m_ConfigState.MoveSpeed = m_OldMoveSpeed;

@@ -2,7 +2,7 @@
 #include "..\..\..\GameObject\Widget\SceneWidget\ClearWidget\ClearWidget.h"
 #include "..\..\..\GameObject\STG\STGManager\STGManager.h"
 #include "..\..\..\GameObject\Widget\Fade\Fade.h"
-#include "..\..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\..\Utility\Input\Input.h"
 #include "..\..\..\XAudio2\SoundManager.h"
 #include "..\..\..\Common\SceneTexRenderer\SceneTexRenderer.h"
 #include "..\..\..\Common\D3DX\D3DX11.h"
@@ -157,8 +157,7 @@ void CGameClear::ChangeScene()
 void CGameClear::SkipUpdate()
 {
 	// スキップ.
-	if (GetAsyncKeyState(VK_RETURN) & 0x8000
-		|| CXInput::B_Button() == CXInput::enPRESS_AND_HOLD) {
+	if( CInput::IsHold( EKeyBind::Skip ) == true ){
 		m_SkipWaitCount++;
 
 	}

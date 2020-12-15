@@ -1,6 +1,6 @@
 #include "SceneManager.h"
 #include "..\Scenes\SceneList.h"
-#include "..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\Utility\Input\Input.h"
 #include "..\..\Utility\Input\KeyInput\KeyInput.h"
 #include "..\..\Utility\ImGuiManager\ImGuiManager.h"
 #include "..\..\Editor\EditRenderer\EditRenderer.h"
@@ -27,6 +27,7 @@ CSceneManager::CSceneManager()
 {
 	NextSceneMove();
 	m_pCommand = std::make_unique<CCommand>();
+	CInput::InitKeyBind();
 }
 
 CSceneManager::~CSceneManager()
@@ -40,8 +41,7 @@ void CSceneManager::Update()
 {
 	if( m_pScene == nullptr ) return;
 
-	CXInput::StatsUpdate();	// コントローラーの更新.
-	CKeyInput::Update();
+	CInput::StateUpdate();
 
 	if( m_IsLoadEnd == false ){
 		// 読み込みが終了していない場合.

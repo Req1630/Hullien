@@ -1,7 +1,7 @@
 #include "ConfigWidget.h"
 #include "..\..\..\..\Common\Sprite\CSprite.h"
 #include "..\..\..\..\Resource\SpriteResource\SpriteResource.h"
-#include "..\..\..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\..\..\Utility\Input\Input.h"
 #include "..\..\..\..\XAudio2\SoundManager.h"
 #include "..\..\Cursor\Cursor.h"
 #include "VolumeConfigWidget/VolumeConfigWidget.h"
@@ -55,13 +55,11 @@ void CConfigWidget::Update()
 	case EConfigState_None:
 		CursorSetting();
 		m_pCursor->Update();
-		if( GetAsyncKeyState(VK_RETURN) & 0x0001 || 
-			CXInput::B_Button() == CXInput::enPRESSED_MOMENT ){
+		if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
 			m_NowConfigState = m_SelectState; 
 			CSoundManager::PlaySE("Determination");
 		}
-		if( GetAsyncKeyState(VK_BACK) & 0x0001 || 
-			CXInput::A_Button() == CXInput::enPRESSED_MOMENT ){
+		if( CInput::IsMomentPress( EKeyBind::Cancel ) == true ){
 			m_NowConfigState = EConfigState_End;
 			CSoundManager::PlaySE("CancelDetermination");
 		}

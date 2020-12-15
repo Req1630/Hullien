@@ -477,6 +477,7 @@
     <ClInclude Include="SourceCode\Main\Main.h" />
     <ClInclude Include="SourceCode\Utility\ImGuiManager\ImGuiManager.h" />
     <ClInclude Include="SourceCode\Utility\Input\Input.h" />
+    <ClInclude Include="SourceCode\Utility\Input\InputStruct.h" />
     <ClInclude Include="SourceCode\Utility\Input\KeyInput\KeyInput.h" />
     <ClInclude Include="SourceCode\Utility\Log\MyLog.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>

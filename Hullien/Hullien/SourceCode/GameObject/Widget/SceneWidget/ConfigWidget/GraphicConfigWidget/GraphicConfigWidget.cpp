@@ -1,7 +1,7 @@
 #include "GraphicConfigWidget.h"
 #include "..\..\..\..\..\Common\Sprite\CSprite.h"
 #include "..\..\..\..\..\Resource\SpriteResource\SpriteResource.h"
-#include "..\..\..\..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\..\..\..\Utility\Input\Input.h"
 #include "..\..\..\..\..\XAudio2\SoundManager.h"	
 #include "..\..\..\Cursor\Cursor.h"
 #include "..\..\..\Switch\Switch.h"
@@ -46,8 +46,7 @@ void CGraphicConfigWidget::Update()
 	case ESelectState_Select:
 		SelectType();
 		Determination();
-		if( GetAsyncKeyState(VK_BACK) & 0x0001 ||
-			CXInput::A_Button() == CXInput::enPRESSED_MOMENT ){
+		if( CInput::IsMomentPress( EKeyBind::Cancel ) == true ){
 			CSoundManager::PlaySE("CancelDetermination");
 			m_NowConfigState = ESelectState_None;
 		}
@@ -124,30 +123,31 @@ void CGraphicConfigWidget::SelectType()
 // 決定.
 void CGraphicConfigWidget::Determination()
 {
-	if(!(GetAsyncKeyState(VK_RETURN) & 0x0001 ) && CXInput::B_Button() != CXInput::enPRESSED_MOMENT ) return;
-	switch( m_NowSelectState )
-	{
-	case ESelectState_FullSC:
-		m_NowConfigState = ESelectState_FullSC;
-		m_pSwitch->SetNowValue();
-		break;
-	default:
-		break;
+	if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
+		switch( m_NowSelectState )
+		{
+		case ESelectState_FullSC:
+			m_NowConfigState = ESelectState_FullSC;
+			m_pSwitch->SetNowValue();
+			break;
+		default:
+			break;
+		}
+		CSoundManager::PlaySE("Determination");
 	}
-	CSoundManager::PlaySE("Determination");
 }
 
 // フルスク選択の更新.
 void CGraphicConfigWidget::FullScChoiceUpdate()
 {
 	// 決定.
-	if( GetAsyncKeyState(VK_RETURN) & 0x0001 || CXInput::B_Button() == CXInput::enPRESSED_MOMENT ){
+	if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
 		CDirectX11::SetFullScreen( m_pSwitch->GetValue() );
 		CSoundManager::PlaySE("Determination");
 		m_NowConfigState = ESelectState_Select;
 	}
 	// キャンセル.
-	if( GetAsyncKeyState(VK_BACK) & 0x0001 || CXInput::A_Button() == CXInput::enPRESSED_MOMENT ){
+	if( CInput::IsMomentPress( EKeyBind::Cancel ) == true ){
 		CSoundManager::PlaySE("CancelDetermination");
 		m_pSwitch->ReSetValue();
 		m_NowConfigState = ESelectState_Select;

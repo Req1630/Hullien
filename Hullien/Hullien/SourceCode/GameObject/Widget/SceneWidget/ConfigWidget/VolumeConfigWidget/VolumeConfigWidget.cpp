@@ -1,7 +1,7 @@
 #include "VolumeConfigWidget.h"
 #include "..\..\..\..\..\Common\Sprite\CSprite.h"
 #include "..\..\..\..\..\Resource\SpriteResource\SpriteResource.h"
-#include "..\..\..\..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\..\..\..\Utility\Input\Input.h"
 #include "..\..\..\..\..\XAudio2\SoundManager.h"	
 #include "..\..\..\Slider\Slider.h"
 #include "..\..\..\Cursor\Cursor.h"
@@ -54,8 +54,7 @@ void CVolumeConfigWidget::Update()
 		SelectType();		// İ’è‚·‚éí—Ş‚Ì‘I‘ğ.
 		Determination();	// Œˆ’èŒã‚Ìˆ—.
 		// ƒLƒƒƒ“ƒZƒ‹.
-		if( GetAsyncKeyState(VK_BACK) & 0x0001 || 
-			CXInput::A_Button() == CXInput::enPRESSED_MOMENT ){
+		if( CInput::IsMomentPress( EKeyBind::Cancel ) == true ){
 			m_NowSelectVolume = EVolumeType_End;
 			CSoundManager::PlaySE("CancelDetermination");
 		}
@@ -63,8 +62,7 @@ void CVolumeConfigWidget::Update()
 	case EConfigState_Seting:
 		VolumeSeting();		// ‰¹—Ê‚Ìİ’è.
 		// Œˆ’è.
-		if( GetAsyncKeyState(VK_RETURN) & 0x0001 ||
-			CXInput::B_Button() == CXInput::enPRESSED_MOMENT ){
+		if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
 			CSoundManager::PlaySE("Determination");
 			m_NowConfigState = EConfigState_Select;
 		}
@@ -134,18 +132,19 @@ void CVolumeConfigWidget::SelectType()
 // Œˆ’è.
 void CVolumeConfigWidget::Determination()
 {
-	if(!(GetAsyncKeyState(VK_RETURN) & 0x0001 ) && CXInput::B_Button() != CXInput::enPRESSED_MOMENT ) return;
-	switch( m_NowSelectVolume )
-	{
-	case ESelectType_Master:
-	case ESelectType_BGM:
-	case ESelectType_SE:
-		// ‰¹—Ê‚Ìİ’è‚ÖˆÚ“®.
-		m_NowConfigState = EConfigState_Seting;
-		CSoundManager::PlaySE("Determination");
-		break;
-	default:
-		break;
+	if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
+		switch( m_NowSelectVolume )
+		{
+		case ESelectType_Master:
+		case ESelectType_BGM:
+		case ESelectType_SE:
+			// ‰¹—Ê‚Ìİ’è‚ÖˆÚ“®.
+			m_NowConfigState = EConfigState_Seting;
+			CSoundManager::PlaySE("Determination");
+			break;
+		default:
+			break;
+		}
 	}
 }
 

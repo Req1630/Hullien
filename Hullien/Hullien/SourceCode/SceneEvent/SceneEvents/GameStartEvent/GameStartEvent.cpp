@@ -1,5 +1,5 @@
 #include "GameStartEvent.h"
-#include "..\..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\..\Utility\Input\Input.h"
 #include ".\..\..\..\GameObject\GroundStage\GroundStage.h"
 #include "..\..\..\GameObject\SpawnUFO\SpawnUFO.h"
 #include "..\..\..\GameObject\Actor\EventCharacter\EventPlayer\EventPlayer.h"
@@ -255,8 +255,7 @@ void CGameStartEvent::SceneSetting()
 	}
 
 	// スキップ.
-	if (GetAsyncKeyState(VK_RETURN) & 0x8001
-		|| CXInput::B_Button() == CXInput::enPRESS_AND_HOLD) {
+	if( CInput::IsHold( EKeyBind::Skip ) == true ){
 		m_SkipWaitCount++;
 
 	}

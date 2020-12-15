@@ -4,7 +4,7 @@
 #include "..\..\..\..\Resource\MeshResource\MeshResource.h"
 #include "..\..\..\..\Collider\CollsionManager\CollsionManager.h"
 #include "..\..\..\Actor\Actor.h"
-#include "..\...\..\..\..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\..\..\Utility\Input\Input.h"
 #include "..\..\..\..\XAudio2\SoundManager.h"
 
 /********************************
@@ -121,9 +121,7 @@ void CEventPlayer::DamageAnimUpdate()
 void CEventPlayer::SPController()
 {
 	// YÉ{É^ÉìÇ™âüÇ≥ÇÍÇΩèuä‘Ç∂Ç·Ç»ÇØÇÍÇŒèIóπ.
-//	if (CXInput::Y_Button() != CXInput::enPRESSED_MOMENT) return;
-	if (CXInput::Y_Button() == CXInput::enPRESSED_MOMENT
-		|| GetAsyncKeyState('Y') & 0x8000) {
+	if( CInput::IsMomentPress( EKeyBind::SpecialAbility ) == true ){
 		CSoundManager::PlaySE("PlayerVoiceSpecial");
 		m_IsYButtonPressed = true;
 	}

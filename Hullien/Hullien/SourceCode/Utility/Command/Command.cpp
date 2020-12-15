@@ -1,6 +1,5 @@
 #include "Command.h"
-#include "..\Input\XInput\XInput.h"
-#include "..\Input\KeyInput\KeyInput.h"
+#include "..\Input\Input.h"
 
 CCommand::CCommand()
 	: m_KeyQueue			()
@@ -28,25 +27,25 @@ void CCommand::Update()
 // ÉLÅ[(buttonÇÃì¸óÕ).
 void CCommand::InputKey()
 {
-	if( CKeyInput::IsMomentPress(VK_UP) == true || CXInput::DPadUp()	== CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress(VK_UP) == true || CXInput::IsMomentPress(XINPUT_GAMEPAD_DPAD_UP) == true )
 		PushKey( EKey_Up );
-	if( CKeyInput::IsMomentPress(VK_DOWN) == true || CXInput::DPadDown()	== CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress(VK_DOWN) == true || CXInput::IsMomentPress(XINPUT_GAMEPAD_DPAD_DOWN) == true )
 		PushKey( EKey_Down );
-	if( CKeyInput::IsMomentPress(VK_RIGHT) == true || CXInput::DPadRIGHT()== CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress(VK_RIGHT) == true || CXInput::IsMomentPress(XINPUT_GAMEPAD_DPAD_RIGHT) == true )
 		PushKey( EKey_Right );
-	if( CKeyInput::IsMomentPress(VK_LEFT) == true || CXInput::DPadLEFT()	== CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress(VK_LEFT) == true || CXInput::IsMomentPress(XINPUT_GAMEPAD_DPAD_LEFT) == true )
 		PushKey( EKey_Left );
-	if( CKeyInput::IsMomentPress('A') == true || CXInput::A_Button() == CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress('A') == true || CXInput::IsMomentPress(XINPUT_GAMEPAD_A) == true )
 		PushKey( EKey_A );
-	if( CKeyInput::IsMomentPress('B') == true || CXInput::B_Button() == CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress('B') == true || CXInput::IsMomentPress(XINPUT_GAMEPAD_B) == true )
 		PushKey( EKey_B );
-	if( CKeyInput::IsMomentPress('X') == true || CXInput::X_Button() == CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress('X') == true || CXInput::IsMomentPress(XINPUT_GAMEPAD_X) == true )
 		PushKey( EKey_X );
-	if( CKeyInput::IsMomentPress('Y') == true || CXInput::Y_Button() == CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress('Y') == true || CXInput::IsMomentPress(XINPUT_GAMEPAD_Y) == true )
 		PushKey( EKey_Y );
-	if( CKeyInput::IsMomentPress('R') == true || CXInput::R_Button() == CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress('R') == true || CXInput::IsMomentPress(XINPUT_GAMEPAD_RIGHT_SHOULDER) == true )
 		PushKey( EKey_RB );
-	if( CKeyInput::IsMomentPress('L') == true || CXInput::L_Button() == CXInput::enPRESSED_MOMENT )
+	if( CKeyInput::IsMomentPress('L') == true || CXInput::IsMomentPress(XINPUT_GAMEPAD_LEFT_SHOULDER) == true )
 		PushKey( EKey_LB );
 }
 

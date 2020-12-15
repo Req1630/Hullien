@@ -1,5 +1,5 @@
 #include "GameOverEvent.h"
-#include "..\..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\..\Utility\Input\Input.h"
 #include "..\..\..\GameObject\GroundStage\GroundStage.h"
 #include "..\..\..\GameObject\MotherShipUFO\MotherShipUFO.h"
 #include "..\..\..\GameObject\Actor\EventCharacter\EventGirl\EventGirl.h"
@@ -182,8 +182,7 @@ void CGameOverEvent::SceneSetting()
 	}
 
 	// スキップ.
-	if (GetAsyncKeyState(VK_RETURN) & 0x8000
-		|| CXInput::B_Button() == CXInput::enPRESS_AND_HOLD) {
+	if( CInput::IsHold( EKeyBind::Skip ) == true ){
 		m_SkipWaitCount++;
 
 	}

@@ -10,7 +10,7 @@
 #include "..\..\..\Common\Sprite\CSprite.h"
 #include "..\..\..\Resource\SpriteResource\SpriteResource.h"
 #include "..\..\..\GameObject\Widget\Fade\Fade.h"
-#include "..\..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\..\Utility\Input\Input.h"
 #include "..\..\..\XAudio2\SoundManager.h"
 
 #include "..\..\..\Utility\ImGuiManager\ImGuiManager.h"
@@ -249,18 +249,14 @@ void CGame::ContinueUpdate()
 	switch (m_ContinueWidget->GetSelectState())
 	{
 	case CContinueWidget::ESelectState::Yes:
-		if (GetAsyncKeyState(VK_RETURN) & 0x0001
-			|| CXInput::B_Button() == CXInput::enPRESSED_MOMENT)
-		{
+		if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
 			CSoundManager::PlaySE("Determination");
 			m_NextSceneState = ENextSceneState::Game;
 			m_IsContinueSelect = true;
 		}
 		break;
 	case CContinueWidget::ESelectState::No:
-		if (GetAsyncKeyState(VK_RETURN) & 0x0001
-			|| CXInput::B_Button() == CXInput::enPRESSED_MOMENT)
-		{
+		if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
 			CSoundManager::PlaySE("CancelDetermination");
 			m_NextSceneState = ENextSceneState::GameOver;
 			m_IsContinueSelect = true;

@@ -33,9 +33,9 @@ void CControllerEdit::Render()
 	ImGui::LabelText( u8"変更ボタン", u8"設定ボタン" );
 
 	// 各ラベルの表示.
-	for( int i = CXInput::A; i < CXInput::Max; i++ ){
-		LabelRender( i );
-	}
+//	for( int i = CXInput::A; i < CXInput::Max; i++ ){
+//		LabelRender( i );
+//	}
 
 	// ボタン設定の決定.
 	if( ImGui::Button( u8"決定" ) ){
@@ -50,21 +50,21 @@ void CControllerEdit::Render()
 //--------------------------.
 void CControllerEdit::LabelRender( const int& index )
 {
-	// 設定前のボタン情報を記憶.
-	CXInput::enBUTTON_LIST oldNum = m_ItemList[index];
+	//// 設定前のボタン情報を記憶.
+	//CXInput::enBUTTON_LIST oldNum = m_ItemList[index];
 
-	// ラベルの表示.
-	if( ImGui::Combo( m_LabelList[index].u8string().c_str(), (int*)&m_ItemList[index], 
-		BUTTON_ITEMS, IM_ARRAYSIZE(BUTTON_ITEMS) )){
-		
-		// ボタンを入れ替える.
-		for( int i = CXInput::A; i < CXInput::Max; i++ ){
-			if( i == index ) continue;
-			if( m_ItemList[index] == m_ItemList[i] ){
-				m_ItemList[i] = oldNum;
-			}
-		}
-	}
+	//// ラベルの表示.
+	//if( ImGui::Combo( m_LabelList[index].u8string().c_str(), (int*)&m_ItemList[index], 
+	//	BUTTON_ITEMS, IM_ARRAYSIZE(BUTTON_ITEMS) )){
+	//	
+	//	// ボタンを入れ替える.
+	//	for( int i = CXInput::A; i < CXInput::Max; i++ ){
+	//		if( i == index ) continue;
+	//		if( m_ItemList[index] == m_ItemList[i] ){
+	//			m_ItemList[i] = oldNum;
+	//		}
+	//	}
+	//}
 }
 
 //--------------------------.
@@ -72,13 +72,13 @@ void CControllerEdit::LabelRender( const int& index )
 //--------------------------.
 void CControllerEdit::ButtonSettingDetermination()
 {
-	// 各種ボタンを設定する.
-	for( int i = CXInput::A; i < CXInput::Max; i++ ){
-		CXInput::enBUTTON_LIST no = static_cast<CXInput::enBUTTON_LIST>(i);
-		CXInput::SetButton( no, m_ItemList[no] );
-	}
-	// ファイルに書き込む.
-	FileWriting();
+	//// 各種ボタンを設定する.
+	//for( int i = CXInput::A; i < CXInput::Max; i++ ){
+	//	CXInput::enBUTTON_LIST no = static_cast<CXInput::enBUTTON_LIST>(i);
+	//	CXInput::SetButton( no, m_ItemList[no] );
+	//}
+	//// ファイルに書き込む.
+	//FileWriting();
 }
 
 //--------------------------.
@@ -86,15 +86,15 @@ void CControllerEdit::ButtonSettingDetermination()
 //--------------------------.
 void CControllerEdit::FileReading()
 {
-	std::vector<std::string> readList;
-	readList = CXInput::FileReading();
+	//std::vector<std::string> readList;
+	//readList = CXInput::FileReading();
 
-	// テキストの情報を記憶.
-	for( size_t i = 0; i < readList.size(); i+=2 ){
-		m_LabelList.emplace_back( readList[i].c_str() );
-		CXInput::enBUTTON_LIST temp = static_cast<CXInput::enBUTTON_LIST>(std::stoi(readList[i+1]));
-		m_ItemList.emplace_back( temp ); 
-	}
+	//// テキストの情報を記憶.
+	//for( size_t i = 0; i < readList.size(); i+=2 ){
+	//	m_LabelList.emplace_back( readList[i].c_str() );
+	//	CXInput::enBUTTON_LIST temp = static_cast<CXInput::enBUTTON_LIST>(std::stoi(readList[i+1]));
+	//	m_ItemList.emplace_back( temp ); 
+	//}
 }
 
 //--------------------------.
@@ -102,17 +102,17 @@ void CControllerEdit::FileReading()
 //--------------------------.
 void CControllerEdit::FileWriting()
 {
-	std::ofstream outFile;
-	outFile.open( CXInput::FILE_PATH, std::ios::trunc );
+	//std::ofstream outFile;
+	//outFile.open( CXInput::FILE_PATH, std::ios::trunc );
 
-	// ファイルが読み込めてなかったら終了.
-	if( !outFile.is_open() ) return;
+	//// ファイルが読み込めてなかったら終了.
+	//if( !outFile.is_open() ) return;
 
-	// リストのサイズ分テキストに保存.
-	for( size_t i = 0; i < m_ItemList.size(); i++ ){
-		outFile << m_LabelList[i].string() << ",";
-		outFile << static_cast<int>(m_ItemList[i]) << std::endl;
-	}
+	//// リストのサイズ分テキストに保存.
+	//for( size_t i = 0; i < m_ItemList.size(); i++ ){
+	//	outFile << m_LabelList[i].string() << ",";
+	//	outFile << static_cast<int>(m_ItemList[i]) << std::endl;
+	//}
 
-	outFile.close();
+	//outFile.close();
 }

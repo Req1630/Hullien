@@ -1,7 +1,7 @@
 #include "Switch.h"
 #include "..\..\..\Common\Sprite\CSprite.h"
 #include "..\..\..\Resource\SpriteResource\SpriteResource.h"
-#include "..\..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\..\Utility\Input\Input.h"
 
 CSwitch::CSwitch()
 	: CSwitch( SPRITE_ON_NAME, SPRITE_OFF_NAME )
@@ -40,11 +40,11 @@ void CSwitch::Update()
 	m_IsActive = true;
 	if( m_InputWaitTime <= 0.0f ){
 		m_SelectNo = EArrowNo_None;
-		if( GetAsyncKeyState(VK_RIGHT) & 0x0001 || CXInput::LThumbX_Axis() > IDLE_THUMB_MAX || CXInput::DPadRIGHT() == CXInput::enSEPARATED ){
+		if( CInput::IsMomentPress( EKeyBind::Right ) == true || CXInput::LThumbX_Axis() > IDLE_THUMB_MAX  ){
 			m_SelectNo = EArrowNo_Right;
 			m_InputWaitTime = INPUT_WAIT_TIME_MAX;
 		}
-		if( GetAsyncKeyState(VK_LEFT) & 0x0001 || CXInput::LThumbX_Axis() < IDLE_THUMB_MIN || CXInput::DPadLEFT() == CXInput::enSEPARATED ){
+		if( CInput::IsMomentPress( EKeyBind::Left ) == true || CXInput::LThumbX_Axis() < IDLE_THUMB_MIN ){
 			m_SelectNo = EArrowNo_Left;
 			m_InputWaitTime = INPUT_WAIT_TIME_MAX;
 		}

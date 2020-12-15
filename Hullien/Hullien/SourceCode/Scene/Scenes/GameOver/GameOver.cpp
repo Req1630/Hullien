@@ -1,6 +1,6 @@
 #include "..\SceneList.h"
 #include "..\..\..\GameObject\Widget\SceneWidget\GameOverWidget\GameOverWidget.h"
-#include "..\..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\..\Utility\Input\Input.h"
 #include "..\..\..\XAudio2\SoundManager.h"
 
 CGameOver::CGameOver( CSceneManager* pSceneManager )
@@ -40,9 +40,7 @@ void CGameOver::Update()
 
 
 	// à»â∫ÉVÅ[ÉìëJà⁄.
-	if (GetAsyncKeyState(VK_RETURN) & 0x0001
-		|| CXInput::B_Button() == CXInput::enPRESS_AND_HOLD)
-	{
+	if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
 		if(m_IsChangeScene == true) return;
 		CFade::SetFadeIn();
 		CSoundManager::PlaySE("Determination");

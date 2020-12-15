@@ -383,6 +383,7 @@
     <ClInclude Include="SourceCode\Utility\Input\XInput\XinputConfig.h" />
     <ClInclude Include="SourceCode\Utility\Input\KeyInput\KeyInput.h" />
     <ClInclude Include="SourceCode\Common\Gage\CircleGage.h" />
+    <ClInclude Include="SourceCode\Utility\Input\InputStruct.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

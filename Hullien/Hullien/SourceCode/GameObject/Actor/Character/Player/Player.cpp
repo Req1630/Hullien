@@ -2,7 +2,7 @@
 #include "..\..\..\..\Common\Mesh\Dx9SkinMesh\Dx9SkinMesh.h"
 #include "..\..\..\..\Common\Mesh\Dx9StaticMesh\Dx9StaticMesh.h"
 #include "..\..\..\..\Resource\MeshResource\MeshResource.h"
-#include "..\..\..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\..\..\Utility\Input\Input.h"
 #include "..\..\..\..\Camera\RotLookAtCenter\RotLookAtCenter.h"
 #include "..\..\..\..\Camera\CameraManager\CameraManager.h"
 #include "..\..\..\..\Collider\CollsionManager\CollsionManager.h"
@@ -266,7 +266,7 @@ void CPlayer::AttackController()
 	if( bit::IsBitFlag( m_StatusFlag, player::EStatusFlag_Dead )			== true ) return;	// 死亡中は終了.
 
 	// Xボタンを押した瞬間になれば.
-	if( CXInput::X_Button() == CXInput::enPRESSED_MOMENT || ( GetAsyncKeyState('F') & 0x8000 ) ){
+	if( CInput::IsMomentPress( EKeyBind::Attack ) == true ){
 		// 攻撃カウントが最大以上なら終了.
 		if( m_AttackComboCount >= m_Parameter.AttackComboMax ) return;
 		m_AttackComboCount++;	// 攻撃カウントを加算.
@@ -296,7 +296,7 @@ void CPlayer::SPController()
 
 	if( m_SpecialAbility < m_Parameter.SpecialAbilityMax ) return;
 	// Yボタンが押された瞬間になれば.
-	if( CXInput::Y_Button() == CXInput::enPRESSED_MOMENT || ( GetAsyncKeyState('Y') & 0x8000 )){
+	if( CInput::IsMomentPress( EKeyBind::SpecialAbility ) == true ){
 		bit::OnBitFlag( &m_StatusFlag, player::EStatusFlag_EndSPCameraMove );
 		m_CameraPosition	= m_pCamera->GetPosition();
 		m_SpecialAbility	= 0.0f;
@@ -321,7 +321,7 @@ void CPlayer::AvoidController()
 	if( m_MoveVector.x < IDLE_THUMB_MAX && IDLE_THUMB_MIN < m_MoveVector.x &&
 		m_MoveVector.z < IDLE_THUMB_MAX && IDLE_THUMB_MIN < m_MoveVector.z ) return;
 	// Aボタンが押された瞬間になれば.
-	if( CXInput::A_Button() == CXInput::enPRESSED_MOMENT || ( GetAsyncKeyState('R') & 0x8000 )){
+	if( CInput::IsMomentPress( EKeyBind::Avoidance ) == true ){
 		bit::OnBitFlag( &m_StatusFlag, player::EStatusFlag_DuringAvoid );	// 回避フラグを立てる.
 		m_AvoidVector = m_MoveVector;	// 移動ベクトルを設定.
 		m_pEffects[player::EEffectNo_Avoidance]->Play( { m_vPosition.x, m_vPosition.y+10.0f, m_vPosition.z } );

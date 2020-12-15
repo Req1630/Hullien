@@ -3,7 +3,7 @@
 #include "..\..\..\..\Resource\MeshResource\MeshResource.h"
 #include "..\..\..\..\Common\Mesh\Dx9StaticMesh\Dx9StaticMesh.h"
 #include "..\..\..\..\Collider\CollsionManager\CollsionManager.h"
-#include "..\..\..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\..\..\Utility\Input\Input.h"
 #include "..\..\..\..\XAudio2\SoundManager.h"
 
 STG::CPlayer::CPlayer()
@@ -174,12 +174,12 @@ void STG::CPlayer::ShotController()
 {
 	bool playShotSE = false;
 	// ‰Ÿ‚µ‚½uŠÔ‚ÉShotCount‰Šú‰»E’e‚ğŒ‚‚Â.
-	if( CXInput::R_Button() == CXInput::enPRESSED_MOMENT ){
+	if( CInput::IsMomentPress( EKeyBind::STGAttack ) == true ){
 		m_ShotCount = 0;
 		playShotSE = BulletShot( m_vRotation.y, BULLET_MOVE_SPEED );
 	}
 	// ’·‰Ÿ‚µ‚Ìê‡’e‚ğŒ‚‚ÂEShotCount‚Ì‰ÁZ.
-	if( CXInput::R_Button() == CXInput::enPRESS_AND_HOLD || ( GetAsyncKeyState('Z') & 0x8000 )){
+	if( CInput::IsHold( EKeyBind::STGAttack ) == true ){
 		m_ShotCount++;
 		if( m_ShotCount == SHOT_INTERVAL_FRAME ){
 			playShotSE = BulletShot( m_vRotation.y, BULLET_MOVE_SPEED );

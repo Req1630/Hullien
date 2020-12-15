@@ -1,6 +1,6 @@
 #include "PlayerEdit.h"
 #include "..\..\Utility\FileManager\FileManager.h"
-#include "..\..\Utility\Input\XInput\XInput.h"
+#include "..\..\Utility\Input\Input.h"
 
 CPlayerEdit::CPlayerEdit()	
 	: m_pPlayer			( nullptr )
@@ -27,7 +27,7 @@ void CPlayerEdit::Update()
 	if( m_IsSetCamera == true ){
 		m_pPlayer->Update();
 	}
-	if( CXInput::Back_Button() == CXInput::enSEPARATED ){
+	if( CInput::IsMomentPress( EKeyBind::Back ) == true ){
 		m_IsSetCamera = false;
 		// ゲームパッドの使用を許可する.
 		ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
