@@ -29,6 +29,14 @@ enum class enKeyBind : unsigned char
 
 } typedef EKeyBind;
 
+enum class enAxisBind : unsigned char
+{
+	None,
+
+	L_Forward,
+	L_Right,
+} typedef EAxisBind;
+
 // “ü—Íó‘Ô.
 enum enInputState : unsigned char
 {

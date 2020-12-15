@@ -164,7 +164,7 @@ void STG::CPlayer::Controller()
 		m_Direction.z >= IDLE_THUMB_MAX || IDLE_THUMB_MIN >= m_Direction.z ){
 		m_vRotation.y = atan2( m_Direction.x, m_Direction.z );	// ‰ñ“]’l‚ğæ“¾.
 	}
-
+	
 	// ’e‚ğŒ‚‚Â‘€ì.
 	ShotController();
 }

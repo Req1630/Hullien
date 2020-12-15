@@ -18,7 +18,7 @@ void CInput::InitKeyBind()
 		{ EKeyBind::Decision,		SKeyBindPair( VK_RETURN,	XINPUT_GAMEPAD_B )				},
 		{ EKeyBind::Cancel,			SKeyBindPair( VK_BACK,		XINPUT_GAMEPAD_A )				},
 		{ EKeyBind::Skip,			SKeyBindPair( VK_RETURN,	XINPUT_GAMEPAD_B )				},
-		// ゲーム系.
+		
 		{ EKeyBind::Attack,			SKeyBindPair( 'F',			XINPUT_GAMEPAD_X )				},
 		{ EKeyBind::SpecialAbility,	SKeyBindPair( 'Y',			XINPUT_GAMEPAD_Y )				},
 		{ EKeyBind::Avoidance,		SKeyBindPair( 'R',			XINPUT_GAMEPAD_A )				},
@@ -33,6 +33,18 @@ void CInput::InitKeyBind()
 		{ EKeyBind::Back,			SKeyBindPair( VK_BACK,		XINPUT_GAMEPAD_BACK )			},
 
 	};
+
+	GetInstance()->m_AxisBindList = 
+	{
+		{ EAxisBind::L_Forward,	SAxisBind( 'W', 'S', [](){ return CXInput::LThumbY_Axis(); }, -1.0f, 1.0f ) },
+		{ EAxisBind::L_Right,	SAxisBind( 'D', 'A', [](){ return CXInput::LThumbX_Axis(); }, -1.0f, 1.0f ) },
+	};
+}
+
+// キーバインドの初期化.
+void CInput::InitKeyBind( std::function<void(std::unordered_map<EKeyBind, SKeyBindPair>&)> func )
+{
+	func( GetInstance()->m_KeyBindList );
 }
 
 // 入力状態の更新.
@@ -83,6 +95,25 @@ bool CInput::NotPress( const EKeyBind& key )
 		return false;
 	}
 	return true;
+}
+
+// 軸値の取得.
+float CInput::GetAxisValue( const EAxisBind& key )
+{
+	float value = 0.0f;
+	if( CKeyInput::IsPress( GetInstance()->m_AxisBindList[key].PlusKey ) == true ){
+		value += GetInstance()->m_AxisBindList[key].MaxValue;
+	}
+	if( CKeyInput::IsPress( GetInstance()->m_AxisBindList[key].MinusKey ) == true ){
+		value += GetInstance()->m_AxisBindList[key].MinValue;
+	}
+	if( value != 0.0f ) return value;
+
+	value = static_cast<float>(GetInstance()->m_AxisBindList[key].GetValue())/static_cast<float>(SHRT_MAX);
+	value = pow( value, 3 );
+	if( fabsf(value) < 0.01f ) value = 0.0f;
+
+	return value;
 }
 
 // インスタンスの取得.

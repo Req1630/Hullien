@@ -53,7 +53,9 @@ void CXInput::StatsUpdate()
 // ‰Ÿ‚³‚ê‚Ä‚¢‚é‚Æ‚«.
 bool CXInput::IsPress( const WORD& button_mask, const int& connectNum )
 {
-	return GetInstance()->m_ButtonStateList[connectNum][button_mask] == EInputState_Hold;
+	return 
+		GetInstance()->m_ButtonStateList[connectNum][button_mask] == EInputState_Hold ||
+		GetInstance()->m_ButtonStateList[connectNum][button_mask] == EInputState_MomentPress;
 }
 
 // ‰Ÿ‚³‚ê‚½uŠÔ.
@@ -110,12 +112,12 @@ SHORT CXInput::RThumbY_Axis( const int& connectNum )
 //--------------------------------.
 // ƒgƒŠƒK[.
 //--------------------------------.
-INT CXInput::LTrigger( const int& connectNum )
+BYTE CXInput::LTrigger( const int& connectNum )
 {
 	GetInstance()->ConnectCheck( connectNum );
 	return GetInstance()->m_State[connectNum].Gamepad.bLeftTrigger;
 }
-INT CXInput::RTrigger( const int& connectNum )
+BYTE CXInput::RTrigger( const int& connectNum )
 {
 	GetInstance()->ConnectCheck( connectNum );
 	return GetInstance()->m_State[connectNum].Gamepad.bRightTrigger;

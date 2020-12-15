@@ -18,11 +18,11 @@
 
 #include "..\InputStruct.h"
 
-static const int IDLE_THUMB_MAX		=  10000;	//!< スティックの遊び.
-static const int IDLE_THUMB_MIN		= -10000;	//!< スティックの遊び.
-static const int IDLE_TIGGER_MAX	=  100;		//!< トリガーボタンの遊び.
-static const WORD	INPUT_VIBRATION_MIN	= 0;
-static const WORD	INPUT_VIBRATION_MAX	= 65535;
+static const SHORT	IDLE_THUMB_MAX		=  10000;	//!< スティックの遊び.
+static const SHORT	IDLE_THUMB_MIN		= -10000;	//!< スティックの遊び.
+static const BYTE	IDLE_TIGGER_MAX		=  100;		//!< トリガーボタンの遊び.
+static const WORD	INPUT_VIBRATION_MIN	=  0;		//!< バイブレーションの最小値.
+static const WORD	INPUT_VIBRATION_MAX	=  65535;	//!< バイブレーションの最大値.
 
 /**
 * @brief XInput Class(Singleton).
@@ -70,18 +70,18 @@ public:
 	static bool IsRelease( const WORD& button_mask, const int& connectNum = 0 );
 	// 押していない.
 	static bool NotPress( const WORD& button_mask, const int& connectNum = 0 );
-
+	// 左スティックのX軸の取得.
 	static SHORT LThumbX_Axis( const int& connectNum = 0 );
-
+	// 左スティックのY軸の取得.
 	static SHORT LThumbY_Axis( const int& connectNum = 0 );
-
+	// 右スティックのX軸の取得.
 	static SHORT RThumbX_Axis( const int& connectNum = 0 );
-
+	// 右スティックのY軸の取得.
 	static SHORT RThumbY_Axis( const int& connectNum = 0 );
-
-	static INT LTrigger( const int& connectNum = 0 );
-
-	static INT RTrigger( const int& connectNum = 0 );
+	// 左トリガーの取得.
+	static BYTE LTrigger( const int& connectNum = 0 );
+	// 右トリガーの取得.
+	static BYTE RTrigger( const int& connectNum = 0 );
 
 	// 振動設定.
 	static bool SetVibration( WORD LMotorSpd, WORD RMotorSpd, const int& connectNum = 0 );

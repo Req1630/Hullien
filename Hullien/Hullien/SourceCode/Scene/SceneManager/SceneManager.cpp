@@ -69,6 +69,10 @@ void CSceneManager::Update()
 		once = true;
 		gage->Init( CDirectX11::GetDevice(), CDirectX11::GetContext() );
 	} else {
+		CInput::Vector2<float> t;
+		t = CInput::GetAxisValue<float>( EAxisBind::L_Right, EAxisBind::L_Forward );
+		gage->SetPosition({200.0f, 200.0f, 0.0f});
+		gage->SetRotation({0.0f, 0.0f, atan2f(t.x, t.y)});
 		gage->Render();
 	}
 
