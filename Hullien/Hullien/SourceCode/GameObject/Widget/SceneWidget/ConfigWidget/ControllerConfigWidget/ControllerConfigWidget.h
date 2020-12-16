@@ -5,8 +5,8 @@
 #include "..\..\..\..\..\Camera\RotLookAtCenter\RotLookAtCenter.h"
 #include <vector>
 
-class CCursor;	// カーソルクラス.
-class CSwitch;	// スイッチクラス.
+class CConfigCursor;	// カーソルクラス.
+class CSwitch;			// スイッチクラス.
 
 class CControllerConfigWidget : public CWidget
 {
@@ -59,7 +59,7 @@ private:
 
 private:
 	std::vector<std::shared_ptr<CSprite>>	m_pSprites;	// 画像.
-	std::unique_ptr<CCursor>				m_pCursor;
+	std::unique_ptr<CConfigCursor>			m_pCursor;
 	std::unique_ptr<CSwitch>				m_pSwitch;
 	int		m_NowSelectState;
 	int		m_OldNowSelectState;

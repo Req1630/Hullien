@@ -4,7 +4,7 @@
 #include "..\..\..\..\..\Utility\Input\Input.h"
 #include "..\..\..\..\..\XAudio2\SoundManager.h"	
 #include "..\..\..\Slider\Slider.h"
-#include "..\..\..\Cursor\Cursor.h"
+#include "..\..\..\Cursor\ConfigCursor.h"
 
 /********************************************
 *	İ’èUIƒNƒ‰ƒX.
@@ -22,7 +22,7 @@ CVolumeConfigWidget::CVolumeConfigWidget()
 	, m_InputWaitTime		( 0.0f )
 	, m_IsOneStep			( false )
 {
-	m_pCursor = std::make_unique<CCursor>();
+	m_pCursor = std::make_unique<CConfigCursor>();
 	for( auto& v : m_pVolumeSlinders ) v = std::make_shared<CSlinder>();
 
 	// Œ»İ‚Ì‰¹—Ê‚Ì’l‚Ìæ“¾.

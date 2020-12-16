@@ -4,7 +4,7 @@
 #include "..\SceneWidget.h"
 #include <vector>
 
-class CCursor;
+class CConfigCursor;
 class CVolumeConfigWidget;		// 音量設定UIクラス.
 class CCameraConfigWidget;		// カメラ設定UIクラス.
 class CControllerConfigWidget;	// コントローラー設定UIクラス.
@@ -16,11 +16,11 @@ class CGraphicConfigWidget;		// グラフィック設定UIクラス.
 class CConfigWidget : public CSceneWidget
 {
 
-	const char* SPRITE_BACK = "ConfigBack";
-	const char* SPRITE_VOLUME = "Volume";
-	const char* SPRITE_CAMERA = "Camera";
-	const char* SPRITE_CONTROLLER = "Controller";
-	const char* SPRITE_GRAPHIC = "Graphic";
+	const char* SPRITE_BACK			= "ConfigBack";
+	const char* SPRITE_VOLUME		= "Volume";
+	const char* SPRITE_CAMERA		= "Camera";
+	const char* SPRITE_CONTROLLER	= "Controller";
+	const char* SPRITE_GRAPHIC		= "Graphic";
 
 	const int BACKGROUND	= 0;	//背景配列番号.
 	const int VOLUME		= 1;	//開始配列番号.
@@ -67,7 +67,7 @@ private:
 
 private:
 	std::vector<std::shared_ptr<CSprite>>	m_pSprites;
-	std::unique_ptr<CCursor>				m_pCursor;				// カーソルクラス.
+	std::unique_ptr<CConfigCursor>			m_pCursor;				// カーソルクラス.
 	std::unique_ptr<CVolumeConfigWidget>	m_pVolumeConfig;		// 音量設定UI.
 	std::unique_ptr<CCameraConfigWidget>	m_pCameraConfig;		// カメラ設定UI.
 	std::unique_ptr<CControllerConfigWidget>m_pControllerConfig;	// コントローラー設定UI.

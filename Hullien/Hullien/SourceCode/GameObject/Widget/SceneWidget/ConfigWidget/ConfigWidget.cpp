@@ -3,7 +3,7 @@
 #include "..\..\..\..\Resource\SpriteResource\SpriteResource.h"
 #include "..\..\..\..\Utility\Input\Input.h"
 #include "..\..\..\..\XAudio2\SoundManager.h"
-#include "..\..\Cursor\Cursor.h"
+#include "..\..\Cursor\ConfigCursor.h"
 #include "VolumeConfigWidget/VolumeConfigWidget.h"
 #include "CameraConfigWidget/CameraConfigWidget.h"
 #include "ControllerConfigWidget/ControllerConfigWidget.h"
@@ -22,7 +22,7 @@ CConfigWidget::CConfigWidget()
 	, m_SelectState			( EConfigState_Volume )
 	, m_NowConfigState		( EConfigState_None )
 {
-	m_pCursor = std::make_unique<CCursor>();
+	m_pCursor = std::make_unique<CConfigCursor>();
 	m_pVolumeConfig = std::make_unique<CVolumeConfigWidget>();
 	m_pCameraConfig = std::make_unique<CCameraConfigWidget>();
 	m_pControllerConfig = std::make_unique<CControllerConfigWidget>();

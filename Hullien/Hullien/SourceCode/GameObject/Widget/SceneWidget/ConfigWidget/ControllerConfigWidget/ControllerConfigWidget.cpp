@@ -3,7 +3,7 @@
 #include "..\..\..\..\..\Resource\SpriteResource\SpriteResource.h"
 #include "..\..\..\..\..\Utility\Input\Input.h"
 #include "..\..\..\..\..\XAudio2\SoundManager.h"	
-#include "..\..\..\Cursor\Cursor.h"
+#include "..\..\..\Cursor\ConfigCursor.h"
 #include "..\..\..\Switch\Switch.h"
 #include "..\..\..\..\..\Utility\FileManager\FileManager.h"
 
@@ -16,7 +16,7 @@ CControllerConfigWidget::CControllerConfigWidget()
 	, m_NowConfigState		( ESelectState_Select )
 	, m_InputWaitTime		( 0.0f )
 {
-	m_pCursor = std::make_unique<CCursor>();
+	m_pCursor = std::make_unique<CConfigCursor>();
 	m_pSwitch = std::make_unique<CSwitch>();
 	m_pSwitch->SetValue( CXInput::IsVibration() );
 }

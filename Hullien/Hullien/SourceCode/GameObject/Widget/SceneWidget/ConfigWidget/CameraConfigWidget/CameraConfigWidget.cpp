@@ -3,7 +3,7 @@
 #include "..\..\..\..\..\Resource\SpriteResource\SpriteResource.h"
 #include "..\..\..\..\..\Utility\Input\Input.h"
 #include "..\..\..\..\..\XAudio2\SoundManager.h"	
-#include "..\..\..\Cursor\Cursor.h"
+#include "..\..\..\Cursor\ConfigCursor.h"
 #include "..\..\..\Slider\Slider.h"
 #include "..\..\..\Switch\Switch.h"
 #include "..\..\..\..\..\Utility\FileManager\FileManager.h"
@@ -22,7 +22,7 @@ CCameraConfigWidget::CCameraConfigWidget()
 	, m_NowConfigState		( ESelectState_Select )
 	, m_InputWaitTime		( 0.0f )
 {
-	m_pCursor = std::make_unique<CCursor>();
+	m_pCursor = std::make_unique<CConfigCursor>();
 	m_pSpeedSlinder = std::make_unique<CSlinder>( 0.1f, 0.005f );
 	m_pSwitch = std::make_unique<CSwitch>( SPRITE_NORMAL_NAME, SPRITE_INVERSION_NAME );
 }
@@ -225,7 +225,7 @@ bool CCameraConfigWidget::SpriteSetting()
 		if( m_pSprites[sprite] == nullptr ) return false;
 		if( sprite != ESpriteNo_Speed ) continue;
 		m_SlinderPosition = m_pSprites[sprite]->GetRenderPos();
-		m_SlinderPosition.x += 100.0f;
+		m_SlinderPosition.x += 200.0f;
 	}
 	return true;
 }

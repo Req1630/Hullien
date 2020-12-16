@@ -188,6 +188,7 @@
     <ClCompile Include="SourceCode\Utility\Input\XInput\XinputConfig.cpp" />
     <ClCompile Include="SourceCode\Utility\Input\KeyInput\KeyInput.cpp" />
     <ClCompile Include="SourceCode\Common\Gage\CircleGage.cpp" />
+    <ClCompile Include="SourceCode\GameObject\Widget\Cursor\ConfigCursor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\ImGui\imconfig.h" />
@@ -384,6 +385,7 @@
     <ClInclude Include="SourceCode\Utility\Input\KeyInput\KeyInput.h" />
     <ClInclude Include="SourceCode\Common\Gage\CircleGage.h" />
     <ClInclude Include="SourceCode\Utility\Input\InputStruct.h" />
+    <ClInclude Include="SourceCode\GameObject\Widget\Cursor\ConfigCursor.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

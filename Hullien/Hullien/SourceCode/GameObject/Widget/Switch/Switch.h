@@ -13,7 +13,7 @@ class CSwitch : public CWidget
 	inline static const char* SPRITE_ARROW_LEFT		= "arrowLeft";	// 矢印画像.
 	inline static const char* SPRITE_SELECT_ARROW_RIGHT	= "selectArrowRight";	// 矢印画像.
 	inline static const char* SPRITE_SELECT_ARROW_LEFT		= "selectArrowLeft";	// 矢印画像.
-	inline static const float ADJ_POSITION_X		= 250.0f;		// x座標調整値.
+	inline static const float ADJ_POSITION_X		= 350.0f;		// x座標調整値.
 	inline static const float ARROW_ADJ_POSITION_X	= 0.8f;			// x座標調整値.
 	inline static const int	INPUT_WAIT_TIME_MAX		= 30;			// 入力待機フレーム.
 	inline static const int	CHANGE_FRAME			= INPUT_WAIT_TIME_MAX/2;

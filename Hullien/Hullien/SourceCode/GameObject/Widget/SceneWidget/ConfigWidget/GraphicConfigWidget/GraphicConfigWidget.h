@@ -5,7 +5,7 @@
 #include "..\..\..\..\..\Camera\RotLookAtCenter\RotLookAtCenter.h"
 #include <vector>
 
-class CCursor;
+class CConfigCursor;
 class CSlinder;
 class CSwitch;
 
@@ -60,7 +60,7 @@ private:
 
 private:
 	std::vector<std::shared_ptr<CSprite>>	m_pSprites;	// ‰æ‘œ.
-	std::unique_ptr<CCursor>				m_pCursor;
+	std::unique_ptr<CConfigCursor>			m_pCursor;
 	std::unique_ptr<CSwitch>				m_pSwitch;
 	bool	m_IsFullScreen;
 	int		m_NowSelectState;

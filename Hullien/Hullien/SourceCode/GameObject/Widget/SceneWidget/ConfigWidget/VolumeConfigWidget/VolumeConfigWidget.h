@@ -5,7 +5,7 @@
 #include <vector>
 
 class CSlinder;	// スライダー.
-class CCursor;	// カーソル.
+class CConfigCursor;	// カーソル.
 
 /********************************************
 *	音量設定UIクラス.
@@ -18,7 +18,7 @@ class CVolumeConfigWidget : public CWidget
 	const char* SPRITE_MARK_NAME	= "VolumeMark";
 	const char* SPRITE_MARK_ICON_NAME	= "volumeMarkIcon";
 
-	const float BAR_POSITION_X = 100.0f;
+	const float BAR_POSITION_X = 200.0f;
 	const float DEFALUT_VOLUME = 1.0f;
 	const float MARK_ICON_POS_X = 10.0f;
 
@@ -98,7 +98,7 @@ private:
 	virtual bool SpriteSetting() override;
 
 private:
-	std::unique_ptr<CCursor>				m_pCursor;			// カーソルクラス.
+	std::unique_ptr<CConfigCursor>				m_pCursor;			// カーソルクラス.
 	std::vector<std::shared_ptr<CSlinder>>	m_pVolumeSlinders;	// 音量スライダー.
 	std::vector<std::shared_ptr<CSprite>>	m_pSprites;			// 画像.
 	std::vector<D3DXVECTOR3>				m_SlinderPositions;	// スライダーの座標.

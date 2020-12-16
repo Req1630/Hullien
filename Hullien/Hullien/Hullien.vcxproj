@@ -241,6 +241,7 @@
     <ClCompile Include="SourceCode\GameObject\STG\STGActor.cpp" />
     <ClCompile Include="SourceCode\GameObject\STG\STGManager\STGManager.cpp" />
     <ClCompile Include="SourceCode\GameObject\UFOLight\UFOLight.cpp" />
+    <ClCompile Include="SourceCode\GameObject\Widget\Cursor\ConfigCursor.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\Cursor\Cursor.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\EventWidget\EventWidget.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\EventWidget\GameStartEventWidget\GameStartEventWidget.cpp" />
@@ -330,6 +331,7 @@
     <ClInclude Include="SourceCode\GameObject\Actor\Item\EditItem\EditItem.h" />
     <ClInclude Include="SourceCode\GameObject\STG\Bullet\BuletManager\BuletManager.h" />
     <ClInclude Include="SourceCode\GameObject\STG\Bullet\BuletManager\BulletManagerParam.h" />
+    <ClInclude Include="SourceCode\GameObject\Widget\Cursor\ConfigCursor.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\ControllerConfigWidget\ControllerConfigWidget.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\GraphicConfigWidget\GraphicConfigWidget.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\GameWidget\CharacterWidget\BackGauge\BackGauge.h" />
