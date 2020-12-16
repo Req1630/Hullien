@@ -64,6 +64,7 @@ private:
 	std::vector<std::pair<EObjectTag, std::pair<D3DXVECTOR3, float>>>	m_ObjPositionList;	// 各オブジェクトの座標リスト.
 	int		m_ObjPosListCount;		// オブジェクトの座標リストの数.
 	bool	m_IsOllAnimationStop;	// 全部のアニメーションが停止したか.
+	bool	m_IsPlayCameraShake;	// カメラを揺らすかどうか.
 };
 
 #endif	// #ifndef CHARACTER_MANAGER_H.

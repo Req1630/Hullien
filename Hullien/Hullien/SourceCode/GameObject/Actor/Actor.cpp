@@ -3,12 +3,13 @@
 #include "..\InvisibleWall\BoxStruct.h"
 
 CActor::CActor()
-	: m_pCollManager	( nullptr )
-	, m_pBoxWall		( nullptr )
-//	, m_HitStopCount	( 0 )
-//	, m_HitStopTime		( 0 )
-//	, m_IsHitStop		( false )
-	, m_IsPossibleToHit	( false )
+	: m_pCollManager		( nullptr )
+	, m_pBoxWall			( nullptr )
+//	, m_HitStopCount		( 0 )
+//	, m_HitStopTime			( 0 )
+//	, m_IsHitStop			( false )
+	, m_IsPossibleToHit		( false )
+	, m_IsPlayCameraShake	( false )
 {
 }
 

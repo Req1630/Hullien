@@ -51,8 +51,10 @@ void CAlienD::Update()
 {
 	m_AnimFrameList[m_NowAnimNo].UpdateFrame( m_AnimSpeed );
 	SetMoveVector( m_TargetPosition );	// 目的のベクトルを取得.
-	m_pLaserBeam->Update();	// レーザーの更新.
-	CurrentStateUpdate();	// 現在の状態の更新.
+	m_pLaserBeam->Update();				// レーザーの更新.
+	CurrentStateUpdate();				// 現在の状態の更新.
+
+	m_IsPlayCameraShake = m_pLaserBeam->IsPlayCameraShake();
 }
 
 // 描画関数.

@@ -56,6 +56,7 @@ bool CLaserBeam::Init()
 // 更新関数.
 void CLaserBeam::Update()
 {
+	m_IsPlayCameraShake = false;
 	m_VertexAddTimeCount += m_IsEndAttack == false ? 1 : TRAJECTORY_END_ADD_VALUE;
 	SetVertexPoint();	// 使用頂点の設定.
 	CreateVertex();		// 頂点座標の作成.
@@ -90,6 +91,7 @@ void CLaserBeam::Update()
 		if( m_IsPlayEffect == false ){
 			m_pEffect->Play( m_vPosition );
 			m_IsPlayEffect = true;
+			m_IsPlayCameraShake = true;
 		}
 	}
 }

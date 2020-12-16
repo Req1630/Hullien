@@ -45,6 +45,9 @@ public:
 	// ヒットストップの時間の設定.
 //	inline void SetHitStopTime( const int& time ){ m_HitStopTime = time; }
 
+	// カメラを揺らすかどうか.
+	inline bool IsPlayCameraShake(){ return m_IsPlayCameraShake; }
+
 protected:
 	// 壁に衝突したか.
 	bool IsCrashedWall();
@@ -60,6 +63,7 @@ protected:
 //	int									m_HitStopTime;		// ヒットストップの時間.
 //	bool								m_IsHitStop;		// ヒットストップしているか.
 	bool								m_IsPossibleToHit;	// 当たり判定が行えるかどうか.
+	bool								m_IsPlayCameraShake;// カメラを揺らすかどうか.
 };
 
 #endif	// #ifndef ACTOR_H.

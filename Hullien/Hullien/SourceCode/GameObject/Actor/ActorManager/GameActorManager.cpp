@@ -92,7 +92,9 @@ void CGameActorManager::Update()
 			// 宇宙人の更新処理.
 			pActor->Update();
 			SetPositionList( pActor );	// 座標リストの設定.
-
+			if( m_IsPlayCameraShake == false ){
+				m_IsPlayCameraShake = pActor->IsPlayCameraShake();
+			}
 			// プレイヤー、女の子の当たり判定.
 			m_pPlayer->Collision( pActor );
 			m_pGirl->Collision( pActor );
@@ -101,6 +103,7 @@ void CGameActorManager::Update()
 			pActor->Collision( m_pPlayer.get() );
 			pActor->Collision( m_pGirl.get() );
 			pActor->Collision( m_pBarrier.get() );
+
 
 			// マザーシップの当たり判定.
 			m_pMotherShipUFO->Collision( pActor );
@@ -116,6 +119,11 @@ void CGameActorManager::Update()
 			SetPositionList( pActor );				// 座標リストの設定.
 			pActor->Collision( m_pPlayer.get() );	// アイテムの当たり判定.
 		} );
+
+	if( m_IsPlayCameraShake == true ){
+		m_IsPlayCameraShake = m_pPlayer->CameraShake();	// カメラを揺らす.
+	}
+
 
 	SetPositionList( m_pGirl.get() );			// 女の子座標を設定.
 	SetPositionList( m_pPlayer.get() );			// プレイヤー座標を設定.

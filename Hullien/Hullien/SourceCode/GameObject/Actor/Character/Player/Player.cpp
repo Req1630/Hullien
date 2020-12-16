@@ -86,6 +86,8 @@ bool CPlayer::Init()
 	m_CameraLookPosition	= { m_vPosition.x, m_Parameter.CameraLookHeight, m_vPosition.z };
 	m_CameraLerp			= m_Parameter.CameraLerpValue;
 
+	m_ParalysisCameraShakeCount = FPS*2;
+
 	// 待機アニメーションに変更.
 	m_pSkinMesh->ChangeAnimSet_StartPos( player::EAnimNo_Wait, 0.0 );
 
@@ -113,7 +115,6 @@ void CPlayer::Update()
 		AvoidMove();			// 回避動作.
 		KnockBack();			// ノックバック動作関数.
 		Dead();					// 死亡関数.
-		m_ParalysisCameraShakeCount = FPS*2;
 		m_HitStopCameraPosition = m_pCamera->GetPosition();
 	} else {
 		ParalysisUpdate();		// 麻痺時の更新.
@@ -221,6 +222,21 @@ bool CPlayer::IsSpecialAbility()
 float CPlayer::GetCameraRadianX()
 {
 	return m_pCamera->GetRadianX();
+}
+
+// カメラを揺らす.
+bool CPlayer::CameraShake()
+{
+	const float SHAKE_VALUE = 
+		cosf(static_cast<float>(D3DX_PI) * TWO / 15.0f * m_ParalysisCameraShakeCount) * (m_ParalysisCameraShakeCount * 0.01f);
+	const D3DXVECTOR3 lookPosition = { m_vPosition.x, m_Parameter.CameraLookHeight, m_vPosition.z };
+	m_pCamera->SetAddPositionValue( { SHAKE_VALUE, 0.0f, SHAKE_VALUE } );
+	m_ParalysisCameraShakeCount--;
+	if( m_ParalysisCameraShakeCount < 0 ){
+		m_ParalysisCameraShakeCount = FPS*2;
+		return false;
+	}
+	return true;
 }
 
 // 操作関数.
@@ -841,14 +857,6 @@ void CPlayer::MoveSpeedUpUpdate()
 // 麻痺中の更新関数.
 void CPlayer::ParalysisUpdate()
 {
-	if( m_pEffectTimers[player::EEffectTimerNo_Paralysis]->IsUpdate() == true ){
-		m_ParalysisCameraShakeCount--;
-		if( m_ParalysisCameraShakeCount < 0 ) m_ParalysisCameraShakeCount = 0;
-		const float SHAKE_VALUE = 
-			cosf(static_cast<float>(D3DX_PI) * TWO / 15.0f * m_ParalysisCameraShakeCount) * (m_ParalysisCameraShakeCount * 0.01f);
-		const D3DXVECTOR3 lookPosition = { m_vPosition.x, m_Parameter.CameraLookHeight, m_vPosition.z };
-		m_pCamera->SetAddPositionValue( { SHAKE_VALUE, 0.0f, SHAKE_VALUE } );
-	}
 	if( m_pEffectTimers[player::EEffectTimerNo_Paralysis]->Update() == false ) return;
 	m_AnimSpeed = DEFAULT_ANIM_SPEED;
 	m_pEffects[player::EEffectNo_Paralysis]->Stop();

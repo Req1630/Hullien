@@ -122,6 +122,9 @@ public:
 	// ベクトルの取得.
 	virtual void SetVector( const D3DXVECTOR3& vec ) override { m_HitVector = vec; }
 
+	// カメラを揺らす.
+	bool CameraShake();
+
 private:
 	// 操作関数.
 	void Controller();
