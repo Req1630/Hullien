@@ -82,7 +82,7 @@ bool CReturnTitle::SpriteSetting()
 	const char* spriteName[] =
 	{
 		SPRITE_TITLE_NAME,
-		SPRITE_PUSH_NAME
+//		SPRITE_PUSH_NAME
 	};
 	int SpriteMax = sizeof(spriteName) / sizeof(spriteName[0]);
 

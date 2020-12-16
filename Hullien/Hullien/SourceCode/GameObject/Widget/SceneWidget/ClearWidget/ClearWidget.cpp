@@ -93,7 +93,7 @@ bool CClearWidget::SpriteSetting()
 		m_pSkipSprites.emplace_back(CSpriteResource::GetSprite(spriteName[sprite]));
 		if( m_pSkipSprites[sprite] == nullptr ) return false;
 	}
-	m_vPosition = m_pSkipSprites[0]->GetRenderPos();
+	m_vPosition = m_pSkipSprites[2]->GetRenderPos();
 	m_vPosition.x -= m_pSkipSprites[1]->GetSpriteSize().x/2.0f;
 
 	return true; 
