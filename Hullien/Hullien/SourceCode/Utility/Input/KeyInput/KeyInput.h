@@ -1,7 +1,16 @@
+/**
+* @file LeyInput.h
+* @brief This is Use Xinput Controller file.
+* @author Fukuta
+* @date 2020/12/16
+* @details Key情報を取得するためのクラスです.
+**/
 #ifndef KEY_INPUT_H
 #define KEY_INPUT_H
 
 #include <Windows.h>
+
+#include "..\InputStruct.h"
 
 /*******************************
 * キー入力を取得するクラス.
@@ -11,17 +20,6 @@ class CKeyInput
 	static const int KEY_MAX = 256;	// キーの最大値.
 
 public:
-	// キーの状態.
-	enum enKeyState : unsigned char
-	{
-		EKeyState_NotPress	= 1 << 0,	// 何も押していない.
-		EKeyState_Moment	= 1 << 1,	// 押した瞬間.
-		EKeyState_Hold		= 1 << 2,	// 押し続けている.
-		EKeyState_Release	= 1 << 3,	// 離した瞬間.
-	} typedef EKeyState;
-	typedef char KeyState;
-
-public:
 	CKeyInput();
 	~CKeyInput();
 
@@ -29,7 +27,7 @@ public:
 	static void Update();
 
 	// キーの状態の取得.
-	static KeyState GetState( const unsigned char& key );
+	static unsigned char GetState( const unsigned char& key );
 
 	// 押されているとき.
 	static bool IsPress( const unsigned char& key );

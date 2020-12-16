@@ -150,18 +150,18 @@ HRESULT CCircleGage::InitModel()
 	if( pTextureInterface != nullptr ){
 		pTextureInterface->GetDesc( &desc );
 	}
-	float w = static_cast<float>(desc.Width)/2;
-	float h = static_cast<float>(desc.Height)/2;
+	float w = static_cast<float>(desc.Width);
+	float h = static_cast<float>(desc.Height);
 	
 	// 板ポリ(四角形)の頂点を作成.
 	VERTEX vertices[] =
 	{
 		// ポリゴンの中心を頂点とする.
 		// 頂点座標(x,y,z)					UV座標(u,v)
-		D3DXVECTOR3(-w,    h, 0.0f), D3DXVECTOR2(0.0f, 1.0f),	//頂点１(左下).
-		D3DXVECTOR3(-w, -h, 0.0f), D3DXVECTOR2(0.0f, 0.0f),	//頂点２(左上).
+		D3DXVECTOR3(0.0f,    h, 0.0f), D3DXVECTOR2(0.0f, 1.0f),	//頂点１(左下).
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f),	//頂点２(左上).
 		D3DXVECTOR3(   w,    h, 0.0f), D3DXVECTOR2(1.0f, 1.0f),	//頂点３(右下).
-		D3DXVECTOR3(   w, -h, 0.0f), D3DXVECTOR2(1.0f, 0.0f)	//頂点４(右上).
+		D3DXVECTOR3(   w, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 0.0f)	//頂点４(右上).
 	};
 
 	// バッファ構造体.

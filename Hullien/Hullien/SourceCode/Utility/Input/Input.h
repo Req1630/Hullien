@@ -1,12 +1,27 @@
 #ifndef INPUT_H
 #define INPUT_H
 
+// 警告についてのコード分析を無効にする.4005:再定義.
+#pragma warning(disable:4005)
+
 #include "KeyInput/KeyInput.h"
 #include "XInput/XInput.h"
 #include "InputStruct.h"
 
 #include <unordered_map>
 #include <functional>
+
+//「D3DX～」の定義使用時に必要.
+#include <D3DX10.h>
+#pragma comment( lib, "d3dx10.lib" )
+
+// 入力軸の無効範囲.
+inline static const float	INPUT_AXIS_DEAD_ZONE = 0.4f;
+// 入力軸のn乗値.
+// コントローラーから受け取った値をn乗すると.
+// 値が滑らかになる.
+// https://hexadrive.jp/lab/tips/976/.
+inline static const int		INPUT_AXIS_POW_VALUE = 3;
 
 class CInput
 {
@@ -32,49 +47,53 @@ public:
 	// 軸バインド.
 	struct stAxisBind
 	{
-		const unsigned char	PlusKey;	// キー番号.
 		const unsigned char	MinusKey;	// キー番号.
+		const unsigned char	PlusKey;	// キー番号.
 
-		std::function<SHORT()> GetValue;// 値の取得関数.
+		const std::function<SHORT()> GetValue;// 値の取得関数.
 
 		const float MinValue;
 		const float MaxValue;
 
-		stAxisBind()
-			: stAxisBind	( 0, 0, [](){ return 0; }, 0.0f, 0.0f )
-		{}
+		stAxisBind() : stAxisBind	( 0, 0, [](){ return 0; }, 0.0f, 0.0f ){}
 		stAxisBind(
-			const unsigned char& pk,
 			const unsigned char& mk,
+			const unsigned char& pk,
 			const std::function<SHORT()>& func,
 			const float& minValue,
 			const float& maxValue )
-			: PlusKey	( pk )
-			, MinusKey	( mk )
+			: MinusKey	( mk )
+			, PlusKey	( pk )
 			, GetValue	( func )
 			, MinValue	( minValue )
 			, MaxValue	( maxValue )
 		{}
 	} typedef SAxisBind;
 
-	template<typename T>
 	struct Vector2
 	{
-		T x;
-		T y;
-		T length;
+		float x;
+		float y;
+		float length;
 
-		Vector2()
-			: x	(0), y (0), length (0)
-		{}
+		Vector2() : x (0), y (0), length (0){}
 	};
 
 public:
 	CInput();
 	~CInput();
 
+	// バインドの初期化.
+	static void InitBind();
+	// バインドの初期化 : 外部から設定用.
+	static void InitBind(
+		std::function<void(std::unordered_map<EKeyBind, SKeyBindPair>&)>	keyFunc,
+		std::function<void(std::unordered_map<EAxisBind, SAxisBind>&)>		axisFunc );
+
 	// キーバインドの初期化.
 	static void InitKeyBind();
+	// 軸バインドの初期化.
+	static void InitAxisBind();
 	// キーバインドの初期化 : 外部から設定用.
 	// 以下使用例.
 	/*
@@ -88,6 +107,8 @@ public:
 		};
 	*/
 	static void InitKeyBind( std::function<void(std::unordered_map<EKeyBind, SKeyBindPair>&)> func );
+	// 軸バインドの初期化 : 外部から設定用.
+	static void InitAxisBind( std::function<void(std::unordered_map<EAxisBind, SAxisBind>&)> func );
 
 	// 入力状態の更新.
 	static void StateUpdate();
@@ -103,8 +124,12 @@ public:
 	// 押していない.
 	static bool NotPress( const EKeyBind& key );
 
-	template<typename T>
-	static Vector2<T> GetAxisValue( const EAxisBind& key_x, const EAxisBind& key_y );
+	// 軸値の取得(vector2).
+	static Vector2 GetAxisVector( const EAxisBind& key_x, const EAxisBind& key_y );
+#ifdef	__D3DX9MATH_H__	//「D3DX～」系が呼ばれいれば以下の関数が使用できる.
+	// 軸値の取得(D3DXVECTOR2).
+	static D3DXVECTOR2 GetAxisDxVector( const EAxisBind& key_x, const EAxisBind& key_y );
+#endif	// #ifdef __D3DX9MATH_H__
 
 	// 軸値の取得.
 	static float GetAxisValue( const EAxisBind& key );
@@ -115,7 +140,7 @@ private:
 
 private:
 	std::unordered_map<EKeyBind, SKeyBindPair>	m_KeyBindList;	// KeyBindPairのリスト.
-	std::unordered_map<EAxisBind, SAxisBind>	m_AxisBindList;	// KeyBindPairのリスト.
+	std::unordered_map<EAxisBind, SAxisBind>	m_AxisBindList;	// AxisBindのリスト.
 
 private:
 	// コピー・ムーブコンストラクタ, 代入演算子の削除.
@@ -125,19 +150,5 @@ private:
 	CInput& operator = ( CInput && )		= delete;
 
 };
-
-template<typename T>
-CInput::Vector2<T> CInput::GetAxisValue( const EAxisBind& key_x, const EAxisBind& key_y )
-{
-	Vector2<T> t;
-	t.x = GetAxisValue(key_x);
-	t.y = GetAxisValue(key_y);
-
-	if( fabsf(t.x) < 0.4f && fabsf(t.y) < 0.4f ){
-		t.x = 0.0f; t.y = 0.0f;
-	}
-
-	return t;
-}
 
 #endif	// #ifndef INPUT_H.

@@ -33,8 +33,11 @@ enum class enAxisBind : unsigned char
 {
 	None,
 
-	L_Forward,
-	L_Right,
+	L_Forward,	// 左スティックの前後.
+	L_Right,	// 左スティックの左右.
+
+	R_Forward,	// 右スティックの前後.
+	R_Right,	// 右スティックの左右.
 } typedef EAxisBind;
 
 // 入力状態.

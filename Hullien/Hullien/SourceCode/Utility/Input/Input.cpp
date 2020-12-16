@@ -2,11 +2,28 @@
 
 CInput::CInput()
 	: m_KeyBindList		()
+	, m_AxisBindList	()
 {
 }
 
 CInput::~CInput()
 {
+}
+
+// バインドの初期化.
+void CInput::InitBind()
+{
+	InitKeyBind();	// キーバインドの初期化.
+	InitAxisBind();	// 軸バインドの初期化.
+}
+
+// バインドの初期化.
+void CInput::InitBind(
+	std::function<void(std::unordered_map<EKeyBind, SKeyBindPair>&)>	keyFunc,
+	std::function<void(std::unordered_map<EAxisBind, SAxisBind>&)>		axisFunc )
+{
+	keyFunc( GetInstance()->m_KeyBindList );	// キーバインドの初期化.
+	axisFunc( GetInstance()->m_AxisBindList );	// 軸バインドの初期化.
 }
 
 // キーバインドの初期化.
@@ -33,18 +50,30 @@ void CInput::InitKeyBind()
 		{ EKeyBind::Back,			SKeyBindPair( VK_BACK,		XINPUT_GAMEPAD_BACK )			},
 
 	};
+}
 
+// 軸バインドの初期化.
+void CInput::InitAxisBind()
+{
 	GetInstance()->m_AxisBindList = 
 	{
-		{ EAxisBind::L_Forward,	SAxisBind( 'W', 'S', [](){ return CXInput::LThumbY_Axis(); }, -1.0f, 1.0f ) },
-		{ EAxisBind::L_Right,	SAxisBind( 'D', 'A', [](){ return CXInput::LThumbX_Axis(); }, -1.0f, 1.0f ) },
+		{ EAxisBind::L_Forward,	SAxisBind( 'S', 'W', [](){ return CXInput::LThumbY_Axis(); }, -1.0f, 1.0f ) },
+		{ EAxisBind::L_Right,	SAxisBind( 'A', 'D', [](){ return CXInput::LThumbX_Axis(); }, -1.0f, 1.0f ) },
 	};
 }
 
 // キーバインドの初期化.
 void CInput::InitKeyBind( std::function<void(std::unordered_map<EKeyBind, SKeyBindPair>&)> func )
 {
+	// 関数を呼び出す.
 	func( GetInstance()->m_KeyBindList );
+}
+
+// 軸バインドの初期化 : 外部から設定用.
+void CInput::InitAxisBind( std::function<void(std::unordered_map<EAxisBind, SAxisBind>&)> func )
+{
+	// 関数を呼び出す.
+	func( GetInstance()->m_AxisBindList );
 }
 
 // 入力状態の更新.
@@ -97,6 +126,38 @@ bool CInput::NotPress( const EKeyBind& key )
 	return true;
 }
 
+// 軸値の取得(vector2).
+CInput::Vector2 CInput::GetAxisVector( const EAxisBind& key_x, const EAxisBind& key_y )
+{
+	Vector2 t;
+	t.x = GetAxisValue(key_x);
+	t.y = GetAxisValue(key_y);
+
+	if( fabsf(t.x) < INPUT_AXIS_DEAD_ZONE && 
+		fabsf(t.y) < INPUT_AXIS_DEAD_ZONE ){
+		t.x = 0.0f; t.y = 0.0f;
+	}
+
+	return t;
+}
+
+#ifdef	__D3DX9MATH_H__
+// 軸値の取得(D3DXVECTOR2).
+D3DXVECTOR2 CInput::GetAxisDxVector( const EAxisBind& key_x, const EAxisBind& key_y )
+{
+	D3DXVECTOR2 t;
+	t.x = GetAxisValue(key_x);
+	t.y = GetAxisValue(key_y);
+
+	if( fabsf(t.x) < INPUT_AXIS_DEAD_ZONE && 
+		fabsf(t.y) < INPUT_AXIS_DEAD_ZONE ){
+		t.x = 0.0f; t.y = 0.0f;
+	}
+
+	return t;
+}
+#endif	// #ifdef __D3DX9MATH_H__
+
 // 軸値の取得.
 float CInput::GetAxisValue( const EAxisBind& key )
 {
@@ -109,8 +170,9 @@ float CInput::GetAxisValue( const EAxisBind& key )
 	}
 	if( value != 0.0f ) return value;
 
+	// ノーマライズした値を取得.
 	value = static_cast<float>(GetInstance()->m_AxisBindList[key].GetValue())/static_cast<float>(SHRT_MAX);
-	value = pow( value, 3 );
+	value = pow( value, INPUT_AXIS_POW_VALUE );
 	if( fabsf(value) < 0.01f ) value = 0.0f;
 
 	return value;

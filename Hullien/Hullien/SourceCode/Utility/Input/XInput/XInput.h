@@ -2,7 +2,7 @@
 * @file XInput.h
 * @brief This is Use Xinput Controller file.
 * @author Fukuta
-* @date 2019/11/09
+* @date 2020/12/16
 * @details Xinputを使用するためのクラスです.
 **/
 #ifndef XINPUT_H

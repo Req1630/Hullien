@@ -6,7 +6,7 @@
 CKeyInput::CKeyInput()
 	: m_InputState() 
 {
-	for( auto& k : m_InputState ) k = EKeyState_NotPress;
+	for( auto& k : m_InputState ) k = EInputState_NotPress;
 }
 
 CKeyInput::~CKeyInput()
@@ -19,7 +19,7 @@ void CKeyInput::Update()
 }
 
 // ƒL[‚Ìó‘Ô‚Ìæ“¾.
-CKeyInput::KeyState CKeyInput::GetState( const unsigned char& key )
+unsigned char CKeyInput::GetState( const unsigned char& key )
 {
 	return GetInstance()->m_InputState[key];
 }
@@ -27,31 +27,31 @@ CKeyInput::KeyState CKeyInput::GetState( const unsigned char& key )
 // ‰Ÿ‚³‚ê‚Ä‚¢‚é‚Æ‚«.
 bool CKeyInput::IsPress( const unsigned char& key )
 {
-	return GetState( key ) == EKeyState_Moment || GetState( key ) == EKeyState_Hold;
+	return GetState( key ) == EInputState_MomentPress || GetState( key ) == EInputState_Hold;
 }
 
 // ‰Ÿ‚³‚ê‚½uŠÔ.
 bool CKeyInput::IsMomentPress( const unsigned char& key )
 {
-	return GetState( key ) == EKeyState_Moment;
+	return GetState( key ) == EInputState_MomentPress;
 }
 
 // ’·‰Ÿ‚µ‚µ‚Ä‚¢‚é‚Æ‚«.
 bool CKeyInput::IsHold( const unsigned char& key )
 {
-	return GetState( key ) == EKeyState_Hold;
+	return GetState( key ) == EInputState_Hold;
 }
 
 // —£‚µ‚½uŠÔ.
 bool CKeyInput::IsRelease( const unsigned char& key )
 {
-	return GetState( key ) == EKeyState_Release;
+	return GetState( key ) == EInputState_Release;
 }
 
 // ‰Ÿ‚µ‚Ä‚¢‚È‚¢.
 bool CKeyInput::NotPress( const unsigned char& key )
 {
-	return GetState( key ) == EKeyState_NotPress;
+	return GetState( key ) == EInputState_NotPress;
 }
 
 
@@ -69,16 +69,16 @@ void CKeyInput::KeyStateUpdate()
 	GetKeyboardState( keyState );
 	for( int i = 0; i < KEY_MAX; i++ ){
 		if( keyState[i] & 0x80 ){
-			if( m_InputState[i] & EKeyState::EKeyState_NotPress ){
-				m_InputState[i] = EKeyState::EKeyState_Moment;
+			if( m_InputState[i] & EInputState_NotPress ){
+				m_InputState[i] = EInputState_MomentPress;
 			} else {
-				m_InputState[i] = EKeyState::EKeyState_Hold;
+				m_InputState[i] = EInputState_Hold;
 			}
 		} else {
-			if( m_InputState[i] == EKeyState::EKeyState_Release ){
-				m_InputState[i] = EKeyState::EKeyState_NotPress;
-			} else if( m_InputState[i] != EKeyState::EKeyState_NotPress ){
-				m_InputState[i] = EKeyState::EKeyState_Release;
+			if( m_InputState[i] == EInputState_Release ){
+				m_InputState[i] = EInputState_NotPress;
+			} else if( m_InputState[i] != EInputState_NotPress ){
+				m_InputState[i] = EInputState_Release;
 			}
 		}
 	}
