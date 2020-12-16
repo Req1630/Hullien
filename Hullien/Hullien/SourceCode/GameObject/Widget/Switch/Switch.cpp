@@ -62,16 +62,6 @@ void CSwitch::Update()
 // •`‰æŠÖ”.
 void CSwitch::Render()
 {
-	// “®ìó‘Ô‚È‚ç‘I‘ð‰æ‘œ‚ð•`‰æ.
-	if( m_IsActive == true ){
-		m_pSprites[ESpriteNo_Choice]->SetPosition( m_vPosition );
-		m_pSprites[ESpriteNo_Choice]->SetDeprh( false );
-		m_pSprites[ESpriteNo_Choice]->SetBlend( true );
-		m_pSprites[ESpriteNo_Choice]->RenderUI();
-		m_pSprites[ESpriteNo_Choice]->SetBlend( false );
-		m_pSprites[ESpriteNo_Choice]->SetDeprh( true );
-	}
-
 	int spriteIndex = ESpriteNo_On;
 	if( m_IsValue == false ) spriteIndex = ESpriteNo_Off;
 	// ƒIƒ“EƒIƒt‰æ‘œ‚Ì•`‰æ.
@@ -82,14 +72,26 @@ void CSwitch::Render()
 	m_pSprites[spriteIndex]->SetBlend( false );
 	m_pSprites[spriteIndex]->SetDeprh( true );
 
-	for( int i = ESpriteNo_Begin; i < ESpriteNo_End; i++ ){
-		m_pSprites[i]->SetPosition( m_ArrowParams[i-ESpriteNo_ArrowRight].vPos );
-		m_pSprites[i]->SetScale( m_ArrowParams[i-ESpriteNo_ArrowRight].Scale );
-		m_pSprites[i]->SetDeprh( false );
-		m_pSprites[i]->SetBlend( true );
-		m_pSprites[i]->RenderUI();
-		m_pSprites[i]->SetBlend( false );
-		m_pSprites[i]->SetDeprh( true );
+	if( m_IsActive == true ){
+		for( int no = 0, i = ESpriteNo_SelectArrowRight; i < ESpriteNo_End; i++, no++ ){
+			m_pSprites[i]->SetPosition( m_ArrowParams[no].vPos );
+			m_pSprites[i]->SetScale( m_ArrowParams[no].Scale );
+			m_pSprites[i]->SetDeprh( false );
+			m_pSprites[i]->SetBlend( true );
+			m_pSprites[i]->RenderUI();
+			m_pSprites[i]->SetBlend( false );
+			m_pSprites[i]->SetDeprh( true );
+		}
+	} else {
+		for( int no = 0, i = ESpriteNo_Begin; i < ESpriteNo_SelectArrowRight; i++, no++ ){
+			m_pSprites[i]->SetPosition( m_ArrowParams[no].vPos );
+			m_pSprites[i]->SetScale( 1.0f );
+			m_pSprites[i]->SetDeprh( false );
+			m_pSprites[i]->SetBlend( true );
+			m_pSprites[i]->RenderUI();
+			m_pSprites[i]->SetBlend( false );
+			m_pSprites[i]->SetDeprh( true );
+		}
 	}
 
 	m_IsActive = false;
@@ -115,9 +117,10 @@ bool CSwitch::SpriteSetting()
 	{
 		m_OnSpriteName.c_str(),
 		m_OffSpriteName.c_str(),
-		SPRITE_CHOICE_NAME,
 		SPRITE_ARROW_RIGHT,
 		SPRITE_ARROW_LEFT,
+		SPRITE_SELECT_ARROW_RIGHT,
+		SPRITE_SELECT_ARROW_LEFT,
 	};
 	int SpriteMax = sizeof(spriteName) / sizeof(spriteName[0]);
 

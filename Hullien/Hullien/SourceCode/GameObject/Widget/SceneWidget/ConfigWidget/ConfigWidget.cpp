@@ -127,7 +127,12 @@ void CConfigWidget::OffVolumeSeting()
 // 設定を終了したか.
 bool CConfigWidget::IsEndConfig()
 {
-	return m_NowConfigState == EConfigState_End;
+	if( m_NowConfigState == EConfigState_End ){
+		m_NowConfigState = EConfigState_None;
+		m_SelectState = EConfigState_Volume;
+		return true;
+	}
+	return false;
 }
 
 // カーソルの設定.

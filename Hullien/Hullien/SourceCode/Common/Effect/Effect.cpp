@@ -7,12 +7,11 @@
 const int RENDER_SPRITE_MAX = 20000;
 //´Ìª¸ÄŠÇ——p²İ½Àİ½Å‘å”.
 const int EFFECT_INSTANCE_MAX = 10000;
-
+Effekseer::Manager*				CEffect::m_pManager = nullptr;
+EffekseerRenderer::Renderer*	CEffect::m_pRenderer = nullptr;
 //ºİ½Ä×¸À.
 CEffect::CEffect()
-	: m_pManager	( nullptr )
-	, m_pRenderer	( nullptr )
-	, m_pEffect		( nullptr )
+	: m_pEffect		( nullptr )
 #ifdef ENABLE_XAUDIO2
 	, m_pSound(nullptr)
 	, m_pXA2(nullptr)
@@ -52,6 +51,8 @@ HRESULT CEffect::Init( ID3D11Device* pDevice11, ID3D11DeviceContext* pContext11,
 //\’z.
 HRESULT CEffect::Create( ID3D11Device* pDevice11, ID3D11DeviceContext* pContext11 )
 {
+	if( m_pManager != nullptr ) return S_OK;
+
 #ifdef ENABLE_XAUDIO2
 	//XAudio2‚Ì‰Šú‰»‚ğs‚¤.
 	if (FAILED(

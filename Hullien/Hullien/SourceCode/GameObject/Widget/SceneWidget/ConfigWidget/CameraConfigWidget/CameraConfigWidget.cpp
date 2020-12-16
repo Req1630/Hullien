@@ -82,9 +82,6 @@ void CCameraConfigWidget::Render()
 	switch( m_NowConfigState )
 	{
 	case ESelectState_Select:
-		// アイコンの座標を画面外に設定.
-		m_pSprites[ESpriteNo_Icon]->SetPosition( { -500.0f, 0.0f, 0.0f } );
-
 		// カーソルの座標を現在選択している場所に設定.
 		m_pCursor->SetWidth( m_pSprites[m_NowSelectState-2]->GetSpriteSize().x );
 		m_pCursor->SetPosition( m_pSprites[m_NowSelectState-2]->GetRenderPos() );
@@ -93,8 +90,6 @@ void CCameraConfigWidget::Render()
 	case ESelectState_CameraControl:
 		break;
 	case ESelectState_CameraSpeed:
-		// アイコンの座標をスライダーのアイコンの座標に設定する.
-		m_pSprites[ESpriteNo_Icon]->SetPosition( m_pSpeedSlinder->GetIconPosition() );
 		break;
 	default:
 		break;
@@ -127,13 +122,13 @@ void CCameraConfigWidget::SelectType()
 	if( m_InputWaitTime > 0.0f ) return;
 
 	// 上に移動.
-	if( GetAsyncKeyState(VK_UP) & 0x0001 || CXInput::LThumbY_Axis() > IDLE_THUMB_MAX ){
+	if( GetAsyncKeyState(VK_UP) & 0x8000 || CXInput::LThumbY_Axis() > IDLE_THUMB_MAX ){
 		m_NowSelectState--;
 		m_InputWaitTime = INPUT_WAIT_TIME_MAX;
 		m_NowSelectState = m_NowSelectState <= ESelectState_CameraControl ? ESelectState_CameraControl : m_NowSelectState;
 	} 
 	// 下に移動.
-	if( GetAsyncKeyState(VK_DOWN) & 0x0001 || CXInput::LThumbY_Axis() < IDLE_THUMB_MIN ){
+	if( GetAsyncKeyState(VK_DOWN) & 0x8000 || CXInput::LThumbY_Axis() < IDLE_THUMB_MIN ){
 		m_NowSelectState++;
 		m_InputWaitTime = INPUT_WAIT_TIME_MAX;
 		m_NowSelectState = m_NowSelectState >= ESelectState_CameraSpeed ? ESelectState_CameraSpeed : m_NowSelectState;
@@ -219,7 +214,7 @@ bool CCameraConfigWidget::SpriteSetting()
 	{
 		SPRITE_CONTROL_NAME,
 		SPRITE_SPEED_NAME,
-		SPRITE_ICON_NAME,
+		SPRITE_MARK_NAME,
 	};
 	int SpriteMax = sizeof(spriteName) / sizeof(spriteName[0]);
 
@@ -230,8 +225,7 @@ bool CCameraConfigWidget::SpriteSetting()
 		if( m_pSprites[sprite] == nullptr ) return false;
 		if( sprite != ESpriteNo_Speed ) continue;
 		m_SlinderPosition = m_pSprites[sprite]->GetRenderPos();
-		m_SlinderPosition.x += 200.0f;
-		m_SlinderPosition.y += m_pSprites[sprite]->GetSpriteSize().y/2.0f;
+		m_SlinderPosition.x += 100.0f;
 	}
 	return true;
 }

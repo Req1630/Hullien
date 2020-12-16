@@ -208,3 +208,12 @@ void CGameActorManager::AnimationStop()
 
 	m_IsOllAnimationStop = true;
 }
+
+// アニメーションを再開する.
+void CGameActorManager::ResumeAnimation()
+{
+	m_IsOllAnimationStop = false;
+	m_pPlayer->ResumeAnimation();
+	m_pGirl->ResumeAnimation();
+	m_pAlienManager->ResumeAnimation();
+}

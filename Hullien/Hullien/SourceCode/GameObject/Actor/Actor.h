@@ -31,9 +31,11 @@ public:
 	// 相手座標の設定関数.
 	virtual void SetTargetPos( CActor& actor ){}
 	// ベクトルの取得.
-	virtual void SetVector( const D3DXVECTOR3& vec ){};
+	virtual void SetVector( const D3DXVECTOR3& vec ){}
 	// アニメーションを止める.
-	virtual void StopAnimation(){};
+	virtual void StopAnimation(){}
+	// アニメーションを再開する.
+	virtual void ResumeAnimation(){}
 
 	// 見えない壁の設定.
 	inline void SetBoxWall( SBoxWall* box ){ m_pBoxWall = box; }

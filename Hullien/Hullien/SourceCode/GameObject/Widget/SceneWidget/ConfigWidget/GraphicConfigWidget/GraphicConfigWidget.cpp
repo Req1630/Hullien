@@ -160,6 +160,7 @@ bool CGraphicConfigWidget::SpriteSetting()
 	const char* spriteName[] =
 	{
 		SPRITE_FULL_SC_NAME,
+		SPRITE_MARK_NAME,
 	};
 	int SpriteMax = sizeof(spriteName) / sizeof(spriteName[0]);
 

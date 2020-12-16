@@ -15,7 +15,8 @@ class CCameraConfigWidget : public CWidget
 	const char* SPRITE_SPEED_NAME		= "CmaeraSpeed";
 	const char* SPRITE_NORMAL_NAME		= "CameraNormal";
 	const char* SPRITE_INVERSION_NAME	= "CameraInversion";
-	const char* SPRITE_ICON_NAME		= "SelectIcon";
+	const char* SPRITE_MARK_NAME		= "CameraMark";
+
 	const float INPUT_WAIT_TIME_MAX		= 30.0;
 	// 選択状態.
 	enum enSelectState
@@ -35,7 +36,6 @@ class CCameraConfigWidget : public CWidget
 
 		ESpriteNo_Control,		// 操作.
 		ESpriteNo_Speed,		// 速度.
-		ESpriteNo_Icon,			// アイコン.
 
 		ESpriteNo_Max,
 	} typedef ESpriteNo;

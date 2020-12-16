@@ -41,7 +41,8 @@ public:
 	bool IsGirlAbduct();
 	// アニメーションを止める.
 	void StopAnimation();
-
+	// アニメーションを再開する.
+	void ResumeAnimation();
 private:
 	// スポーン.
 	void Spawn();

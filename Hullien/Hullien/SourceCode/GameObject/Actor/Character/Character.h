@@ -48,7 +48,13 @@ public:
 	virtual void SpriteRender(){};
 
 	// アニメーションを止める.
-	virtual void StopAnimation() override { m_AnimSpeed = 0.0; }
+	virtual void StopAnimation() override
+	{
+		m_OldAnimSpeed = m_AnimSpeed;
+		m_AnimSpeed = 0.0; 
+	}
+	// アニメーションを再開する.
+	virtual void ResumeAnimation() override { m_AnimSpeed = m_OldAnimSpeed; }
 
 protected:
 	// メッシュの表示.
@@ -93,6 +99,7 @@ protected:
 	int		m_NowAnimNo;	// 現在のアニメーション番号.
 	int		m_OldAnimNo;	// 過去のアニメーション番号.
 	double	m_AnimSpeed;	// アニメーション速度.
+	double	m_OldAnimSpeed;	// アニメーション速度.
 
 	D3DXVECTOR3	m_MoveVector;				// 移動ベクトル.
 	int			m_InvincibleCount;			// 無敵カウント.

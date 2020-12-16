@@ -35,7 +35,7 @@ void CEffectManager::Render()
 //------------------------------.
 // Ä¶.
 //------------------------------.
-void CEffectManager::Play( const D3DXVECTOR3 vPos )
+void CEffectManager::Play( const D3DXVECTOR3& vPos )
 {
 	if( m_pEffect == nullptr ) return;
 	m_Handle = m_pEffect->Play( vPos );
@@ -60,15 +60,23 @@ void CEffectManager::StopAll()
 //------------------------------.
 // ˆêŽž’âŽ~.
 //------------------------------.
-void CEffectManager::Pause( const bool bFlag )
+void CEffectManager::Pause( const bool& bFlag )
 {
 	m_pEffect->Pause( m_Handle, bFlag ); 
 }
 
 //------------------------------.
+// ‚·‚×‚Ä‚ðˆêŽž’âŽ~‚à‚µ‚­‚ÍÄŠJ‚·‚é.
+//------------------------------.
+void CEffectManager::AllPause( const bool& bFlag )
+{
+	m_pEffect->AllPause( bFlag );
+}
+
+//------------------------------.
 // ˆÊ’u‚ðŽw’è‚·‚é.
 //------------------------------.
-void CEffectManager::SetLocation( const D3DXVECTOR3 vPos )
+void CEffectManager::SetLocation( const D3DXVECTOR3& vPos )
 {
 	m_pEffect->SetLocation( m_Handle, vPos );
 }
@@ -96,7 +104,7 @@ void CEffectManager::SetRotation( const D3DXVECTOR3& vRot )
 //------------------------------.
 // Ä¶‘¬“x‚ðÝ’è‚·‚é.
 //------------------------------.
-void CEffectManager::SetSpeed( const float fSpeed )
+void CEffectManager::SetSpeed( const float& fSpeed )
 {
 	m_pEffect->SetSpeed( m_Handle, fSpeed );
 }

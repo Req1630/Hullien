@@ -64,9 +64,9 @@ LRESULT CALLBACK WndProc(
 		switch( static_cast<char>(wParam) ){
 		case VK_ESCAPE:	//ESCｷｰ.
 #ifdef _DEBUG
-			if( MessageBox( nullptr, "ゲームを終了しますか？", "警告", MB_YESNO ) == IDYES ){ 
+			/*if( MessageBox( nullptr, "ゲームを終了しますか？", "警告", MB_YESNO ) == IDYES ){ 
 				PostQuitMessage(0); 
-			}
+			}*/
 			break;
 #endif	// #ifdef _DEBUG.
 		break;

@@ -97,12 +97,17 @@ public:
 	{
 		m_pManager->StopAllEffects();
 	}
-	// 一時停止.
+	// 一時停止もしくは再開する.
 	void Pause( const Effekseer::Handle& handle, bool bFlag )
 	{
 		if( handle == -1 ) return;
 		m_pManager->SetPaused( handle, bFlag );
 	}
+	// すべてを一時停止もしくは再開する.
+	void AllPause( const bool& bFlag )
+	{
+		m_pManager->SetPausedToAllEffects( bFlag );
+	};
 
 	// 位置を指定する.
 	void SetLocation( const Effekseer::Handle& handle, const D3DXVECTOR3& vPos )
@@ -164,9 +169,9 @@ private:
 
 private:
 	// ｴﾌｪｸﾄを動作させるために必要.
-	Effekseer::Manager*				m_pManager;
-	EffekseerRenderer::Renderer*	m_pRenderer;
-	Effekseer::Effect*				m_pEffect;
+	static Effekseer::Manager*				m_pManager;
+	static EffekseerRenderer::Renderer*		m_pRenderer;
+	Effekseer::Effect*						m_pEffect;
 #ifdef ENABLE_XAUDIO2
 	//ｴﾌｪｸﾄﾃﾞｰﾀに含まれる音の再生に必要.
 	::EffekseerSound::Sound*		m_pSound;

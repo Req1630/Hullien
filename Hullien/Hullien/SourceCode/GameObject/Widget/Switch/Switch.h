@@ -9,11 +9,12 @@ class CSwitch : public CWidget
 {
 	inline static const char* SPRITE_ON_NAME		= "on";			// オン画像.
 	inline static const char* SPRITE_OFF_NAME		= "off";		// オフ画像.
-	inline static const char* SPRITE_CHOICE_NAME	= "Choice";		// 選択画像.
 	inline static const char* SPRITE_ARROW_RIGHT	= "arrowRight";	// 矢印画像.
 	inline static const char* SPRITE_ARROW_LEFT		= "arrowLeft";	// 矢印画像.
+	inline static const char* SPRITE_SELECT_ARROW_RIGHT	= "selectArrowRight";	// 矢印画像.
+	inline static const char* SPRITE_SELECT_ARROW_LEFT		= "selectArrowLeft";	// 矢印画像.
 	inline static const float ADJ_POSITION_X		= 250.0f;		// x座標調整値.
-	inline static const float ARROW_ADJ_POSITION_X	= 0.3f;		// x座標調整値.
+	inline static const float ARROW_ADJ_POSITION_X	= 0.8f;			// x座標調整値.
 	inline static const int	INPUT_WAIT_TIME_MAX		= 30;			// 入力待機フレーム.
 	inline static const int	CHANGE_FRAME			= INPUT_WAIT_TIME_MAX/2;
 	inline static const float ARROW_SCALE			= 1.0f;
@@ -26,10 +27,12 @@ class CSwitch : public CWidget
 
 		ESpriteNo_On = 0,
 		ESpriteNo_Off,
-		ESpriteNo_Choice,
 
 		ESpriteNo_ArrowRight,
 		ESpriteNo_ArrowLeft,
+
+		ESpriteNo_SelectArrowRight,
+		ESpriteNo_SelectArrowLeft,
 
 		ESpriteNo_Max,
 

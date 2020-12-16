@@ -18,6 +18,7 @@ CVolumeConfigWidget::CVolumeConfigWidget()
 	, m_NowConfigState		( EConfigState_Select )
 	, m_NowSelectVolume		( ESelectType_Master )
 	, m_OldSelectVolume		( ESelectType_Master )
+	, m_OldVolume			( 0.0f )
 	, m_InputWaitTime		( 0.0f )
 	, m_IsOneStep			( false )
 {
@@ -60,17 +61,38 @@ void CVolumeConfigWidget::Update()
 		}
 		break;
 	case EConfigState_Seting:
+		m_pVolumeSlinders[m_NowSelectVolume]->Update();	// スライダーの更新.
 		VolumeSeting();		// 音量の設定.
 		// 決定.
 		if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
 			CSoundManager::PlaySE("Determination");
 			m_NowConfigState = EConfigState_Select;
 		}
+		// キャンセル.
+		if( CInput::IsMomentPress( EKeyBind::Cancel ) == true ){
+			m_pVolumeSlinders[m_NowSelectVolume]->SetValue(m_OldVolume);
+			// 設定した値をサウンドマネージャーへ渡す.
+			switch( m_NowSelectVolume )
+			{
+			case ESelectType_Master:
+				CSoundManager::GetInstance()->m_stSound.MasterVolume = m_pVolumeSlinders[m_NowSelectVolume]->GetValue();
+				break;
+			case ESelectType_BGM:
+				CSoundManager::GetInstance()->m_stSound.BGMVolume = m_pVolumeSlinders[m_NowSelectVolume]->GetValue();
+				break;
+			case ESelectType_SE:
+				CSoundManager::GetInstance()->m_stSound.SEVolume = m_pVolumeSlinders[m_NowSelectVolume]->GetValue();
+				break;
+			default:
+				break;
+			}
+			m_NowConfigState = EConfigState_Select;
+			CSoundManager::PlaySE("CancelDetermination");
+		}
 		break;
 	default:
 		break;
 	}
-	for( auto& v : m_pVolumeSlinders ) v->Update();	// スライダーの更新.
 	m_pCursor->Update();	// カーソルの更新.
 }
 
@@ -83,25 +105,24 @@ void CVolumeConfigWidget::Render()
 	m_pCursor->Render();
 	// スライダーの描画.
 	for( int i = ESelectType_Begin; i < ESelectType_End; i++ ){
-		if( i == ESpriteNo_SelectIcon ) continue;
 		if( i <= ESpriteNo_SE ){
-			m_pVolumeSlinders[i]->SetPosition(m_SlinderPositions[i] );
+			m_pVolumeSlinders[i]->SetPosition( m_SlinderPositions[i] );
 			m_pVolumeSlinders[i]->Render();
+		}
+		if( i == EVolumeType_MarkIcon ){
+			if( m_NowConfigState == EConfigState_Seting ){
+				D3DXVECTOR3 pos = m_SlinderPositions[m_NowSelectVolume];
+				pos.x -= MARK_ICON_POS_X;
+				m_pSprites[EVolumeType_MarkIcon]->SetPosition( pos );
+			} else {
+				m_pSprites[EVolumeType_MarkIcon]->SetPosition( {-BAR_POSITION_X, -BAR_POSITION_X, 0.0f} );
+			}
 		}
 		m_pSprites[i]->SetDeprh( false );
 		m_pSprites[i]->SetBlend( true );
 		m_pSprites[i]->RenderUI();
 		m_pSprites[i]->SetBlend( false );
 		m_pSprites[i]->SetDeprh( true );
-	}
-	// 選択中のアイコンの表示.
-	if( m_NowConfigState == EConfigState_Seting ){
-		m_pSprites[ESpriteNo_SelectIcon]->SetPosition( m_pVolumeSlinders[m_NowSelectVolume]->GetIconPosition() );
-		m_pSprites[ESpriteNo_SelectIcon]->SetDeprh( false );
-		m_pSprites[ESpriteNo_SelectIcon]->SetBlend( true );
-		m_pSprites[ESpriteNo_SelectIcon]->RenderUI();
-		m_pSprites[ESpriteNo_SelectIcon]->SetBlend( false );
-		m_pSprites[ESpriteNo_SelectIcon]->SetDeprh( true );
 	}
 }
 
@@ -111,13 +132,13 @@ void CVolumeConfigWidget::SelectType()
 	if( m_InputWaitTime > 0.0f ) return;
 
 	// 上に移動.
-	if( GetAsyncKeyState(VK_UP) & 0x0001 || CXInput::LThumbY_Axis() > IDLE_THUMB_MAX ){
+	if( GetAsyncKeyState(VK_UP) & 0x8000 || CXInput::LThumbY_Axis() > IDLE_THUMB_MAX ){
 		m_NowSelectVolume--;
 		m_InputWaitTime = INPUT_WAIT_TIME_MAX;
 		m_NowSelectVolume = m_NowSelectVolume <= ESelectType_Master ? ESelectType_Master : m_NowSelectVolume;
 	} 
 	// 下に移動.
-	if( GetAsyncKeyState(VK_DOWN) & 0x0001 || CXInput::LThumbY_Axis() < IDLE_THUMB_MIN ){
+	if( GetAsyncKeyState(VK_DOWN) & 0x8000 || CXInput::LThumbY_Axis() < IDLE_THUMB_MIN ){
 		m_NowSelectVolume++;
 		m_InputWaitTime = INPUT_WAIT_TIME_MAX;
 		m_NowSelectVolume = m_NowSelectVolume >= ESelectType_SE ? ESelectType_SE : m_NowSelectVolume;
@@ -145,6 +166,7 @@ void CVolumeConfigWidget::Determination()
 		default:
 			break;
 		}
+		m_OldVolume = m_pVolumeSlinders[m_NowSelectVolume]->GetValue();
 	}
 }
 
@@ -216,7 +238,8 @@ bool CVolumeConfigWidget::SpriteSetting()
 		SPRITE_MASTER_NAME,	// マスター.
 		SPRITE_BGM_NAME,	// BGM.
 		SPRITE_SE_NAME,		// SE.
-		SPRITE_ICON_NAME,	// アイコン.
+		SPRITE_MARK_NAME,
+		SPRITE_MARK_ICON_NAME,
 	};
 	int SpriteMax = sizeof(spriteName) / sizeof(spriteName[0]);
 
@@ -228,7 +251,6 @@ bool CVolumeConfigWidget::SpriteSetting()
 		if( sprite <= ESpriteNo_SE ){
 			m_SlinderPositions[sprite] = m_pSprites[sprite]->GetRenderPos();
 			m_SlinderPositions[sprite].x += BAR_POSITION_X;
-			m_SlinderPositions[sprite].y += m_pSprites[sprite]->GetSpriteSize().y/2.0f;
 		}
 	}
 

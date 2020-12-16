@@ -48,6 +48,8 @@ public:
 	virtual bool Spawn( const D3DXVECTOR3& spawnPos ) = 0;
 	// アニメーションを止める.
 	virtual void StopAnimation() override;
+	// アニメーションを再開する.
+	virtual void ResumeAnimation() override;
 
 	// ライフ計算関数.
 	virtual void LifeCalculation( const std::function<void(float&,bool&)>& ) override;

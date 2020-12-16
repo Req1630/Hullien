@@ -11,6 +11,7 @@ class CSwitch;	// スイッチクラス.
 class CControllerConfigWidget : public CWidget
 {
 	const char* SPRITE_CONTROL_NAME		= "Vibration";
+	const char* SPRITE_MARK_NAME		= "ControllerMark";
 	const float INPUT_WAIT_TIME_MAX		= 30.0;
 	// 選択状態.
 	enum enSelectState

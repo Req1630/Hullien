@@ -124,6 +124,12 @@ void CAlienManager::StopAnimation()
 {
 	for( auto& a : m_AilenList ) a->StopAnimation();
 }
+// アニメーションを再開する.
+void CAlienManager::ResumeAnimation()
+{
+	for( auto& a : m_AilenList ) a->ResumeAnimation();
+}
+
 
 // スポーン.
 void CAlienManager::Spawn()

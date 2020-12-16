@@ -159,6 +159,7 @@ bool CControllerConfigWidget::SpriteSetting()
 	const char* spriteName[] =
 	{
 		SPRITE_CONTROL_NAME,
+		SPRITE_MARK_NAME,
 	};
 	int SpriteMax = sizeof(spriteName) / sizeof(spriteName[0]);
 

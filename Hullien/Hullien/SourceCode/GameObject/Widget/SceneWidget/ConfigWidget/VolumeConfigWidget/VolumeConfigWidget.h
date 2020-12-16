@@ -15,10 +15,12 @@ class CVolumeConfigWidget : public CWidget
 	const char* SPRITE_MASTER_NAME	= "MasterVolume";
 	const char* SPRITE_BGM_NAME		= "BGMVolume";
 	const char* SPRITE_SE_NAME		= "SEVolume";
-	const char* SPRITE_ICON_NAME	= "SelectIcon";
+	const char* SPRITE_MARK_NAME	= "VolumeMark";
+	const char* SPRITE_MARK_ICON_NAME	= "volumeMarkIcon";
 
-	const float BAR_POSITION_X = 200.0f;
+	const float BAR_POSITION_X = 100.0f;
 	const float DEFALUT_VOLUME = 1.0f;
+	const float MARK_ICON_POS_X = 10.0f;
 
 	inline static const float INPUT_WAIT_TIME_MAX = 30.0f;	// 入力時の待機フレーム.
 
@@ -42,12 +44,15 @@ class CVolumeConfigWidget : public CWidget
 		ESelectType_BGM,	// BGM.
 		ESelectType_SE,		// SE.
 
+		EVolumeType_Mark,
+		EVolumeType_MarkIcon,
+
 		EVolumeType_End,
 
 		ESelectType_Max,
 
 		ESelectType_Begin	= ESelectType_Master,	// 始まり.
-		ESelectType_End		= ESelectType_Max,		// 終了.
+		ESelectType_End		= EVolumeType_End,		// 終了.
 		ESelectType_VolumeMax = ESelectType_SE+1
 	} typedef EVolumeType;
 
@@ -59,7 +64,6 @@ class CVolumeConfigWidget : public CWidget
 		ESpriteNo_Master,		// マスター.
 		ESpriteNo_BGM,			// BGM.
 		ESpriteNo_SE,			// SE.
-		ESpriteNo_SelectIcon,	// 選択中のアイコン.
 
 		ESpriteNo_Max,
 	} typedef ESpriteNo;
@@ -102,6 +106,7 @@ private:
 	int			m_NowConfigState;	// 現在の設定状態.
 	int			m_NowSelectVolume;	// 現在の選択している音量種類.
 	int			m_OldSelectVolume;
+	float		m_OldVolume;
 	float		m_InputWaitTime;	// 入力した際の待機時間.
 	bool		m_IsOneStep;		// 一回だけ動作.
 };

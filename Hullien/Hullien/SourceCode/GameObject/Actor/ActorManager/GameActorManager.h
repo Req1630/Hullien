@@ -44,11 +44,13 @@ public:
 	// 宇宙人が帰還したか.
 	bool IsReturnAlien();
 
+	// アニメーションを止める.
+	void AnimationStop();
+	// アニメーションを再開する.
+	void ResumeAnimation();
 private:
 	// 座標リストの設定.
 	void SetPositionList( CGameObject* pObj );
-	// アニメーションを止める.
-	void AnimationStop();
 
 private:
 	std::unique_ptr<CSkyDome>		m_pSkyDome;			// 背景.

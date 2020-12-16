@@ -12,6 +12,7 @@ class CSwitch;
 class CGraphicConfigWidget : public CWidget
 {
 	const char* SPRITE_FULL_SC_NAME		= "FullSC";
+	const char* SPRITE_MARK_NAME		= "GraphicMark";
 	const float INPUT_WAIT_TIME_MAX		= 30.0;
 	// ëIëèÛë‘.
 	enum enSelectState

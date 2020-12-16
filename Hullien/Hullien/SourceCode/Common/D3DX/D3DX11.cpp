@@ -213,6 +213,7 @@ bool CDirectX11::SetFullScreen( const bool& isOn )
 //-----------------------------------.
 bool CDirectX11::IsFullScreen()
 {
+	if( GetInstance()->m_pSwapChain == nullptr ) return false;
 	// Œ»Ý‚ÌƒXƒNƒŠ[ƒ“î•ñ‚ðŽæ“¾.
 	BOOL isState = FALSE;
 	GetInstance()->m_pSwapChain->GetFullscreenState( &isState, nullptr );

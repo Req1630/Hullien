@@ -6,8 +6,9 @@
 class CGameActorManager;	// ゲームオブジェクト管理クラス.
 class CGameWidgetManager;	// UI管理クラス.
 class CContinueWidget;		// コンテニューUIクラス.
+class CConfigWidget;		// 設定UIクラス.
 class CSkyDome;				// 背景クラス.
-class CEventManager;		//イベント管理クラス.
+class CEventManager;		// イベント管理クラス.
 
 /**********************************
 *	ゲームシーンクラス.
@@ -73,11 +74,13 @@ private:
 	std::unique_ptr<CGameActorManager>	m_GameObjManager;	// ゲームオブジェクト管理クラス.
 	std::unique_ptr<CGameWidgetManager>	m_WidgetManager; 	// ゲームUI管理クラス.
 	std::unique_ptr<CContinueWidget>	m_ContinueWidget;	// コンテニューUIクラス.
+	std::unique_ptr<CConfigWidget>		m_pConfigWidget;	// 設定UIクラス.
 	std::unique_ptr<CEventManager>		m_pEventManager; 	//	イベント管理クラス.
 	EEventSceneState					m_NowEventScene;	// 現在のイベントシーン.
 	ENextSceneState						m_NextSceneState;	// 次のシーン状態.
 	float								m_WaitCount;		// 待機カウント.
 	bool								m_IsContinueSelect;
+	bool								m_IsConfig;
 	bool								m_IsPlayGameBGM;
 	bool								m_IsPlayDangerBGM;
 };

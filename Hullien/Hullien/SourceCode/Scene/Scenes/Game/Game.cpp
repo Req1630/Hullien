@@ -5,6 +5,7 @@
 #include "..\..\..\GameObject\Actor\Character\Alien\AlienManager\AlienManager.h"
 #include "..\..\..\GameObject\Widget\SceneWidget\GameWidget\GameWidgetManager\GameWidgetManager.h"
 #include "..\..\..\GameObject\Widget\SceneWidget\ContinueWidget\ContinueWidget.h"
+#include "..\..\..\GameObject\Widget\SceneWidget\ConfigWidget\ConfigWidget.h"
 #include "..\..\..\GameObject\SkyDome\SkyDome.h"
 #include "..\..\..\SceneEvent\EventManager\EventManager.h"
 #include "..\..\..\Common\Sprite\CSprite.h"
@@ -26,10 +27,13 @@ CGame::CGame( CSceneManager* pSceneManager )
 	, m_GameObjManager		( nullptr )
 	, m_WidgetManager		( nullptr )
 	, m_ContinueWidget		( nullptr )
+	, m_pConfigWidget		( nullptr )
+	, m_pEventManager		( nullptr )
 	, m_NowEventScene		( EEventSceneState::GameStart )
 	, m_NextSceneState		( ENextSceneState::None )
 	, m_WaitCount			( 0.0f )
 	, m_IsContinueSelect	( false )
+	, m_IsConfig			( false )
 	, m_IsPlayGameBGM		( false )
 	, m_IsPlayDangerBGM		( false )
 {
@@ -37,6 +41,7 @@ CGame::CGame( CSceneManager* pSceneManager )
 	m_WidgetManager			= std::make_unique<CGameWidgetManager>();
 	m_ContinueWidget		= std::make_unique<CContinueWidget>();
 	m_pEventManager			= std::make_unique<CEventManager>();
+	m_pConfigWidget			= std::make_unique<CConfigWidget>();
 }
 
 CGame::~CGame()
@@ -50,9 +55,10 @@ bool CGame::Load()
 {
 	CEffectResource::Release();
 	CEffectResource::Load( CDirectX11::GetDevice(), CDirectX11::GetContext() );
-	if( m_GameObjManager->Init() == false )	return false;
-	if( m_WidgetManager->Init() == false )	return false;
-	if( m_ContinueWidget->Init() == false )	return false;
+	if( m_GameObjManager->Init()	== false )	return false;
+	if( m_WidgetManager->Init()		== false )	return false;
+	if( m_ContinueWidget->Init()	== false )	return false;
+	if( m_pConfigWidget->Init()		== false )	return false;
 	
 	if (m_pSceneManager->GetRetry() == false)
 	{
@@ -147,6 +153,9 @@ void CGame::Render()
 	default:
 		break;
 	}
+	if( m_IsConfig == true ){
+		m_pConfigWidget->Render();
+	}
 	CEditRenderer::PushRenderProc( 
 		[&]()
 		{
@@ -234,8 +243,24 @@ void CGame::GameUpdate()
 		}
 	}
 
-	m_GameObjManager->Update();
-	m_WidgetManager->Update(m_GameObjManager.get());
+	if( m_IsConfig == false ){
+		if( CInput::IsMomentPress( EKeyBind::Start ) == true ){
+			m_IsConfig = true;
+			m_GameObjManager->AnimationStop();
+		}
+	}
+
+	if( m_IsConfig == false ){
+		m_GameObjManager->Update();
+		m_WidgetManager->Update(m_GameObjManager.get());
+	} else {
+		m_pConfigWidget->Update();
+		if( m_pConfigWidget->IsEndConfig() == true ){
+			m_GameObjManager->ResumeAnimation();
+			m_pConfigWidget->OffVolumeSeting();
+			m_IsConfig = false;
+		}
+	}
 }
 
 // コンテニュー処理関数.

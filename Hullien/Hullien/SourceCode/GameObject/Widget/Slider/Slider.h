@@ -6,9 +6,10 @@
 
 class CSlinder : public CWidget
 {
-	const char* SPRITE_BACK_BAR_NAME	= "BackBar";
-	const char* SPRITE_BAR_NAME			= "Bar";
-	const char* SPRITE_ICON_NAME		= "Icon";
+	const char* SPRITE_BACK_BAR_NAME	= "backSlider";
+	const char* SPRITE_BAR_NAME			= "slider";
+	const char* SPRITE_SELECT_ICON_NAME	= "selectSliderIcon";
+	const char* SPRITE_ICON_NAME		= "SliderIcon";
 
 	const float DEFALUT_VALUE_MAX = 1.0f;
 	const float DEFALUT_VALUE_MIN = 0.0f;
@@ -19,9 +20,10 @@ class CSlinder : public CWidget
 	{
 		ESpriteNo_None = -1,
 
-		ESpriteNo_BackBar,	// 後ろのバー.
-		ESpriteNo_Bar,		// バー.
-		ESpriteNo_Icon,		// アイコン.
+		ESpriteNo_BackBar,		// 後ろのバー.
+		ESpriteNo_Bar,			// バー.
+		ESpriteNo_SelectIcon,	// アイコン.
+		ESpriteNo_Icon,			// アイコン.
 
 		ESpriteNo_Max,
 	} typedef ESpriteNo;
@@ -42,7 +44,7 @@ public:
 	// 値を減らす.
 	void SubValue( const float& value );
 	// 値の設定.
-	inline void SetValue( const float& value ){ m_Value = value; }
+	void SetValue( const float& value );
 	// 値の取得.
 	inline float GetValue() const { return m_Value; }
 
@@ -64,6 +66,7 @@ private:
 	D3DXVECTOR3	m_IconPosition;			// アイコンの座標.
 	float		m_BackBarImageWidthSize;// バーの画像サイズ幅.
 	D3DXVECTOR3	m_BarImageWidthSize;	// バーの画像サイズ幅.
+	bool		m_IsActive;
 };
 
 #endif	// #ifndef SLIDER_H.

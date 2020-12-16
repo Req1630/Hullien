@@ -17,6 +17,7 @@ CSlinder::CSlinder( const float& valueMax, const float& valueMin )
 	, m_IconPosition			( 0.0f, 0.0f, 0.0f )
 	, m_BackBarImageWidthSize	( 0.0f )
 	, m_BarImageWidthSize		( 1.0f, 1.0f, 1.0f )
+	, m_IsActive				( false )
 {
 }
 
@@ -41,6 +42,7 @@ bool CSlinder::Init()
 void CSlinder::Update()
 {
 	SetIconPosition();
+	m_IsActive = true;
 }
 
 // •`‰æŠÖ”.
@@ -50,13 +52,21 @@ void CSlinder::Render()
 	m_pSprites[ESpriteNo_BackBar]->SetScale( m_vScale );
 	m_pSprites[ESpriteNo_Bar]->SetPosition( m_vPosition );
 	m_pSprites[ESpriteNo_Bar]->SetScale( m_BarImageWidthSize );
-	m_pSprites[ESpriteNo_Icon]->SetPosition( m_IconPosition );
-	m_pSprites[ESpriteNo_Icon]->SetScale( m_vScale );
+	m_pSprites[ESpriteNo_SelectIcon]->SetPosition( m_IconPosition );
+	m_pSprites[ESpriteNo_SelectIcon]->SetScale( m_vScale );
+	if( m_IsActive == false ){
+		m_pSprites[ESpriteNo_Icon]->SetPosition( m_IconPosition );
+		m_pSprites[ESpriteNo_Icon]->SetScale( m_vScale );
+	} else {
+		m_pSprites[ESpriteNo_Icon]->SetScale( 0.0f );
+	}
 	for( auto& s : m_pSprites ){
 		s->SetDeprh( false );
 		s->RenderUI();
 		s->SetDeprh( true );
 	}
+
+	m_IsActive = false;
 }
 
 // ’l‚ğ‘‚â‚·.
@@ -71,6 +81,13 @@ void CSlinder::SubValue( const float& value )
 { 
 	m_Value -= value; 
 	m_Value = m_Value <= VALUE_MIN ? VALUE_MIN : m_Value;
+}
+
+// ’l‚Ìİ’è.
+void CSlinder::SetValue( const float& value )
+{
+	m_Value = value;
+	SetIconPosition();
 }
 
 // À•Wİ’èŠÖ”.
@@ -100,6 +117,7 @@ bool CSlinder::SpriteSetting()
 	{
 		SPRITE_BACK_BAR_NAME,
 		SPRITE_BAR_NAME,
+		SPRITE_SELECT_ICON_NAME,
 		SPRITE_ICON_NAME,
 	};
 	int SpriteMax = sizeof(spriteNames) / sizeof(spriteNames[0]);

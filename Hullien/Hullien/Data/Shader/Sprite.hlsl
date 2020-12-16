@@ -61,8 +61,8 @@ VS_OUTPUT VS_MainUI(
 // ピクセルシェーダ.
 float4 PS_Main(VS_OUTPUT input) : SV_Target
 {
-    float4 color = g_Texture.Sample( g_SamLinear, input.Tex );
-    color *= g_Color;
+	float4 color = g_Texture.Sample( g_SamLinear, input.Tex );
+	color *= g_Color;
 	clip(color.a);
-    return color;
+	return color;
 }
