@@ -142,16 +142,6 @@ void CSceneManager::EndGameClose()
 }
 
 //=================================.
-// 設定シーンへ移動.
-//=================================.
-void CSceneManager::ConfigSceneMove()
-{
-	m_pScene = std::make_shared<CConfig>( this );
-	m_IsLoadEnd = false;
-	m_NextScene	= EScene::Title;
-}
-
-//=================================.
 // ゲームリトライ.
 //=================================.
 void CSceneManager::RetryGame()

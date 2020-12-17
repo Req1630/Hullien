@@ -120,9 +120,6 @@ void CTitle::ChangeScene()
 		m_pSceneManager->NextSceneMove();
 		break;
 	case CTitleWidget::ESelectState::Config:
-//		if (CSoundManager::GetBGMVolume("TitleBGM") > 0.0f) return;
-//		while( CSoundManager::StopBGMThread("TitleBGM") == false);
-//		m_pSceneManager->ConfigSceneMove();
 		break;
 	case CTitleWidget::ESelectState::End:
 		if (CSoundManager::GetBGMVolume("TitleBGM") > 0.0f) return;

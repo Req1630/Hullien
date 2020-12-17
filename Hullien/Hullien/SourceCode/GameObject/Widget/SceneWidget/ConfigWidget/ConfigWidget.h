@@ -21,6 +21,7 @@ class CConfigWidget : public CSceneWidget
 	const char* SPRITE_CAMERA		= "Camera";
 	const char* SPRITE_CONTROLLER	= "Controller";
 	const char* SPRITE_GRAPHIC		= "Graphic";
+	const char* SPRITE_RETURN_TITLE	= "BackTitle";
 
 	const int BACKGROUND	= 0;	//背景配列番号.
 	const int VOLUME		= 1;	//開始配列番号.
@@ -36,6 +37,7 @@ class CConfigWidget : public CSceneWidget
 		EConfigState_Camera,	// カメラの操作.
 		EConfigState_Controller,// コントローラーの設定.
 		EConfigState_Graphic,	// グラフィックの設定.
+		EConfigState_BackTitle,	// タイトルへ戻る.
 
 		EConfigState_End,
 
@@ -44,6 +46,7 @@ class CConfigWidget : public CSceneWidget
 
 public:
 	CConfigWidget();
+	CConfigWidget( const bool& isGame );
 	virtual ~CConfigWidget();
 
 	// 初期化関数.
@@ -59,6 +62,9 @@ public:
 	// 設定を終了したか.
 	bool IsEndConfig();
 
+	// タイトルに戻るか.
+	bool IsReturnToTitle();
+
 private:
 	// カーソルの設定.
 	void CursorSetting();
@@ -72,8 +78,11 @@ private:
 	std::unique_ptr<CCameraConfigWidget>	m_pCameraConfig;		// カメラ設定UI.
 	std::unique_ptr<CControllerConfigWidget>m_pControllerConfig;	// コントローラー設定UI.
 	std::unique_ptr<CGraphicConfigWidget>	m_pGraphicConfig;		// グラフィック設定UI.
-	int m_SelectState;		// 選択状態.
-	int	m_NowConfigState;	// 現在の設定の状態.
+	D3DXVECTOR3	m_ReturnTitlePosition;	// タイトルへ戻る画像の座標.
+	int			m_SelectState;			// 選択状態.
+	int			m_NowConfigState;		// 現在の設定の状態.
+	bool		m_IsNowGameScene;		// ゲームシーンかどうか.
+	bool		m_IsReturnToTitle;		// タイトルに戻る.
 };
 
 #endif	// #ifndef CONFIG_WIDGET_H.

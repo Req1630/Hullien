@@ -42,8 +42,8 @@ public:
 	void NextSceneMove();
 	// ゲーム終了.
 	void EndGameClose();
-	// 設定シーンへ移動.
-	void ConfigSceneMove();
+	// タイトルシーンへ移動.
+	inline void SetNextTitle(){ m_NextScene = EScene::Title; }
 	// ゲームオーバーの設定.
 	inline void OnGameOver(){ m_IsGameOver = true; }
 	// ゲームリトライ.

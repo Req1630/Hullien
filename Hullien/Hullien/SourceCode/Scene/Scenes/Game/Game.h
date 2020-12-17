@@ -39,6 +39,8 @@ private:
 		Game,			//ゲーム.
 		Clear,			//クリア.
 		GameOver,		//ゲームオーバー.
+
+		Title,
 	}typedef ENextSceneState;
 
 public:

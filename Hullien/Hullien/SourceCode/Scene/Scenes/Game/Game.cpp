@@ -40,8 +40,8 @@ CGame::CGame( CSceneManager* pSceneManager )
 	m_GameObjManager		= std::make_unique<CGameActorManager>();
 	m_WidgetManager			= std::make_unique<CGameWidgetManager>();
 	m_ContinueWidget		= std::make_unique<CContinueWidget>();
+	m_pConfigWidget			= std::make_unique<CConfigWidget>( true );
 	m_pEventManager			= std::make_unique<CEventManager>();
-	m_pConfigWidget			= std::make_unique<CConfigWidget>();
 }
 
 CGame::~CGame()
@@ -243,6 +243,9 @@ void CGame::GameUpdate()
 		}
 	}
 
+
+	// ˆÈ‰ºŠÖ”‰».
+
 	if( m_IsConfig == false ){
 		if( CInput::IsMomentPress( EKeyBind::Start ) == true ){
 			m_IsConfig = true;
@@ -259,6 +262,11 @@ void CGame::GameUpdate()
 			m_GameObjManager->ResumeAnimation();
 			m_pConfigWidget->OffVolumeSeting();
 			m_IsConfig = false;
+		}
+
+		if( m_pConfigWidget->IsReturnToTitle() == true ){
+			m_pConfigWidget->OffVolumeSeting();
+			m_NextSceneState = ENextSceneState::Title;
 		}
 	}
 }
@@ -355,6 +363,14 @@ void CGame::NextSceneMove()
 		if (CFade::GetIsFade() == true) return;
 		m_pSceneManager->OnGameOver();
 		m_pEventManager->NextEventMove();
+		m_pSceneManager->OnEditSceneChangeActive();
+		m_pSceneManager->NextSceneMove();
+		break;
+	case ENextSceneState::Title:
+		CFade::SetFadeIn();
+		StopAllBGM();	// BGM‚Ì’âŽ~.
+		if (CFade::GetIsFade() == true) return;
+		m_pSceneManager->SetNextTitle();
 		m_pSceneManager->OnEditSceneChangeActive();
 		m_pSceneManager->NextSceneMove();
 		break;
