@@ -121,7 +121,8 @@ public:
 
 	// ベクトルの取得.
 	virtual void SetVector( const D3DXVECTOR3& vec ) override { m_HitVector = vec; }
-
+	// アニメーションを再開する.
+	virtual void ResumeAnimation() override;
 	// カメラを揺らす.
 	bool CameraShake();
 

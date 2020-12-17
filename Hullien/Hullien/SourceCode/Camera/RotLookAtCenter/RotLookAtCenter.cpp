@@ -18,23 +18,31 @@ CRotLookAtCenter::CRotLookAtCenter()
 CRotLookAtCenter::CRotLookAtCenter( const bool& isLoad )
 	: CRotLookAtCenter	()
 {
-	if( isLoad == false ) return;
-	SConfigState conState;
-	if( CFileManager::BinaryReading( CONFIG_FILE_PATH, conState ) == false ) return;
-	// カメラを判定するか.
-	if( conState.IsReverse == true ){
-		// 反転.
-		m_RightMoveSpeed	= -conState.MoveSpeed;
-		m_LeftMoveSpeed		=  conState.MoveSpeed;
-	} else {
-		// 通常.
-		m_RightMoveSpeed	=  conState.MoveSpeed;
-		m_LeftMoveSpeed		= -conState.MoveSpeed;
-	}
+	// パラメーターの読み込み.
+	if( LoadParameter( isLoad ) == false ){}
 }
 
 CRotLookAtCenter::~CRotLookAtCenter()
 {
+}
+
+// パラメーターの読み込み.
+bool CRotLookAtCenter::LoadParameter( const bool& isLoad )
+{
+	if( isLoad == false ) return false;
+	SConfigState tmpConfigState;
+	if( CFileManager::BinaryReading( CONFIG_FILE_PATH, tmpConfigState ) == false ) return false;
+	// カメラを判定するか.
+	if( tmpConfigState.IsReverse == true ){
+		// 反転.
+		m_RightMoveSpeed	= -tmpConfigState.MoveSpeed;
+		m_LeftMoveSpeed		=  tmpConfigState.MoveSpeed;
+	} else {
+		// 通常.
+		m_RightMoveSpeed	=  tmpConfigState.MoveSpeed;
+		m_LeftMoveSpeed		= -tmpConfigState.MoveSpeed;
+	}
+	return true;
 }
 
 // 更新.

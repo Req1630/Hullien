@@ -33,6 +33,9 @@ public:  //------ 関数 -------.
 	CRotLookAtCenter( const bool& isLoad );
 	virtual ~CRotLookAtCenter();
 
+	// パラメーターの読み込み.
+	bool LoadParameter( const bool& isLoad );
+
 	// 更新.
 	virtual void Update() override;
 

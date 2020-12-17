@@ -224,6 +224,15 @@ float CPlayer::GetCameraRadianX()
 	return m_pCamera->GetRadianX();
 }
 
+// アニメーションを再開する.
+void CPlayer::ResumeAnimation()
+{
+	// 設定画面に行った後カメラの設定が変わっているかもしれないので.
+	// 再度読み込む.
+	if( m_pCamera->LoadParameter( true ) == false ){}
+	m_AnimSpeed = m_OldAnimSpeed;
+}
+
 // カメラを揺らす.
 bool CPlayer::CameraShake()
 {
