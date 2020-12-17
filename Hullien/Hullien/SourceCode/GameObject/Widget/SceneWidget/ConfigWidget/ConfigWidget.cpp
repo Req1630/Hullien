@@ -26,6 +26,7 @@ CConfigWidget::CConfigWidget( const bool& isGame )
 	, m_pGraphicConfig		( nullptr )
 	, m_ReturnTitlePosition	( 0.0f, 0.0f, 0.0f )
 	, m_SelectState			( EConfigState_Volume )
+	, m_OldSelectState		( EConfigState_Volume )
 	, m_NowConfigState		( EConfigState_None )
 	, m_IsNowGameScene		( isGame )
 	, m_IsReturnToTitle		( false )
@@ -182,6 +183,11 @@ void CConfigWidget::CursorSetting()
 				m_SelectState = MAX_STATE;
 				m_InputWaitTime = 0.0f;
 			}
+		}
+		// SE‚ð–Â‚ç‚·.
+		if( m_SelectState != m_OldSelectState ){
+			CSoundManager::PlaySE("MoveButtonSE");
+			m_OldSelectState = m_SelectState;
 		}
 	}
 

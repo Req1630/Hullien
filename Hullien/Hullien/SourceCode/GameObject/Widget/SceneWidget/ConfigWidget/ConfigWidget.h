@@ -80,6 +80,7 @@ private:
 	std::unique_ptr<CGraphicConfigWidget>	m_pGraphicConfig;		// グラフィック設定UI.
 	D3DXVECTOR3	m_ReturnTitlePosition;	// タイトルへ戻る画像の座標.
 	int			m_SelectState;			// 選択状態.
+	int			m_OldSelectState;
 	int			m_NowConfigState;		// 現在の設定の状態.
 	bool		m_IsNowGameScene;		// ゲームシーンかどうか.
 	bool		m_IsReturnToTitle;		// タイトルに戻る.
