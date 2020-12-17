@@ -2,7 +2,8 @@
 #include "..\..\Global.h"
 
 CMouse::CMouse()
-	: m_Point		{ 0, 0 }
+	: m_hWnd		( nullptr )
+	, m_NowPoint	{ 0, 0 }
 	, m_OldPoint	{ 0, 0 }
 {
 }
@@ -12,42 +13,19 @@ CMouse::~CMouse()
 }
 
 // マウスの更新.
-void CMouse::UpdateMouse( HWND hWnd )
+void CMouse::UpdateMouse()
 {
-	m_OldPoint = m_Point;
+	// 前回を設定.
+	m_OldPoint = m_NowPoint;
 	// マウスカーソル位置取得.
-	GetCursorPos( &m_Point );
+	GetCursorPos( &m_NowPoint );
 	// スクリーン座標→クライアント座標に変換.
-	ScreenToClient( hWnd, &m_Point );
-}
-
-// 座標Xの取得.
-float CMouse::GetPosisionX()
-{
-	return static_cast<float>(m_Point.x);
-}
-
-// 座標Ｙの取得.
-float CMouse::GetPosisionY()
-{
-	return static_cast<float>(m_Point.y);
-}
-
-// 前回の座標Xの取得.
-float CMouse::GetOldPosisionX()
-{
-	return static_cast<float>(m_OldPoint.x);
-}
-
-// 前回の座標Ｙの取得.
-float CMouse::GetOldPosisionY()
-{
-	return static_cast<float>(m_OldPoint.y);
+	ScreenToClient( m_hWnd, &m_NowPoint );
 }
 
 // スクリーンの中か.
 bool CMouse::IsScreenMiddle()
 {
-	return (( 0 < m_Point.x && m_Point.x < WND_W ) &&
-			( 0 < m_Point.y && m_Point.y < WND_H ));
+	return (( 0 < m_NowPoint.x && m_NowPoint.x < WND_W ) &&
+			( 0 < m_NowPoint.y && m_NowPoint.y < WND_H ));
 }
