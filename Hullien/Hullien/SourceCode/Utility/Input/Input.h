@@ -47,13 +47,13 @@ public:
 	// 軸バインド.
 	struct stAxisBind
 	{
-		const unsigned char	MinusKey;	// キー番号.
-		const unsigned char	PlusKey;	// キー番号.
+		const unsigned char	MinusKey;	// マイナス方向で受け取るキー番号.
+		const unsigned char	PlusKey;	// プラス方向で受け取るキー番号.
 
-		const std::function<SHORT()> GetValue;// 値の取得関数.
+		const std::function<SHORT()> GetValue;// コントローラの軸値の取得関数.
 
-		const float MinValue;
-		const float MaxValue;
+		const float MinValue;	// キーで受け取る際の最小値.
+		const float MaxValue;	// キーで受け取る際の最大値.
 
 		stAxisBind() : stAxisBind	( 0, 0, [](){ return 0; }, 0.0f, 0.0f ){}
 		stAxisBind(
@@ -101,6 +101,7 @@ public:
 		{
 			list =
 			{
+				キーバインド列挙体,		設定するキー、ゲームパッドのボタンの設定.
 				{ EKeyBind::Decision,	CInput::SKeyBindPair( VK_RETURN,	XINPUT_GAMEPAD_B )	},
 				{ EKeyBind::Cancel,		CInput::SKeyBindPair( VK_BACK,		XINPUT_GAMEPAD_A )	},
 			};
@@ -108,6 +109,18 @@ public:
 	*/
 	static void InitKeyBind( std::function<void(std::unordered_map<EKeyBind, SKeyBindPair>&)> func );
 	// 軸バインドの初期化 : 外部から設定用.
+	// 以下使用例.
+	/*
+		CInput::InitAxisBind( []( std::unordered_map<EAxisBind, SAxisBind>& list )
+		{
+			list =
+			{
+				軸バインドの列挙体		設定するキー、受け取る軸の関数、受け取る最小値、最大値.
+				{ EAxisBind::L_Forward,	SAxisBind( 'S', 'W', [](){ return CXInput::LThumbY_Axis(); }, -1.0f, 1.0f ) },
+				{ EAxisBind::L_Right,	SAxisBind( 'A', 'D', [](){ return CXInput::LThumbX_Axis(); }, -1.0f, 1.0f ) },
+			};
+		};
+	*/
 	static void InitAxisBind( std::function<void(std::unordered_map<EAxisBind, SAxisBind>&)> func );
 
 	// 入力状態の更新.

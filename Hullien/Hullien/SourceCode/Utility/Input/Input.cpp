@@ -31,7 +31,7 @@ void CInput::InitKeyBind()
 {
 	GetInstance()->m_KeyBindList =
 	{
-
+		// キーバインド列挙体,		設定するキー、ゲームパッドのボタンの設定.
 		{ EKeyBind::Decision,		SKeyBindPair( VK_RETURN,	XINPUT_GAMEPAD_B )				},
 		{ EKeyBind::Cancel,			SKeyBindPair( VK_BACK,		XINPUT_GAMEPAD_A )				},
 		{ EKeyBind::Skip,			SKeyBindPair( VK_RETURN,	XINPUT_GAMEPAD_B )				},
@@ -57,6 +57,7 @@ void CInput::InitAxisBind()
 {
 	GetInstance()->m_AxisBindList = 
 	{
+		// 軸バインドの列挙体		設定するキー、受け取る軸の関数、受け取る最小値、最大値.
 		{ EAxisBind::L_Forward,	SAxisBind( 'S', 'W', [](){ return CXInput::LThumbY_Axis(); }, -1.0f, 1.0f ) },
 		{ EAxisBind::L_Right,	SAxisBind( 'A', 'D', [](){ return CXInput::LThumbX_Axis(); }, -1.0f, 1.0f ) },
 	};
