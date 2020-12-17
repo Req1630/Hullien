@@ -61,6 +61,8 @@ private:
 	void GameUpdate();
 	// コンテニュー処理関数.
 	void ContinueUpdate();
+	// 設定画面の更新.
+	void ConfigUpdate();
 	// シーン切り替え関数.
 	void ChangeEventScene();
 	// 次のシーンに移行.
@@ -73,18 +75,18 @@ private:
 	void StopAllBGM();
 
 private:
-	std::unique_ptr<CGameActorManager>	m_GameObjManager;	// ゲームオブジェクト管理クラス.
-	std::unique_ptr<CGameWidgetManager>	m_WidgetManager; 	// ゲームUI管理クラス.
-	std::unique_ptr<CContinueWidget>	m_ContinueWidget;	// コンテニューUIクラス.
+	std::unique_ptr<CGameActorManager>	m_pGameObjManager;	// ゲームオブジェクト管理クラス.
+	std::unique_ptr<CGameWidgetManager>	m_pWidgetManager; 	// ゲームUI管理クラス.
+	std::unique_ptr<CContinueWidget>	m_pContinueWidget;	// コンテニューUIクラス.
 	std::unique_ptr<CConfigWidget>		m_pConfigWidget;	// 設定UIクラス.
-	std::unique_ptr<CEventManager>		m_pEventManager; 	//	イベント管理クラス.
+	std::unique_ptr<CEventManager>		m_pEventManager; 	// イベント管理クラス.
 	EEventSceneState					m_NowEventScene;	// 現在のイベントシーン.
 	ENextSceneState						m_NextSceneState;	// 次のシーン状態.
 	float								m_WaitCount;		// 待機カウント.
-	bool								m_IsContinueSelect;
-	bool								m_IsConfig;
-	bool								m_IsPlayGameBGM;
-	bool								m_IsPlayDangerBGM;
+	bool								m_IsContinueSelect;	// コンテニューを選択しているか.
+	bool								m_IsConfig;			// 設定中か.
+	bool								m_IsPlayGameBGM;	// ゲームのBGMを再生しているか.
+	bool								m_IsPlayDangerBGM;	// 危険BGMを再生しているか.
 };
 
 #endif	// #ifndef GAME_H.

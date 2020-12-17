@@ -13,7 +13,7 @@ CBloom::CBloom()
 	, m_pSampleLinear		( nullptr )
 	, m_WndWidth			( 0 )
 	, m_WndHeight			( 0 )
-{	  
+{
 }
 
 CBloom::~CBloom()
@@ -45,8 +45,8 @@ void CBloom::Release()
 	for( auto& tex : m_pBlurBufferTex ) SAFE_RELEASE(tex);
 
 	SAFE_RELEASE( m_pSampleLinear );
-	for( auto& b : m_pVertexBuffer ) SAFE_RELEASE(b);
-	for( auto& b : m_pConstantBuffer ) SAFE_RELEASE(b);
+	for( auto& b : m_pVertexBuffer )	SAFE_RELEASE(b);
+	for( auto& b : m_pConstantBuffer )	SAFE_RELEASE(b);
 	SAFE_RELEASE( m_pPixelShader );
 	SAFE_RELEASE( m_pVertexLayout );
 	SAFE_RELEASE( m_pVertexShader );

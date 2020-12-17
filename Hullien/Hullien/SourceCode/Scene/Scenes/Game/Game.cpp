@@ -24,9 +24,9 @@
 
 CGame::CGame( CSceneManager* pSceneManager )
 	: CSceneBase			( pSceneManager )
-	, m_GameObjManager		( nullptr )
-	, m_WidgetManager		( nullptr )
-	, m_ContinueWidget		( nullptr )
+	, m_pGameObjManager		( nullptr )
+	, m_pWidgetManager		( nullptr )
+	, m_pContinueWidget		( nullptr )
 	, m_pConfigWidget		( nullptr )
 	, m_pEventManager		( nullptr )
 	, m_NowEventScene		( EEventSceneState::GameStart )
@@ -37,9 +37,9 @@ CGame::CGame( CSceneManager* pSceneManager )
 	, m_IsPlayGameBGM		( false )
 	, m_IsPlayDangerBGM		( false )
 {
-	m_GameObjManager		= std::make_unique<CGameActorManager>();
-	m_WidgetManager			= std::make_unique<CGameWidgetManager>();
-	m_ContinueWidget		= std::make_unique<CContinueWidget>();
+	m_pGameObjManager		= std::make_unique<CGameActorManager>();
+	m_pWidgetManager		= std::make_unique<CGameWidgetManager>();
+	m_pContinueWidget		= std::make_unique<CContinueWidget>();
 	m_pConfigWidget			= std::make_unique<CConfigWidget>( true );
 	m_pEventManager			= std::make_unique<CEventManager>();
 }
@@ -55,9 +55,9 @@ bool CGame::Load()
 {
 	CEffectResource::Release();
 	CEffectResource::Load( CDirectX11::GetDevice(), CDirectX11::GetContext() );
-	if( m_GameObjManager->Init()	== false )	return false;
-	if( m_WidgetManager->Init()		== false )	return false;
-	if( m_ContinueWidget->Init()	== false )	return false;
+	if( m_pGameObjManager->Init()	== false )	return false;
+	if( m_pWidgetManager->Init()	== false )	return false;
+	if( m_pContinueWidget->Init()	== false )	return false;
 	if( m_pConfigWidget->Init()		== false )	return false;
 	
 	if (m_pSceneManager->GetRetry() == false)
@@ -131,19 +131,19 @@ void CGame::Render()
 	{
 	case EEventSceneState::Game:
 		ModelRender();
-		m_GameObjManager->SpriteRender();
-		m_WidgetManager->Render();
+		m_pGameObjManager->SpriteRender();
+		m_pWidgetManager->Render();
 		break;
 	case EEventSceneState::Continue:
-		if (m_GameObjManager->IsGameOver() == false) {
+		if (m_pGameObjManager->IsGameOver() == false) {
 			m_pEventManager->Render();
 		}
 		else {
 			ModelRender();
-			m_GameObjManager->SpriteRender();
-			m_WidgetManager->Render();
+			m_pGameObjManager->SpriteRender();
+			m_pWidgetManager->Render();
 		}
-		m_ContinueWidget->Render();
+		m_pContinueWidget->Render();
 		break;
 	case EEventSceneState::GameStart:
 	case EEventSceneState::GameOver_Girl:
@@ -177,7 +177,7 @@ void CGame::ModelRender()
 	// 深度テクスチャに影用の深度を書き込む.
 
 	CSceneTexRenderer::SetRenderPass( CSceneTexRenderer::ERenderPass::Shadow );
-	m_GameObjManager->Render();
+	m_pGameObjManager->Render();
 
 	//--------------------------------------------.
 	// 描画パス2.
@@ -186,7 +186,7 @@ void CGame::ModelRender()
 
 	CSceneTexRenderer::SetRenderPass( CSceneTexRenderer::ERenderPass::Trans );
 	CSceneTexRenderer::SetTransBuffer();
-	m_GameObjManager->Render();
+	m_pGameObjManager->Render();
 
 	//--------------------------------------------.
 	// 描画パス3.
@@ -195,7 +195,7 @@ void CGame::ModelRender()
 
 	CSceneTexRenderer::SetRenderPass( CSceneTexRenderer::ERenderPass::GBuffer );
 	CSceneTexRenderer::SetGBuffer();
-	m_GameObjManager->Render();
+	m_pGameObjManager->Render();
 
 	//--------------------------------------------.
 	// 最終描画.
@@ -207,7 +207,7 @@ void CGame::ModelRender()
 // ゲーム処理関数.
 void CGame::GameUpdate()
 {
-	if (m_GameObjManager->IsDanger() == false)
+	if (m_pGameObjManager->IsDanger() == false)
 	{
 		if( m_IsPlayGameBGM == false ){
 			if( CSoundManager::GetMoveUpThread("GameBGM") == false ){
@@ -243,43 +243,32 @@ void CGame::GameUpdate()
 		}
 	}
 
-
-	// 以下関数化.
-
+	// 設定中じゃなければ.
 	if( m_IsConfig == false ){
+		// スタートボタンを押して設定画面を表示させる.
 		if( CInput::IsMomentPress( EKeyBind::Start ) == true ){
 			m_IsConfig = true;
-			m_GameObjManager->AnimationStop();
+			m_pGameObjManager->AnimationStop();	// アニメーションを停止する.
 		}
 	}
 
 	if( m_IsConfig == false ){
-		m_GameObjManager->Update();
-		m_WidgetManager->Update(m_GameObjManager.get());
+		m_pGameObjManager->Update();
+		m_pWidgetManager->Update(m_pGameObjManager.get());
 	} else {
-		m_pConfigWidget->Update();
-		if( m_pConfigWidget->IsEndConfig() == true ){
-			m_GameObjManager->ResumeAnimation();
-			m_pConfigWidget->OffVolumeSeting();
-			m_IsConfig = false;
-		}
-
-		if( m_pConfigWidget->IsReturnToTitle() == true ){
-			m_pConfigWidget->OffVolumeSeting();
-			m_NextSceneState = ENextSceneState::Title;
-		}
+		ConfigUpdate();		
 	}
 }
 
 // コンテニュー処理関数.
 void CGame::ContinueUpdate()
 {
-	m_ContinueWidget->Update();
+	m_pContinueWidget->Update();
 
-	if (m_ContinueWidget->GetIsDrawing() == true) return;
+	if (m_pContinueWidget->GetIsDrawing() == true) return;
 	if( m_IsContinueSelect == true ) return;
 
-	switch (m_ContinueWidget->GetSelectState())
+	switch (m_pContinueWidget->GetSelectState())
 	{
 	case CContinueWidget::ESelectState::Yes:
 		if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
@@ -300,23 +289,43 @@ void CGame::ContinueUpdate()
 	}
 }
 
+// 設定画面の更新.
+void CGame::ConfigUpdate()
+{
+	m_pConfigWidget->Update();	// 設定UI更新.
+	// 設定が終了したか.
+	if( m_pConfigWidget->IsEndConfig() == true ){
+		m_pGameObjManager->ResumeAnimation();	// アニメーションを再開.
+		m_pConfigWidget->OffVolumeSeting();
+		m_IsConfig = false;	// 設定終了.
+	}
+
+	// 設定が終了していれば終了する.
+	if( m_IsConfig == false ) return;
+	// タイトルへ戻るか,
+	if( m_pConfigWidget->IsReturnToTitle() == true ){
+		m_pConfigWidget->OffVolumeSeting();
+		m_NextSceneState = ENextSceneState::Title;
+	}
+}
+
 // シーン切り替え関数.
 void CGame::ChangeEventScene()
 {
 	if (m_NowEventScene == EEventSceneState::Game)
 	{
 		// プレイヤーが死亡した場合.
-		if (m_GameObjManager->IsGameOver() == true)
+		if (m_pGameObjManager->IsGameOver() == true)
 		{
 			m_NowEventScene = EEventSceneState::Continue;
 			return;
 		}
 		// ゲームクリアの場合.
-		if (m_WidgetManager->IsGameFinish() == true)
+		if (m_pWidgetManager->IsGameFinish() == true)
 		{
 			SetNextScene(EEventSceneState::Clear);
 		}
-		else if (m_GameObjManager->IsReturnAlien() == true)
+		else if (m_pGameObjManager->IsReturnAlien() == true)
 		{
 			// 女の子がUFOまで連れ去られた場合.
 			SetNextScene(EEventSceneState::GameOver_Girl, true);
