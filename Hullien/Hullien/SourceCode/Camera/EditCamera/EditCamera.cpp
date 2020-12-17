@@ -21,6 +21,7 @@ CEditCamera::CEditCamera()
 	, m_Radian	( 0.0f, 0.0f )
 {
 	m_pMouse = std::make_unique<CMouse>();
+	m_pMouse->SetHWND( m_hWnd );
 	m_vPosition = INIT_POSITION;
 }
 
@@ -71,7 +72,7 @@ void CEditCamera::Updata()
 // マウスの更新.
 void CEditCamera::MouseUpdate()
 {
-	m_pMouse->UpdateMouse( m_hWnd );	// マウスの更新.
+	m_pMouse->UpdateMouse();	// マウスの更新.
 	float xSub = 0.0f;
 	float ySub = 0.0f;
 	float moveSpeed = MOUSE_MOVE_SPEED;
