@@ -46,12 +46,22 @@ VS_OUTPUT VS_Main(
 float4 PS_Main(VS_OUTPUT input) : SV_Target
 {
 	float maskColor = g_MaskTexture.Sample(g_SamLinear, input.Tex).r;
-	float4 texColor = float4(0.5f, 0.5f, 0.5f, 1.0f);
+	float4 texColor = g_Texture.Sample(g_SamLinear, input.Tex);
 	
+	// 最終色.
+	float4 finalColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	
+	/*
+	// アルファ抜け.
 	float maskAlpha = saturate(maskColor + (Value * 2.0f - 1.0f));
-	float4 outColor = texColor * maskAlpha + texColor * (1 - texColor.a);
+	finalColor = texColor * maskAlpha + texColor * (1 - texColor.a);
+	clip(finalColor.a - 0.001f);
+	*/
 	
-	clip(outColor.a - 0.001f);
+	// カットアウト.
+	half maskAlpha = maskColor - (-1 + Value);
+	finalColor = float4( texColor.rgb, texColor.a*maskAlpha );
+	clip(finalColor.a - 0.9999);
 	
-	return outColor;
+	return finalColor;
 }

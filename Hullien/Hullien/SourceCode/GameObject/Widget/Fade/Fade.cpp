@@ -98,7 +98,7 @@ void CFade::SetFadeOut()
 bool CFade::SpriteSetting()
 {
 	if (m_pSprite != nullptr) return true;
-	m_pSprite = CSpriteResource::GetSprite("CBackGround");
+	m_pSprite = CSpriteResource::GetSprite("Fade");
 	if (m_pSprite == false) return false;
 
 	return true;
