@@ -42,14 +42,14 @@ void CConfigCursor::Render()
 	if (m_pSprite == nullptr) return;
 
 	m_vPosition.x += ADJ_POSITOIN_X_MAIN;
-	m_pBlendSprite->SetPosition( m_vPosition );
-	m_pBlendSprite->SetScale( m_vScale );
+	m_pSprite->SetPosition( m_vPosition );
+	m_pSprite->SetScale( m_vScale );
 
-	m_pBlendSprite->SetDeprh( false );
-	m_pBlendSprite->SetBlend( true );
-	m_pBlendSprite->RenderUI();
-	m_pBlendSprite->SetBlend( false );
-	m_pBlendSprite->SetDeprh( true );
+	m_pSprite->SetDeprh( false );
+	m_pSprite->SetBlend( true );
+	m_pSprite->RenderUI();
+	m_pSprite->SetBlend( false );
+	m_pSprite->SetDeprh( true );
 }
 
 // スプライト設定関数.

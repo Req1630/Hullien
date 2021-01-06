@@ -2,6 +2,7 @@
 #include "..\..\..\..\Common\Sprite\CSprite.h"
 #include "..\..\..\..\Common\Sprite\BlendSprite\BlendSprite.h"
 #include "..\..\..\..\Resource\SpriteResource\SpriteResource.h"
+#include "..\..\..\..\Common\Transition\Transition.h"
 #include "..\..\..\..\Utility\Input\Input.h"
 #include "..\..\..\..\XAudio2\SoundManager.h"
 #include "..\..\Cursor\ConfigCursor.h"
@@ -27,10 +28,12 @@ CConfigWidget::CConfigWidget( const bool& isGame )
 	, m_pControllerConfig	( nullptr )
 	, m_pGraphicConfig		( nullptr )
 	, m_pBlendSprite		( nullptr )
+	, m_pTransition			( nullptr )
 	, m_ReturnTitlePosition	( 0.0f, 0.0f, 0.0f )
 	, m_SelectState			( EConfigState_Volume )
 	, m_OldSelectState		( EConfigState_Volume )
 	, m_NowConfigState		( EConfigState_None )
+	, m_FadeValue			( 0.0f )
 	, m_IsNowGameScene		( isGame )
 	, m_IsReturnToTitle		( false )
 {
@@ -40,6 +43,7 @@ CConfigWidget::CConfigWidget( const bool& isGame )
 	m_pControllerConfig	= std::make_unique<CControllerConfigWidget>();
 	m_pGraphicConfig	= std::make_unique<CGraphicConfigWidget>();
 	m_pBlendSprite		= std::make_unique<CBlendSprite>();
+	m_pTransition		= std::make_unique<CTransition>();
 }
 
 CConfigWidget::~CConfigWidget()
@@ -55,14 +59,31 @@ bool CConfigWidget::Init()
 	if( m_pCameraConfig->Init()		== false ) return false;
 	if( m_pControllerConfig->Init()	== false ) return false;
 	if( m_pGraphicConfig->Init()	== false ) return false;
+	if( FAILED( m_pTransition->Init( CDirectX11::GetDevice(), CDirectX11::GetContext(), 
+		"Data\\Texture\\UI\\Fade\\009TransitoinRule.png",
+		m_pSprites[0]->GetSpriteData()->SState.Disp.w,
+		m_pSprites[0]->GetSpriteData()->SState.Disp.h ))) return false;
 	if( FAILED( m_pBlendSprite->Init( CDirectX11::GetDevice(), CDirectX11::GetContext() ))) return false;
 	m_pBlendSprite->SetSpriteData( m_pSprites[0]->GetSpriteData() );
+	m_pTransition->SetTexture( m_pSprites[0]->GetSpriteData()->pTexture );
+	m_pTransition->SetPosition( m_pSprites[0]->GetSpriteData()->SState.vPos );
 	return true;
 }
 
 // çXêVä÷êî.
 void CConfigWidget::Update()
 {
+	if( m_NowConfigState == EConfigState_End ){
+		if( m_FadeValue > FADE_VALUE_MIN ){
+			m_FadeValue -= FADE_SPEED;
+			return;
+		}
+	} else {
+		if( m_FadeValue < FADE_VALUE_MAX ){
+			m_FadeValue += FADE_SPEED;
+			return;
+		}
+	}
 	m_InputWaitTime--;
 	m_pVolumeConfig->OnVolumeSeting();	// âπó ÇÃê›íËÇóLå¯Ç…Ç∑ÇÈ.
 	switch( m_NowConfigState )
@@ -106,6 +127,13 @@ void CConfigWidget::Update()
 // ï`âÊä÷êî.
 void CConfigWidget::Render()
 {
+	if( m_FadeValue < FADE_VALUE_MAX ){
+		m_pTransition->SetValue( m_FadeValue );
+		m_pTransition->SetDestTexture( CSceneTexRenderer::GetGBuffer()[0] );
+		m_pTransition->Render();
+		return;
+	}
+
 	for( size_t i = 0; i < m_pSprites.size(); i++ ){
 		if( i == EConfigState_BackTitle ){
 			if( m_IsNowGameScene == false ){
@@ -162,6 +190,7 @@ void CConfigWidget::OffVolumeSeting()
 bool CConfigWidget::IsEndConfig()
 {
 	if( m_NowConfigState == EConfigState_End ){
+		if( m_FadeValue > FADE_VALUE_MIN ) return false;
 		m_NowConfigState = EConfigState_None;
 		m_SelectState = EConfigState_Volume;
 		return true;

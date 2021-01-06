@@ -10,6 +10,7 @@ class CCameraConfigWidget;		// カメラ設定UIクラス.
 class CControllerConfigWidget;	// コントローラー設定UIクラス.
 class CGraphicConfigWidget;		// グラフィック設定UIクラス.
 class CBlendSprite;				// ブレンド描画用クラス.
+class CTransition;				// トランジションクラス.
 
 /********************************************
 *	設定UIクラス.
@@ -30,6 +31,10 @@ class CConfigWidget : public CSceneWidget
 	const int CAMERA		= 3;	//開始配列番号.
 	const int CONTROLLER	= 4;	// 
 	const int GRAPHIC		= 5;	// 
+
+	const float FADE_VALUE_MAX = 1.0f;
+	const float FADE_VALUE_MIN = 0.0f;
+	const float FADE_SPEED = 0.03f;
 
 	enum enConfigState
 	{
@@ -81,10 +86,12 @@ private:
 	std::unique_ptr<CControllerConfigWidget>m_pControllerConfig;	// コントローラー設定UI.
 	std::unique_ptr<CGraphicConfigWidget>	m_pGraphicConfig;		// グラフィック設定UI.
 	std::unique_ptr<CBlendSprite>			m_pBlendSprite;			// ブレンド描画用.
+	std::unique_ptr<CTransition>			m_pTransition;			// トランジション.
 	D3DXVECTOR3	m_ReturnTitlePosition;	// タイトルへ戻る画像の座標.
 	int			m_SelectState;			// 選択状態.
 	int			m_OldSelectState;
 	int			m_NowConfigState;		// 現在の設定の状態.
+	float		m_FadeValue;
 	bool		m_IsNowGameScene;		// ゲームシーンかどうか.
 	bool		m_IsReturnToTitle;		// タイトルに戻る.
 };

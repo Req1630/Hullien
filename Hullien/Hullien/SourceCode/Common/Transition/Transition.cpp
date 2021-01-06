@@ -20,7 +20,10 @@ CTransition::~CTransition()
 // 初期化.
 HRESULT CTransition::Init(
 	ID3D11Device* pDevice11,
-	ID3D11DeviceContext* pContext11)
+	ID3D11DeviceContext* pContext11,
+	const char* ruleSpritePath,
+	const float& width,
+	const float& height )
 {
 	m_pDevice11 = pDevice11;
 	m_pContext11 = pContext11;
@@ -28,10 +31,10 @@ HRESULT CTransition::Init(
 	if( m_pDevice11 == nullptr ) return E_FAIL;
 	if( m_pContext11 == nullptr ) return E_FAIL;
 
-	if( FAILED( InitModel() ))		return E_FAIL;
-	if( FAILED( InitTexture(TEXTURE_NAME) ))	return E_FAIL;
-	if( FAILED( InitShader() ))		return E_FAIL;
-	if( FAILED( InitSampler() ))	return E_FAIL;
+	if( FAILED( InitModel( width, height ) ))	return E_FAIL;
+	if( FAILED( InitTexture(ruleSpritePath) ))	return E_FAIL;
+	if( FAILED( InitShader() ))					return E_FAIL;
+	if( FAILED( InitSampler() ))				return E_FAIL;
 	if( FAILED( CreateCBuffer( &m_pConstantBufferInit, sizeof(CBUFFER_PER_INIT) ) )) return E_FAIL;
 	if( FAILED( CreateCBuffer( &m_pConstantBufferFrame, sizeof(CBUFFER_PER_FRAME) ) )) return E_FAIL;
 
@@ -60,10 +63,23 @@ void CTransition::Release()
 // レンダリング.
 void CTransition::Render()
 {
-	if( GetAsyncKeyState('K') & 0x8000 ) m_vColor.w += 0.01f;
-	if( GetAsyncKeyState('L') & 0x8000 ) m_vColor.w -= 0.01f;
-	if( m_vColor.w > 1.0f ) m_vColor.w = 1.0f;
-	if( m_vColor.w < 0.0f ) m_vColor.w = 0.0f;
+	//if( GetAsyncKeyState('K') & 0x8000 ) m_Value += 0.01f;
+	//if( GetAsyncKeyState('L') & 0x8000 ) m_Value -= 0.01f;
+	//if( m_Value > 1.0f ) m_Value = 1.0f;
+	//if( m_Value < 0.0f ) m_Value = 0.0f;
+
+	//　ワールド行列, スケール行列, 回転行列, 平行移動行列.
+	D3DXMATRIX mWorld, mScale, mRot, mTran;
+
+	// 拡大縮小行列作成.
+	D3DXMatrixScaling( &mScale, m_vScale.x, m_vScale.y, 1.0f );
+	// 回転行列を作成.
+	D3DXMatrixRotationYawPitchRoll( &mRot, m_vRot.y, m_vRot.x, m_vRot.z );
+	// 平行移動行列.
+	D3DXMatrixTranslation( &mTran, m_vPos.x, m_vPos.y, m_vPos.z );
+
+	// ワールド行列作成.
+	mWorld = mScale * mRot * mTran;
 
 	// シェーダーのコンスタントバッファに各種データを渡す.
 	D3D11_MAPPED_SUBRESOURCE pData;
@@ -73,7 +89,10 @@ void CTransition::Render()
 	if( SUCCEEDED( m_pContext11->Map(
 		m_pConstantBufferFrame, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData ))){
 
-		cb.Value = m_vColor.w;
+		// ワールド行列を渡す.
+		cb.mW	= mWorld;
+		D3DXMatrixTranspose( &cb.mW, &cb.mW ); // 行列を転置する.
+		cb.Value = m_Value;
 
 		memcpy_s( pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb) );
 
@@ -105,6 +124,7 @@ void CTransition::Render()
 	m_pContext11->PSSetSamplers( 0, 1, &m_pSampleLinear );
 	m_pContext11->PSSetShaderResources( 0, 1, &m_pMaskTexture );
 	m_pContext11->PSSetShaderResources( 1, 1, &m_pTexture );
+	m_pContext11->PSSetShaderResources( 2, 1, &m_pDestTexture );
 
 	// レンダリング.
 	SetDeprh( false );
@@ -115,7 +135,7 @@ void CTransition::Render()
 }
 
 // モデル(ポリゴン)の作成.
-HRESULT CTransition::InitModel()
+HRESULT CTransition::InitModel( const float& width, const float& height )
 {
 	float w = static_cast<float>(WND_W);
 	float h = static_cast<float>(WND_H);
@@ -125,10 +145,10 @@ HRESULT CTransition::InitModel()
 	{
 		// ポリゴンの中心を頂点とする.
 		// 頂点座標(x,y,z)					UV座標(u,v)
-		D3DXVECTOR3(0.0f,    h, 0.0f), D3DXVECTOR2(0.0f, 1.0f),	//頂点１(左下).
+		D3DXVECTOR3(0.0f,    height, 0.0f), D3DXVECTOR2(0.0f, 1.0f),	//頂点１(左下).
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f),	//頂点２(左上).
-		D3DXVECTOR3(   w,    h, 0.0f), D3DXVECTOR2(1.0f, 1.0f),	//頂点３(右下).
-		D3DXVECTOR3(   w, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 0.0f)	//頂点４(右上).
+		D3DXVECTOR3(   width,    height, 0.0f), D3DXVECTOR2(1.0f, 1.0f),	//頂点３(右下).
+		D3DXVECTOR3(   width, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 0.0f)	//頂点４(右上).
 	};
 
 	// バッファ構造体.
@@ -168,21 +188,6 @@ HRESULT CTransition::InitTexture( const char* filename )
 			&m_pMaskTexture,	// (out)テクスチャ.
 			nullptr ))) {
 		std::string err = filename;
-		err += " : テクスチャ読み込み失敗";
-		ERROR_MESSAGE(err);
-		return E_FAIL;
-	}
-
-	// テクスチャ作成.
-	if( FAILED(
-		D3DX11CreateShaderResourceViewFromFile(
-			m_pDevice11,	// リソースを使用するデバイスのポインタ.
-			NAME,			// ファイル名.
-			nullptr,
-			nullptr,
-			&m_pTexture,	// (out)テクスチャ.
-			nullptr ))) {
-		std::string err = NAME;
 		err += " : テクスチャ読み込み失敗";
 		ERROR_MESSAGE(err);
 		return E_FAIL;

@@ -6,15 +6,14 @@
 class CTransition : public CCommon
 {
 	const char* SHADER_NAME		= "Data\\Shader\\Transition.hlsl";
-	const char* TEXTURE_NAME	= "Data\\Mesh\\171Mask.png";
-	const char* NAME			= "Data\\Mesh\\171.png";
 	struct CBUFFER_PER_INIT
 	{
-		ALIGN16 D3DXMATRIX	mW;				// ワールド行列.
+		ALIGN16 D3DXMATRIX	mW;		// ワールド行列.
 		ALIGN16 D3DXVECTOR2 vViewPort;
 	};
 	struct CBUFFER_PER_FRAME
 	{
+		ALIGN16 D3DXMATRIX	mW;		// ワールド行列.
 		ALIGN16 float Value;
 	};
 	// 頂点の構造体.
@@ -30,7 +29,10 @@ public:
 	// 初期化.
 	HRESULT Init(
 		ID3D11Device* pDevice11,
-		ID3D11DeviceContext* pContext11 );
+		ID3D11DeviceContext* pContext11,
+		const char* ruleSpritePath,
+		const float& width,
+		const float& height );
 
 	// 解放.
 	void Release();
@@ -38,9 +40,15 @@ public:
 	// レンダリング.
 	void Render();
 
+	// テクスチャの設定.
+	void SetTexture( ID3D11ShaderResourceView* pTexture ){ m_pTexture = pTexture; }
+	void SetDestTexture( ID3D11ShaderResourceView* pTexture ){ m_pDestTexture = pTexture; }
+	// 値の設定.
+	void SetValue( const float& value ){ m_Value = value; }
+
 private:
 	// モデル(ポリゴン)の作成.
-	HRESULT InitModel();
+	HRESULT InitModel( const float& width, const float& height );
 	// テクスチャの作成.
 	HRESULT InitTexture( const char* filename );
 	// シェーダーの作成.
@@ -64,6 +72,9 @@ private:
 	ID3D11SamplerState*			m_pSampleLinear;	// サンプラ:テクスチャに各種フィルタをかける.
 	ID3D11ShaderResourceView*	m_pMaskTexture;		// マスクテクスチャ.
 	ID3D11ShaderResourceView*	m_pTexture;			// テクスチャ.
+	ID3D11ShaderResourceView*	m_pDestTexture;			// テクスチャ.
+
+	float m_Value;
 };
 
 #endif	// #ifndef TRANSITION_H.
