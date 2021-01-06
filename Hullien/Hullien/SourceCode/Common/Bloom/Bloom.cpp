@@ -57,25 +57,23 @@ void CBloom::Sampling( ID3D11ShaderResourceView* tex )
 {
 	ID3D11ShaderResourceView* srv = tex;
 	int i = 0;
+	// 使用するシェーダのセット.
+	m_pContext11->VSSetShader( m_pVertexShader, nullptr, 0 );	// 頂点シェーダ.
+	m_pContext11->PSSetShader( m_pPixelShader, nullptr, 0 );	// ピクセルシェーダ.
+	m_pContext11->PSSetSamplers( 0, 1, &m_pSampleLinear );		// サンプラのセット.
+	UINT stride = sizeof(VERTEX);
+	UINT offset = 0;
+	m_pContext11->IASetInputLayout( m_pVertexLayout );
+	m_pContext11->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
 	for( auto& rtv : m_pBlurBufferRTV ){
 		// レンダーターゲットの設定.
 		m_pContext11->OMSetRenderTargets( 1, &rtv, CDirectX11::GetDepthSV() );
 		// デプスステンシルバッファ.
 		m_pContext11->ClearDepthStencilView( CDirectX11::GetDepthSV(), D3D11_CLEAR_DEPTH, 1.0f, 0 );
 
-		// 使用するシェーダのセット.
-		m_pContext11->VSSetShader( m_pVertexShader, nullptr, 0 );	// 頂点シェーダ.
-		m_pContext11->PSSetShader( m_pPixelShader, nullptr, 0 );	// ピクセルシェーダ.
-		m_pContext11->PSSetSamplers( 0, 1, &m_pSampleLinear );		// サンプラのセット.
-
+		m_pContext11->IASetVertexBuffers( 0, 1, &m_pVertexBuffer[i], &stride, &offset );
 		m_pContext11->VSSetConstantBuffers( 0, 1, &m_pConstantBuffer[i] );	// 頂点シェーダ.
 		m_pContext11->PSSetConstantBuffers( 0, 1, &m_pConstantBuffer[i] );	// ピクセルシェーダー.
-
-		UINT stride = sizeof(VERTEX);
-		UINT offset = 0;
-		m_pContext11->IASetVertexBuffers( 0, 1, &m_pVertexBuffer[i], &stride, &offset );
-		m_pContext11->IASetInputLayout( m_pVertexLayout );
-		m_pContext11->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
 
 		m_pContext11->PSSetShaderResources( 0, 1, &srv );
 		m_pContext11->Draw( 4, 0 );

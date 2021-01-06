@@ -1,16 +1,19 @@
 #include "ConfigCursor.h"
 #include "..\..\..\Common\Sprite\CSprite.h"
 #include "..\..\..\Resource\SpriteResource\SpriteResource.h"
+#include "..\..\..\Common\Sprite\BlendSprite\BlendSprite.h"
 
 /********************************************
 *	カーソルクラス.
 **/
 CConfigCursor::CConfigCursor()
-	:	m_vOldPosition(D3DXVECTOR3( 0.0f, 0.0f ,0.0f ))
+	:	m_pBlendSprite(nullptr)
+	,	m_vOldPosition(D3DXVECTOR3( 0.0f, 0.0f ,0.0f ))
 	,	m_Acceleration( 0.0f )
 	,	m_TargetWidth(0.0f)
 	,	m_IsSetting(false)
 {
+	m_pBlendSprite = std::make_unique<CBlendSprite>();
 }
 
 CConfigCursor::~CConfigCursor()
@@ -21,6 +24,8 @@ CConfigCursor::~CConfigCursor()
 bool CConfigCursor::Init()
 {
 	if ( SpriteSetting() == false ) return false;
+	if( FAILED( m_pBlendSprite->Init( CDirectX11::GetDevice(), CDirectX11::GetContext() ))) return false;
+	m_pBlendSprite->SetSpriteData( m_pSprite->GetSpriteData() );
 	return true;
 }
 
@@ -37,14 +42,14 @@ void CConfigCursor::Render()
 	if (m_pSprite == nullptr) return;
 
 	m_vPosition.x += ADJ_POSITOIN_X_MAIN;
-	m_pSprite->SetPosition( m_vPosition );
-	m_pSprite->SetScale( m_vScale );
+	m_pBlendSprite->SetPosition( m_vPosition );
+	m_pBlendSprite->SetScale( m_vScale );
 
-	m_pSprite->SetDeprh( false );
-	m_pSprite->SetBlend( true );
-	m_pSprite->RenderUI();
-	m_pSprite->SetBlend( false );
-	m_pSprite->SetDeprh( true );
+	m_pBlendSprite->SetDeprh( false );
+	m_pBlendSprite->SetBlend( true );
+	m_pBlendSprite->RenderUI();
+	m_pBlendSprite->SetBlend( false );
+	m_pBlendSprite->SetDeprh( true );
 }
 
 // スプライト設定関数.

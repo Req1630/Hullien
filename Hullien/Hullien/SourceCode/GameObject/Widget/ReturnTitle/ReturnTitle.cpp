@@ -64,6 +64,7 @@ void CReturnTitle::Render()
 	m_pSprite->SetBlend( false );
 	// 文字スプライトの表示.
 	for( auto& s : m_pSprites ){
+		s->SetPosition( SPRITE_RENDER_POS );
 		s->SetAlpha(m_Alpha);
 		s->SetBlend( true );
 		s->SetDeprh( false );

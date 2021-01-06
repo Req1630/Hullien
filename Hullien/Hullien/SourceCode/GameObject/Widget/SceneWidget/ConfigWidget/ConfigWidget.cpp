@@ -1,5 +1,6 @@
 #include "ConfigWidget.h"
 #include "..\..\..\..\Common\Sprite\CSprite.h"
+#include "..\..\..\..\Common\Sprite\BlendSprite\BlendSprite.h"
 #include "..\..\..\..\Resource\SpriteResource\SpriteResource.h"
 #include "..\..\..\..\Utility\Input\Input.h"
 #include "..\..\..\..\XAudio2\SoundManager.h"
@@ -8,6 +9,7 @@
 #include "CameraConfigWidget/CameraConfigWidget.h"
 #include "ControllerConfigWidget/ControllerConfigWidget.h"
 #include "GraphicConfigWidget/GraphicConfigWidget.h"
+#include "..\..\..\..\Common\SceneTexRenderer\SceneTexRenderer.h"
 
 /********************************************
 *	ê›íËUIÉNÉâÉX.
@@ -24,6 +26,7 @@ CConfigWidget::CConfigWidget( const bool& isGame )
 	, m_pCameraConfig		( nullptr )
 	, m_pControllerConfig	( nullptr )
 	, m_pGraphicConfig		( nullptr )
+	, m_pBlendSprite		( nullptr )
 	, m_ReturnTitlePosition	( 0.0f, 0.0f, 0.0f )
 	, m_SelectState			( EConfigState_Volume )
 	, m_OldSelectState		( EConfigState_Volume )
@@ -36,6 +39,7 @@ CConfigWidget::CConfigWidget( const bool& isGame )
 	m_pCameraConfig		= std::make_unique<CCameraConfigWidget>();
 	m_pControllerConfig	= std::make_unique<CControllerConfigWidget>();
 	m_pGraphicConfig	= std::make_unique<CGraphicConfigWidget>();
+	m_pBlendSprite		= std::make_unique<CBlendSprite>();
 }
 
 CConfigWidget::~CConfigWidget()
@@ -51,6 +55,8 @@ bool CConfigWidget::Init()
 	if( m_pCameraConfig->Init()		== false ) return false;
 	if( m_pControllerConfig->Init()	== false ) return false;
 	if( m_pGraphicConfig->Init()	== false ) return false;
+	if( FAILED( m_pBlendSprite->Init( CDirectX11::GetDevice(), CDirectX11::GetContext() ))) return false;
+	m_pBlendSprite->SetSpriteData( m_pSprites[0]->GetSpriteData() );
 	return true;
 }
 
@@ -108,13 +114,22 @@ void CConfigWidget::Render()
 				m_pSprites[i]->SetPosition( m_ReturnTitlePosition );
 			}
 		}
+		if( i == 0 ){
+			m_pBlendSprite->SetDestTexture( CSceneTexRenderer::GetGBuffer()[0] );
+			m_pBlendSprite->SetDeprh(false);
+			m_pBlendSprite->SetBlend(true);
+			m_pBlendSprite->RenderUI();
+			m_pBlendSprite->SetBlend(false);
+			m_pBlendSprite->SetDeprh(false);
+			if( m_NowConfigState != EConfigState_None || i != BACKGROUND ) continue;
+			m_pCursor->Render();
+			continue;
+		}
 		m_pSprites[i]->SetDeprh(false);
 		m_pSprites[i]->SetBlend(true);
 		m_pSprites[i]->RenderUI();
 		m_pSprites[i]->SetBlend(false);
 		m_pSprites[i]->SetDeprh(false);
-		if( m_NowConfigState != EConfigState_None || i != BACKGROUND ) continue;
-		m_pCursor->Render();
 	}
 	switch( m_NowConfigState )
 	{
@@ -231,6 +246,7 @@ bool CConfigWidget::SpriteSetting()
 	const char* spriteName[] =
 	{
 		SPRITE_BACK,
+		SPRITE_ICON,
 		SPRITE_VOLUME,
 		SPRITE_CAMERA,
 		SPRITE_CONTROLLER,
@@ -246,6 +262,6 @@ bool CConfigWidget::SpriteSetting()
 		if( m_pSprites[sprite] == nullptr ) return false;
 	}
 	m_ReturnTitlePosition = m_pSprites[EConfigState_Graphic]->GetRenderPos();
-	m_ReturnTitlePosition.y += fabsf( m_pSprites[0]->GetRenderPos().y - m_pSprites[1]->GetRenderPos().y );
+	m_ReturnTitlePosition.y += fabsf( m_pSprites[1]->GetRenderPos().y - m_pSprites[2]->GetRenderPos().y );
 	return true;
 }

@@ -9,6 +9,7 @@ class CVolumeConfigWidget;		// 音量設定UIクラス.
 class CCameraConfigWidget;		// カメラ設定UIクラス.
 class CControllerConfigWidget;	// コントローラー設定UIクラス.
 class CGraphicConfigWidget;		// グラフィック設定UIクラス.
+class CBlendSprite;				// ブレンド描画用クラス.
 
 /********************************************
 *	設定UIクラス.
@@ -17,6 +18,7 @@ class CConfigWidget : public CSceneWidget
 {
 
 	const char* SPRITE_BACK			= "ConfigBack";
+	const char* SPRITE_ICON			= "ConfigIcon";
 	const char* SPRITE_VOLUME		= "Volume";
 	const char* SPRITE_CAMERA		= "Camera";
 	const char* SPRITE_CONTROLLER	= "Controller";
@@ -24,14 +26,14 @@ class CConfigWidget : public CSceneWidget
 	const char* SPRITE_RETURN_TITLE	= "BackTitle";
 
 	const int BACKGROUND	= 0;	//背景配列番号.
-	const int VOLUME		= 1;	//開始配列番号.
-	const int CAMERA		= 2;	//開始配列番号.
-	const int CONTROLLER	= 3;	// 
-	const int GRAPHIC		= 4;	// 
+	const int VOLUME		= 2;	//開始配列番号.
+	const int CAMERA		= 3;	//開始配列番号.
+	const int CONTROLLER	= 4;	// 
+	const int GRAPHIC		= 5;	// 
 
 	enum enConfigState
 	{
-		EConfigState_None,
+		EConfigState_None = 1,
 
 		EConfigState_Volume,	// 音量の設定.
 		EConfigState_Camera,	// カメラの操作.
@@ -78,6 +80,7 @@ private:
 	std::unique_ptr<CCameraConfigWidget>	m_pCameraConfig;		// カメラ設定UI.
 	std::unique_ptr<CControllerConfigWidget>m_pControllerConfig;	// コントローラー設定UI.
 	std::unique_ptr<CGraphicConfigWidget>	m_pGraphicConfig;		// グラフィック設定UI.
+	std::unique_ptr<CBlendSprite>			m_pBlendSprite;			// ブレンド描画用.
 	D3DXVECTOR3	m_ReturnTitlePosition;	// タイトルへ戻る画像の座標.
 	int			m_SelectState;			// 選択状態.
 	int			m_OldSelectState;

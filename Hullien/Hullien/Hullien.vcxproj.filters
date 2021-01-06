@@ -16,6 +16,7 @@
     <FxCompile Include="Data\Shader\Gage.hlsl" />
     <FxCompile Include="Data\Shader\Bloom.hlsl" />
     <FxCompile Include="Data\Shader\CircleGage.hlsl" />
+    <FxCompile Include="Data\Shader\BlendSprite.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\ImGui\imgui.cpp" />
@@ -189,6 +190,7 @@
     <ClCompile Include="SourceCode\Utility\Input\KeyInput\KeyInput.cpp" />
     <ClCompile Include="SourceCode\Common\Gage\CircleGage.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\Cursor\ConfigCursor.cpp" />
+    <ClCompile Include="SourceCode\Common\Sprite\BlendSprite\BlendSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\ImGui\imconfig.h" />
@@ -386,6 +388,8 @@
     <ClInclude Include="SourceCode\Common\Gage\CircleGage.h" />
     <ClInclude Include="SourceCode\Utility\Input\InputStruct.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\Cursor\ConfigCursor.h" />
+    <ClInclude Include="SourceCode\Common\Sprite\BlendSprite\BlendSprite.h" />
+    <ClInclude Include="SourceCode\Common\Sprite\SpriteState.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />
