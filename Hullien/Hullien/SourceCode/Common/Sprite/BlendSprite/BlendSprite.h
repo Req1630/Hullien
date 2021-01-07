@@ -124,13 +124,14 @@ private:
 private:
 	std::shared_ptr<SSpriteData>	m_pSpriteData;	// スプライト情報.
 
+	ID3D11InputLayout*				m_pVertexLayout;	// 頂点レイアウト.
 	ID3D11VertexShader*				m_pVertexShader;	// 頂点シェーダー 3D描画用に使用.
 	ID3D11VertexShader*				m_pVertexShaderUI;	// 頂点シェーダー UD描画用に使用.
 	std::vector<ID3D11PixelShader*>	m_pPixelShaderList;	// ピクセルシェーダー.
 	ID3D11SamplerState*				m_pSampleLinear;	// サンプラ:テクスチャに各種フィルタをかける.
 	ID3D11Buffer*					m_pConstantBuffer;	// コンスタントバッファ.
 	ID3D11ShaderResourceView*		m_pDestTexture;		// 規定色のSRV.
-	CSpriteShader::VERTEX m_VerticesUI[4];	// 頂点作成用.
+	CSpriteShader::VERTEX			m_VerticesUI[4];	// 頂点作成用.
 };
 
 #endif	// #ifndef BLEND_SPRITE_UI_H.

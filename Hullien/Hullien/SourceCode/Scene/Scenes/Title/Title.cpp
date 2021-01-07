@@ -10,6 +10,8 @@
 #include "..\..\..\GameObject\Widget\Fade\Fade.h"
 #include "..\..\..\Utility\Input\Input.h"
 #include "..\..\..\XAudio2\SoundManager.h"
+#include "..\..\..\Common\SceneTexRenderer\SceneTexRenderer.h"
+#include "..\..\..\GameObject\Widget\SceneTransition\SceneTransition.h"
 
 CTitle::CTitle( CSceneManager* pSceneManager )
 	: CSceneBase		( pSceneManager )
@@ -68,12 +70,28 @@ void CTitle::Update()
 //============================.
 void CTitle::Render()
 {
-	if( m_IsNowConfig == false ){
-		if ( m_pWidget == nullptr ) return;
-		m_pWidget->Render();
-	} else {
-		m_pConfigWidget->Render();
-	}
+	// タイトルでは影やエフェクトを描画させる予定はないので.
+	//	G-Bufferのみ描画させる.
+	//--------------------------------------------.
+	// 描画パス1.
+	//--------------------------------------------.
+	// G-Bufferにcolor, normal, depthを書き込む.
+	CSceneTexRenderer::SetRenderPass( CSceneTexRenderer::ERenderPass::GBuffer );
+	CSceneTexRenderer::SetGBuffer();
+
+	// タイトルUIの描画.
+	if ( m_pWidget == nullptr ) return;
+	m_pWidget->Render();
+
+	//--------------------------------------------.
+	// 最終描画.
+	//--------------------------------------------.
+	// G-Bufferを使用して、画面に描画する.
+	//	Bloomは使用しないので、無効にする.
+	CSceneTexRenderer::Render( false );
+
+	// 設定UIの描画.
+	if( m_IsNowConfig == true ) m_pConfigWidget->Render();
 }
 
 //============================.
@@ -88,7 +106,10 @@ void CTitle::ChangeScene()
 		{
 		case CTitleWidget::ESelectState::Start:
 			CSoundManager::PlaySE("Determination");
-			CFade::SetFadeIn();
+//			CFade::SetFadeIn();
+			CSceneTransition::SetSrcTexture( CSceneTexRenderer::GetGBuffer()[0] );
+			CSceneTransition::SetTexture();
+//			CSceneTransition::SetFadeIn();
 			CSoundManager::FadeOutBGM("TitleBGM");
 			break;
 		case CTitleWidget::ESelectState::Config:
@@ -105,6 +126,11 @@ void CTitle::ChangeScene()
 		}
 		m_IsChangeScene = true;
 		m_IsDecision = true;
+	}
+	if( m_IsChangeScene == true ){
+		if (CSoundManager::GetBGMVolume("TitleBGM") > 0.0f) return;
+		while( CSoundManager::StopBGMThread("TitleBGM") == false);
+		m_pSceneManager->NextSceneMove();
 	}
 
 	if (m_IsChangeScene == false) return;

@@ -77,8 +77,9 @@ float4 PS_Main(VS_OUTPUT input) : SV_Target
 	/*
 	// カットアウト.
 	half maskAlpha = maskColor - (-1 + Value);
-	finalColor = float4( texColor.rgb, texColor.a*maskAlpha );
+	finalColor = float4( texColor.rgb, maskAlpha);
 	clip(finalColor.a - 0.9999);
 	*/
+	
 	return finalColor;
 }

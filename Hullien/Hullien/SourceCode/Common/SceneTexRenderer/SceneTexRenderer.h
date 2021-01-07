@@ -72,7 +72,7 @@ public:
 	static void Release();
 
 	// 描画関数.
-	static void Render();
+	static void Render( const bool& isBloomSmpling = true );
 
 	// バッファのクリア.
 	static void ClearBuffer();

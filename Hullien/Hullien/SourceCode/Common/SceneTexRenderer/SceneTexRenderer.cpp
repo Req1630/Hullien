@@ -111,7 +111,7 @@ void CSceneTexRenderer::Release()
 }
 
 // 描画関数.
-void CSceneTexRenderer::Render()
+void CSceneTexRenderer::Render( const bool& isBloomSmpling )
 {
 	const float softThrshold = 1.0f;
 	static float thrshold = 0.7f;
@@ -172,7 +172,7 @@ void CSceneTexRenderer::Render()
 
 	//-------------------------.
 	// Bloom のサンプリング
-	GetInstance()->m_pBloom->Sampling( GetInstance()->m_pDownLuminanceSRV );
+	if( isBloomSmpling == true ) GetInstance()->m_pBloom->Sampling( GetInstance()->m_pDownLuminanceSRV );
 
 	//-----------------------------.
 	// 最終レンダリング.

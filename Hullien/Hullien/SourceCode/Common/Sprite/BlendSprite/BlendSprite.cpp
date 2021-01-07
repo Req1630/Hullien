@@ -13,6 +13,7 @@ static const CBlendSprite::SPSShaderName PS_SHADER_LIST[] =
 // コンストラクタ.
 CBlendSprite::CBlendSprite()
 	: m_pSpriteData		( nullptr )
+	, m_pVertexLayout	( nullptr )
 	, m_pVertexShader	( nullptr )
 	, m_pVertexShaderUI	( nullptr )
 	, m_pPixelShaderList()
@@ -72,8 +73,12 @@ HRESULT CBlendSprite::Init(
 // 解放.
 void CBlendSprite::Release()
 {
+	SAFE_RELEASE( m_pVertexShader );
+	SAFE_RELEASE( m_pVertexShaderUI );
 	SAFE_RELEASE( m_pSampleLinear );
-//	m_pSpriteData->Release();
+	SAFE_RELEASE( m_pConstantBuffer );
+	SAFE_RELEASE( m_pVertexLayout );
+	m_pDestTexture = nullptr;
 }
 
 // シェーダーの作成.
@@ -151,7 +156,7 @@ HRESULT CBlendSprite::InitShader()
 			numElements,
 			pCompiledShader->GetBufferPointer(),
 			pCompiledShader->GetBufferSize(),
-			&m_pSpriteData->pVertexLayout ))){
+			&m_pVertexLayout ))){
 		return E_FAIL;
 	}
 	SAFE_RELEASE(pCompiledShader);
@@ -390,7 +395,7 @@ void CBlendSprite::Render(const bool& isBillboard)
 	m_pContext11->IASetVertexBuffers( 0, 1, &m_pSpriteData->pVertexBuffer, &stride, &offset );
 
 	// 頂点インプットレイアウトをセット.
-	m_pContext11->IASetInputLayout( m_pSpriteData->pVertexLayout );
+	m_pContext11->IASetInputLayout( m_pVertexLayout );
 
 	//ﾌﾟﾘﾐﾃｨﾌﾞ・ﾄﾎﾟﾛｼﾞｰをｾｯﾄ.
 	m_pContext11->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);

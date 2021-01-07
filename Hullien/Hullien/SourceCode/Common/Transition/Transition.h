@@ -41,8 +41,8 @@ public:
 	void Render();
 
 	// テクスチャの設定.
-	void SetTexture( ID3D11ShaderResourceView* pTexture ){ m_pTexture = pTexture; }
-	void SetDestTexture( ID3D11ShaderResourceView* pTexture ){ m_pDestTexture = pTexture; }
+	void SetTexture( ID3D11ShaderResourceView* pTexture );
+	void SetDestTexture( ID3D11ShaderResourceView* pTexture );
 	// 値の設定.
 	void SetValue( const float& value ){ m_Value = value; }
 

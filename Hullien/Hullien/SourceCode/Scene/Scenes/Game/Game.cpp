@@ -11,6 +11,7 @@
 #include "..\..\..\Common\Sprite\CSprite.h"
 #include "..\..\..\Resource\SpriteResource\SpriteResource.h"
 #include "..\..\..\GameObject\Widget\Fade\Fade.h"
+#include "..\..\..\GameObject\Widget\SceneTransition\SceneTransition.h"
 #include "..\..\..\Utility\Input\Input.h"
 #include "..\..\..\XAudio2\SoundManager.h"
 
@@ -63,11 +64,11 @@ bool CGame::Load()
 	if (m_pSceneManager->GetRetry() == false)
 	{
 		m_NowEventScene = EEventSceneState::GameStart;
+		CSceneTransition::SetFadeIn();
 	}
 	else
 	{
 		m_NowEventScene = EEventSceneState::Game;
-		CFade::SetFadeOut();
 	}
 
 	return true;

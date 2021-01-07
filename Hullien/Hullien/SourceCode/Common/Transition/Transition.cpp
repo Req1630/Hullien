@@ -1,5 +1,6 @@
 #include "Transition.h"
 
+
 CTransition::CTransition()
 	: m_pVertexShader			( nullptr )
 	, m_pPixelShader			( nullptr )
@@ -132,6 +133,19 @@ void CTransition::Render()
 	m_pContext11->Draw( 4, 0 );
 	SetBlend( false );
 	SetDeprh( true );
+}
+
+// テクスチャの設定.
+void CTransition::SetTexture( ID3D11ShaderResourceView* pTexture )
+{
+	if( pTexture == nullptr ) return;
+	m_pTexture = pTexture;
+}
+
+void CTransition::SetDestTexture( ID3D11ShaderResourceView* pTexture )
+{
+	if( pTexture == nullptr ) return;
+	m_pDestTexture = pTexture;
 }
 
 // モデル(ポリゴン)の作成.

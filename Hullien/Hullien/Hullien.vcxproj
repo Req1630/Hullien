@@ -248,6 +248,7 @@
     <ClCompile Include="SourceCode\GameObject\Widget\EventWidget\GameStartEventWidget\GameStartEventWidget.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\Fade\Fade.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\ReturnTitle\ReturnTitle.cpp" />
+    <ClCompile Include="SourceCode\GameObject\Widget\SceneTransition\SceneTransition.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\ClearWidget\ClearWidget.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\CameraConfigWidget\CameraConfigWidget.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\ConfigWidget.cpp" />
@@ -335,6 +336,7 @@
     <ClInclude Include="SourceCode\GameObject\STG\Bullet\BuletManager\BuletManager.h" />
     <ClInclude Include="SourceCode\GameObject\STG\Bullet\BuletManager\BulletManagerParam.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\Cursor\ConfigCursor.h" />
+    <ClInclude Include="SourceCode\GameObject\Widget\SceneTransition\SceneTransition.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\ControllerConfigWidget\ControllerConfigWidget.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\ConfigWidget\GraphicConfigWidget\GraphicConfigWidget.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneWidget\GameWidget\CharacterWidget\BackGauge\BackGauge.h" />

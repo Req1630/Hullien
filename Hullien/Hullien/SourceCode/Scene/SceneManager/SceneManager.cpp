@@ -5,6 +5,7 @@
 #include "..\..\Utility\ImGuiManager\ImGuiManager.h"
 #include "..\..\Editor\EditRenderer\EditRenderer.h"
 #include "..\..\GameObject\Widget\Fade\Fade.h"
+#include "..\..\GameObject\Widget\SceneTransition\SceneTransition.h"
 #include "..\..\XAudio2\SoundManager.h"
 #include "..\..\Camera\CameraManager\CameraManager.h"
 #include "..\..\Utility\Command\Command.h"
@@ -75,7 +76,8 @@ void CSceneManager::Update()
 	// フェードの描画.
 	if (CFade::Init() == false) return;
 	CFade::Render();
-
+	if( CSceneTransition::Init() == false ) return;
+	CSceneTransition::Render();
 }
 
 //=================================.
