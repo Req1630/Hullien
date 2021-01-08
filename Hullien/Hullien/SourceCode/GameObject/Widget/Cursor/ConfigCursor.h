@@ -3,8 +3,6 @@
 
 #include "..\Widget.h"
 
-class CBlendSprite;	// ブレンド描画用クラス.
-
 /********************************************
 *	カーソルクラス.
 **/
@@ -44,7 +42,6 @@ private:
 	void IncreaseScale();
 
 private:
-	std::unique_ptr<CBlendSprite>	m_pBlendSprite;
 	D3DXVECTOR3	m_vOldPosition;	//移動前の座標.
 	float		m_Acceleration;	//加速値.
 	float		m_TargetWidth;

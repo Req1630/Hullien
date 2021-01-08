@@ -3,6 +3,17 @@
 
 #include "..\Common.h"
 
+enum enTRANSITION_OUT_MODE
+{
+	ETRANSITION_OUT_MODE_None = -1,
+
+	ETRANSITION_OUT_MODE_Alpha,
+	ETRANSITION_OUT_MODE_Cut,
+	ETRANSITION_OUT_MODE_HardLight,
+
+	ETRANSITION_OUT_MODE_Max,
+} typedef ETRANSITION_OUT_MODE;
+
 class CTransition : public CCommon
 {
 	const char* SHADER_NAME		= "Data\\Shader\\Transition.hlsl";
@@ -22,6 +33,13 @@ class CTransition : public CCommon
 		D3DXVECTOR3 Pos;	// 頂点座標.
 		D3DXVECTOR2	Tex;	// テクスチャ座標.
 	};
+public:
+	struct stPSShaderName
+	{
+		ETRANSITION_OUT_MODE	enBlendMode;
+		const char*				entryName;
+
+	} typedef SPSShaderName;
 public:
 	CTransition();
 	virtual ~CTransition();
@@ -46,6 +64,9 @@ public:
 	// 値の設定.
 	void SetValue( const float& value ){ m_Value = value; }
 
+	// トランジションの切り抜き方法の設定.
+	void SetTransitionCutMode( const ETRANSITION_OUT_MODE& mode ){ m_TransitionOutMode = mode; }
+
 private:
 	// モデル(ポリゴン)の作成.
 	HRESULT InitModel( const float& width, const float& height );
@@ -62,17 +83,19 @@ private:
 	void SetConstantBufferInit();
 
 private:
-	ID3D11VertexShader*			m_pVertexShader;	// 頂点シェーダー.
-	ID3D11PixelShader*			m_pPixelShader;		// ピクセルシェーダー.
-	ID3D11InputLayout*			m_pVertexLayout;	// 頂点レイアウト.
-	ID3D11Buffer*				m_pConstantBufferInit;	// コンスタントバッファ.
-	ID3D11Buffer*				m_pConstantBufferFrame;	// コンスタントバッファ.
-	ID3D11Buffer*				m_pVertexBuffer;	// 頂点バッファ.
+	ID3D11VertexShader*				m_pVertexShader;		// 頂点シェーダー.
+	std::vector<ID3D11PixelShader*>	m_pPixelShaderList;		// ピクセルシェーダー.
+	ID3D11InputLayout*				m_pVertexLayout;		// 頂点レイアウト.
+	ID3D11Buffer*					m_pConstantBufferInit;	// コンスタントバッファ.
+	ID3D11Buffer*					m_pConstantBufferFrame;	// コンスタントバッファ.
+	ID3D11Buffer*					m_pVertexBuffer;		// 頂点バッファ.
 
 	ID3D11SamplerState*			m_pSampleLinear;	// サンプラ:テクスチャに各種フィルタをかける.
 	ID3D11ShaderResourceView*	m_pMaskTexture;		// マスクテクスチャ.
 	ID3D11ShaderResourceView*	m_pTexture;			// テクスチャ.
-	ID3D11ShaderResourceView*	m_pDestTexture;			// テクスチャ.
+	ID3D11ShaderResourceView*	m_pDestTexture;		// テクスチャ.
+
+	ETRANSITION_OUT_MODE		m_TransitionOutMode;// トランジションの切り抜き方法.
 
 	float m_Value;
 };

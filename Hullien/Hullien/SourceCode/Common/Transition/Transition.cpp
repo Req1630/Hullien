@@ -1,9 +1,15 @@
 #include "Transition.h"
 
+static const CTransition::SPSShaderName PS_SHADER_LIST[] = 
+{
+	{ ETRANSITION_OUT_MODE_Alpha,		"PS_AlphaOut" },
+	{ ETRANSITION_OUT_MODE_Cut,			"PS_CutOut" },
+	{ ETRANSITION_OUT_MODE_HardLight,	"PS_HardBlenAlphaOut" },
+};
 
 CTransition::CTransition()
 	: m_pVertexShader			( nullptr )
-	, m_pPixelShader			( nullptr )
+	, m_pPixelShaderList		()
 	, m_pVertexLayout			( nullptr )
 	, m_pConstantBufferInit		( nullptr )
 	, m_pConstantBufferFrame	( nullptr )
@@ -11,11 +17,16 @@ CTransition::CTransition()
 	, m_pSampleLinear			( nullptr )
 	, m_pMaskTexture			( nullptr )
 	, m_pTexture				( nullptr )
+	, m_TransitionOutMode		( ETRANSITION_OUT_MODE_Alpha )
 {
+	// PSシェーダーのサイズを確保.
+	const int psShaderListSize = sizeof(PS_SHADER_LIST)/sizeof(PS_SHADER_LIST[0]);
+	m_pPixelShaderList.resize( psShaderListSize );
 }
 
 CTransition::~CTransition()
 {
+	Release();
 }
 
 // 初期化.
@@ -48,17 +59,18 @@ HRESULT CTransition::Init(
 void CTransition::Release()
 {
 	SAFE_RELEASE( m_pVertexShader );
-	SAFE_RELEASE( m_pPixelShader );
+	for( auto& p : m_pPixelShaderList ) SAFE_RELEASE( p );
 	SAFE_RELEASE( m_pVertexLayout );
 	SAFE_RELEASE( m_pConstantBufferInit );
 	SAFE_RELEASE( m_pConstantBufferFrame );
 	SAFE_RELEASE( m_pSampleLinear );
 	SAFE_RELEASE( m_pMaskTexture );
-	SAFE_RELEASE( m_pTexture );
 	SAFE_RELEASE( m_pVertexBuffer );
+	m_pTexture		= nullptr;
+	m_pDestTexture	= nullptr;
 
-	m_pDevice11 = nullptr;
-	m_pContext11 = nullptr;
+	m_pDevice11		= nullptr;
+	m_pContext11	= nullptr;
 }
 
 // レンダリング.
@@ -102,7 +114,7 @@ void CTransition::Render()
 
 	// 使用するシェーダのセット.
 	m_pContext11->VSSetShader( m_pVertexShader, nullptr, 0 );	// 頂点シェーダ.
-	m_pContext11->PSSetShader( m_pPixelShader, nullptr, 0 );	// ピクセルシェーダ.
+	m_pContext11->PSSetShader( m_pPixelShaderList[m_TransitionOutMode], nullptr, 0 );	// ピクセルシェーダ.
 
 	// このコンスタントバッファをどのシェーダで使用するか？.
 	m_pContext11->VSSetConstantBuffers( 0, 1, &m_pConstantBufferInit );		// 頂点シェーダ.
@@ -279,36 +291,38 @@ HRESULT CTransition::InitShader()
 	}
 	SAFE_RELEASE( pCompiledShader );
 
-	// HLSLからピクセルシェーダーのブロブを作成.
-	if( FAILED(
-		D3DX11CompileFromFile(
-			SHADER_NAME,
-			nullptr, 
-			nullptr, 
-			"PS_Main", 
-			"ps_5_0",
-			uCompileFlag, 
-			0, 
-			nullptr, 
-			&pCompiledShader, 
-			&pErrors, 
-			nullptr ))){
-		_ASSERT_EXPR(false, L"hlsl読み込み失敗");
-		return E_FAIL;
-	}
-	SAFE_RELEASE(pErrors);
+	for( int i = 0; i < static_cast<int>(m_pPixelShaderList.size()); i++ ){
+		// HLSLからピクセルシェーダーのブロブを作成.
+		if( FAILED(
+			D3DX11CompileFromFile(
+				SHADER_NAME,
+				nullptr, 
+				nullptr, 
+				PS_SHADER_LIST[i].entryName, 
+				"ps_5_0",
+				uCompileFlag, 
+				0, 
+				nullptr, 
+				&pCompiledShader, 
+				&pErrors, 
+				nullptr ))){
+			_ASSERT_EXPR(false, L"hlsl読み込み失敗");
+			return E_FAIL;
+		}
+		SAFE_RELEASE(pErrors);
 
-	// 上記で作成したブロブから「ピクセルシェーダー」を作成.
-	if( FAILED(
-		m_pDevice11->CreatePixelShader(
-			pCompiledShader->GetBufferPointer(),
-			pCompiledShader->GetBufferSize(),
-			nullptr,
-			&m_pPixelShader ))){	// (out)ピクセルシェーダー.
-		_ASSERT_EXPR( false, L"ﾋﾟｸｾﾙｼｪｰﾀﾞ作成失敗" );
-		return E_FAIL;
+		// 上記で作成したブロブから「ピクセルシェーダー」を作成.
+		if( FAILED(
+			m_pDevice11->CreatePixelShader(
+				pCompiledShader->GetBufferPointer(),
+				pCompiledShader->GetBufferSize(),
+				nullptr,
+				&m_pPixelShaderList[PS_SHADER_LIST[i].enBlendMode] ))){	// (out)ピクセルシェーダー.
+			_ASSERT_EXPR( false, L"ﾋﾟｸｾﾙｼｪｰﾀﾞ作成失敗" );
+			return E_FAIL;
+		}
+		SAFE_RELEASE( pCompiledShader );
 	}
-	SAFE_RELEASE( pCompiledShader );
 
 	return S_OK;
 }

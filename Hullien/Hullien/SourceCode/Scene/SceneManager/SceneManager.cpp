@@ -11,6 +11,7 @@
 #include "..\..\Utility\Command\Command.h"
 #include "..\..\Common\Gage\Gage.h"
 #include "..\..\Common\Gage\CircleGage.h"
+#include "..\..\Common\SceneTexRenderer\SceneTexRenderer.h"
 
 CSceneManager::CSceneManager()
 	: m_hWnd					( nullptr )

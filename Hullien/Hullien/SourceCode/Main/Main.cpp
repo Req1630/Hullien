@@ -124,6 +124,7 @@ void CMain::Update()
 
 	CCameraManager::Update();
 	m_pSceneManager->Update();
+	CSceneTexRenderer::FinalRender();
 	// FPS‚Ì•\Ž¦.
 #if _DEBUG
 	CDebugText::SetPosition( D3DXVECTOR3( 0.0f, 0.0f, 0.0f ) );

@@ -6,6 +6,7 @@
 class CBloom : public CCommon
 {
 	const char* SHADER_NAME = "Data\\Shader/Bloom.hlsl";
+	const D3DXVECTOR4 CLEAR_BACK_COLOR = { 0.0f, 0.0f, 0.0f, 0.0f };
 	// コンスタントバッファ.
 	struct C_BUFFER
 	{
@@ -34,6 +35,9 @@ public:
 
 	// 明度をサンプリングする.
 	void Sampling( ID3D11ShaderResourceView* tex );
+
+	// バッファのクリア.
+	void ClearBuffer();
 
 	// ブラーテクスチャの取得.
 	std::vector<ID3D11ShaderResourceView*> GetBlurTex(){ return m_pBlurBufferSRV; }

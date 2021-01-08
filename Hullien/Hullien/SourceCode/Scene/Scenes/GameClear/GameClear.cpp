@@ -37,6 +37,7 @@ bool CGameClear::Load()
 	CSoundManager::ThreadPlayBGM("ClearBGM");
 	CSoundManager::FadeInBGM("ClearBGM");
 	m_pSceneManager->SetNowBGMName("ClearBGM");
+	CSceneTexRenderer::SetIsStartLoad( false );
 	return true;
 }
 

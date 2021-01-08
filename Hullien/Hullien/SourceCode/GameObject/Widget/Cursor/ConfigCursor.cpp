@@ -7,13 +7,11 @@
 *	カーソルクラス.
 **/
 CConfigCursor::CConfigCursor()
-	:	m_pBlendSprite(nullptr)
-	,	m_vOldPosition(D3DXVECTOR3( 0.0f, 0.0f ,0.0f ))
+	:	m_vOldPosition(D3DXVECTOR3( 0.0f, 0.0f ,0.0f ))
 	,	m_Acceleration( 0.0f )
 	,	m_TargetWidth(0.0f)
 	,	m_IsSetting(false)
 {
-	m_pBlendSprite = std::make_unique<CBlendSprite>();
 }
 
 CConfigCursor::~CConfigCursor()
@@ -24,8 +22,6 @@ CConfigCursor::~CConfigCursor()
 bool CConfigCursor::Init()
 {
 	if ( SpriteSetting() == false ) return false;
-	if( FAILED( m_pBlendSprite->Init( CDirectX11::GetDevice(), CDirectX11::GetContext() ))) return false;
-	m_pBlendSprite->SetSpriteData( m_pSprite->GetSpriteData() );
 	return true;
 }
 

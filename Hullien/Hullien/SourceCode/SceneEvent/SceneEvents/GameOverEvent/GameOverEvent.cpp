@@ -12,6 +12,7 @@
 #include "..\..\..\XAudio2\SoundManager.h"
 #include "..\..\..\GameObject\Widget\Fade\Fade.h"
 #include "..\..\..\Common\DebugText\DebugText.h"
+#include "..\..\..\Common\SceneTexRenderer\SceneTexRenderer.h"
 
 /************************************
 *	ゲームオーバーイベントクラス.
@@ -60,7 +61,7 @@ bool CGameOverEvent::Load()
 
 	m_IsSkip = false;
 	m_IsEventEnd = false;
-
+	CSceneTexRenderer::SetIsStartLoad( false );
 #if _DEBUG
 	m_Speed = static_cast<float>(D3DX_PI) * 0.05f;
 #endif

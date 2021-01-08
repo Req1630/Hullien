@@ -16,13 +16,12 @@
 CTitle::CTitle( CSceneManager* pSceneManager )
 	: CSceneBase		( pSceneManager )
 	, m_pWidget			( nullptr )
-	, m_pConfigWidget	( nullptr )
 	, m_IsChangeScene	( false )
+	, m_IsGameStart		( false )
 	, m_IsDecision		( false )
 	, m_IsNowConfig		( false )
 {
 	m_pWidget		= std::make_unique< CTitleWidget >();
-	m_pConfigWidget	= std::make_unique<CConfigWidget>();
 	CFade::SetFadeOut();
 }
 
@@ -36,10 +35,12 @@ CTitle::~CTitle()
 bool CTitle::Load()
 {
 	if ( m_pWidget->Init() == false ) return false;
-	if( m_pConfigWidget->Init() == false ) return false;
+	if( CConfigWidget::Init() == false ) return false;
+	CConfigWidget::SetIsNowGameScene( false );
 	CSoundManager::ThreadPlayBGM("TitleBGM");
 	CSoundManager::FadeInBGM("TitleBGM");
 	m_pSceneManager->SetNowBGMName("TitleBGM");
+	CSceneTexRenderer::SetIsStartLoad( false );
 	return true;
 }
 
@@ -55,9 +56,9 @@ void CTitle::Update()
 		//シーン切り替え.
 		ChangeScene();
 	} else {
-		m_pConfigWidget->Update();
-		if( m_pConfigWidget->IsEndConfig()== true ){
-			m_pConfigWidget->OffVolumeSeting();
+		CConfigWidget::Update();
+		if( CConfigWidget::IsEndConfig()== true ){
+			CConfigWidget::OffVolumeSeting();
 			m_IsNowConfig = false;
 			m_IsChangeScene = false;
 			m_IsDecision = false;
@@ -91,7 +92,7 @@ void CTitle::Render()
 	CSceneTexRenderer::Render( false );
 
 	// 設定UIの描画.
-	if( m_IsNowConfig == true ) m_pConfigWidget->Render();
+	if( m_IsNowConfig == true ) CConfigWidget::Render();
 }
 
 //============================.
@@ -101,16 +102,15 @@ void CTitle::ChangeScene()
 {
 	// ボタンが押された.
 	if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
-		if (m_IsChangeScene == true) return;
+		if (m_IsChangeScene == true || m_IsGameStart == true) return;
 		switch (m_pWidget->GetSelectState())
 		{
 		case CTitleWidget::ESelectState::Start:
 			CSoundManager::PlaySE("Determination");
-//			CFade::SetFadeIn();
-			CSceneTransition::SetSrcTexture( CSceneTexRenderer::GetGBuffer()[0] );
-			CSceneTransition::SetTexture();
-//			CSceneTransition::SetFadeIn();
 			CSoundManager::FadeOutBGM("TitleBGM");
+			CSceneTexRenderer::SetSaveScreen( true );
+			CSceneTexRenderer::SetIsStartLoad( true );
+			m_IsGameStart = true;
 			break;
 		case CTitleWidget::ESelectState::Config:
 			CSoundManager::PlaySE("Determination");
@@ -120,17 +120,20 @@ void CTitle::ChangeScene()
 			CSoundManager::PlaySE("CancelDetermination");
 			CFade::SetFadeIn();
 			CSoundManager::FadeOutBGM("TitleBGM");
+			m_IsChangeScene = true;
 			break;
 		default:
 			break;
 		}
-		m_IsChangeScene = true;
 		m_IsDecision = true;
 	}
-	if( m_IsChangeScene == true ){
+	if( m_IsGameStart == true ){
 		if (CSoundManager::GetBGMVolume("TitleBGM") > 0.0f) return;
 		while( CSoundManager::StopBGMThread("TitleBGM") == false);
 		m_pSceneManager->NextSceneMove();
+		CSceneTransition::SetSrcTexture( CSceneTexRenderer::GetTmpScreenTexture() );
+		CSceneTransition::SetTexture();
+		return;
 	}
 
 	if (m_IsChangeScene == false) return;
@@ -141,9 +144,11 @@ void CTitle::ChangeScene()
 	switch (m_pWidget->GetSelectState())
 	{
 	case CTitleWidget::ESelectState::Start:
-		if (CSoundManager::GetBGMVolume("TitleBGM") > 0.0f) return;
-		while( CSoundManager::StopBGMThread("TitleBGM") == false);
-		m_pSceneManager->NextSceneMove();
+		// スタート時だけ処理が変わったので、
+		// 以下の処理はしない.
+//		if (CSoundManager::GetBGMVolume("TitleBGM") > 0.0f) return;
+//		while( CSoundManager::StopBGMThread("TitleBGM") == false);
+//		m_pSceneManager->NextSceneMove();
 		break;
 	case CTitleWidget::ESelectState::Config:
 		break;

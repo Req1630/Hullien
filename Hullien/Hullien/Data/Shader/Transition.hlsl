@@ -47,15 +47,47 @@ VS_OUTPUT VS_Main(
 	return output;
 }
 
+float4 PS_AlphaOut(VS_OUTPUT input) : SV_Target
+{
+	float maskColor = g_MaskTexture.Sample(g_SamLinear, input.Tex).r;
+	float4 texColor = g_Texture.Sample(g_SamLinear, input.Tex);
+	
+	// 最終色.
+	float4 finalColor = float4(0.4f, 0.0f, 0.0f, 1.0f);
+	
+	// アルファ抜け.
+	float maskAlpha = saturate(maskColor + (Value * 2.0f - 1.0f));
+	finalColor = texColor * maskAlpha + texColor * (1 - texColor.a);
+	clip(finalColor.a - 0.001f);
+	
+	return finalColor;
+}
+
+float4 PS_CutOut(VS_OUTPUT input) : SV_Target
+{
+	float maskColor = g_MaskTexture.Sample(g_SamLinear, input.Tex).r;
+	float4 texColor = g_Texture.Sample(g_SamLinear, input.Tex);
+	
+	// 最終色.
+	float4 finalColor = float4(0.4f, 0.0f, 0.0f, 1.0f);
+	
+	// カットアウト.
+	half maskAlpha = maskColor - (-1 + Value);
+	clip(maskAlpha - 0.9999);
+	finalColor = texColor;
+	
+	return finalColor;
+}
+
 // ピクセルシェーダ.
-float4 PS_Main(VS_OUTPUT input) : SV_Target
+float4 PS_HardBlenAlphaOut(VS_OUTPUT input) : SV_Target
 {
 	float maskColor = g_MaskTexture.Sample(g_SamLinear, input.Tex).r;
 	float4 texColor = g_Texture.Sample(g_SamLinear, input.Tex);
 	float4 dest = g_DestTexture.Sample(g_SamLinear, input.Tex); // 規定色.
 	
 	// 最終色.
-	float4 finalColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	float4 finalColor = float4(0.4f, 0.0f, 0.0f, 1.0f);
 	
 	// アルファ抜け.
 	float maskAlpha = saturate(maskColor + (Value * 2.0f - 1.0f));
@@ -73,13 +105,4 @@ float4 PS_Main(VS_OUTPUT input) : SV_Target
 	result.a = texColor.a * finalColor.a;
 	
 	return result;
-	
-	/*
-	// カットアウト.
-	half maskAlpha = maskColor - (-1 + Value);
-	finalColor = float4( texColor.rgb, maskAlpha);
-	clip(finalColor.a - 0.9999);
-	*/
-	
-	return finalColor;
 }

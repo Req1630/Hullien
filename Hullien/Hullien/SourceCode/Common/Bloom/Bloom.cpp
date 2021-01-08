@@ -81,6 +81,18 @@ void CBloom::Sampling( ID3D11ShaderResourceView* tex )
 		srv = m_pBlurBufferSRV[i];
 		i++;
 	}
+	ID3D11ShaderResourceView *const pSRV3[1] = { nullptr };
+	m_pContext11->PSSetShaderResources( 0, 1, pSRV3 );
+	ID3D11RenderTargetView* rtv[1] = { nullptr };
+	m_pContext11->OMSetRenderTargets( 1, &rtv[0], nullptr );
+}
+
+// バッファのクリア.
+void CBloom::ClearBuffer()
+{
+	for( auto& rtv : m_pBlurBufferRTV ){
+		m_pContext11->ClearRenderTargetView( rtv, CLEAR_BACK_COLOR );
+	}
 }
 
 // ブラー用の作成.

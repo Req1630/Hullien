@@ -18,6 +18,7 @@ CBlendSprite::CBlendSprite()
 	, m_pVertexShaderUI	( nullptr )
 	, m_pPixelShaderList()
 	, m_pSampleLinear	( nullptr )
+	, m_pConstantBuffer	( nullptr )
 	, m_pDestTexture	( nullptr )
 	, m_VerticesUI		()
 {
@@ -75,10 +76,13 @@ void CBlendSprite::Release()
 {
 	SAFE_RELEASE( m_pVertexShader );
 	SAFE_RELEASE( m_pVertexShaderUI );
+	for( auto& p : m_pPixelShaderList ) SAFE_RELEASE( p );
 	SAFE_RELEASE( m_pSampleLinear );
 	SAFE_RELEASE( m_pConstantBuffer );
 	SAFE_RELEASE( m_pVertexLayout );
+
 	m_pDestTexture = nullptr;
+//	m_pSpriteData = nullptr;
 }
 
 // シェーダーの作成.
@@ -188,6 +192,7 @@ HRESULT CBlendSprite::InitShader()
 		SAFE_RELEASE(pCompiledShader);
 	}
 	SAFE_RELEASE(pCompiledShader);
+	SAFE_RELEASE(pErrors);
 
 	D3D11_BUFFER_DESC cb;
 

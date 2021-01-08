@@ -4,6 +4,7 @@
 #include "..\..\Common\D3DX\D3DX11.h"
 #include "..\..\Common\Shader\ShadowMap\ShadowMap.h"
 #include "..\..\Common\SceneTexRenderer\SceneTexRenderer.h"
+#include "..\..\GameObject\Widget\SceneTransition\SceneTransition.h"
 
 /************************************
 *	イベントシーン管理クラス.
@@ -77,12 +78,22 @@ void CEventManager::NextEventMove()
 		m_IsEventEnd = false;
 		m_NowEvent = m_NextEvent;
 		m_NextEvent = EEvent::GameStart;
+		CSceneTexRenderer::SetIsStartLoad( true );
+		CSceneTexRenderer::SetSaveScreen( true );
+		CSceneTexRenderer::SetRenderPass( CSceneTexRenderer::ERenderPass::GBuffer );
+		CSceneTexRenderer::SetGBuffer();
+		CSceneTexRenderer::Render();
 		break;
 	case EEvent::GameOver:
 		m_pEventBase = std::make_shared<CGameOverEvent>();
 		m_IsEventEnd = false;
 		m_NowEvent = m_NextEvent;
 		m_NextEvent = EEvent::GameStart;
+		CSceneTexRenderer::SetIsStartLoad( true );
+		CSceneTexRenderer::SetSaveScreen( true );
+		CSceneTexRenderer::SetRenderPass( CSceneTexRenderer::ERenderPass::GBuffer );
+		CSceneTexRenderer::SetGBuffer();
+		CSceneTexRenderer::Render();
 		break;
 	default:
 		break;
@@ -119,5 +130,5 @@ void CEventManager::ModelRender()
 	// 最終描画.
 	//--------------------------------------------.
 	// G-Bufferを使用して、画面に描画する.
-	CSceneTexRenderer::Render();
+	CSceneTexRenderer::Render( !CSceneTransition::GetIsFade() );
 }

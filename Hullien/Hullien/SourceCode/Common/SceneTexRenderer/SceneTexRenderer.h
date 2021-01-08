@@ -23,6 +23,13 @@ public:
 
 	} typedef EGBufferNo;
 
+	enum enScreenRenderNo
+	{
+		EScreenRenderNo_None,	// 通常.
+		EScreenRenderNo_Tmp,	// 保存用.
+
+		EScreenRenderNo_Max,
+	} typedef EScreenRenderNo;
 	// レンダーパス.
 	enum class enRenderPass
 	{
@@ -32,10 +39,11 @@ public:
 
 		Max,	// 最大.
 	} typedef ERenderPass;
+
 private:
 	// シェーダー名.
 	const char* SHADER_NAME = "Data\\Shader\\SceneTexRenderer.hlsl";
-	const float CLEAR_BACK_COLOR[4] = { 1.0f, 1.0f, 1.0f, 1.0f };	// バックカラー.
+	const float CLEAR_BACK_COLOR[4] = { 0.4f, 0.4f, 0.4f, 1.0f };	// バックカラー.
 
 public:
 	//======================================
@@ -73,6 +81,8 @@ public:
 
 	// 描画関数.
 	static void Render( const bool& isBloomSmpling = true );
+	// 最終描画.
+	static void FinalRender();
 
 	// バッファのクリア.
 	static void ClearBuffer();
@@ -95,6 +105,14 @@ public:
 	static std::vector<ID3D11ShaderResourceView*> GetGBuffer(){ return GetInstance()->m_pGBufferSRV; }
 	// TransBufferテクスチャを取得.
 	static ID3D11ShaderResourceView* GetTransBaffer(){ return GetInstance()->m_pDownLuminanceSRV; }
+	// tmpスクリーンテクスチャ.
+	static ID3D11ShaderResourceView* GetTmpScreenTexture(){ return GetInstance()->m_pScreenSRV[EScreenRenderNo_Tmp]; }
+
+	// 現在のスクリーンを保存する.
+	static void SetSaveScreen( const bool& isSave ){ GetInstance()->m_IsSaveScreen = isSave; }
+
+	static void SetIsStartLoad( const bool& isLoad ){ GetInstance()->m_IsStartGameLoad = isLoad; }
+	static void SetIsEndLoad( const bool& isLoad ){ GetInstance()->m_IsEndGameLoad = isLoad; }
 
 	// ウィンドウサイズが変更された時に呼ぶ.
 	static void Resize();
@@ -110,6 +128,8 @@ private:
 	HRESULT InitAntialiasingTex();
 	// 輝度用の作成.
 	HRESULT InitDownLuminanceTex();
+	// スクショ用の作成.
+	HRESULT InitScreenShotTex();
 	// シェーダ作成.
 	HRESULT CreateShader();
 	// サンプラの作成.
@@ -139,31 +159,42 @@ private:
 	std::vector<ID3D11ShaderResourceView*>	m_pGBufferSRV;	// G-Bufferのシェーダーリソースビュー.
 	std::vector<ID3D11Texture2D*>			m_pGBufferTex;	// G-Bufferのテクスチャ2D.
 
-	ID3D11RenderTargetView*		m_pTransBufferRTV;	// 半透明描画用のレンダーターゲットビュー.
-	ID3D11ShaderResourceView*	m_pTransBufferSRV;	// 半透明描画用のシェーダーリソースビュー.
-	ID3D11Texture2D*			m_pTransBufferTex;	// 半透明描画用のテクスチャ2D.
+	std::vector<ID3D11RenderTargetView*>	m_pScreenRTV;	// 全描画用レンダーターゲットビュー.
+	std::vector<ID3D11ShaderResourceView*>	m_pScreenSRV;	// 全描画用シェーダーリソースビュー.
+	std::vector<ID3D11Texture2D*>			m_pScreenTex;	// 全描画用テクスチャ2D.
 
-	ID3D11RenderTargetView*		m_pAntialiasingRTV;	// アンチエイリアスのレンダーターゲットビュー.
-	ID3D11ShaderResourceView*	m_pAntialiasingSRV;	// アンチエイリアスのシェーダーリソースビュー.
-	ID3D11Texture2D*			m_pAntialiasingTex;	// アンチエイリアスのテクスチャ2D.
+	ID3D11RenderTargetView*		m_pTransBufferRTV;		// 半透明描画用のレンダーターゲットビュー.
+	ID3D11ShaderResourceView*	m_pTransBufferSRV;		// 半透明描画用のシェーダーリソースビュー.
+	ID3D11Texture2D*			m_pTransBufferTex;		// 半透明描画用のテクスチャ2D.
+
+	ID3D11RenderTargetView*		m_pAntialiasingRTV;		// アンチエイリアスのレンダーターゲットビュー.
+	ID3D11ShaderResourceView*	m_pAntialiasingSRV;		// アンチエイリアスのシェーダーリソースビュー.
+	ID3D11Texture2D*			m_pAntialiasingTex;		// アンチエイリアスのテクスチャ2D.
 
 	ID3D11RenderTargetView*		m_pDownLuminanceRTV;	// 輝度を落としたテクスチャのレンダーターゲットビュー.
 	ID3D11ShaderResourceView*	m_pDownLuminanceSRV;	// 輝度を落としたテクスチャのシェーダーリソースビュー.
 	ID3D11Texture2D*			m_pDownLuminanceTex;	// 輝度を落としたテクスチャのテクスチャ2D.
 
-	ID3D11VertexShader*		m_pVertexShader;	// 頂点シェーダー.
-	ID3D11PixelShader*		m_pPixelShader;		// ピクセルシェーダー.
-	ID3D11PixelShader*		m_pLastPixelShader;	// ピクセルシェーダー.
-	ID3D11InputLayout*		m_pVertexLayout;	// 頂点レイアウト.
+
+	ID3D11VertexShader*		m_pVertexShader;		// 頂点シェーダー.
+	ID3D11PixelShader*		m_pPixelShader;			// ピクセルシェーダー.
+	ID3D11PixelShader*		m_pEffectPixelShader;	// ピクセルシェーダー.
+	ID3D11PixelShader*		m_pFinalPixelShader;	// ピクセルシェーダー.
+	ID3D11InputLayout*		m_pVertexLayout;		// 頂点レイアウト.
 	ID3D11Buffer*			m_pConstantBufferInit;	// コンスタントバッファ.
 	ID3D11Buffer*			m_pConstantBufferFrame;	// コンスタントバッファ.
-	ID3D11Buffer*			m_pVertexBuffer;	// 頂点バッファ.
-	ID3D11SamplerState*		m_pSampleLinear;	// サンプラ:テクスチャに各種フィルタをかける.
+	ID3D11Buffer*			m_pVertexBuffer;		// 頂点バッファ.
+	ID3D11SamplerState*		m_pSampleLinear;		// サンプラ:テクスチャに各種フィルタをかける.
 
 	UINT					m_WndWidth;			// ウィンドウ幅.
 	UINT					m_WndHeight;		// ウィンドウ高さ.
 
 	ERenderPass				m_NowRenderPass;	// 現在のレンダリングパス.
+
+	bool					m_IsSaveScreen;
+	bool					m_IsGameLoad;
+	bool					m_IsStartGameLoad;
+	bool					m_IsEndGameLoad;
 
 private:
 	// コピー・ムーブコンストラクタ, 代入演算子の削除.

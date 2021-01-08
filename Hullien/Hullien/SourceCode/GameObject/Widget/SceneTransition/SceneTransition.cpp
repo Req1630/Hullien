@@ -14,6 +14,8 @@ CSceneTransition::CSceneTransition()
 
 CSceneTransition::~CSceneTransition()
 {
+	m_pDestTexture = nullptr;
+	m_pSrcTexture = nullptr;
 }
 
 // ‰Šú‰»ŠÖ”.
@@ -45,6 +47,7 @@ void CSceneTransition::Render()
 	GetInstance()->Update();
 	if( GetInstance()->m_FadeState == EFadeState::Finish ) return;
 	GetInstance()->m_pTransition->SetValue( GetInstance()->m_NowAlpha );
+	GetInstance()->m_pTransition->SetTransitionCutMode( ETRANSITION_OUT_MODE_Cut );
 //	GetInstance()->m_pTransition->SetTexture( GetInstance()->m_pSrcTexture );
 //	GetInstance()->m_pTransition->SetDestTexture( GetInstance()->m_pDestTexture );
 	GetInstance()->m_pTransition->Render();

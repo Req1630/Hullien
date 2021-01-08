@@ -29,13 +29,16 @@ CConfigWidget::CConfigWidget( const bool& isGame )
 	, m_pGraphicConfig		( nullptr )
 	, m_pBlendSprite		( nullptr )
 	, m_pTransition			( nullptr )
+	, m_vPosition			( 0.0f, 0.0f, 0.0f )
 	, m_ReturnTitlePosition	( 0.0f, 0.0f, 0.0f )
 	, m_SelectState			( EConfigState_Volume )
 	, m_OldSelectState		( EConfigState_Volume )
 	, m_NowConfigState		( EConfigState_None )
+	, m_InputWaitTime		( 0.0f )
 	, m_FadeValue			( 0.0f )
 	, m_IsNowGameScene		( isGame )
 	, m_IsReturnToTitle		( false )
+	, m_IsLoadEnd			( false )
 {
 	m_pCursor			= std::make_unique<CConfigCursor>();
 	m_pVolumeConfig		= std::make_unique<CVolumeConfigWidget>();
@@ -53,71 +56,74 @@ CConfigWidget::~CConfigWidget()
 // 初期化関数.
 bool CConfigWidget::Init()
 {
-	if( SpriteSetting()				== false ) return false;
-	if( m_pCursor->Init()			== false ) return false;
-	if( m_pVolumeConfig->Init()		== false ) return false;
-	if( m_pCameraConfig->Init()		== false ) return false;
-	if( m_pControllerConfig->Init()	== false ) return false;
-	if( m_pGraphicConfig->Init()	== false ) return false;
-	if( FAILED( m_pTransition->Init( CDirectX11::GetDevice(), CDirectX11::GetContext(), 
+	if( GetInstance()->m_IsLoadEnd == true ) return true; 
+	if( GetInstance()->SpriteSetting()				== false ) return false;
+	if( GetInstance()->m_pCursor->Init()			== false ) return false;
+	if( GetInstance()->m_pVolumeConfig->Init()		== false ) return false;
+	if( GetInstance()->m_pCameraConfig->Init()		== false ) return false;
+	if( GetInstance()->m_pControllerConfig->Init()	== false ) return false;
+	if( GetInstance()->m_pGraphicConfig->Init()	== false ) return false;
+	if( FAILED( GetInstance()->m_pTransition->Init( CDirectX11::GetDevice(), CDirectX11::GetContext(), 
 		"Data\\Texture\\UI\\Fade\\009TransitoinRule.png",
-		m_pSprites[0]->GetSpriteData()->SState.Disp.w,
-		m_pSprites[0]->GetSpriteData()->SState.Disp.h ))) return false;
-	if( FAILED( m_pBlendSprite->Init( CDirectX11::GetDevice(), CDirectX11::GetContext() ))) return false;
-	m_pBlendSprite->SetSpriteData( m_pSprites[0]->GetSpriteData() );
-	m_pTransition->SetTexture( m_pSprites[0]->GetSpriteData()->pTexture );
-	m_pTransition->SetPosition( m_pSprites[0]->GetSpriteData()->SState.vPos );
+		GetInstance()->m_pSprites[0]->GetSpriteData()->SState.Disp.w,
+		GetInstance()->m_pSprites[0]->GetSpriteData()->SState.Disp.h ))) return false;
+	if( FAILED( GetInstance()->m_pBlendSprite->Init( CDirectX11::GetDevice(), CDirectX11::GetContext() ))) return false;
+	GetInstance()->m_pBlendSprite->SetSpriteData( GetInstance()->m_pSprites[0]->GetSpriteData() );
+	GetInstance()->m_pTransition->SetTexture( GetInstance()->m_pSprites[0]->GetSpriteData()->pTexture );
+	GetInstance()->m_pTransition->SetPosition( GetInstance()->m_pSprites[0]->GetSpriteData()->SState.vPos );
+	GetInstance()->m_pTransition->SetTransitionCutMode( ETRANSITION_OUT_MODE_HardLight );
+	GetInstance()->m_IsLoadEnd = true;
 	return true;
 }
 
 // 更新関数.
 void CConfigWidget::Update()
 {
-	if( m_NowConfigState == EConfigState_End ){
-		if( m_FadeValue > FADE_VALUE_MIN ){
-			m_FadeValue -= FADE_SPEED;
+	if( GetInstance()->m_NowConfigState == EConfigState_End ){
+		if( GetInstance()->m_FadeValue > GetInstance()->FADE_VALUE_MIN ){
+			GetInstance()->m_FadeValue -= GetInstance()->FADE_SPEED;
 			return;
 		}
 	} else {
-		if( m_FadeValue < FADE_VALUE_MAX ){
-			m_FadeValue += FADE_SPEED;
+		if( GetInstance()->m_FadeValue < GetInstance()->FADE_VALUE_MAX ){
+			GetInstance()->m_FadeValue += GetInstance()->FADE_SPEED;
 			return;
 		}
 	}
-	m_InputWaitTime--;
-	m_pVolumeConfig->OnVolumeSeting();	// 音量の設定を有効にする.
-	switch( m_NowConfigState )
+	GetInstance()->m_InputWaitTime--;
+	GetInstance()->m_pVolumeConfig->OnVolumeSeting();	// 音量の設定を有効にする.
+	switch( GetInstance()->m_NowConfigState )
 	{
 	case EConfigState_None:
-		CursorSetting();
-		m_pCursor->Update();
+		GetInstance()->CursorSetting();
+		GetInstance()->m_pCursor->Update();
 		if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
-			m_NowConfigState = m_SelectState; 
+			GetInstance()->m_NowConfigState = GetInstance()->m_SelectState; 
 			CSoundManager::PlaySE("Determination");
 		}
 		if( CInput::IsMomentPress( EKeyBind::Cancel ) == true ){
-			m_NowConfigState = EConfigState_End;
+			GetInstance()->m_NowConfigState = EConfigState_End;
 			CSoundManager::PlaySE("CancelDetermination");
 		}
 		break;
 	case EConfigState_Volume:
-		m_pVolumeConfig->Update();	// 音量設定UIの更新.
-		if( m_pVolumeConfig->IsSaveEnd() == true ) m_NowConfigState = EConfigState_None;
+		GetInstance()->m_pVolumeConfig->Update();	// 音量設定UIの更新.
+		if( GetInstance()->m_pVolumeConfig->IsSaveEnd() == true ) GetInstance()->m_NowConfigState = EConfigState_None;
 		break;
 	case EConfigState_Camera:
-		m_pCameraConfig->Update();
-		if( m_pCameraConfig->IsEnd() == true ) m_NowConfigState = EConfigState_None;
+		GetInstance()->m_pCameraConfig->Update();
+		if( GetInstance()->m_pCameraConfig->IsEnd() == true ) GetInstance()->m_NowConfigState = EConfigState_None;
 		break;
 	case EConfigState_Controller:
-		m_pControllerConfig->Update();
-		if( m_pControllerConfig->IsEnd() == true ) m_NowConfigState = EConfigState_None;
+		GetInstance()->m_pControllerConfig->Update();
+		if( GetInstance()->m_pControllerConfig->IsEnd() == true ) GetInstance()->m_NowConfigState = EConfigState_None;
 		break;
 	case EConfigState_Graphic:
-		m_pGraphicConfig->Update();
-		if( m_pGraphicConfig->IsEnd() == true ) m_NowConfigState = EConfigState_None;
+		GetInstance()->m_pGraphicConfig->Update();
+		if( GetInstance()->m_pGraphicConfig->IsEnd() == true ) GetInstance()->m_NowConfigState = EConfigState_None;
 		break;
 	case EConfigState_BackTitle:
-		if( m_IsNowGameScene == true ) m_IsReturnToTitle = true;
+		if( GetInstance()->m_IsNowGameScene == true ) GetInstance()->m_IsReturnToTitle = true;
 		break;
 	default:
 		break;
@@ -127,53 +133,53 @@ void CConfigWidget::Update()
 // 描画関数.
 void CConfigWidget::Render()
 {
-	if( m_FadeValue < FADE_VALUE_MAX ){
-		m_pTransition->SetValue( m_FadeValue );
-		m_pTransition->SetDestTexture( CSceneTexRenderer::GetGBuffer()[0] );
-		m_pTransition->Render();
+	if( GetInstance()->m_FadeValue < GetInstance()->FADE_VALUE_MAX ){
+		GetInstance()->m_pTransition->SetValue( GetInstance()->m_FadeValue );
+		GetInstance()->m_pTransition->SetDestTexture( CSceneTexRenderer::GetGBuffer()[0] );
+		GetInstance()->m_pTransition->Render();
 		return;
 	}
 
-	for( size_t i = 0; i < m_pSprites.size(); i++ ){
+	for( size_t i = 0; i < GetInstance()->m_pSprites.size(); i++ ){
 		if( i == EConfigState_BackTitle ){
-			if( m_IsNowGameScene == false ){
+			if( GetInstance()->m_IsNowGameScene == false ){
 				continue;
 			} else {
-				m_pSprites[i]->SetPosition( m_ReturnTitlePosition );
+				GetInstance()->m_pSprites[i]->SetPosition( GetInstance()->m_ReturnTitlePosition );
 			}
 		}
 		if( i == 0 ){
-			m_pBlendSprite->SetDestTexture( CSceneTexRenderer::GetGBuffer()[0] );
-			m_pBlendSprite->SetDeprh(false);
-			m_pBlendSprite->SetBlend(true);
-			m_pBlendSprite->RenderUI();
-			m_pBlendSprite->SetBlend(false);
-			m_pBlendSprite->SetDeprh(false);
-			if( m_NowConfigState != EConfigState_None || i != BACKGROUND ) continue;
-			m_pCursor->Render();
+			GetInstance()->m_pBlendSprite->SetDestTexture( CSceneTexRenderer::GetGBuffer()[0] );
+			GetInstance()->m_pBlendSprite->SetDeprh(false);
+			GetInstance()->m_pBlendSprite->SetBlend(true);
+			GetInstance()->m_pBlendSprite->RenderUI();
+			GetInstance()->m_pBlendSprite->SetBlend(false);
+			GetInstance()->m_pBlendSprite->SetDeprh(false);
+			if( GetInstance()->m_NowConfigState != EConfigState_None || i != GetInstance()->BACKGROUND ) continue;
+			GetInstance()->m_pCursor->Render();
 			continue;
 		}
-		m_pSprites[i]->SetDeprh(false);
-		m_pSprites[i]->SetBlend(true);
-		m_pSprites[i]->RenderUI();
-		m_pSprites[i]->SetBlend(false);
-		m_pSprites[i]->SetDeprh(false);
+		GetInstance()->m_pSprites[i]->SetDeprh(false);
+		GetInstance()->m_pSprites[i]->SetBlend(true);
+		GetInstance()->m_pSprites[i]->RenderUI();
+		GetInstance()->m_pSprites[i]->SetBlend(false);
+		GetInstance()->m_pSprites[i]->SetDeprh(false);
 	}
-	switch( m_NowConfigState )
+	switch( GetInstance()->m_NowConfigState )
 	{
 	case EConfigState_None:
 		break;
 	case EConfigState_Volume:
-		m_pVolumeConfig->Render();	// 音量設定UIの描画.
+		GetInstance()->m_pVolumeConfig->Render();	// 音量設定UIの描画.
 		break;
 	case EConfigState_Camera:
-		m_pCameraConfig->Render();
+		GetInstance()->m_pCameraConfig->Render();
 		break;
 	case EConfigState_Controller:
-		m_pControllerConfig->Render();
+		GetInstance()->m_pControllerConfig->Render();
 		break;
 	case EConfigState_Graphic:
-		m_pGraphicConfig->Render();
+		GetInstance()->m_pGraphicConfig->Render();
 		break;
 	default:
 		break;
@@ -183,16 +189,18 @@ void CConfigWidget::Render()
 // 音量の設定をできないようにする.
 void CConfigWidget::OffVolumeSeting()
 {
-	m_pVolumeConfig->OffVolumeSeting();
+	GetInstance()->m_pVolumeConfig->OffVolumeSeting();
 }
 
 // 設定を終了したか.
 bool CConfigWidget::IsEndConfig()
 {
-	if( m_NowConfigState == EConfigState_End ){
-		if( m_FadeValue > FADE_VALUE_MIN ) return false;
-		m_NowConfigState = EConfigState_None;
-		m_SelectState = EConfigState_Volume;
+	if( GetInstance()->m_NowConfigState == EConfigState_End ){
+		if( GetInstance()->m_FadeValue > GetInstance()->FADE_VALUE_MIN ) return false;
+		GetInstance()->m_NowConfigState = EConfigState_None;
+		GetInstance()->m_OldSelectState = GetInstance()->m_SelectState = EConfigState_Volume;
+		GetInstance()->m_vPosition = { -400.0f, 20.0f, 0.0f };
+		GetInstance()->m_pCursor->SetPosition( GetInstance()->m_vPosition );
 		return true;
 	}
 	return false;
@@ -201,7 +209,12 @@ bool CConfigWidget::IsEndConfig()
 // タイトルに戻るか.
 bool CConfigWidget::IsReturnToTitle()
 {
-	return m_IsReturnToTitle;
+	if( GetInstance()->m_IsReturnToTitle == true ){
+		GetInstance()->m_IsReturnToTitle = false;
+		GetInstance()->m_NowConfigState = EConfigState_End;
+		return true;
+	}
+	return false;
 }
 
 

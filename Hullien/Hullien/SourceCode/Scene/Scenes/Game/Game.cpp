@@ -28,7 +28,6 @@ CGame::CGame( CSceneManager* pSceneManager )
 	, m_pGameObjManager		( nullptr )
 	, m_pWidgetManager		( nullptr )
 	, m_pContinueWidget		( nullptr )
-	, m_pConfigWidget		( nullptr )
 	, m_pEventManager		( nullptr )
 	, m_NowEventScene		( EEventSceneState::GameStart )
 	, m_NextSceneState		( ENextSceneState::None )
@@ -41,7 +40,6 @@ CGame::CGame( CSceneManager* pSceneManager )
 	m_pGameObjManager		= std::make_unique<CGameActorManager>();
 	m_pWidgetManager		= std::make_unique<CGameWidgetManager>();
 	m_pContinueWidget		= std::make_unique<CContinueWidget>();
-	m_pConfigWidget			= std::make_unique<CConfigWidget>( true );
 	m_pEventManager			= std::make_unique<CEventManager>();
 }
 
@@ -59,8 +57,8 @@ bool CGame::Load()
 	if( m_pGameObjManager->Init()	== false )	return false;
 	if( m_pWidgetManager->Init()	== false )	return false;
 	if( m_pContinueWidget->Init()	== false )	return false;
-	if( m_pConfigWidget->Init()		== false )	return false;
-	
+	if( CConfigWidget::Init()		== false )	return false;
+	CConfigWidget::SetIsNowGameScene( true );
 	if (m_pSceneManager->GetRetry() == false)
 	{
 		m_NowEventScene = EEventSceneState::GameStart;
@@ -69,7 +67,9 @@ bool CGame::Load()
 	else
 	{
 		m_NowEventScene = EEventSceneState::Game;
+		CFade::SetFadeOut();
 	}
+	CSceneTexRenderer::SetIsStartLoad( false );
 
 	return true;
 }
@@ -155,7 +155,7 @@ void CGame::Render()
 		break;
 	}
 	if( m_IsConfig == true ){
-		m_pConfigWidget->Render();
+		CConfigWidget::Render();
 	}
 	CEditRenderer::PushRenderProc( 
 		[&]()
@@ -163,7 +163,7 @@ void CGame::Render()
 			ImGui::Image( CSceneTexRenderer::GetGBuffer()[0], ImVec2(800, 400) );
 			ImGui::Image( CSceneTexRenderer::GetGBuffer()[1], ImVec2(800, 400) );
 			ImGui::Image( CSceneTexRenderer::GetGBuffer()[2], ImVec2(800, 400) );
-			ImGui::Image( CSceneTexRenderer::GetTransBaffer(), ImVec2(800, 400) );
+			ImGui::Image( CSceneTexRenderer::GetTmpScreenTexture(), ImVec2(800, 400) );
 		});	
 }
 
@@ -202,7 +202,7 @@ void CGame::ModelRender()
 	// 最終描画.
 	//--------------------------------------------.
 	// G-Bufferを使用して、画面に描画する.
-	CSceneTexRenderer::Render();
+	CSceneTexRenderer::Render( !CSceneTransition::GetIsFade() );
 }
 
 // ゲーム処理関数.
@@ -293,19 +293,19 @@ void CGame::ContinueUpdate()
 // 設定画面の更新.
 void CGame::ConfigUpdate()
 {
-	m_pConfigWidget->Update();	// 設定UI更新.
+	CConfigWidget::Update();	// 設定UI更新.
 	// 設定が終了したか.
-	if( m_pConfigWidget->IsEndConfig() == true ){
+	if( CConfigWidget::IsEndConfig() == true ){
 		m_pGameObjManager->ResumeAnimation();	// アニメーションを再開.
-		m_pConfigWidget->OffVolumeSeting();
+		CConfigWidget::OffVolumeSeting();
 		m_IsConfig = false;	// 設定終了.
 	}
 
 	// 設定が終了していれば終了する.
 	if( m_IsConfig == false ) return;
 	// タイトルへ戻るか,
-	if( m_pConfigWidget->IsReturnToTitle() == true ){
-		m_pConfigWidget->OffVolumeSeting();
+	if( CConfigWidget::IsReturnToTitle() == true ){
+		CConfigWidget::OffVolumeSeting();
 		m_NextSceneState = ENextSceneState::Title;
 	}
 }
@@ -354,6 +354,7 @@ void CGame::ChangeEventScene()
 // 次のシーンに移行.
 void CGame::NextSceneMove()
 {
+	bool isCange = false;
 	switch (m_NextSceneState)
 	{
 	case ENextSceneState::Game:
@@ -361,11 +362,13 @@ void CGame::NextSceneMove()
 		StopAllBGM();	// BGMの停止.
 		if(CFade::GetIsFade() == true) return;
 		m_pSceneManager->RetryGame();
+		isCange = true;
 		break;
 	case ENextSceneState::Clear:
 		m_pEventManager->NextEventMove();
 		m_pSceneManager->OnEditSceneChangeActive();
 		m_pSceneManager->NextSceneMove();
+		isCange = true;
 		break;
 	case ENextSceneState::GameOver:
 		CFade::SetFadeIn();
@@ -375,6 +378,7 @@ void CGame::NextSceneMove()
 		m_pEventManager->NextEventMove();
 		m_pSceneManager->OnEditSceneChangeActive();
 		m_pSceneManager->NextSceneMove();
+		isCange = true;
 		break;
 	case ENextSceneState::Title:
 		CFade::SetFadeIn();
@@ -383,9 +387,17 @@ void CGame::NextSceneMove()
 		m_pSceneManager->SetNextTitle();
 		m_pSceneManager->OnEditSceneChangeActive();
 		m_pSceneManager->NextSceneMove();
+		isCange = true;
 		break;
 	default:
 		break;
+	}
+	if( isCange == true ){
+		CSceneTexRenderer::SetIsStartLoad( true );
+		CSceneTexRenderer::SetSaveScreen( true );
+		CSceneTexRenderer::SetRenderPass( CSceneTexRenderer::ERenderPass::GBuffer );
+		CSceneTexRenderer::SetGBuffer();
+		CSceneTexRenderer::Render();
 	}
 }
 

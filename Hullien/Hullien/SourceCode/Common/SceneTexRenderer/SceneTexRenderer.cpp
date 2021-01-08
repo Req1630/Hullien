@@ -13,6 +13,9 @@ CSceneTexRenderer::CSceneTexRenderer()
 	, m_pGBufferRTV				( EGBufferNo::enGBufferNo_MAX )
 	, m_pGBufferSRV				( EGBufferNo::enGBufferNo_MAX )
 	, m_pGBufferTex				( EGBufferNo::enGBufferNo_MAX )
+	, m_pScreenRTV				( EScreenRenderNo_Max )
+	, m_pScreenSRV				( EScreenRenderNo_Max )
+	, m_pScreenTex				( EScreenRenderNo_Max )
 	, m_pTransBufferRTV			( nullptr )
 	, m_pTransBufferSRV			( nullptr )
 	, m_pTransBufferTex			( nullptr )
@@ -24,7 +27,8 @@ CSceneTexRenderer::CSceneTexRenderer()
 	, m_pDownLuminanceTex		( nullptr )
 	, m_pVertexShader			( nullptr )
 	, m_pPixelShader			( nullptr )
-	, m_pLastPixelShader		( nullptr )
+	, m_pEffectPixelShader		( nullptr )
+	, m_pFinalPixelShader		( nullptr )
 	, m_pVertexLayout			( nullptr )
 	, m_pConstantBufferInit		( nullptr )
 	, m_pConstantBufferFrame	( nullptr )
@@ -33,6 +37,10 @@ CSceneTexRenderer::CSceneTexRenderer()
 	, m_WndWidth				( 0 )
 	, m_WndHeight				( 0 )
 	, m_NowRenderPass			( ERenderPass::Shadow )
+	, m_IsSaveScreen			( false )
+	, m_IsGameLoad				( false )
+	, m_IsStartGameLoad			( false )
+	, m_IsEndGameLoad			( true )
 {
 	m_pBloom = std::make_unique<CBloom>();
 }
@@ -53,10 +61,10 @@ CSceneTexRenderer* CSceneTexRenderer::GetInstance()
 // 初期化.
 HRESULT CSceneTexRenderer::Init()
 {
-	GetInstance()->m_pDevice11 = CDirectX11::GetDevice();
-	GetInstance()->m_pContext11 = CDirectX11::GetContext();
-	GetInstance()->m_WndWidth = CDirectX11::GetWndWidth();
-	GetInstance()->m_WndHeight = CDirectX11::GetWndHeight();
+	GetInstance()->m_pDevice11	= CDirectX11::GetDevice();
+	GetInstance()->m_pContext11	= CDirectX11::GetContext();
+	GetInstance()->m_WndWidth	= CDirectX11::GetWndWidth();
+	GetInstance()->m_WndHeight	= CDirectX11::GetWndHeight();
 
 	if( GetInstance()->m_pDevice11 == nullptr ) return E_FAIL;
 	if( FAILED( GetInstance()->m_pBloom->Init( GetInstance()->m_pDevice11, GetInstance()->m_pContext11 ) )) return E_FAIL;
@@ -65,6 +73,7 @@ HRESULT CSceneTexRenderer::Init()
 	if( FAILED( GetInstance()->InitTransBufferTex()))		return E_FAIL;
 	if( FAILED( GetInstance()->InitAntialiasingTex()))		return E_FAIL;
 	if( FAILED( GetInstance()->InitDownLuminanceTex()))		return E_FAIL;
+	if( FAILED( GetInstance()->InitScreenShotTex()))		return E_FAIL;
 	if( FAILED( GetInstance()->CreateShader() ))			return E_FAIL;
 	if( FAILED( GetInstance()->CreateModel() ))				return E_FAIL;
 	if( FAILED( GetInstance()->InitSample() ))				return E_FAIL;
@@ -84,6 +93,12 @@ void CSceneTexRenderer::Release()
 	for( auto& srv : GetInstance()->m_pShadowBufferSRV ) SAFE_RELEASE(srv);
 	for( auto& tex : GetInstance()->m_pShadowBufferTex ) SAFE_RELEASE(tex);
 
+	for( int i = 0; i < EScreenRenderNo_Max; i++ ){
+		SAFE_RELEASE( GetInstance()->m_pScreenRTV[i] );
+		SAFE_RELEASE( GetInstance()->m_pScreenSRV[i] );
+		SAFE_RELEASE( GetInstance()->m_pScreenTex[i] );
+	}
+
 	SAFE_RELEASE( GetInstance()->m_pDownLuminanceRTV );
 	SAFE_RELEASE( GetInstance()->m_pDownLuminanceSRV );
 	SAFE_RELEASE( GetInstance()->m_pDownLuminanceTex );
@@ -101,18 +116,20 @@ void CSceneTexRenderer::Release()
 	SAFE_RELEASE( GetInstance()->m_pConstantBufferInit );
 	SAFE_RELEASE( GetInstance()->m_pConstantBufferFrame );
 	SAFE_RELEASE( GetInstance()->m_pPixelShader );	
-	SAFE_RELEASE( GetInstance()->m_pLastPixelShader );
+	SAFE_RELEASE( GetInstance()->m_pEffectPixelShader );
+	SAFE_RELEASE( GetInstance()->m_pFinalPixelShader );
 	SAFE_RELEASE( GetInstance()->m_pVertexLayout );
 	SAFE_RELEASE( GetInstance()->m_pVertexShader );
 	SAFE_RELEASE( GetInstance()->m_pVertexShader );
-
-	GetInstance()->m_pContext11 = nullptr;
-	GetInstance()->m_pDevice11 = nullptr;
+	
+	GetInstance()->m_pContext11	= nullptr;
+	GetInstance()->m_pDevice11	= nullptr;
 }
 
 // 描画関数.
 void CSceneTexRenderer::Render( const bool& isBloomSmpling )
 {
+	// ブルーム用のサンプリングの強さ.
 	const float softThrshold = 1.0f;
 	static float thrshold = 0.7f;
 	if( CKeyInput::IsHold('C') ) thrshold += 0.001f;
@@ -170,8 +187,13 @@ void CSceneTexRenderer::Render( const bool& isBloomSmpling )
 	GetInstance()->m_pContext11->PSSetShaderResources( 3, 1, &GetInstance()->m_pTransBufferSRV );	// Trans.
 	GetInstance()->m_pContext11->Draw( 4, 0 );
 
+	rtv[0] = rtv[1] = nullptr;
+	GetInstance()->m_pContext11->OMSetRenderTargets( 2, &rtv[0], nullptr );
+	ID3D11ShaderResourceView *const pSRV[4] = { nullptr, nullptr, nullptr, nullptr };
+	GetInstance()->m_pContext11->PSSetShaderResources( 0, 4, pSRV );
+
 	//-------------------------.
-	// Bloom のサンプリング
+	// Bloom のサンプリング.
 	if( isBloomSmpling == true ) GetInstance()->m_pBloom->Sampling( GetInstance()->m_pDownLuminanceSRV );
 
 	//-----------------------------.
@@ -190,11 +212,78 @@ void CSceneTexRenderer::Render( const bool& isBloomSmpling )
 	GetInstance()->m_pContext11->IASetInputLayout( GetInstance()->m_pVertexLayout );
 	GetInstance()->m_pContext11->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
 
-	CDirectX11::SetBackBuffer();
-	GetInstance()->m_pContext11->PSSetShader( GetInstance()->m_pLastPixelShader, nullptr, 0 );	// ピクセルシェーダ.
+	// レンダーターゲットの設定.
+	GetInstance()->m_pContext11->OMSetRenderTargets( 1, &GetInstance()->m_pScreenRTV[EScreenRenderNo_None], CDirectX11::GetDepthSV() );
+	// デプスステンシルバッファ.
+	GetInstance()->m_pContext11->ClearDepthStencilView( CDirectX11::GetDepthSV(), D3D11_CLEAR_DEPTH, 1.0f, 0 );
+	
+	GetInstance()->m_pContext11->PSSetShader( GetInstance()->m_pEffectPixelShader, nullptr, 0 );	// ピクセルシェーダ.
 	GetInstance()->m_pContext11->PSSetShaderResources( 4, 1, &GetInstance()->m_pAntialiasingSRV );
 	GetInstance()->m_pContext11->PSSetShaderResources( 5, GetInstance()->m_pBloom->SAMPLE_BLUR_MAX, &GetInstance()->m_pBloom->GetBlurTex()[0] );
 	GetInstance()->m_pContext11->Draw( 4, 0 );
+
+	ID3D11ShaderResourceView *const pSRV3[1] = { nullptr };
+	GetInstance()->m_pContext11->PSSetShaderResources( 4, 1, pSRV3 );
+	ID3D11ShaderResourceView *const pSRV2[6] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+	GetInstance()->m_pContext11->PSSetShaderResources( 5, GetInstance()->m_pBloom->SAMPLE_BLUR_MAX, pSRV2 );
+}
+
+// 最終描画.
+void CSceneTexRenderer::FinalRender()
+{
+	if( GetInstance()->m_IsSaveScreen == true ){
+		GetInstance()->m_pContext11->ClearRenderTargetView( 
+			GetInstance()->m_pScreenRTV[EScreenRenderNo_Tmp], GetInstance()->CLEAR_BACK_COLOR );
+		// レンダーターゲットの設定.
+		GetInstance()->m_pContext11->OMSetRenderTargets( 1, &GetInstance()->m_pScreenRTV[EScreenRenderNo_Tmp], CDirectX11::GetDepthSV() );
+		// デプスステンシルバッファ.
+		GetInstance()->m_pContext11->ClearDepthStencilView( CDirectX11::GetDepthSV(), D3D11_CLEAR_DEPTH, 1.0f, 0 );
+	}
+	// 使用するシェーダのセット.
+	GetInstance()->m_pContext11->VSSetShader( GetInstance()->m_pVertexShader, nullptr, 0 );	// 頂点シェーダ.
+	GetInstance()->m_pContext11->PSSetShader( GetInstance()->m_pFinalPixelShader, nullptr, 0 );	// ピクセルシェーダ.
+	GetInstance()->m_pContext11->PSSetSamplers( 0, 1, &GetInstance()->m_pSampleLinear );	// サンプラのセット.
+
+	GetInstance()->m_pContext11->VSSetConstantBuffers( 0, 1, &GetInstance()->m_pConstantBufferInit );	// 頂点シェーダ.
+	GetInstance()->m_pContext11->PSSetConstantBuffers( 0, 1, &GetInstance()->m_pConstantBufferInit );	// ピクセルシェーダー.
+
+	UINT stride = sizeof(VERTEX);
+	UINT offset = 0;
+	GetInstance()->m_pContext11->IASetVertexBuffers( 0, 1, &GetInstance()->m_pVertexBuffer, &stride, &offset );
+	GetInstance()->m_pContext11->IASetInputLayout( GetInstance()->m_pVertexLayout );
+	GetInstance()->m_pContext11->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
+
+	//----------------------------------.
+	// 一時保存用のフラグが立っていれば.
+	//	Noneに描画した物をtmpに保存する.
+	if( GetInstance()->m_IsSaveScreen == true ){
+		GetInstance()->m_pContext11->PSSetShaderResources( 0, 1, &GetInstance()->m_pScreenSRV[EScreenRenderNo_None] );
+		GetInstance()->m_pContext11->Draw( 4, 0 );
+
+		ID3D11RenderTargetView* rtv[1] = { nullptr };
+		GetInstance()->m_pContext11->OMSetRenderTargets( 1, &rtv[0], nullptr );
+
+		GetInstance()->m_IsSaveScreen = false;
+	}
+
+	if( GetInstance()->m_IsStartGameLoad == true ){
+		GetInstance()->m_IsGameLoad = true;
+	}
+
+	//------------------------------.
+	// 最終描画.
+	//------------------------------.
+	const int screenRenderNo = GetInstance()->m_IsGameLoad == true ? EScreenRenderNo_Tmp : EScreenRenderNo_None;
+	CDirectX11::SetBackBuffer();
+	GetInstance()->m_pContext11->PSSetShaderResources( 0, 1, &GetInstance()->m_pScreenSRV[screenRenderNo] );
+	GetInstance()->m_pContext11->Draw( 4, 0 );
+
+	ID3D11RenderTargetView* rtv[1] = { nullptr };
+	GetInstance()->m_pContext11->OMSetRenderTargets( 1, &rtv[0], nullptr );
+
+	if( GetInstance()->m_IsStartGameLoad == false ){
+		GetInstance()->m_IsGameLoad = false;
+	}
 }
 
 // バッファのクリア.
@@ -217,6 +306,11 @@ void CSceneTexRenderer::ClearBuffer()
 	// DownLuminanceテクスチャのクリア.
 	GetInstance()->m_pContext11->ClearRenderTargetView( 
 		GetInstance()->m_pDownLuminanceRTV, GetInstance()->CLEAR_BACK_COLOR );
+	// 全描画用テクスチャのクリア.
+	GetInstance()->m_pContext11->ClearRenderTargetView( 
+		GetInstance()->m_pScreenRTV[EScreenRenderNo_None], GetInstance()->CLEAR_BACK_COLOR );
+
+	GetInstance()->m_pBloom->ClearBuffer();
 }
 
 // Shadowバッファの設定.
@@ -400,6 +494,32 @@ HRESULT CSceneTexRenderer::InitDownLuminanceTex()
 	return S_OK;
 }
 
+// スクショ用の作成.
+HRESULT CSceneTexRenderer::InitScreenShotTex()
+{
+	D3D11_TEXTURE2D_DESC texDesc;
+	texDesc.Width				= GetInstance()->m_WndWidth ;		// 幅.
+	texDesc.Height				= GetInstance()->m_WndHeight;		// 高さ.
+	texDesc.MipLevels			= 1;								// ミップマップレベル:1.
+	texDesc.ArraySize			= 1;								// 配列数:1.
+	texDesc.Format				= DXGI_FORMAT_R11G11B10_FLOAT;		// 32ビットフォーマット.
+	texDesc.SampleDesc.Count	= 1;								// マルチサンプルの数.
+	texDesc.SampleDesc.Quality	= 0;								// マルチサンプルのクオリティ.
+	texDesc.Usage				= D3D11_USAGE_DEFAULT;				// 使用方法:デフォルト.
+	texDesc.BindFlags			= D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;	// レンダーターゲット、シェーダーリソース.
+	texDesc.CPUAccessFlags		= 0;								// CPUからはアクセスしない.
+	texDesc.MiscFlags			= 0;								// その他の設定なし.
+
+	for( int i = 0; i < EScreenRenderNo_Max; i++ ){
+		if( FAILED( CreateBufferTex(
+			texDesc,
+			&m_pScreenRTV[i],
+			&m_pScreenSRV[i],
+			&m_pScreenTex[i] ))) return E_FAIL;
+	}
+	return S_OK;
+}
+
 // シェーダ作成.
 HRESULT CSceneTexRenderer::CreateShader()
 {
@@ -476,7 +596,7 @@ HRESULT CSceneTexRenderer::CreateShader()
 			SHADER_NAME,
 			nullptr,
 			nullptr,
-			"PS_LastMain", 
+			"PS_EffectMain", 
 			"ps_5_0", 
 			uCompileFlag, 
 			0,
@@ -492,7 +612,36 @@ HRESULT CSceneTexRenderer::CreateShader()
 			pCompilePS->GetBufferPointer(),
 			pCompilePS->GetBufferSize(),
 			nullptr,
-			&m_pLastPixelShader ))){
+			&m_pEffectPixelShader ))){
+		ERROR_MESSAGE( "ps hlsl Creating Failure." );
+		return E_FAIL;
+	}
+
+	//----------------------------.
+	// ピクセルシェーダー.
+	//----------------------------.
+	if( FAILED(
+		D3DX10CompileFromFile( 
+			SHADER_NAME,
+			nullptr,
+			nullptr,
+			"PS_FinalMain", 
+			"ps_5_0", 
+			uCompileFlag, 
+			0,
+			nullptr,
+			&pCompilePS,
+			&pErrorMsg,
+			nullptr ))){
+		ERROR_MESSAGE( (char*)pErrorMsg->GetBufferPointer()  );
+		return E_FAIL;
+	}
+	if( FAILED(
+		m_pDevice11->CreatePixelShader(
+			pCompilePS->GetBufferPointer(),
+			pCompilePS->GetBufferSize(),
+			nullptr,
+			&m_pFinalPixelShader ))){
 		ERROR_MESSAGE( "ps hlsl Creating Failure." );
 		return E_FAIL;
 	}

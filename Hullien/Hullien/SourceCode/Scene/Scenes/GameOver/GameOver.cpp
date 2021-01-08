@@ -2,6 +2,7 @@
 #include "..\..\..\GameObject\Widget\SceneWidget\GameOverWidget\GameOverWidget.h"
 #include "..\..\..\Utility\Input\Input.h"
 #include "..\..\..\XAudio2\SoundManager.h"
+#include "..\..\..\Common\SceneTexRenderer\SceneTexRenderer.h"
 
 CGameOver::CGameOver( CSceneManager* pSceneManager )
 	: CSceneBase		( pSceneManager )
@@ -26,6 +27,7 @@ bool CGameOver::Load()
 	CSoundManager::ThreadPlayBGM("GameOverBGM");
 	CSoundManager::FadeInBGM("GameOverBGM");
 	m_pSceneManager->SetNowBGMName("GameOverBGM");
+	CSceneTexRenderer::SetIsStartLoad( false );
 	return true;
 }
 
@@ -52,6 +54,11 @@ void CGameOver::Update()
 	if (CFade::GetIsFade() == true) return;
 	while(CSoundManager::StopBGMThread("GameOverBGM") == false);
 	m_pSceneManager->NextSceneMove();
+	CSceneTexRenderer::SetIsStartLoad( true );
+	CSceneTexRenderer::SetSaveScreen( true );
+	CSceneTexRenderer::SetRenderPass( CSceneTexRenderer::ERenderPass::GBuffer );
+	CSceneTexRenderer::SetGBuffer();
+	CSceneTexRenderer::Render();
 
 }
 
@@ -60,5 +67,21 @@ void CGameOver::Update()
 //============================.
 void CGameOver::Render()
 {
+	// ゲームオーバーでは影やエフェクトを描画させる予定はないので.
+	//	G-Bufferのみ描画させる.
+	//--------------------------------------------.
+	// 描画パス1.
+	//--------------------------------------------.
+	// G-Bufferにcolor, normal, depthを書き込む.
+	CSceneTexRenderer::SetRenderPass( CSceneTexRenderer::ERenderPass::GBuffer );
+	CSceneTexRenderer::SetGBuffer();
+
 	m_pGameOverWidget->Render();
+
+	//--------------------------------------------.
+	// 最終描画.
+	//--------------------------------------------.
+	// G-Bufferを使用して、画面に描画する.
+	//	Bloomは使用しないので、無効にする.
+	CSceneTexRenderer::Render( false );
 }

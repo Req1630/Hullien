@@ -15,9 +15,8 @@ class CTransition;				// トランジションクラス.
 /********************************************
 *	設定UIクラス.
 **/
-class CConfigWidget : public CSceneWidget
+class CConfigWidget
 {
-
 	const char* SPRITE_BACK			= "ConfigBack";
 	const char* SPRITE_ICON			= "ConfigIcon";
 	const char* SPRITE_VOLUME		= "Volume";
@@ -35,6 +34,8 @@ class CConfigWidget : public CSceneWidget
 	const float FADE_VALUE_MAX = 1.0f;
 	const float FADE_VALUE_MIN = 0.0f;
 	const float FADE_SPEED = 0.03f;
+
+	const float INPUT_WAIT_TIME_MAX = 30.0f;
 
 	enum enConfigState
 	{
@@ -56,27 +57,37 @@ public:
 	CConfigWidget( const bool& isGame );
 	virtual ~CConfigWidget();
 
+	// インスタンスの生成.
+	static CConfigWidget* GetInstance()
+	{
+		static std::unique_ptr<CConfigWidget> pInstance = std::make_unique<CConfigWidget>();
+		return pInstance.get();
+	}
+
 	// 初期化関数.
-	virtual bool Init() override;
+	static bool Init();
 	// 更新関数.
-	virtual void Update() override;
+	static void Update();
 	// 描画関数.
-	virtual void Render() override;
+	static void Render();
 
 	// 音量の設定をできないようにする.
-	void OffVolumeSeting();
+	static void OffVolumeSeting();
 
 	// 設定を終了したか.
-	bool IsEndConfig();
+	static bool IsEndConfig();
 
 	// タイトルに戻るか.
-	bool IsReturnToTitle();
+	static bool IsReturnToTitle();
+
+	// ゲームシーンかどうか設定.
+	static void SetIsNowGameScene( const bool& isNowGameScene ){ GetInstance()->m_IsNowGameScene = isNowGameScene; }
 
 private:
 	// カーソルの設定.
 	void CursorSetting();
 	// スプライト設定関数.
-	virtual bool SpriteSetting() override;
+	bool SpriteSetting();
 
 private:
 	std::vector<std::shared_ptr<CSprite>>	m_pSprites;
@@ -87,13 +98,16 @@ private:
 	std::unique_ptr<CGraphicConfigWidget>	m_pGraphicConfig;		// グラフィック設定UI.
 	std::unique_ptr<CBlendSprite>			m_pBlendSprite;			// ブレンド描画用.
 	std::unique_ptr<CTransition>			m_pTransition;			// トランジション.
+	D3DXVECTOR3 m_vPosition;
 	D3DXVECTOR3	m_ReturnTitlePosition;	// タイトルへ戻る画像の座標.
 	int			m_SelectState;			// 選択状態.
 	int			m_OldSelectState;
 	int			m_NowConfigState;		// 現在の設定の状態.
+	float		m_InputWaitTime;
 	float		m_FadeValue;
 	bool		m_IsNowGameScene;		// ゲームシーンかどうか.
 	bool		m_IsReturnToTitle;		// タイトルに戻る.
+	bool		m_IsLoadEnd;
 };
 
 #endif	// #ifndef CONFIG_WIDGET_H.

@@ -12,6 +12,7 @@
 #include "..\..\..\XAudio2\SoundManager.h"
 #include "..\..\..\GameObject\Widget\Fade\Fade.h"
 #include "..\..\..\Common\DebugText\DebugText.h"
+#include "..\..\..\Common\SceneTexRenderer\SceneTexRenderer.h"
 
 /************************************
 *	クリアイベントクラス.
@@ -73,7 +74,7 @@ bool CGameClearEvent::Load()
 
 	CSoundManager::ThreadPlayBGM("ClearEventBGM");
 	CSoundManager::FadeInBGM("ClearEventBGM");
-
+	CSceneTexRenderer::SetIsStartLoad( false );
 	return true;
 }
 

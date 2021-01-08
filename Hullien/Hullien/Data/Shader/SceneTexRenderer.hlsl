@@ -178,7 +178,7 @@ float2 mod(float2 a, float2 b)
 */
 
 // ピクセルシェーダ.
-float4 PS_LastMain(VS_OUTPUT input) : SV_Target
+float4 PS_EffectMain(VS_OUTPUT input) : SV_Target
 {
 	FxaaTex tex = { g_SamLinear, g_TextureLast };
 	float4 color = float4( FxaaPixelShader( input.Tex, tex, float2( 1.0f/g_vViewPort.x, 1.0f/g_vViewPort.y ) ), 1.0f );
@@ -278,5 +278,12 @@ float4 PS_LastMain(VS_OUTPUT input) : SV_Target
 	}
 	//--------------------------.
 */
+	return color;
+}
+
+// ピクセルシェーダ.
+float4 PS_FinalMain(VS_OUTPUT input) : SV_Target
+{
+	float4 color = g_TextureColor.Sample(g_SamLinear, input.Tex);
 	return color;
 }

@@ -78,7 +78,6 @@ private:
 	std::unique_ptr<CGameActorManager>	m_pGameObjManager;	// ゲームオブジェクト管理クラス.
 	std::unique_ptr<CGameWidgetManager>	m_pWidgetManager; 	// ゲームUI管理クラス.
 	std::unique_ptr<CContinueWidget>	m_pContinueWidget;	// コンテニューUIクラス.
-	std::unique_ptr<CConfigWidget>		m_pConfigWidget;	// 設定UIクラス.
 	std::unique_ptr<CEventManager>		m_pEventManager; 	// イベント管理クラス.
 	EEventSceneState					m_NowEventScene;	// 現在のイベントシーン.
 	ENextSceneState						m_NextSceneState;	// 次のシーン状態.
