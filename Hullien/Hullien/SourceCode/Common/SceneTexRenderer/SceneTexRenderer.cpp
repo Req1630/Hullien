@@ -1,12 +1,14 @@
 #include "SceneTexRenderer.h"
 #include "..\D3DX\D3DX11.h"
 #include "..\Bloom\Bloom.h"
+#include "..\Blur\Blur.h"
 #include "..\..\Utility\Input\KeyInput\KeyInput.h"
 
 CSceneTexRenderer::CSceneTexRenderer()
 	: m_pDevice11				( nullptr )
 	, m_pContext11				( nullptr )
 	, m_pBloom					( nullptr )
+	, m_pBlur					( nullptr )
 	, m_pShadowBufferRTV		( MAX_CASCADE )
 	, m_pShadowBufferSRV		( MAX_CASCADE )
 	, m_pShadowBufferTex		( MAX_CASCADE )
@@ -42,11 +44,13 @@ CSceneTexRenderer::CSceneTexRenderer()
 	, m_IsStartGameLoad			( false )
 	, m_IsEndGameLoad			( true )
 {
-	m_pBloom = std::make_unique<CBloom>();
+	m_pBloom	= std::make_unique<CBloom>();
+	m_pBlur		= std::make_unique<CBlur>();
 }
 
 CSceneTexRenderer::~CSceneTexRenderer()
 {
+	m_pBlur->Release();
 	m_pBloom->Release();
 	Release();
 }
@@ -68,6 +72,7 @@ HRESULT CSceneTexRenderer::Init()
 
 	if( GetInstance()->m_pDevice11 == nullptr ) return E_FAIL;
 	if( FAILED( GetInstance()->m_pBloom->Init( GetInstance()->m_pDevice11, GetInstance()->m_pContext11 ) )) return E_FAIL;
+	if( FAILED( GetInstance()->m_pBlur->Init( GetInstance()->m_pDevice11, GetInstance()->m_pContext11 ) )) return E_FAIL;
 	if( FAILED( GetInstance()->InitShadowBufferTex()) )		return E_FAIL;
 	if( FAILED( GetInstance()->InitGBufferTex()))			return E_FAIL;
 	if( FAILED( GetInstance()->InitTransBufferTex()))		return E_FAIL;
@@ -195,7 +200,7 @@ void CSceneTexRenderer::Render( const bool& isBloomSmpling )
 	//-------------------------.
 	// Bloom のサンプリング.
 	if( isBloomSmpling == true ) GetInstance()->m_pBloom->Sampling( GetInstance()->m_pDownLuminanceSRV );
-
+	GetInstance()->m_pBlur->Sampling( GetInstance()->m_pGBufferSRV[0] );
 	//-----------------------------.
 	// 最終レンダリング.
 	//-----------------------------.
@@ -351,6 +356,12 @@ void CSceneTexRenderer::SetTransBuffer()
 	// デプスステンシルバッファ.
 	GetInstance()->m_pContext11->ClearDepthStencilView(
 		CDirectX11::GetDepthSV(), D3D11_CLEAR_DEPTH, 1.0f, 0 );
+}
+
+// ブラーテクスチャの取得.
+ID3D11ShaderResourceView* CSceneTexRenderer::GetBlurTexture()
+{
+	return GetInstance()->m_pBlur->GetBlurTex(); 
 }
 
 // ウィンドウサイズが変更された時に呼ぶ.

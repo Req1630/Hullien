@@ -135,7 +135,7 @@ void CConfigWidget::Render()
 {
 	if( GetInstance()->m_FadeValue < GetInstance()->FADE_VALUE_MAX ){
 		GetInstance()->m_pTransition->SetValue( GetInstance()->m_FadeValue );
-		GetInstance()->m_pTransition->SetDestTexture( CSceneTexRenderer::GetGBuffer()[0] );
+		GetInstance()->m_pTransition->SetDestTexture( CSceneTexRenderer::GetBlurTexture() );
 		GetInstance()->m_pTransition->Render();
 		return;
 	}
@@ -149,7 +149,7 @@ void CConfigWidget::Render()
 			}
 		}
 		if( i == 0 ){
-			GetInstance()->m_pBlendSprite->SetDestTexture( CSceneTexRenderer::GetGBuffer()[0] );
+			GetInstance()->m_pBlendSprite->SetDestTexture( CSceneTexRenderer::GetBlurTexture() );
 			GetInstance()->m_pBlendSprite->SetDeprh(false);
 			GetInstance()->m_pBlendSprite->SetBlend(true);
 			GetInstance()->m_pBlendSprite->RenderUI();

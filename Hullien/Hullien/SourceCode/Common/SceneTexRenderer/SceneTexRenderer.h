@@ -7,6 +7,7 @@
 #include <vector>
 
 class CBloom;
+class CBlur;
 
 class CSceneTexRenderer
 {
@@ -107,6 +108,8 @@ public:
 	static ID3D11ShaderResourceView* GetTransBaffer(){ return GetInstance()->m_pDownLuminanceSRV; }
 	// tmpスクリーンテクスチャ.
 	static ID3D11ShaderResourceView* GetTmpScreenTexture(){ return GetInstance()->m_pScreenSRV[EScreenRenderNo_Tmp]; }
+	// ブラーテクスチャの取得.
+	static ID3D11ShaderResourceView* GetBlurTexture();
 
 	// 現在のスクリーンを保存する.
 	static void SetSaveScreen( const bool& isSave ){ GetInstance()->m_IsSaveScreen = isSave; }
@@ -149,7 +152,8 @@ private:
 	ID3D11Device*			m_pDevice11;	// デバイスオブジェクト.
 	ID3D11DeviceContext*	m_pContext11;	// デバイスコンテキスト.
 
-	std::unique_ptr<CBloom>	m_pBloom;
+	std::unique_ptr<CBloom>	m_pBloom;	// ブルーム処理クラス.
+	std::unique_ptr<CBlur>	m_pBlur;	// ブラー処理クラス.
 
 	std::vector<ID3D11RenderTargetView*>	m_pShadowBufferRTV;	// シャドウマップ用バッファのレンダーターゲットビュー.
 	std::vector<ID3D11ShaderResourceView*>	m_pShadowBufferSRV;	// シャドウマップ用バッファのステンシルビュー.

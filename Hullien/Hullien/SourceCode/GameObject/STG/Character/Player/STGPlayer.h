@@ -7,7 +7,7 @@ namespace STG
 {
 	class CPlayer : public STG::CCharacter
 	{
-		const char* MODEL_NAME			= "ufo_mini";
+		const char* MODEL_NAME			= "ufo";
 		const char* BULLET_MODEL_NAME	= "item cure";
 		const char* SHOT_SE_NAME		= "STGshot";
 		const char* HIT_SE_NAME			= "STGHit";

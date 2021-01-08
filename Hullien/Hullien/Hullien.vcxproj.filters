@@ -17,6 +17,7 @@
     <FxCompile Include="Data\Shader\Bloom.hlsl" />
     <FxCompile Include="Data\Shader\CircleGage.hlsl" />
     <FxCompile Include="Data\Shader\BlendSprite.hlsl" />
+    <FxCompile Include="Data\Shader\Blur.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\ImGui\imgui.cpp" />
@@ -192,6 +193,7 @@
     <ClCompile Include="SourceCode\GameObject\Widget\Cursor\ConfigCursor.cpp" />
     <ClCompile Include="SourceCode\Common\Sprite\BlendSprite\BlendSprite.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\SceneTransition\SceneTransition.cpp" />
+    <ClCompile Include="SourceCode\Common\Blur\Blur.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\ImGui\imconfig.h" />
@@ -392,6 +394,7 @@
     <ClInclude Include="SourceCode\Common\Sprite\BlendSprite\BlendSprite.h" />
     <ClInclude Include="SourceCode\Common\Sprite\SpriteState.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneTransition\SceneTransition.h" />
+    <ClInclude Include="SourceCode\Common\Blur\Blur.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

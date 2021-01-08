@@ -1,11 +1,11 @@
-#ifndef BLOOM_H
-#define BLOOM_H
+#ifndef BLUR_H
+#define BLUR_H
 
 #include "..\Common.h"
 
-class CBloom : public CCommon
+class CBlur : public CCommon
 {
-	const char* SHADER_NAME = "Data\\Shader\\Bloom.hlsl";
+	const char* SHADER_NAME = "Data\\Shader\\Blur.hlsl";
 	const D3DXVECTOR4 CLEAR_BACK_COLOR = { 0.0f, 0.0f, 0.0f, 0.0f };
 	// コンスタントバッファ.
 	struct C_BUFFER
@@ -21,12 +21,20 @@ class CBloom : public CCommon
 		D3DXVECTOR3 Pos;	// 頂点座標.
 		D3DXVECTOR2 Tex;	// テクスチャ座標.
 	};
-public:
-	const int SAMPLE_BLUR_MAX = 6;
+
+	enum enBlurSmpleDir
+	{
+		EBlurSmpleDir_Width,	// 横方向.
+		EBlurSmpleDir_Height,	// 高さ方向.
+
+		EBlurSmpleDir_Final = EBlurSmpleDir_Height,
+
+		EBlurSmpleDir_Max,
+	} typedef EBlurSmpleDir;
 
 public:
-	CBloom();
-	virtual ~CBloom();
+	CBlur();
+	virtual ~CBlur();
 
 	// 初期化.
 	HRESULT Init( ID3D11Device* pDevice11, ID3D11DeviceContext* pContext11 );
@@ -40,7 +48,7 @@ public:
 	void ClearBuffer();
 
 	// ブラーテクスチャの取得.
-	std::vector<ID3D11ShaderResourceView*> GetBlurTex(){ return m_pBlurBufferSRV; }
+	ID3D11ShaderResourceView* GetBlurTex(){ return m_pBlurBufferSRV[EBlurSmpleDir_Final]; }
 
 private:
 	// ブラー用の作成.
@@ -60,21 +68,21 @@ private:
 		ID3D11RenderTargetView**	ppRTV,
 		ID3D11ShaderResourceView**	ppSRV,
 		ID3D11Texture2D**			ppTex );
-private:
 
+private:
 	std::vector<ID3D11RenderTargetView*>	m_pBlurBufferRTV;	// ブラー用バッファのレンダーターゲットビュー.
 	std::vector<ID3D11ShaderResourceView*>	m_pBlurBufferSRV;	// ブラー用バッファのステンシルビュー.
 	std::vector<ID3D11Texture2D*>			m_pBlurBufferTex;	// ブラー用バッファのテクスチャー2D.
 
-	ID3D11VertexShader*		m_pVertexShader;		// 頂点シェーダー.
-	ID3D11PixelShader*		m_pPixelShader;			// ピクセルシェーダー.
-	ID3D11InputLayout*		m_pVertexLayout;		// 頂点レイアウト.
-	ID3D11SamplerState*		m_pSampleLinear;		// サンプラ:テクスチャに各種フィルタをかける.
-	std::vector<ID3D11Buffer*> m_pConstantBuffer;	// コンスタントバッファ.
-	std::vector<ID3D11Buffer*> m_pVertexBuffer;		// 頂点バッファ.
+	ID3D11VertexShader*				m_pVertexShader;	// 頂点シェーダー.
+	std::vector<ID3D11PixelShader*>	m_pPixelShaderList;	// ピクセルシェーダー.
+	ID3D11InputLayout*	m_pVertexLayout;	// 頂点レイアウト.
+	ID3D11SamplerState*	m_pSampleLinear;	// サンプラ:テクスチャに各種フィルタをかける.
+	ID3D11Buffer*		m_pConstantBuffer;	// コンスタントバッファ.
+	ID3D11Buffer*		m_pVertexBuffer;	// 頂点バッファ.
 
-	UINT					m_WndWidth;			// ウィンドウ幅.
-	UINT					m_WndHeight;		// ウィンドウ高さ.
+	UINT				m_WndWidth;			// ウィンドウ幅.
+	UINT				m_WndHeight;		// ウィンドウ高さ.
 };
 
 #endif	// #ifndef BLOOM_H.
