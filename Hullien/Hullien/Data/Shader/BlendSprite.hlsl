@@ -78,34 +78,9 @@ float4 PS_Main( VS_OUTPUT input ) : SV_Target
 // ハードライト.
 float4 PS_HardLight( VS_OUTPUT input ) : SV_TARGET
 {
-	/*
-	// テクスチャのサイズを取得.
-	float imageSizeW, imageSizeH, levels;
-	g_Texture.GetDimensions(0, imageSizeW, imageSizeH, levels);
-	
-	float s = 0.125f; // サンプリングする強さ.
-	const float2 px = float2(1.0f / imageSizeW, 1.0f / imageSizeH) * 3.0f;
-	float4 dest = float4( 0, 0, 0, 1 );
-	// ぼかし処理.
-	dest.xyz += g_Texture.Sample(g_SamLinear, input.Tex + px * float2( 3, 0 )).xyz*0.053;
-	dest.xyz += g_Texture.Sample(g_SamLinear, input.Tex + px * float2( 2, 0 )).xyz*0.123;
-	dest.xyz += g_Texture.Sample(g_SamLinear, input.Tex + px * float2( 1, 0 )).xyz*0.203;
-	dest.xyz += g_Texture.Sample(g_SamLinear, input.Tex + px * float2( 0, 0 )).xyz*0.240;
-	dest.xyz += g_Texture.Sample(g_SamLinear, input.Tex + px * float2(-1, 0 )).xyz*0.203;
-	dest.xyz += g_Texture.Sample(g_SamLinear, input.Tex + px * float2(-2, 0 )).xyz*0.123;
-	dest.xyz += g_Texture.Sample(g_SamLinear, input.Tex + px * float2(-3, 0 )).xyz*0.053;
-	
-	dest.xyz += g_Texture.Sample(g_SamLinear, input.Tex + px * float2( 0, 3 )).xyz*0.053;
-	dest.xyz += g_Texture.Sample(g_SamLinear, input.Tex + px * float2( 0, 2 )).xyz*0.123;
-	dest.xyz += g_Texture.Sample(g_SamLinear, input.Tex + px * float2( 0, 1 )).xyz*0.203;
-	dest.xyz += g_Texture.Sample(g_SamLinear, input.Tex + px * float2( 0, 0 )).xyz*0.240;
-	dest.xyz += g_Texture.Sample(g_SamLinear, input.Tex + px * float2( 0,-1 )).xyz*0.203;
-	dest.xyz += g_Texture.Sample(g_SamLinear, input.Tex + px * float2( 0,-2 )).xyz*0.123;
-	dest.xyz += g_Texture.Sample(g_SamLinear, input.Tex + px * float2( 0,-3 )).xyz*0.053;
-	*/
 	float4 dest = g_Texture.Sample(g_SamLinear, input.Tex); // 規定色.
 	float4 src = g_SrcTexture.Sample(g_SamLinear, input.Tex); // 合成色.
- 
+	
 	float4 result;
 	
 	if (dest.r > 0.5) result.r = dest.r * src.r * 2;

@@ -7,6 +7,8 @@ const char* SHADER_ENTRY_NAME_LIST[] =
 	"PS_HeightBlur",
 };
 
+const int BLUR_TEXTURE_SIZE = 2;
+
 CBlur::CBlur()
 	: m_pBlurBufferRTV		( EBlurSmpleDir_Max )
 	, m_pBlurBufferSRV		( EBlurSmpleDir_Max )
@@ -105,8 +107,8 @@ void CBlur::ClearBuffer()
 HRESULT CBlur::InitBlurTex()
 {
 	D3D11_TEXTURE2D_DESC texDesc;
-	texDesc.Width				= m_WndWidth/4;						// 幅.
-	texDesc.Height				= m_WndHeight/4;					// 高さ.
+	texDesc.Width				= m_WndWidth/BLUR_TEXTURE_SIZE;		// 幅.
+	texDesc.Height				= m_WndHeight/BLUR_TEXTURE_SIZE;	// 高さ.
 	texDesc.MipLevels			= 1;								// ミップマップレベル:1.
 	texDesc.ArraySize			= 1;								// 配列数:1.
 	texDesc.Format				= DXGI_FORMAT_R11G11B10_FLOAT;		// 32ビットフォーマット.
@@ -263,8 +265,8 @@ HRESULT CBlur::CreateConstantBuffer()
 	cbDesc.StructureByteStride	= 0;
 	cbDesc.Usage				= D3D11_USAGE_DYNAMIC;
 
-	UINT width = m_WndWidth/4;
-	UINT height = m_WndHeight/4;
+	UINT width = m_WndWidth/BLUR_TEXTURE_SIZE;
+	UINT height = m_WndHeight/BLUR_TEXTURE_SIZE;
 	if( FAILED(  m_pDevice11->CreateBuffer( &cbDesc, nullptr, &m_pConstantBuffer ))){
 		ERROR_MESSAGE( "Buffer creation failed" );
 		return E_FAIL;
@@ -302,17 +304,17 @@ HRESULT CBlur::CreateConstantBuffer()
 // モデル作成.
 HRESULT CBlur::CreateModel()
 {
-	UINT width = m_WndWidth/4;
-	UINT height = m_WndHeight/4;
+	float width		= static_cast<float>(m_WndWidth/BLUR_TEXTURE_SIZE);
+	float height	= static_cast<float>(m_WndHeight/BLUR_TEXTURE_SIZE);
 
 	// 板ポリ(四角形)の頂点を作成.
-	VERTEX vertices[]=
+	VERTEX vertices[] =
 	{
 		// 頂点座標(x,y,z)				 
-		D3DXVECTOR3( 0.0f,						static_cast<float>(height), 0.0f ),	D3DXVECTOR2( 0.0f, 1.0f ),
-		D3DXVECTOR3( 0.0f,						0.0f, 0.0f ),						D3DXVECTOR2( 0.0f, 0.0f ),
-		D3DXVECTOR3( static_cast<float>(width), static_cast<float>(height), 0.0f ),	D3DXVECTOR2( 1.0f, 1.0f ),
-		D3DXVECTOR3( static_cast<float>(width), 0.0f, 0.0f ),						D3DXVECTOR2( 1.0f, 0.0f ),
+		D3DXVECTOR3( 0.0f,	height,	0.0f ),	D3DXVECTOR2( 0.0f, 1.0f ),
+		D3DXVECTOR3( 0.0f,	0.0f,	0.0f ),	D3DXVECTOR2( 0.0f, 0.0f ),
+		D3DXVECTOR3( width, height,	0.0f ),	D3DXVECTOR2( 1.0f, 1.0f ),
+		D3DXVECTOR3( width, 0.0f,	0.0f ),	D3DXVECTOR2( 1.0f, 0.0f ),
 	};
 	// 最大要素数を算出する.
 	UINT uVerMax = sizeof(vertices) / sizeof(vertices[0]);

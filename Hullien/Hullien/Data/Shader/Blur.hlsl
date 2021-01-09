@@ -38,15 +38,14 @@ VS_OUTPUT VS_Main(
 // ピクセルシェーダ.
 float4 PS_WidthBlur(VS_OUTPUT input) : SV_Target
 {
-	float4 offset = g_vPixelSize.xyxy * float2(-1.0f, 1.0f).xxyy;
 	float4 color = float4( 0.0f, 0.0f, 0.0f, 1.0f );
-	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.x + g_vPixelSize.x * float2(-3.0f,0.0f)) * 0.053;
-	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.x + g_vPixelSize.x * float2(-2.0f,0.0f)) * 0.123;
-	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.x + g_vPixelSize.x * float2(-1.0f,0.0f)) * 0.203;
-	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.x + g_vPixelSize.x * float2( 0.0f,0.0f)) * 0.240;
-	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.x + g_vPixelSize.x * float2( 1.0f,0.0f)) * 0.203;
-	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.x + g_vPixelSize.x * float2( 2.0f,0.0f)) * 0.123;
-	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.x + g_vPixelSize.x * float2( 3.0f,0.0f)) * 0.053;
+	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.x + g_vPixelSize.x*float2(-3.0f,0.0f)) * 0.053;
+	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.x + g_vPixelSize.x*float2(-2.0f,0.0f)) * 0.123;
+	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.x + g_vPixelSize.x*float2(-1.0f,0.0f)) * 0.203;
+	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.x + g_vPixelSize.x*float2( 0.0f,0.0f)) * 0.240;
+	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.x + g_vPixelSize.x*float2( 1.0f,0.0f)) * 0.203;
+	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.x + g_vPixelSize.x*float2( 2.0f,0.0f)) * 0.123;
+	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.x + g_vPixelSize.x*float2( 3.0f,0.0f)) * 0.053;
 	
 	return color;
 }
@@ -54,13 +53,13 @@ float4 PS_WidthBlur(VS_OUTPUT input) : SV_Target
 float4 PS_HeightBlur(VS_OUTPUT input) : SV_Target
 {
 	float4 color = float4( 0.0f, 0.0f, 0.0f, 1.0f );
-	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.y + g_vPixelSize.y * float2(0.0f,-3.0f)) * 0.053;
-	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.y + g_vPixelSize.y * float2(0.0f,-2.0f)) * 0.123;
-	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.y + g_vPixelSize.y * float2(0.0f,-1.0f)) * 0.203;
-	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.y + g_vPixelSize.y * float2(0.0f, 0.0f)) * 0.240;
-	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.y + g_vPixelSize.y * float2(0.0f, 1.0f)) * 0.203;
-	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.y + g_vPixelSize.y * float2(0.0f, 2.0f)) * 0.123;
-	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.y + g_vPixelSize.y * float2(0.0f, 3.0f)) * 0.053;
+	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.y + g_vPixelSize.y*float2(0.0f,-3.0f)) * 0.053;
+	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.y + g_vPixelSize.y*float2(0.0f,-2.0f)) * 0.123;
+	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.y + g_vPixelSize.y*float2(0.0f,-1.0f)) * 0.203;
+	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.y + g_vPixelSize.y*float2(0.0f, 0.0f)) * 0.240;
+	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.y + g_vPixelSize.y*float2(0.0f, 1.0f)) * 0.203;
+	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.y + g_vPixelSize.y*float2(0.0f, 2.0f)) * 0.123;
+	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.y + g_vPixelSize.y*float2(0.0f, 3.0f)) * 0.053;
 	
 	return color;
 }
