@@ -1,29 +1,40 @@
-#include "FXAA.hlsl"
+#include "FXAA.hlsl"	// アンチエイリアスを使用する為に必要.
 
-//ｸﾞﾛｰﾊﾞﾙ変数.
-//ﾃｸｽﾁｬは、ﾚｼﾞｽﾀ t(n).
-Texture2D g_TextureColor	: register(t0);	// 色情報.
-Texture2D g_TextureNormal	: register(t1);	// 法線情報.
-Texture2D g_TextureDepth	: register(t2);	// 深度情報.
-Texture2D g_TextureTrans	: register(t3);	// アルファ情報.
-Texture2D g_TextureLast		: register(t4);	// 輪郭線などを描画したテクスチャ.
-Texture2D g_TextureBloom[6]	: register(t5);	// Bloom用テクスチャ.
-//ｻﾝﾌﾟﾗは、ﾚｼﾞｽﾀ s(n).
+#define BLOOM_SAMPLING_NUM (6)	// ブルームのサンプリング数.
+
+//-----------------------------------------------.
+// テクスチャ.
+//-----------------------------------------------.
+Texture2D g_TextureColor						: register(t0);	// 色情報.
+Texture2D g_TextureNormal						: register(t1);	// 法線情報.
+Texture2D g_TextureDepth						: register(t2);	// 深度情報.
+Texture2D g_TextureTrans						: register(t3);	// アルファ情報.
+Texture2D g_TextureLast							: register(t4);	// 輪郭線などを描画したテクスチャ.
+Texture2D g_TextureBloom[BLOOM_SAMPLING_NUM]	: register(t5);	// Bloom用テクスチャ.
+//-----------------------------------------------.
+// サンプラ.
+//-----------------------------------------------.
 SamplerState g_SamLinear : register(s0);
 
-//ｺﾝｽﾀﾝﾄﾊﾞｯﾌｧ.
-cbuffer PerInit : register(b0)
+//-----------------------------------------------.
+// コンスタントバッファ.
+//-----------------------------------------------.
+// 初期化用.
+cbuffer PerInit		: register(b0)
 {
 	matrix g_mW			: packoffset(c0); // ﾜｰﾙﾄﾞ行列.
 	float2 g_vViewPort	: packoffset(c4); // ビューポート幅.
 };
-
-cbuffer PerFrame : register(b1)
+// フレーム毎で変わる値.
+cbuffer PerFrame	: register(b1)
 {
 	float4 g_SoftKneePram;
 };
 
-//構造体.
+//-----------------------------------------------.
+// 構造体.
+//-----------------------------------------------.
+// 頂点出力用.
 struct VS_OUTPUT
 {
 	float4 Pos			: SV_Position;
@@ -31,33 +42,34 @@ struct VS_OUTPUT
 	float2 Tex			: TEXCOORD0;
 	float4 OutLineColor : TEXCOORD1;
 };
-
-VS_OUTPUT VS_Main(
-	float4 Pos : POSITION,
-	float2 Tex : TEXCOORD)
-{
-	VS_OUTPUT output = (VS_OUTPUT) 0;
-	output.Pos = mul(Pos, g_mW);
-
-	// スクリーン座標に合わせる計算,
-	output.Pos.x = (output.Pos.x / g_vViewPort.x) * 2.0f - 1.0f;
-	output.Pos.y = 1.0f - (output.Pos.y / g_vViewPort.y) * 2.0f;
-
-	output.Tex = Tex;
-//	output.OutLineColor = float4(output.Pos.x + 0.7f, 0.0f, output.Pos.y + 0.7f, 1.0f);
-	output.OutLineColor = float4(0.0f, 0.0f, 0.0f, 1.0f);
-	
-	return output;
-}
-
+// ピクセル出力用.
 struct PS_OUTPUT
 {
 	float4 Color : SV_Target0;
 	float4 Bloom : SV_Target1;
 };
 
+
+VS_OUTPUT VS_Main(
+	float4 Pos : POSITION,
+	float2 Tex : TEXCOORD )
+{
+	VS_OUTPUT output = (VS_OUTPUT) 0;
+	
+	output.Pos = mul(Pos, g_mW);
+	// スクリーン座標に合わせる計算,
+	output.Pos.x = (output.Pos.x / g_vViewPort.x) * 2.0f - 1.0f;
+	output.Pos.y = 1.0f - (output.Pos.y / g_vViewPort.y) * 2.0f;
+	output.Tex = Tex;
+	// アウトラインの色.
+	// 現在は黒で固定.
+	output.OutLineColor = float4(0.0f, 0.0f, 0.0f, 1.0f);
+	
+	return output;
+}
+
 // ピクセルシェーダ.
-PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
+PS_OUTPUT PS_Main( VS_OUTPUT input ) : SV_Target
 {
 	// 魚眼レンズ.
 	/*
@@ -128,7 +140,7 @@ PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
 	grayScale = 1.0f - saturate(grayScale);
 	
 	// 法線情報と、深度値の情報が一定以上なら輪郭線を表示.
-	if (length(normColor) >= 0.45f || abs(depth) < 0.8f)
+	if (length(normColor) >= 0.572f || abs(depth) < 0.99f)
 	{
 		grayScale *= 1.0f;
 	}
@@ -166,29 +178,120 @@ PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
 	return output;
 }
 
-/*
-float rand(float2 co) {
-	return frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453);
-}
- 
-float2 mod(float2 a, float2 b)
-{
-	return a - floor(a / b) * b;
-}
-*/
-
 // ピクセルシェーダ.
-float4 PS_EffectMain(VS_OUTPUT input) : SV_Target
+float4 PS_EffectMain( VS_OUTPUT input ) : SV_Target
 {
 	FxaaTex tex = { g_SamLinear, g_TextureLast };
 	float4 color = float4( FxaaPixelShader( input.Tex, tex, float2( 1.0f/g_vViewPort.x, 1.0f/g_vViewPort.y ) ), 1.0f );
 
-	
-	for( int i = 0; i < 6; i++ ){
+	// サンプリングしたブラーのテクスチャを足していく.
+	for( int i = 0; i < BLOOM_SAMPLING_NUM; i++ ) {
 		color += g_TextureBloom[i].Sample(g_SamLinear, input.Tex);
 	}
 	
-/*
+	return color;
+}
+
+float rand( float2 co )
+{
+	return frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453);
+}
+ 
+float2 mod( float2 a, float2 b )
+{
+	return a - floor(a / b) * b;
+}
+
+// ピクセルシェーダ.
+float4 PS_FinalMain( VS_OUTPUT input ) : SV_Target
+{
+	float4 color = g_TextureColor.Sample(g_SamLinear, input.Tex);
+	
+	return color;
+}
+
+// ドット風.
+float4 PS_DotRenderEffect( VS_OUTPUT input ) : SV_Target
+{
+	float2 n = float2(70.0f, 70.0f);	// 画面のドット数.
+	float2 pixelSize = float2(1.0f/n.x, 1.0f/n.y);
+	float2 ratio = float2(0, 0);
+	ratio.x = (int)(input.Tex.x/pixelSize.x) * pixelSize.x;
+	ratio.y = (int)(input.Tex.y/pixelSize.y) * pixelSize.y;
+	
+	float4 color = g_TextureColor.Sample(g_SamLinear, ratio);
+	
+	return color;
+};
+
+// ゲームボーイ風.
+float4 PS_GameBoyRenderEffect( VS_OUTPUT input ) : SV_Target
+{
+	float2 n = float2(70.0f, 70.0f);	// 画面のドット数.
+	float2 pixelSize = float2(1.0f/n.x, 1.0f/n.y);
+	float2 ratio = float2(0, 0);
+	ratio.x = (int)(input.Tex.x/pixelSize.x) * pixelSize.x;
+	ratio.y = (int)(input.Tex.y/pixelSize.y) * pixelSize.y;
+	
+	float4 color = g_TextureColor.Sample(g_SamLinear, ratio);
+	
+	color.rgb = dot(color.rgb, float3(0.3, 0.59, 0.11));
+	if (color.r <= 0.25) {
+		color.rgb = float3(0.06, 0.22, 0.06);
+	} else if (color.r > 0.75) {
+		color.rgb = float3(0.6, 0.74, 0.06);
+	} else if (color.r > 0.25 && color.r <= 0.5) {
+		color.rgb = float3(0.19, 0.38, 0.19);
+	} else {
+		color.rgb = float3(0.54, 0.67, 0.06);
+	}
+	
+	return color;
+};
+
+// ドットが円形.
+float4 PS_DotCircleRenderEffect( VS_OUTPUT input ) : SV_Target
+{
+	float n = 70;
+	float2 pixelSize = float2(1.0f/n, 1.0f/n);
+	float2 ratio = float2(0, 0);
+	ratio.x = (int)(input.Tex.x/pixelSize.x) * pixelSize.x;
+	ratio.y = (int)(input.Tex.y/pixelSize.y) * pixelSize.y;
+	
+	float4 color = g_TextureColor.Sample(g_SamLinear, ratio);
+	
+	float2 st = (floor(input.Tex*n)+0.5)/n;
+	
+	float a = input.Tex.x - st.x;
+	float b = input.Tex.y - st.y;
+	float c = sqrt( a*a + b*b );
+	if (c <= length(color.rgb*1.2f)*pixelSize.x*0.4f) {
+		color.rgb *= 1.5;
+	} else {
+		color.rgb *= 0.1;
+	}
+	
+	return color;
+};
+
+// RGBをずらす.
+float4 PS_ChromaticAberration( VS_OUTPUT input ) : SV_Target
+{
+	float2 redUV	= input.Tex + float2( 0.0f, 0.0f );
+	float2 greenUV	= input.Tex + float2( -0.01f, 0.0f );
+	float2 blueUV	= input.Tex + float2( 0.015f, 0.0f );
+	
+	float4 color = float4( 0.0f, 0.0f, 0.0f, 1.0f );
+	color.r = g_TextureColor.Sample(g_SamLinear, redUV).r;
+	color.g = g_TextureColor.Sample(g_SamLinear, greenUV).g;
+	color.b = g_TextureColor.Sample(g_SamLinear, blueUV).b;
+	
+	return color;
+}
+
+// テレビ風.
+float4 PS_TelevisionRenderEffect( VS_OUTPUT input ) : SV_Target
+{
 	// ブラウン管テレビのノイズの処理.
 	float2 inUV = input.Tex;
 	float2 uv = input.Tex - 0.5;
@@ -262,28 +365,4 @@ float4 PS_EffectMain(VS_OUTPUT input) : SV_Target
 	col *= 1 - vignet * 1.3;
 				
 	return float4(col, 1);
-*/	
-/*	
-	//--------------------------.
-	// ブラウン管の湾曲の部分.
-	const float dipsEdgeWidth = 0.1f;
-	float2 inUV = input.Tex;
-	float2 uv = input.Tex-0.5f;
-	
-	float vignet = length(uv);
-	uv /= 1 - vignet * dipsEdgeWidth;
-	
-	if(max(abs(uv.y)-0.5f, abs(uv.x)-0.5f) > 0.0f){
-		return float4(0.05, 0.05, 0.05f, 1.0f);
-	}
-	//--------------------------.
-*/
-	return color;
-}
-
-// ピクセルシェーダ.
-float4 PS_FinalMain(VS_OUTPUT input) : SV_Target
-{
-	float4 color = g_TextureColor.Sample(g_SamLinear, input.Tex);
-	return color;
 }

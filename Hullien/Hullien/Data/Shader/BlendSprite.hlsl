@@ -1,21 +1,20 @@
 // 以下の記事を参考にブレンドシェーダーを実装.
 // https://pgming-ctrl.com/directx11/shader-blend-test/
 
-//ｸﾞﾛｰﾊﾞﾙ変数.
-//ﾃｸｽﾁｬは、ﾚｼﾞｽﾀ t(n).
-Texture2D g_Texture		: register(t0);	// 通常テクスチャ.
+// テクスチャ.
+Texture2D g_DestTexture	: register(t0);	// 元テクスチャ.
 Texture2D g_SrcTexture	: register(t1);	// 合成する際に使用するテクスチャ.
-//ｻﾝﾌﾟﾗは、ﾚｼﾞｽﾀ s(n).
+// サンプラー.
 SamplerState g_SamLinear : register(s0);
 
-//ｺﾝｽﾀﾝﾄﾊﾞｯﾌｧ.
+// コンスタントバッファ.
 cbuffer global : register(b0)
 {
-	matrix g_mW			: packoffset(c0); // ﾜｰﾙﾄﾞ行列.
-	matrix g_mWVP		: packoffset(c4); // ﾜｰﾙﾄﾞ行列.
-	float4 g_Color		: packoffset(c8); // カラー.
-	float2 g_vUV		: packoffset(c9); // UV座標.
-	float2 g_fViewPort	: packoffset(c10); // UV座標.
+	matrix g_mW			: packoffset(c0);	// ﾜｰﾙﾄﾞ行列.
+	matrix g_mWVP		: packoffset(c4);	// ﾜｰﾙﾄﾞ行列.
+	float4 g_Color		: packoffset(c8);	// カラー.
+	float2 g_vUV		: packoffset(c9);	// UV座標.
+	float2 g_fViewPort	: packoffset(c10);	// UV座標.
 };
 
 //構造体.
@@ -33,7 +32,6 @@ VS_OUTPUT VS_Main(
 	VS_OUTPUT output = (VS_OUTPUT) 0;
 	output.Pos = mul(Pos, g_mWVP);
 	output.Tex = Tex;
-	// UV座標をずらす.
 	output.Tex.x += g_vUV.x;
 	output.Tex.y += g_vUV.y;
 
@@ -69,7 +67,7 @@ VS_OUTPUT VS_MainUI(
 // 通常.
 float4 PS_Main( VS_OUTPUT input ) : SV_Target
 {
-	float4 color = g_Texture.Sample(g_SamLinear, input.Tex);
+	float4 color = g_DestTexture.Sample(g_SamLinear, input.Tex);
 	color *= g_Color;
 	clip(color.a);
 	return color;
@@ -78,7 +76,7 @@ float4 PS_Main( VS_OUTPUT input ) : SV_Target
 // ハードライト.
 float4 PS_HardLight( VS_OUTPUT input ) : SV_TARGET
 {
-	float4 dest = g_Texture.Sample(g_SamLinear, input.Tex); // 規定色.
+	float4 dest = g_DestTexture.Sample(g_SamLinear, input.Tex); // 規定色.
 	float4 src = g_SrcTexture.Sample(g_SamLinear, input.Tex); // 合成色.
 	
 	float4 result;

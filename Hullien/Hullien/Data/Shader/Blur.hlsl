@@ -1,19 +1,18 @@
-//ｸﾞﾛｰﾊﾞﾙ変数.
-//ﾃｸｽﾁｬは、ﾚｼﾞｽﾀ t(n).
-Texture2D g_Texture : register(t0); // 色情報.
-//ｻﾝﾌﾟﾗは、ﾚｼﾞｽﾀ s(n).
+// テクスチャ.
+Texture2D g_Texture : register(t0);
+// サンプラ.
 SamplerState g_SamLinear : register(s0);
 
-//ｺﾝｽﾀﾝﾄﾊﾞｯﾌｧ.
+// コンスタントバッファ.
 cbuffer cBuffer : register(b0)
 {
-	matrix g_mW			: packoffset(c0); // ﾜｰﾙﾄﾞ行列.
+	matrix g_mW			: packoffset(c0); // ワールド行列.
 	float2 g_vViewPort	: packoffset(c4); // ビューポート幅.
 	float2 g_vPixelSize	: packoffset(c5); // ピクセルのサイズ.
 	float2 g_Ratio		: packoffset(c6); // 画面の比率.
 };
 
-//構造体.
+// 構造体.
 struct VS_OUTPUT
 {
 	float4 Pos : SV_Position;
@@ -36,7 +35,8 @@ VS_OUTPUT VS_Main(
 }
 
 // ピクセルシェーダ.
-float4 PS_WidthBlur(VS_OUTPUT input) : SV_Target
+// 横方向にぼかす.
+float4 PS_HorizontalBlur(VS_OUTPUT input) : SV_Target
 {
 	float4 color = float4( 0.0f, 0.0f, 0.0f, 1.0f );
 	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.x + g_vPixelSize.x*float2(-3.0f,0.0f)) * 0.053;
@@ -50,7 +50,8 @@ float4 PS_WidthBlur(VS_OUTPUT input) : SV_Target
 	return color;
 }
 
-float4 PS_HeightBlur(VS_OUTPUT input) : SV_Target
+// 縦方向にぼかす.
+float4 PS_VerticalBlur(VS_OUTPUT input) : SV_Target
 {
 	float4 color = float4( 0.0f, 0.0f, 0.0f, 1.0f );
 	color += g_Texture.Sample(g_SamLinear, input.Tex*g_Ratio.y + g_vPixelSize.y*float2(0.0f,-3.0f)) * 0.053;

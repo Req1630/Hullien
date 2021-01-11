@@ -199,14 +199,15 @@ PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
 	
 	if (length(input.Normal) <= 0.0){
 		color = g_Texture.Sample(g_SamLinear, input.Tex) * g_Color;
+		input.Pos.z = 0.0f;
+		input.Pos.w = 1.0f;
 	}
 	
 	PS_OUTPUT output = (PS_OUTPUT) 0;
 	output.Color = color;
 	output.Normal = float4(input.Normal, 1.0f);
 	output.ZDepth = input.Pos.z / input.Pos.w;
-	if (output.Color.a <= 0.0f)
-		discard;
+	if (output.Color.a <= 0.0f) discard;
 	
 	return output;
 }

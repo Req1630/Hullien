@@ -3,8 +3,8 @@
 
 const char* SHADER_ENTRY_NAME_LIST[] =
 {
-	"PS_WidthBlur",
-	"PS_HeightBlur",
+	"PS_HorizontalBlur",
+	"PS_VerticalBlur",
 };
 
 const int BLUR_TEXTURE_SIZE = 2;
