@@ -41,7 +41,7 @@ public:
 	// 解放.
 	void Release();
 
-	// 明度をサンプリングする.
+	// テクスチャをサンプリングする.
 	void Sampling( ID3D11ShaderResourceView* tex );
 
 	// バッファのクリア.

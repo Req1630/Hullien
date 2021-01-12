@@ -1,13 +1,14 @@
 #include "Blur.h"
 #include "..\D3DX\D3DX11.h"
 
+// ブラーシェーダーのエントリ名リスト.
 const char* SHADER_ENTRY_NAME_LIST[] =
 {
-	"PS_HorizontalBlur",
-	"PS_VerticalBlur",
+	"PS_HorizontalBlur",	// 横方向.
+	"PS_VerticalBlur",		// 縦方向.
 };
 
-const int BLUR_TEXTURE_SIZE = 2;
+const int BLUR_TEXTURE_DISCOUNT_SIZE = 2;	// ブラーのテクスチャを割るサイズ.
 
 CBlur::CBlur()
 	: m_pBlurBufferRTV		( EBlurSmpleDir_Max )
@@ -26,6 +27,7 @@ CBlur::CBlur()
 
 CBlur::~CBlur()
 {
+	Release();
 }
 
 // 初期化.
@@ -60,11 +62,10 @@ void CBlur::Release()
 	SAFE_RELEASE( m_pVertexShader );
 }
 
-// 明度をサンプリングする.
+// テクスチャをサンプリングする.
 void CBlur::Sampling( ID3D11ShaderResourceView* tex )
 {
 	ID3D11ShaderResourceView* srv = tex;
-	int i = 0;
 	// 使用するシェーダのセット.
 	m_pContext11->VSSetShader( m_pVertexShader, nullptr, 0 );	// 頂点シェーダ.
 	m_pContext11->PSSetSamplers( 0, 1, &m_pSampleLinear );		// サンプラのセット.
@@ -72,6 +73,7 @@ void CBlur::Sampling( ID3D11ShaderResourceView* tex )
 	UINT offset = 0;
 	m_pContext11->IASetInputLayout( m_pVertexLayout );
 	m_pContext11->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
+	int i = 0;
 	for( auto& rtv : m_pBlurBufferRTV ){
 		// レンダーターゲットの設定.
 		m_pContext11->OMSetRenderTargets( 1, &rtv, CDirectX11::GetDepthSV() );
@@ -107,8 +109,8 @@ void CBlur::ClearBuffer()
 HRESULT CBlur::InitBlurTex()
 {
 	D3D11_TEXTURE2D_DESC texDesc;
-	texDesc.Width				= m_WndWidth/BLUR_TEXTURE_SIZE;		// 幅.
-	texDesc.Height				= m_WndHeight/BLUR_TEXTURE_SIZE;	// 高さ.
+	texDesc.Width				= m_WndWidth/BLUR_TEXTURE_DISCOUNT_SIZE;	// 幅.
+	texDesc.Height				= m_WndHeight/BLUR_TEXTURE_DISCOUNT_SIZE;	// 高さ.
 	texDesc.MipLevels			= 1;								// ミップマップレベル:1.
 	texDesc.ArraySize			= 1;								// 配列数:1.
 	texDesc.Format				= DXGI_FORMAT_R11G11B10_FLOAT;		// 32ビットフォーマット.
@@ -265,8 +267,8 @@ HRESULT CBlur::CreateConstantBuffer()
 	cbDesc.StructureByteStride	= 0;
 	cbDesc.Usage				= D3D11_USAGE_DYNAMIC;
 
-	UINT width = m_WndWidth/BLUR_TEXTURE_SIZE;
-	UINT height = m_WndHeight/BLUR_TEXTURE_SIZE;
+	UINT width = m_WndWidth/BLUR_TEXTURE_DISCOUNT_SIZE;
+	UINT height = m_WndHeight/BLUR_TEXTURE_DISCOUNT_SIZE;
 	if( FAILED(  m_pDevice11->CreateBuffer( &cbDesc, nullptr, &m_pConstantBuffer ))){
 		ERROR_MESSAGE( "Buffer creation failed" );
 		return E_FAIL;
@@ -304,8 +306,8 @@ HRESULT CBlur::CreateConstantBuffer()
 // モデル作成.
 HRESULT CBlur::CreateModel()
 {
-	float width		= static_cast<float>(m_WndWidth/BLUR_TEXTURE_SIZE);
-	float height	= static_cast<float>(m_WndHeight/BLUR_TEXTURE_SIZE);
+	float width		= static_cast<float>(m_WndWidth/BLUR_TEXTURE_DISCOUNT_SIZE);
+	float height	= static_cast<float>(m_WndHeight/BLUR_TEXTURE_DISCOUNT_SIZE);
 
 	// 板ポリ(四角形)の頂点を作成.
 	VERTEX vertices[] =
