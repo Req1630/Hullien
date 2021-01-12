@@ -1,23 +1,31 @@
 // 以下の記事を参考にブレンドシェーダーを実装.
 // https://pgming-ctrl.com/directx11/shader-blend-test/
 
+//-------------------------------------------------.
 // テクスチャ.
+//-------------------------------------------------.
 Texture2D g_DestTexture	: register(t0);	// 元テクスチャ.
 Texture2D g_SrcTexture	: register(t1);	// 合成する際に使用するテクスチャ.
+//-------------------------------------------------.
 // サンプラー.
+//-------------------------------------------------.
 SamplerState g_SamLinear : register(s0);
 
+//-------------------------------------------------.
 // コンスタントバッファ.
+//-------------------------------------------------.
 cbuffer global : register(b0)
 {
-	matrix g_mW			: packoffset(c0);	// ﾜｰﾙﾄﾞ行列.
-	matrix g_mWVP		: packoffset(c4);	// ﾜｰﾙﾄﾞ行列.
+	matrix g_mW			: packoffset(c0);	// ワールド行列.
+	matrix g_mWVP		: packoffset(c4);	// ワールド・ビュー・プロジェクション行列.
 	float4 g_Color		: packoffset(c8);	// カラー.
-	float2 g_vUV		: packoffset(c9);	// UV座標.
-	float2 g_fViewPort	: packoffset(c10);	// UV座標.
+	float2 g_UV			: packoffset(c9);	// UV座標.
+	float2 g_ViewPort	: packoffset(c10);	// ビューポートのサイズ.
 };
 
+//-------------------------------------------------.
 //構造体.
+//-------------------------------------------------.
 struct VS_OUTPUT
 {
 	float4 Pos		: SV_Position;
@@ -25,6 +33,9 @@ struct VS_OUTPUT
 	float2 Tex		: TEXCOORD;
 };
 
+//-------------------------------------------------.
+// 頂点シェーダー(3Dポリゴン用).
+//-------------------------------------------------.
 VS_OUTPUT VS_Main(
 	float4 Pos : POSITION,
 	float2 Tex : TEXCOORD )
@@ -32,13 +43,15 @@ VS_OUTPUT VS_Main(
 	VS_OUTPUT output = (VS_OUTPUT) 0;
 	output.Pos = mul(Pos, g_mWVP);
 	output.Tex = Tex;
-	output.Tex.x += g_vUV.x;
-	output.Tex.y += g_vUV.y;
+	output.Tex.x += g_UV.x;
+	output.Tex.y += g_UV.y;
 
 	return output;
 }
 
-// 頂点シェーダ.
+//-------------------------------------------------.
+// 頂点シェーダ(2Dスプライト用).
+//-------------------------------------------------.
 VS_OUTPUT VS_MainUI(
 	float4 Pos : POSITION,
 	float2 Tex : TEXCOORD )
@@ -47,15 +60,15 @@ VS_OUTPUT VS_MainUI(
 	output.Pos = mul(Pos, g_mW);
 
 	// スクリーン座標に合わせる計算,
-	output.Pos.x = (output.Pos.x / g_fViewPort.x) * 2.0f - 1.0f;
-	output.Pos.y = 1.0f - (output.Pos.y / g_fViewPort.y) * 2.0f;
+	output.Pos.x = (output.Pos.x / g_ViewPort.x) * 2.0f - 1.0f;
+	output.Pos.y = 1.0f - (output.Pos.y / g_ViewPort.y) * 2.0f;
 
 	output.Tex.x = (output.Pos.x + 1.0) / 2;
 	output.Tex.y = (-output.Pos.y + 1.0) / 2;
 
 	// UV座標をずらす.
-	output.Tex.x += g_vUV.x;
-	output.Tex.y += g_vUV.y;
+	output.Tex.x += g_UV.x;
+	output.Tex.y += g_UV.y;
 
 	return output;
 }

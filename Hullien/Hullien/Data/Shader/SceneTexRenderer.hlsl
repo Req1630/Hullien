@@ -49,7 +49,22 @@ struct PS_OUTPUT
 	float4 Bloom : SV_Target1;
 };
 
+//-------------------------------------------------.
+// 関数.
+//-------------------------------------------------.
+float rand( float2 co )
+{
+	return frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453);
+}
+ 
+float2 mod( float2 a, float2 b )
+{
+	return a - floor(a / b) * b;
+}
 
+//-------------------------------------------------.
+// 頂点シェーダー.
+//-------------------------------------------------.
 VS_OUTPUT VS_Main(
 	float4 Pos : POSITION,
 	float2 Tex : TEXCOORD )
@@ -68,7 +83,9 @@ VS_OUTPUT VS_Main(
 	return output;
 }
 
+//-------------------------------------------------.
 // ピクセルシェーダ.
+//-------------------------------------------------.
 PS_OUTPUT PS_Main( VS_OUTPUT input ) : SV_Target
 {
 	// 魚眼レンズ.
@@ -192,22 +209,10 @@ float4 PS_EffectMain( VS_OUTPUT input ) : SV_Target
 	return color;
 }
 
-float rand( float2 co )
-{
-	return frac(sin(dot(co.xy, float2(12.9898, 78.233))) * 43758.5453);
-}
- 
-float2 mod( float2 a, float2 b )
-{
-	return a - floor(a / b) * b;
-}
-
 // ピクセルシェーダ.
 float4 PS_FinalMain( VS_OUTPUT input ) : SV_Target
 {
-	float4 color = g_TextureColor.Sample(g_SamLinear, input.Tex);
-	
-	return color;
+	return g_TextureColor.Sample(g_SamLinear, input.Tex);
 }
 
 // ドット風.

@@ -1,22 +1,41 @@
+//-------------------------------------------------.
+// コンスタントバッファ.
+//-------------------------------------------------.
+// メッシュ毎.
 cbuffer per_mesh : register(b0)
 {
 	matrix g_LightWVP; // ライトのワールド、ビュー、プロジェクション.
 };
 
+//-------------------------------------------------.
+// 構造体.
+//-------------------------------------------------.
+// 頂点出力用.
 struct VS_OUTPUT
 {
 	float4 Pos : SV_POSITION;
 };
-
-//-----------------------------------------.
-// スタティックメッシュ.
-//-----------------------------------------.
-// 頂点シェーダーの入力パラメータ.
+// 頂点入力用(スタティックメッシュ).
 struct VS_INPUT
 {
-	float4 Pos : POSITION;
-	float4 Norm : NORMAL;
-	float2 Tex : TEXCOORD;
+	float4 Pos	: POSITION;
+	float4 Norm	: NORMAL;
+	float2 Tex	: TEXCOORD;
+};
+// 頂点入力用(スキンメッシュ).
+struct VSSkinIn
+{
+	float4 Pos		: POSITION;		// 位置.
+	float3 Norm		: NORMAL;		// 頂点法線.
+	float2 Tex		: TEXCOORD;		// テクスチャー座標.
+	uint4 Bones		: BONE_INDEX;	// ボーンのインデックス.
+	float4 Weights	: BONE_WEIGHT;	// ボーンの重み.
+};
+// スキニング後の頂点・法線が入る.
+struct Skin
+{
+	float4 Pos;
+	float3 Norm;
 };
 
 // スタティックメッシュのメイン関数.
@@ -29,7 +48,6 @@ VS_OUTPUT VS_Main(VS_INPUT input)
 	
 	return output;
 }
-//-----------------------------------------.
 
 //-----------------------------------------.
 // スキンメッシュ.
@@ -40,21 +58,6 @@ VS_OUTPUT VS_Main(VS_INPUT input)
 cbuffer per_bones : register(b1)
 {
 	matrix g_mConstBoneWorld[MAX_BONE_MATRICES];
-};
-//スキニング後の頂点・法線が入る.
-struct Skin
-{
-	float4 Pos;
-	float3 Norm;
-};
-//バーテックスバッファーの入力.
-struct VSSkinIn
-{
-	float4 Pos : POSITION; //位置.  
-	float3 Norm : NORMAL; //頂点法線.
-	float2 Tex : TEXCOORD; //テクスチャー座標.
-	uint4 Bones : BONE_INDEX; //ボーンのインデックス.
-	float4 Weights : BONE_WEIGHT; //ボーンの重み.
 };
 //指定した番号のボーンのポーズ行列を返す.
 //サブ関数（バーテックスシェーダーで使用）.

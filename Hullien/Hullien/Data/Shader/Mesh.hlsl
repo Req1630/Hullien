@@ -1,7 +1,6 @@
 //-------------------------------------------------.
-// グローバル変数.
-//-------------------------------------------------.
 // テクスチャ.
+//-------------------------------------------------.
 Texture2D g_Texture		: register(t0); // モデルのテクスチャ.
 Texture2D g_ShadowMap1	: register(t1); // シャドウテクスチャ.
 Texture2D g_ShadowMap2	: register(t2); // シャドウテクスチャ.
@@ -9,18 +8,20 @@ Texture2D g_ShadowMap3	: register(t3); // シャドウテクスチャ.
 Texture2D g_ShadowMap4	: register(t4); // シャドウテクスチャ.
 Texture2D g_ToonMap		: register(t5); // toonシェーダー用のテクスチャ.
 Texture2D g_FogTexture	: register(t6); // フォグ用のテクスチャ.
+//-------------------------------------------------.
 // サンプラ.
-SamplerState g_SamLinear : register(s0);
-SamplerState g_ToonSamLinear : register(s1);
-SamplerState g_ShadowSamLinear : register(s2);
+//-------------------------------------------------.
+SamplerState g_SamLinear		: register(s0);	// 通常サンプラ.
+SamplerState g_ToonSamLinear	: register(s1);	// toon用サンプラ.
+SamplerState g_ShadowSamLinear	: register(s2);	// シャドウ用サンプラ.
 
 struct FOG
 {
 	float4  FogTex;		// フォグのテクスチャ座標.
-	float4  FogColor;		// フォグの色.
+	float4  FogColor;	// フォグの色.
 	float	MinHeight;	// フォグの最小高さ.
 	float	MaxHeight;	// フォグの最大高さ.
-	float	TexScale;		// フォグのテクセルスケール.
+	float	TexScale;	// フォグのテクセルスケール.
 };
 
 //-------------------------------------------------.
@@ -189,7 +190,7 @@ PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
 	
 	//-----高さフォグ処理------.
 	// fogテクスチャの座標を取得、計算.
-		const float fogColor =
+	const float fogColor =
 		(g_FogTexture.Sample(g_SamLinear, input.PosW.xz * g_Fog.TexScale + g_Fog.FogTex.xy).r +
 		 g_FogTexture.Sample(g_SamLinear, input.PosW.xz * g_Fog.TexScale + g_Fog.FogTex.zw).r) * 0.5f;
 	float alpha = clamp((input.PosW.y - g_Fog.MinHeight) / (g_Fog.MaxHeight - g_Fog.MinHeight), 0.0f, 1.0f);
