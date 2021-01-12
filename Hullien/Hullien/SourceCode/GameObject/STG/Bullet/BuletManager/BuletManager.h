@@ -9,7 +9,7 @@ namespace STG
 	class CBulletManager : public STG::CActor
 	{
 		inline static const char* MODEL_NAME	= "SpawnPoint";
-		inline static const float BULLET_COLOR	= 0.4f;
+		inline static const float BULLET_COLOR	= 0.5f;
 
 		const SBulletManagerParam PARAMETER;
 	public:

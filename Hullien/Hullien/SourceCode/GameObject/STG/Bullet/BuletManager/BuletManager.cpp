@@ -32,7 +32,7 @@ bool STG::CBulletManager::Init()
 	// ’e‚ÌF‚ğæ“¾.
 	m_BulletColor =
 	{ 
-		1.0f,
+		4.0f,
 		PARAMETER.BulletCollDisappear*BULLET_COLOR, 
 		PARAMETER.BulletCollDisappear*BULLET_COLOR
 	};

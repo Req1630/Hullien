@@ -98,7 +98,7 @@ void STG::CEnemy::Render()
 
 	if( m_NowState == STG::EEnemyState::None ) return;
 
-	m_pFont->SetColor( { 1.0f, 1.0f, 1.0f, 1.0f } );
+	m_pFont->SetColor( { 2.0f, 2.0f, 2.0f, 1.0f } );
 	m_pFont->SetPosition( m_vPosition );
 	m_pFont->SetRotation( m_FontRotation );
 	m_pFont->SetScale( m_vScale );

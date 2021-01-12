@@ -14,6 +14,7 @@ STG::CPlayer::CPlayer()
 	, m_IsInitMoveEnd	( false )
 {
 	m_pCollManager	= std::make_shared<CCollisionManager>();
+	m_vScale		= { MODEL_SCALE_MAX, MODEL_SCALE_MAX, MODEL_SCALE_MAX };
 	m_vPosition		= INIT_POSITION;
 	m_LifePoint		= LIFE_POINT_MAX;
 }
