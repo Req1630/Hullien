@@ -148,7 +148,7 @@ HRESULT CBoxModel::InitModel( const D3DXVECTOR3& vMaxPoint, const D3DXVECTOR3& v
 	bd.MiscFlags			= 0;						// その他のフラグ(未使用).
 	bd.StructureByteStride	= 0;						// 構造体のサイズ(未使用).
 
-														//ｻﾌﾞﾘｿｰｽﾃﾞｰﾀ構造体.
+	//ｻﾌﾞﾘｿｰｽﾃﾞｰﾀ構造体.
 	D3D11_SUBRESOURCE_DATA InitData;
 	InitData.pSysMem = vertices;	//板ﾎﾟﾘの頂点をｾｯﾄ.
 

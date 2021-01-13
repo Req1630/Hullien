@@ -18,6 +18,7 @@
     <FxCompile Include="Data\Shader\CircleGage.hlsl" />
     <FxCompile Include="Data\Shader\BlendSprite.hlsl" />
     <FxCompile Include="Data\Shader\Blur.hlsl" />
+    <FxCompile Include="Data\Shader\InvisibleWall.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\ImGui\imgui.cpp" />
@@ -194,6 +195,7 @@
     <ClCompile Include="SourceCode\Common\Sprite\BlendSprite\BlendSprite.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\SceneTransition\SceneTransition.cpp" />
     <ClCompile Include="SourceCode\Common\Blur\Blur.cpp" />
+    <ClCompile Include="SourceCode\Common\InvisibleWall\InvisibleWallShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\ImGui\imconfig.h" />
@@ -395,6 +397,7 @@
     <ClInclude Include="SourceCode\Common\Sprite\SpriteState.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\SceneTransition\SceneTransition.h" />
     <ClInclude Include="SourceCode\Common\Blur\Blur.h" />
+    <ClInclude Include="SourceCode\Common\InvisibleWall\InvisibleWallShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

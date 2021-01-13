@@ -124,11 +124,12 @@ void CGameActorManager::Update()
 		m_IsPlayCameraShake = m_pPlayer->CameraShake();	// カメラを揺らす.
 	}
 
-
 	SetPositionList( m_pGirl.get() );			// 女の子座標を設定.
 	SetPositionList( m_pPlayer.get() );			// プレイヤー座標を設定.
 	SetPositionList( m_pMotherShipUFO.get() );	// マザーシップの座標を設定.
 	m_ObjPositionList.shrink_to_fit();
+
+	m_pInvisibleWall->SetPosition( m_pPlayer->GetPosition() );
 }
 
 // 描画関数.

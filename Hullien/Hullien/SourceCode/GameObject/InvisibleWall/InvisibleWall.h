@@ -5,6 +5,7 @@
 #include "BoxStruct.h"
 
 class CCollisionManager;	// 当たり判定クラス.
+class CInvisibleWallShader;	// 見えない壁シェーダークラス.
 
 /**************************************
 *	見えない壁.
@@ -29,6 +30,8 @@ public:
 	void SetBoxWall( const SBoxWall& boxWall );
 	// ボックスの取得.
 	inline SBoxWall* GetBoxWall() { return &m_BoxWall; }
+	// 座標設定関数.
+	virtual void SetPosition( const D3DXVECTOR3& vPos ) override;
 
 private:
 	// パラメータの初期化.
@@ -38,9 +41,11 @@ private:
 
 private:
 	SBoxWall	m_BoxWall;	//　壁のパラメータ.
+	std::unique_ptr<CInvisibleWallShader>	m_pInvisibleWallShader;
 #ifdef _DEBUG
 	std::unique_ptr<CCollisionManager>	m_pCollision;	// 当たり判定クラス(視覚用).
 #endif	// #ifdef _DEBUG
+	D3DXVECTOR3	m_PlayerPosition;
 };
 
 #endif	// #ifndef INVISIBLE_WALL_H.

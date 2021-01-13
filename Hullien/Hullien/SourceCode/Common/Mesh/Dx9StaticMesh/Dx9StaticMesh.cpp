@@ -596,7 +596,7 @@ void CDX9StaticMesh::Render( const bool& isTrans )
 		cb.vCamPos = { CCameraManager::GetPosition(), 0.0f };
 
 		// ライト位置.
-		cb.vCamPos = { CLightManager::GetPosition(), 0.0f };
+		cb.vLightPos = { CLightManager::GetPosition(), 0.0f };
 		// ライト方向.
 		cb.vLightDir = { CLightManager::GetDirection(), 0.0f };
 		D3DXVec4Normalize(&cb.vLightDir, &cb.vLightDir);
