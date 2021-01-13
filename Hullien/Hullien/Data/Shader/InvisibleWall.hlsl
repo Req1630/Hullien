@@ -55,7 +55,7 @@ VS_OUTPUT VS_Main( VS_INPUT input )
 //-------------------------------------------------.
 float4 PS_Main( VS_OUTPUT input ) : SV_Target
 {
-	float4 color = float4(0.0f, 0.0f, 0.8f, 1.0f);
+	float4 color = float4(1.0f, 0.5f, 0.0f, 1.0f);
 	float d = distance(input.PosW, g_PlayerPos);
 	
 	if( d>=10.0f )
@@ -70,28 +70,10 @@ float4 PS_Main( VS_OUTPUT input ) : SV_Target
 		color.a = alpha;
 		color = color*((10.0f-d)*0.1f)+color*(1-color.a);
 		
-		// ATフィールド
+		//// ATフィールド.
 		//float alpha = frac(d)+0.2f;
 		//color.a *= alpha;
 	}
-	
-	
-	
-	/*
-	float4 color = float4(0.2f, 0.2f, 1.0f, 1.0f);
-	float distance = abs(length(input.PosW-g_PlayerPos));
-	if( distance>=10.0f )
-	{
-		discard;
-	}
-	else
-	{
-		if( frac(input.PosW.y)-0.8f<=0.0f )
-		{
-			color *= 0.1f;
-		}
-	}
-	*/
 	
 	return color;
 }
