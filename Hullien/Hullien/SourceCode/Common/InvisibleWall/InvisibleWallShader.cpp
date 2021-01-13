@@ -2,13 +2,12 @@
 #include "..\D3DX\D3DX11.h"
 #include "..\..\Camera\CameraManager\CameraManager.h"
 
-const int BLUR_TEXTURE_DISCOUNT_SIZE = 2;	// ブラーのテクスチャを割るサイズ.
-
 CInvisibleWallShader::CInvisibleWallShader()
 	: m_pVertexShader	( nullptr )
 	, m_pPixelShader	( nullptr )
 	, m_pVertexLayout	( nullptr )
 	, m_pTexture		( nullptr )
+	, m_pMaskTexture	( nullptr )
 	, m_pSampleLinear	( nullptr )
 	, m_pConstantBuffer	( nullptr )
 	, m_pVertexBuffer	( nullptr )
@@ -55,6 +54,7 @@ void CInvisibleWallShader::Release()
 {
 	SAFE_RELEASE( m_pSampleLinear );
 	SAFE_RELEASE( m_pTexture );
+	SAFE_RELEASE( m_pMaskTexture );
 	SAFE_RELEASE( m_pVertexBuffer );
 	SAFE_RELEASE( m_pIndexBuffer );
 	SAFE_RELEASE( m_pConstantBuffer );
@@ -135,6 +135,7 @@ void CInvisibleWallShader::Render()
 	m_pContext11->PSSetConstantBuffers( 0, 1, &m_pConstantBuffer );	// ピクセルシェーダー.
 
 	m_pContext11->PSSetShaderResources( 0, 1, &m_pTexture );
+	m_pContext11->PSSetShaderResources( 1, 1, &m_pMaskTexture );
 	m_pContext11->PSSetSamplers( 0, 1, &m_pSampleLinear );		// サンプラのセット.
 
 	m_pContext11->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
@@ -242,9 +243,9 @@ HRESULT CInvisibleWallShader::InitSample()
 	D3D11_SAMPLER_DESC samDesc;
 	ZeroMemory( &samDesc, sizeof( samDesc ) );
 	samDesc.Filter				= D3D11_FILTER_MIN_MAG_MIP_POINT;
-	samDesc.AddressU			= D3D11_TEXTURE_ADDRESS_WRAP;		// UV値が[0,1]を超えたら,[0,1]に設定する.
-	samDesc.AddressV			= D3D11_TEXTURE_ADDRESS_WRAP;
-	samDesc.AddressW			= D3D11_TEXTURE_ADDRESS_WRAP;
+	samDesc.AddressU			= D3D11_TEXTURE_ADDRESS_MIRROR;		// UV値が[0,1]を超えたら,[0,1]に設定する.
+	samDesc.AddressV			= D3D11_TEXTURE_ADDRESS_MIRROR;
+	samDesc.AddressW			= D3D11_TEXTURE_ADDRESS_MIRROR;
 	samDesc.ComparisonFunc		= D3D11_COMPARISON_NEVER;
 	samDesc.MipLODBias			= 0;
 	samDesc.MaxAnisotropy		= 1;
@@ -368,6 +369,20 @@ HRESULT CInvisibleWallShader::InitTexture( const char* filename )
 			nullptr,
 			nullptr,
 			&m_pTexture,	// (out)テクスチャ.
+			nullptr ))) {
+		std::string err = filename;
+		err += " : テクスチャ読み込み失敗";
+		ERROR_MESSAGE(err);
+		return E_FAIL;
+	}
+	// マスク用のテクスチャ作成.
+	if( FAILED(
+		D3DX11CreateShaderResourceViewFromFile(
+			m_pDevice11,	// リソースを使用するデバイスのポインタ.
+			"Data\\Mesh\\Fog.png",		// ファイル名.
+			nullptr,
+			nullptr,
+			&m_pMaskTexture,	// (out)テクスチャ.
 			nullptr ))) {
 		std::string err = filename;
 		err += " : テクスチャ読み込み失敗";

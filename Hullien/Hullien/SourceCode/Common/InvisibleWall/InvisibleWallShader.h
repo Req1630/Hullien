@@ -6,7 +6,7 @@
 class CInvisibleWallShader : public CCommon
 {
 	const char* SHADER_NAME = "Data\\Shader\\InvisibleWall.hlsl";
-	const char* TEXTURE_NAME = "Data\\Mesh\\shield.png";
+	const char* TEXTURE_NAME = "Data\\Mesh\\shield.png";	
 	const D3DXVECTOR4 CLEAR_BACK_COLOR = { 0.0f, 0.0f, 0.0f, 0.0f };
 	// コンスタントバッファ.
 	struct C_BUFFER
@@ -67,6 +67,7 @@ private:
 	ID3D11PixelShader*	m_pPixelShader;		// ピクセルシェーダー.
 	ID3D11InputLayout*	m_pVertexLayout;	// 頂点レイアウト.
 	ID3D11ShaderResourceView*	m_pTexture;	// テクスチャ.
+	ID3D11ShaderResourceView*	m_pMaskTexture;	// テクスチャ.
 	ID3D11SamplerState*	m_pSampleLinear;	// サンプラ:テクスチャに各種フィルタをかける.
 	ID3D11Buffer*		m_pConstantBuffer;	// コンスタントバッファ.
 	ID3D11Buffer*		m_pVertexBuffer;	// 頂点バッファ.
