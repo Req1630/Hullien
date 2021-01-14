@@ -379,7 +379,7 @@ HRESULT CInvisibleWallShader::InitTexture( const char* filename )
 	if( FAILED(
 		D3DX11CreateShaderResourceViewFromFile(
 			m_pDevice11,	// リソースを使用するデバイスのポインタ.
-			"Data\\Mesh\\Fog.png",		// ファイル名.
+			"Data\\Mesh\\shieldMask.png",		// ファイル名.
 			nullptr,
 			nullptr,
 			&m_pMaskTexture,	// (out)テクスチャ.
