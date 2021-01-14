@@ -102,8 +102,9 @@ void CAlien::LifeCalculation( const std::function<void(float&,bool&)>& proc )
 {
 	if( m_NowState == alien::EAlienState::Spawn ) return;
 	if( m_NowState == alien::EAlienState::Death ) return;
-	if( m_IsFirght == true ) return;
+	if( m_NowState == alien::EAlienState::RisingMotherShip ) return;
 	if( m_NowState == alien::EAlienState::KnockBack ) return;
+	if( m_IsFirght == true ) return;
 	if( m_IsRisingMotherShip == true ) return;
 
 	bool isAttack = false;
@@ -420,6 +421,7 @@ void CAlien::Escape()
 	m_TargetPosition = *m_pAbductUFOPosition;	// マザーシップの座標を記憶.
 
 	TargetRotation();	// マザーシップの方へ回転.
+	WaitMove();			// 待機.
 	CAlien::VectorMove( m_MoveSpeed );	// 移動.
 
 	if( *m_pIsAlienOtherAbduct == true ) return;
@@ -452,18 +454,19 @@ void CAlien::GirlCollision( CActor* pActor )
 	if( m_NowState == alien::EAlienState::KnockBack )	return;
 
 	// 球体の当たり判定.
-	if( m_pCollManager->IsShereToShere( pActor->GetCollManager() ) == false ){
-		return;
-	}
+	if( m_pCollManager->IsShereToShere( pActor->GetCollManager() ) == false ) return;
 
 	// 自分が女の子を連れ去っている状態.
 	if( m_NowState == alien::EAlienState::Abduct ){
 		if( m_NowAnimNo != alien::EAnimNo_Arm ) m_NowAnimNo = alien::EAnimNo_Arm;
 		if( m_AnimFrameList[alien::EAnimNo_Arm].IsNowFrameOver() == true ) m_AnimSpeed = 0.0;
 
+		// マザーシップに昇っているかどうか.
 		if( m_IsRisingMotherShip == true ){
-			pActor->SetScale( m_vScale );
-			m_pArm->SetCleanUpScale( m_vScale );
+			pActor->SetScale( m_vScale );			// 女の子のモデルサイズを自分と同じサイズにする.
+			m_pArm->SetCleanUpScale( m_vScale );	// アームのモデルサイズを自分と同じサイズにする.
+			// 拡縮の関係で、ローカル座標がずれるので、調整する.
+			// アームの座標を調整する.
 			m_pArm->SetPosition( { m_vPosition.x, m_vPosition.y+(CArm::GRAB_HEIGHT*(fabsf(m_vScale.x))), m_vPosition.z } );
 			// 掴んだ時の座標.
 			const D3DXVECTOR3 pos =
@@ -472,7 +475,7 @@ void CAlien::GirlCollision( CActor* pActor )
 				m_pArm->GetGrabPosition().y-(CArm::GRAB_HEIGHT*(fabsf(m_vScale.x))),
 				m_pArm->GetGrabPosition().z+(m_MoveVector.z*(CArm::GRAB_HEIGHT*(1.0f-m_vScale.x))),
 			};
-			pActor->SetPosition( pos );
+			pActor->SetPosition( pos );	// 女の子の座標を設定する.
 		} else {
 			// 連れ去っている状態なのでアームの座標を設定する.
 			pActor->SetPosition( { m_pArm->GetGrabPosition().x, m_pArm->GetGrabPosition().y-CArm::GRAB_HEIGHT, m_pArm->GetGrabPosition().z } );
@@ -480,8 +483,10 @@ void CAlien::GirlCollision( CActor* pActor )
 		pActor->SetRotationY( m_vRotation.y );
 		return;
 	} else {
+		// 自分が女の子を連れ去っていない場合.
 		// 既に他の宇宙人が連れ去っているか.
 		if( *m_pIsAlienOtherAbduct == true ){
+			// ほかの宇宙人が連れ去っている場合.
 			// アームを片付けていなければ片付ける.
 			if( m_pArm->IsCleanUp() == false ){
 				m_AnimSpeed = DEFAULT_ANIM_SPEED;
@@ -497,12 +502,11 @@ void CAlien::GirlCollision( CActor* pActor )
 	if( m_pArm->IsGrab() == false ){
 		m_pArm->SetAppearancePreparation();	// アームを取り出す.
 		SetAnimation( alien::EAnimNo_Arm, m_pAC );
-		if( m_AnimFrameList[alien::EAnimNo_Arm].IsNowFrameOver() == true ){
-			m_AnimSpeed = 0.0;
-		}
+		if( m_AnimFrameList[alien::EAnimNo_Arm].IsNowFrameOver() == true ) m_AnimSpeed = 0.0;
 		return;
 	}
 
+	// 既に連れ去っている状態なら終了.
 	if( m_NowState == alien::EAlienState::Abduct ) return;
 	m_NowState		= alien::EAlienState::Abduct;	// 連れ去る状態へ遷移.
 	m_NowMoveState	= alien::EMoveState::Rotation;	// 移動を回転へ遷移.

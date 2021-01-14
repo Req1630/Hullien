@@ -159,6 +159,7 @@ void CConfigWidget::Render()
 			GetInstance()->m_pCursor->Render();
 			continue;
 		}
+		GetInstance()->m_pSprites[i]->SetAlpha(1.0f);
 		GetInstance()->m_pSprites[i]->SetDeprh(false);
 		GetInstance()->m_pSprites[i]->SetBlend(true);
 		GetInstance()->m_pSprites[i]->RenderUI();
