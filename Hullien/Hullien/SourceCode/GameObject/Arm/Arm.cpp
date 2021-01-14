@@ -13,6 +13,8 @@ CArm::CArm()
 	, m_AppearanceCount	( 0.0f )
 	, m_ScalingValue	( SCALING_VALUE )
 	, m_AnimSpeed		( 0.0 )
+	, m_OldAnimSpeed	( 0.0 )
+	, m_AnimEndFrame	( 0.0 )
 {
 	m_vScale = { SCALE_MIN, SCALE_MIN, SCALE_MIN };
 }
@@ -132,6 +134,19 @@ void CArm::SetCleanUp()
 	m_pSkinMesh->ChangeAnimSet_StartPos( 0, 0.0, m_pAC );
 	m_AnimSpeed			= 0.0;				// アニメーション速度変更.
 	m_NowArmState		= EArmState::Start;	// 次の状態へ移動.
+}
+
+// アニメーションを止める.
+void CArm::StopAnimation()
+{
+	m_OldAnimSpeed = m_AnimSpeed;
+	m_AnimSpeed = 0.0;
+}
+
+// アニメーションを再開する.
+void CArm::ResumeAnimation()
+{
+	m_AnimSpeed = m_OldAnimSpeed;
 }
 
 // 出現.

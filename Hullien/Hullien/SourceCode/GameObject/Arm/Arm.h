@@ -70,6 +70,11 @@ public:
 	// 完全に片づける.
 	void SetCleanUp();
 
+	// アニメーションを止める.
+	void StopAnimation();
+	// アニメーションを再開する.
+	void ResumeAnimation();
+
 	inline void SetCleanUpScale( const D3DXVECTOR3& scale ){ m_vScale = scale; }
 
 private:
@@ -89,6 +94,7 @@ private:
 	float	m_AppearanceCount;	// 出現カウント.
 	float	m_ScalingValue;		// 拡縮値.
 	double	m_AnimSpeed;		// アニメーション速度.
+	double	m_OldAnimSpeed;		// 前回のアニメーション速度.
 	double	m_AnimEndFrame;		// アニメーションの終了フレーム.
 
 };

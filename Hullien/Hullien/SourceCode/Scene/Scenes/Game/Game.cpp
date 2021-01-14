@@ -246,7 +246,7 @@ void CGame::GameUpdate()
 	}
 
 	// 設定中じゃなければ.
-	if( m_IsConfig == false ){
+	if( m_IsConfig == false && CFade::GetIsFade() == false ){
 		// スタートボタンを押して設定画面を表示させる.
 		if( CInput::IsMomentPress( EKeyBind::Start ) == true ){
 			m_IsConfig = true;

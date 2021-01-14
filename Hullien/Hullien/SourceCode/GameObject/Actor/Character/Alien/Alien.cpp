@@ -85,7 +85,7 @@ void CAlien::StopAnimation()
 	m_OldAnimSpeed = m_AnimSpeed;
 	m_AnimSpeed = 0.0;
 	if( m_pArm == nullptr ) return;
-	m_pArm->SetCleanUp();
+	m_pArm->StopAnimation();
 }
 
 // アニメーションを再開する.
@@ -93,6 +93,8 @@ void CAlien::ResumeAnimation()
 {
 	m_pEffects[0]->AllPause( false );
 	m_AnimSpeed = m_OldAnimSpeed;
+	if( m_pArm == nullptr ) return;
+	m_pArm->ResumeAnimation();
 }
 
 // ライフ計算関数.
