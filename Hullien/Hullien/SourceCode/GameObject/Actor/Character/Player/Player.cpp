@@ -35,6 +35,7 @@ CPlayer::CPlayer()
 	, m_AvoidVector					( 0.0f, 0.0f, 0.0f )
 	, m_HitVector					( 0.0f, 0.0f, 0.0f )
 	, m_TargetVector				( 0.0f, 0.0f, 0.0f )
+	, m_AttackAnimAdjDrggingList	()
 	, m_Parameter					()
 	, m_LifePoint					( 0.0f )
 	, m_SpecialAbility				( 0.0f )
@@ -421,44 +422,50 @@ void CPlayer::AttackMove()
 	switch( m_NowAnimNo )
 	{
 	case player::EAnimNo_Attack1:	// 攻撃1.
-		if( ATTACK1_ADJ_DRAGING_FRAME_START <= m_AnimFrameList[player::EAnimNo_Attack1].NowFrame && 
-			m_AnimFrameList[player::EAnimNo_Attack1].NowFrame <= ATTACK1_ADJ_DRAGING_FRAME_END ){
+	{
+		const int ATTACK_NO = player::EAnimNo_Attack1-1;
+		if( m_AttackAnimAdjDrggingList.StartFrame[ATTACK_NO] <= m_AnimFrameList[player::EAnimNo_Attack1].NowFrame && 
+			m_AnimFrameList[player::EAnimNo_Attack1].NowFrame <= m_AttackAnimAdjDrggingList.EndFrame[ATTACK_NO] ){
 			// アニメーションのずれを調整.
-			m_vPosition.x -= sinf(m_vRotation.y)*ATTACK1_ADJ_DRAGING_SPEED;
-			m_vPosition.z -= cosf(m_vRotation.y)*ATTACK1_ADJ_DRAGING_SPEED;
+			m_vPosition.x -= sinf(m_vRotation.y)*m_AttackAnimAdjDrggingList.MoveSpeed[ATTACK_NO];
+			m_vPosition.z -= cosf(m_vRotation.y)*m_AttackAnimAdjDrggingList.MoveSpeed[ATTACK_NO];
 
 			// 見えない壁との当たり判定.
-			if( CActor::IsCrashedWallX() == true ) m_vPosition.x += sinf(m_vRotation.y)*ATTACK1_ADJ_DRAGING_SPEED;
-			if( CActor::IsCrashedWallZ() == true ) m_vPosition.z += cosf(m_vRotation.y)*ATTACK1_ADJ_DRAGING_SPEED;
+			if( CActor::IsCrashedWallX() == true ) m_vPosition.x += sinf(m_vRotation.y)*m_AttackAnimAdjDrggingList.MoveSpeed[player::EAttackNo_One];
+			if( CActor::IsCrashedWallZ() == true ) m_vPosition.z += cosf(m_vRotation.y)*m_AttackAnimAdjDrggingList.MoveSpeed[player::EAttackNo_One];
 		}
 		break;
-
+	}
 	case player::EAnimNo_Attack2:	// 攻撃2.
-		if( ATTACK2_ADJ_DRAGING_FRAME_START <= m_AnimFrameList[player::EAnimNo_Attack2].NowFrame && 
-			m_AnimFrameList[player::EAnimNo_Attack2].NowFrame <= ATTACK2_ADJ_DRAGING_FRAME_END ){
+	{
+		const int ATTACK_NO = player::EAnimNo_Attack2-1;
+		if( m_AttackAnimAdjDrggingList.StartFrame[ATTACK_NO] <= m_AnimFrameList[player::EAnimNo_Attack2].NowFrame && 
+			m_AnimFrameList[player::EAnimNo_Attack2].NowFrame <= m_AttackAnimAdjDrggingList.EndFrame[ATTACK_NO] ){
 			// アニメーションのずれを調整.
-			m_vPosition.x -= sinf(m_vRotation.y)*ATTACK2_ADJ_DRAGING_SPEED;
-			m_vPosition.z -= cosf(m_vRotation.y)*ATTACK2_ADJ_DRAGING_SPEED;
+			m_vPosition.x -= sinf(m_vRotation.y)*m_AttackAnimAdjDrggingList.MoveSpeed[ATTACK_NO];
+			m_vPosition.z -= cosf(m_vRotation.y)*m_AttackAnimAdjDrggingList.MoveSpeed[ATTACK_NO];
 
 			// 見えない壁との当たり判定.
-			if( CActor::IsCrashedWallX() == true ) m_vPosition.x += sinf(m_vRotation.y)*ATTACK2_ADJ_DRAGING_SPEED;
-			if( CActor::IsCrashedWallZ() == true ) m_vPosition.z += cosf(m_vRotation.y)*ATTACK2_ADJ_DRAGING_SPEED;
+			if( CActor::IsCrashedWallX() == true ) m_vPosition.x += sinf(m_vRotation.y)*m_AttackAnimAdjDrggingList.MoveSpeed[ATTACK_NO];
+			if( CActor::IsCrashedWallZ() == true ) m_vPosition.z += cosf(m_vRotation.y)*m_AttackAnimAdjDrggingList.MoveSpeed[ATTACK_NO];
 		}
 		break;
-
+	}
 	case player::EAnimNo_Attack3:// 攻撃3.
-		if( ATTACK3_ADJ_DRAGING_FRAME_START <= m_AnimFrameList[player::EAnimNo_Attack3].NowFrame && 
-			m_AnimFrameList[player::EAnimNo_Attack3].NowFrame <= ATTACK3_ADJ_DRAGING_FRAME_END ){
+	{
+		const int ATTACK_NO = player::EAttackNo_Three-1;
+		if( m_AttackAnimAdjDrggingList.StartFrame[ATTACK_NO] <= m_AnimFrameList[player::EAnimNo_Attack3].NowFrame && 
+			m_AnimFrameList[player::EAnimNo_Attack3].NowFrame <= m_AttackAnimAdjDrggingList.EndFrame[ATTACK_NO] ){
 			// アニメーションのずれを調整.
-			m_vPosition.x -= sinf(m_vRotation.y)*ATTACK3_ADJ_DRAGING_SPEED;
-			m_vPosition.z -= cosf(m_vRotation.y)*ATTACK3_ADJ_DRAGING_SPEED;
+			m_vPosition.x -= sinf(m_vRotation.y)*m_AttackAnimAdjDrggingList.MoveSpeed[ATTACK_NO];
+			m_vPosition.z -= cosf(m_vRotation.y)*m_AttackAnimAdjDrggingList.MoveSpeed[ATTACK_NO];
 
 			// 見えない壁との当たり判定.
-			if( CActor::IsCrashedWallX() == true ) m_vPosition.x += sinf(m_vRotation.y)*ATTACK3_ADJ_DRAGING_SPEED;
-			if( CActor::IsCrashedWallZ() == true ) m_vPosition.z += cosf(m_vRotation.y)*ATTACK3_ADJ_DRAGING_SPEED;
+			if( CActor::IsCrashedWallX() == true ) m_vPosition.x += sinf(m_vRotation.y)*m_AttackAnimAdjDrggingList.MoveSpeed[ATTACK_NO];
+			if( CActor::IsCrashedWallZ() == true ) m_vPosition.z += cosf(m_vRotation.y)*m_AttackAnimAdjDrggingList.MoveSpeed[ATTACK_NO];
 		}
 		break;
-
+	}
 	default:
 		break;
 	}
@@ -1151,23 +1158,19 @@ bool CPlayer::EffectSetting()
 // アニメーションフレームの設定.
 bool CPlayer::SetAnimFrameList()
 {
-	// 調整用アニメーションフレームのリストを用意.
-	const double animAdjFrames[] =
-	{
-		ANIM_ADJ_FRAME_Wait,
-		ANIM_ADJ_FRAME_Walk,
-		ANIM_ADJ_FRAME_Attack1,
-		ANIM_ADJ_FRAME_Attack2,
-		ANIM_ADJ_FRAME_Attack3,
-		ANIM_ADJ_FRAME_Avoid,
-		ANIM_ADJ_FRAME_SP,	
-		ANIM_ADJ_FRAME_Damage,
-		ANIM_ADJ_FRAME_Dead,
-	};
 	if( m_pSkinMesh == nullptr ) return false;
+	// 調整用アニメーションフレームのリストを用意.
+	player::SAnimationAdjFrameList list;
+	if( CFileManager::BinaryReading( "Data\\GameParam\\Player\\PlayerAnimAdjList.bin", list ) == false ) return false;
+
+
 	for( int i = player::EAnimNo_Begin; i < player::EAnimNo_End; i++ ){
-		m_AnimFrameList.at(i) = { 0.0, m_pSkinMesh->GetAnimPeriod(i)-animAdjFrames[i] };
+		m_AnimFrameList.at(i) = { 0.0, m_pSkinMesh->GetAnimPeriod(i)-list.Frame[i] };
 	}
+
+	// 攻撃アニメーションの引きずり調整リストを読み込む.
+	if( CFileManager::BinaryReading( "Data\\GameParam\\Player\\PlayerAnimDragging.bin", m_AttackAnimAdjDrggingList ) == false ) return false;
+
 	return true;
 }
 

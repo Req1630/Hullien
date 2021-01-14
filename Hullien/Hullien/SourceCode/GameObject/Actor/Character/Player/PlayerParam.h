@@ -150,6 +150,35 @@ struct stAttackData
 	{}
 } typedef SAttackData;
 
+// アニメーションの調整フレーム.
+struct stAnimationAdjFrameList
+{
+	double Frame[EAnimNo_Max];	// 調整フレーム.
+
+} typedef SAnimationAdjFrameList;
+
+// 攻撃アニメーションの引きずり修正用.
+// 開始フレームから終了フレーム間、
+// プレイヤーのベクトルと移動速度を掛け合わせて、
+//	アニメーションの引きずりを調整する.
+struct stAttackAnimDraggingFrame
+{
+	double	StartFrame[EAttackNo_Max];	// 開始フレーム.
+	double	EndFrame[EAttackNo_Max];	// 終了フレーム.
+	float	MoveSpeed[EAttackNo_Max];	// 調整用の移動速度.
+
+	stAttackAnimDraggingFrame()
+		: StartFrame	()
+		, EndFrame		()
+		, MoveSpeed		()
+	{
+		for( int i = 0; i < EAttackNo_Max; i++ ){
+			StartFrame[i] = EndFrame[i] = MoveSpeed[i] = 0;
+		}
+	}
+
+} typedef SAttackAnimDraggingFrame;
+
 };	// namespace PLAYER.
 
 #endif	// #ifndef PLAYER_PARAM_H.

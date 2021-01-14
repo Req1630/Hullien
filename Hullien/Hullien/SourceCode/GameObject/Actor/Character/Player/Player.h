@@ -32,17 +32,6 @@ class CPlayer : public CCharacter
 	const char* RIGHT_FOOT	= "kaito_rifa_2_R_asi_4";
 	const char* LEFT_FOOT	= "kaito_rifa_2_L_asi_4";
 
-	// アニメーションの調整フレーム.
-	const double ANIM_ADJ_FRAME_Wait	= 0.0;	// 待機.
-	const double ANIM_ADJ_FRAME_Walk	= 0.0;	// 走り.
-	const double ANIM_ADJ_FRAME_Attack1	= 0.5;	// 攻撃1.
-	const double ANIM_ADJ_FRAME_Attack2	= 0.5;	// 攻撃2.
-	const double ANIM_ADJ_FRAME_Attack3	= 0.5;	// 攻撃3.
-	const double ANIM_ADJ_FRAME_Avoid	= 0.4;	// 回避.
-	const double ANIM_ADJ_FRAME_SP		= 0.02;	// 特殊能力.
-	const double ANIM_ADJ_FRAME_Damage	= 0.4;	// ヒット時.
-	const double ANIM_ADJ_FRAME_Dead	= 0.01;	// 死亡.
-
 	const double ATTACK1_ADJ_ENABLED_END_FRAME	= 0.0;	// 攻撃1の調整用有効フレーム.
 	const double ATTACK2_ADJ_ENABLED_END_FRAME	= 0.0;	// 攻撃2の調整用有効フレーム.
 	const double ATTACK3_ADJ_ENABLED_END_FRAME	= 0.0;	// 攻撃3の調整用有効フレーム.
@@ -51,18 +40,9 @@ class CPlayer : public CCharacter
 	const double ATTACK2_ADJ_COLL_ENABLED_END_FRAME	= 0.25;	// 攻撃2の調整用有効フレーム.
 	const double ATTACK3_ADJ_COLL_ENABLED_END_FRAME	= 0.15;	// 攻撃3の調整用有効フレーム.
 
-	const double ATTACK1_ADJ_DRAGING_FRAME_START	= 0.12;		// 攻撃1アニメーションのずれを調整するための開始フレーム.
-	const double ATTACK1_ADJ_DRAGING_FRAME_END		= 0.24;		// 攻撃1アニメーションのずれを調整するための終了フレーム.
-	const double ATTACK2_ADJ_DRAGING_FRAME_START	= 0.01;		// 攻撃2アニメーションのずれを調整するための開始フレーム.
-	const double ATTACK2_ADJ_DRAGING_FRAME_END		= 0.2;		// 攻撃2アニメーションのずれを調整するための終了フレーム.
-	const double ATTACK3_ADJ_DRAGING_FRAME_START	= 0.01;		// 攻撃3アニメーションのずれを調整するための開始フレーム.
-	const double ATTACK3_ADJ_DRAGING_FRAME_END		= 0.2;		// 攻撃3アニメーションのずれを調整するための終了フレーム.
 	const double DEAD_CERTAIN_RANGE_ANIM_FRAME_MIN	= 0.18;		// 死亡アニメーションの一定範囲値の最小.
 	const double DEAD_CERTAIN_RANGE_ANIM_FRAME_MAX	= 0.5;		// 死亡アニメーションの一定範囲値の最大.
 
-	const float	ATTACK1_ADJ_DRAGING_SPEED			= 0.35f;	// 攻撃1アニメーションのずれを調整するための移動速度.
-	const float	ATTACK2_ADJ_DRAGING_SPEED			= 0.3f;		// 攻撃2アニメーションのずれを調整するための移動速度.
-	const float	ATTACK3_ADJ_DRAGING_SPEED			= 0.3f;		// 攻撃3アニメーションのずれを調整するための移動速度.
 	const float	DEAD_ANIM_DRAGING_ADJ_SPEED			= 0.05f;	// 死亡アニメーションの引きずりの調整速度.
 
 	// 攻撃してない時の当たり判定の座標.
@@ -221,6 +201,7 @@ private:
 	D3DXVECTOR3		m_HitVector;		// 衝突時のベクトル.
 	D3DXVECTOR3		m_TargetVector;		// 目的のベクトル.
 
+	player::SAttackAnimDraggingFrame	m_AttackAnimAdjDrggingList;
 	SPlayerParam	m_Parameter;			// パラメーター.
 	float			m_LifePoint;			// 体力.
 	float			m_SpecialAbility;		// 特殊能力.
