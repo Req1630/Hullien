@@ -98,7 +98,7 @@ PS_OUTPUT PS_Main( VS_OUTPUT input ) : SV_Target
 	*/
 	
 	// 描画されたモデルなどの色情報を取得.
-	float4 color = g_TextureColor.Sample(g_SamLinear, input.Tex);
+	float4 color = float4( g_TextureColor.Sample(g_SamLinear, input.Tex).rgb, 1.0f );
 	
 	//----------------------------------------------------------------.
 	// 輪郭線.
@@ -173,9 +173,8 @@ PS_OUTPUT PS_Main( VS_OUTPUT input ) : SV_Target
 	// https://light11.hatenadiary.com/entry/2018/02/15/011155.
 	// https://light11.hatenadiary.com/entry/2018/03/15/000022.
 	
-	if( color.a <= 0.0f ) color.a = 1.0f;
 	// 明度を落とした色.
-	half source = max(color.r, max(color.g, color.b)) + (1 - color.a);
+	half source = max(color.r, max(color.g, color.b));
 	
 	half soft = clamp(source - g_SoftKneePram.y, 0, g_SoftKneePram.z);
 	soft = soft * soft * g_SoftKneePram.w;

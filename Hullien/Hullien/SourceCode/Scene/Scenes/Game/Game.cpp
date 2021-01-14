@@ -163,6 +163,7 @@ void CGame::Render()
 			ImGui::Image( CSceneTexRenderer::GetGBuffer()[0], ImVec2(800, 400) );
 			ImGui::Image( CSceneTexRenderer::GetGBuffer()[1], ImVec2(800, 400) );
 			ImGui::Image( CSceneTexRenderer::GetGBuffer()[2], ImVec2(800, 400) );
+			ImGui::Image( CSceneTexRenderer::GetTransBaffer(), ImVec2(800, 400) );
 			ImGui::Image( CSceneTexRenderer::GetBlurTexture(), ImVec2(800, 400) );
 		});	
 }

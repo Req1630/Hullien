@@ -136,7 +136,7 @@ void CSceneTexRenderer::Render( const bool& isBloomSmpling )
 {
 	// ブルーム用のサンプリングの強さ.
 	const float softThrshold = 1.0f;
-	static float thrshold = 0.7f;
+	static float thrshold = 0.55f;
 	if( CKeyInput::IsHold('C') ) thrshold += 0.001f;
 	if( CKeyInput::IsHold('V') ) thrshold -= 0.001f;
 	if( thrshold >= 1.0f ) thrshold = 1.0f;

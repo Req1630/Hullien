@@ -105,7 +105,7 @@ public:
 	// G-Bufferテクスチャを取得.
 	static std::vector<ID3D11ShaderResourceView*> GetGBuffer(){ return GetInstance()->m_pGBufferSRV; }
 	// TransBufferテクスチャを取得.
-	static ID3D11ShaderResourceView* GetTransBaffer(){ return GetInstance()->m_pDownLuminanceSRV; }
+	static ID3D11ShaderResourceView* GetTransBaffer(){ return GetInstance()->m_pTransBufferSRV; }
 	// tmpスクリーンテクスチャ.
 	static ID3D11ShaderResourceView* GetTmpScreenTexture(){ return GetInstance()->m_pScreenSRV[EScreenRenderNo_Tmp]; }
 	// ブラーテクスチャの取得.
