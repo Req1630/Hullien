@@ -48,10 +48,10 @@ class CPlayer : public CCharacter
 	const float			FOR_INIT_ZERO_FLOAT	= 0.0f;
 	const D3DXVECTOR3	FOR_INIT_ZERO_VEC3	= { 0.0f, 0.0f, 0.0f };
 
-	const float ATTACK_EFFECT_RENDER_HEIGHT	= 5.0f;		// 攻撃エフェクトの描画高さ.
-	const float AVOID_EFFECT_RENDER_HEIGHT	= 10.0f;	// 回避エフェクトの描画高さ.
+	const float ATTACK_EFFECT_RENDER_HEIGHT	= 5.0f;				// 攻撃エフェクトの描画高さ.
+	const float AVOID_EFFECT_RENDER_HEIGHT	= 10.0f;			// 回避エフェクトの描画高さ.
 
-	const float PLAY_WARNING_SE_LIFE_ONE_THIRD	= 1.0f / 4.0f;
+	const float PLAY_WARNING_SE_LIFE_ONE_THIRD	= 1.0f / 4.0f;	// 警告音を再生する体力の
 
 	// 声の音量.
 	const float VOICE_VOLUME = 1.5f;
