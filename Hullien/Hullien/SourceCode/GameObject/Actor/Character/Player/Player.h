@@ -32,33 +32,6 @@ class CPlayer : public CCharacter
 	const char* RIGHT_FOOT	= "kaito_rifa_2_R_asi_4";
 	const char* LEFT_FOOT	= "kaito_rifa_2_L_asi_4";
 
-	const double ATTACK1_ADJ_ENABLED_END_FRAME	= 0.0;	// 攻撃1の調整用有効フレーム.
-	const double ATTACK2_ADJ_ENABLED_END_FRAME	= 0.0;	// 攻撃2の調整用有効フレーム.
-	const double ATTACK3_ADJ_ENABLED_END_FRAME	= 0.0;	// 攻撃3の調整用有効フレーム.
-
-	const double ATTACK1_ADJ_COLL_ENABLED_END_FRAME	= 0.14;	// 攻撃1の調整用有効フレーム.
-	const double ATTACK2_ADJ_COLL_ENABLED_END_FRAME	= 0.25;	// 攻撃2の調整用有効フレーム.
-	const double ATTACK3_ADJ_COLL_ENABLED_END_FRAME	= 0.15;	// 攻撃3の調整用有効フレーム.
-
-	const double DEAD_CERTAIN_RANGE_ANIM_FRAME_MIN	= 0.18;		// 死亡アニメーションの一定範囲値の最小.
-	const double DEAD_CERTAIN_RANGE_ANIM_FRAME_MAX	= 0.5;		// 死亡アニメーションの一定範囲値の最大.
-
-	const float	DEAD_ANIM_DRAGING_ADJ_SPEED			= 0.05f;	// 死亡アニメーションの引きずりの調整速度.
-
-	// 攻撃してない時の当たり判定の座標.
-	const D3DXVECTOR3 ATTACK_COLLISION_INVALID_POS = { 0.0f, -10.0f, 0.0f };
-
-	const float ATTACK1_COLLISION_RADIUS	= 3.0f;										// 攻撃1当たり判定の半径.
-	const float ATTACK2_COLLISION_RADIUS	= 4.0f;										// 攻撃2当たり判定の半径.
-	const float ATTACK3_COLLISION_RADIUS	= 5.0f;										// 攻撃3当たり判定の半径.
-	const float ATTACK_COLLISION_DISTANCE	= 3.5f;										// 攻撃当たり判定の距離.
-	const float DAMAGE_HIT_KNOC_BACK_SPEED	= 0.3f;										// ダメージ時のノックバック速度.
-	const float TOLERANCE_RADIAN			= static_cast<float>(D3DXToRadian(7.0));	// 回転の許容範囲.
-	const float ROTATIONAL_SPEED			= 0.2f;										// 回転速度.
-
-	const float MOVE_SPEED_MUL_VALUE_ADD	= 0.035f;	// 掛け合わせる移動量の加算値.
-	const float MOVE_SPEED_MUL_VALUE_MAX	= 1.0f;		// 掛け合わせる移動量の最大値.
-
 	const float TWO = 2.0f;
 	const float CAMERA_COUNT_MAX			= 100.0f;	// カメラのカウント最大値.
 	const float CAMERA_BACK_DIRECTION_X		= 20.0f;	// カメラの距離 : x;
@@ -166,6 +139,9 @@ private:
 	// 麻痺の設定.
 	virtual void SetParalysisTime( const std::function<void(float&)>& ) override;
 
+	// アニメーションのずれ(引きずり)を調整.
+	bool AnimationDraggingAdj( const int& animAdjNo );
+
 	// 当たり判定の設定.
 	bool ColliderSetting();
 	// エフェクトの設定.
@@ -201,7 +177,8 @@ private:
 	D3DXVECTOR3		m_HitVector;		// 衝突時のベクトル.
 	D3DXVECTOR3		m_TargetVector;		// 目的のベクトル.
 
-	player::SAttackAnimDraggingFrame	m_AttackAnimAdjDrggingList;
+	player::SAnimDraggingAdjParam		m_AnimAdjDrggingParam;
+	player::SAttackAdjParam				m_AttackAdjParam;
 	SPlayerParam	m_Parameter;			// パラメーター.
 	float			m_LifePoint;			// 体力.
 	float			m_SpecialAbility;		// 特殊能力.

@@ -62,6 +62,11 @@ void CPlayerEdit::Render()
 	CImGuiManager::DragFloat( u8"スフィアの調整座標 Y",	&m_pPlayerParam.SphereAdjPos.y );
 	CImGuiManager::DragFloat( u8"スフィアの調整座標 Z",	&m_pPlayerParam.SphereAdjPos.z );
 	CImGuiManager::DragFloat( u8"スフィアの調整半径",	&m_pPlayerParam.SphereAdjRadius );
+	CImGuiManager::DragFloat( u8"ノックバック移動速度",	&m_pPlayerParam.HitKnocBackMoveSpeed );
+	CImGuiManager::DragFloat( u8"回転の許容範囲",		&m_pPlayerParam.ToleranceRadian );
+	CImGuiManager::DragFloat( u8"回転速度",				&m_pPlayerParam.RotationSpeed );
+	CImGuiManager::DragFloat( u8"掛け合わせる移動量の加算値",	&m_pPlayerParam.MoveSpeedMulAddValue );
+	CImGuiManager::DragFloat( u8"掛け合わせる移動量の最大値",	&m_pPlayerParam.MoveSpeedMulMaxValue );
 	
 
 

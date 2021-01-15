@@ -20,19 +20,32 @@ struct stPlayerParam : public CCharacter::SParameter
 	D3DXVECTOR3 SphereAdjPos;		// スフィアの調整座標.
 	float		SphereAdjRadius;	// スフィアの調整半径.
 
+	float		HitKnocBackMoveSpeed;	// ノックバック移動速度.
+	float		ToleranceRadian;		// 回転の許容範囲.
+	float		RotationSpeed;			// 回転速度.
+
+	float		MoveSpeedMulAddValue;	// 掛け合わせる移動量の加算値.
+	float		MoveSpeedMulMaxValue;	// 掛け合わせる移動量の最大値.
+
+
 	stPlayerParam()
-		: SpecialAbilityMax	( 0.0f )
-		, AttackComboMax	( 0 )
-		, AttackQueueMax	( 0 )
-		, AvoidMoveDistance	( 0.0f )
-		, AvoidMoveSpeed	( 0.0f )
-		, CameraMoveSpeed	( 0.01f )
-		, CameraDistance	( 7.0f )
-		, CameraHeight		( 4.0f )
-		, CameraLookHeight	( 0.0 )
-		, CameraLerpValue	( 1.0f )
-		, SphereAdjPos		( 0.0f, 0.0f, 0.0f )
-		, SphereAdjRadius	( 0.0f )
+		: SpecialAbilityMax		( 0.0f )
+		, AttackComboMax		( 0 )
+		, AttackQueueMax		( 0 )
+		, AvoidMoveDistance		( 0.0f )
+		, AvoidMoveSpeed		( 0.0f )
+		, CameraMoveSpeed		( 0.01f )
+		, CameraDistance		( 7.0f )
+		, CameraHeight			( 4.0f )
+		, CameraLookHeight		( 0.0 )
+		, CameraLerpValue		( 1.0f )
+		, SphereAdjPos			( 0.0f, 0.0f, 0.0f )
+		, SphereAdjRadius		( 0.0f )
+		, HitKnocBackMoveSpeed	( 0.3f )
+		, ToleranceRadian		( static_cast<float>(D3DXToRadian(7.0)) )
+		, RotationSpeed			( 0.2f )
+		, MoveSpeedMulAddValue	( 0.035f )
+		, MoveSpeedMulMaxValue	( 1.0f )
 	{}
 } typedef SPlayerParam;
 
@@ -59,6 +72,19 @@ enum enAnimNo : char
 	EAnimNo_End		= EAnimNo_Max,	// 終了.
 
 } typedef EAnimNo;
+
+// 引きずり調整リスト.
+enum enDraggingAdjList : char
+{
+	EDraggingAdjList_None = -1,
+
+	EDraggingAdjList_Attack1,	// 攻撃1.
+	EDraggingAdjList_Attack2,	// 攻撃2.
+	EDraggingAdjList_Attack3,	// 攻撃3.
+	EDraggingAdjList_Dead,		// 死亡.
+
+	EDraggingAdjList_Max,
+} typedef EDraggingAdjList;
 
 // 攻撃番号,
 enum enAttackNo : unsigned char
@@ -150,6 +176,29 @@ struct stAttackData
 	{}
 } typedef SAttackData;
 
+// 攻撃調整用構造体.
+struct stAttackAdjParam
+{
+	double	EnabledEndFrame[EAttackNo_Max];		// 攻撃有効終了フレーム.
+	double	CollEnabledEndFrame[EAttackNo_Max];	// 攻撃当たり判定有効終了フレーム.
+	float	CollisionRadius[EAttackNo_Max];		// 攻撃当たり判定半径,
+	float	CollisionDistance;					// 攻撃当たり判定の距離.
+
+	D3DXVECTOR3	CollInvalidPosition;			// 攻撃してない時の座標.
+
+	stAttackAdjParam()
+		: EnabledEndFrame		()
+		, CollEnabledEndFrame	()
+		, CollisionRadius		()
+		, CollisionDistance		( 0.0f )
+		, CollInvalidPosition	( 0.0f, 0.0f, 0.0f )
+	{
+		for( int i = 0; i < EAttackNo_Max; i++ ){
+			EnabledEndFrame[i] = CollEnabledEndFrame[i] = CollisionRadius[i] = 0;
+		}
+	}
+} typedef SAttackAdjParam;
+
 // アニメーションの調整フレーム.
 struct stAnimationAdjFrameList
 {
@@ -157,27 +206,27 @@ struct stAnimationAdjFrameList
 
 } typedef SAnimationAdjFrameList;
 
-// 攻撃アニメーションの引きずり修正用.
+// アニメーションの引きずり修正用.
 // 開始フレームから終了フレーム間、
 // プレイヤーのベクトルと移動速度を掛け合わせて、
 //	アニメーションの引きずりを調整する.
-struct stAttackAnimDraggingFrame
+struct stAnimDraggingAdjParam
 {
-	double	StartFrame[EAttackNo_Max];	// 開始フレーム.
-	double	EndFrame[EAttackNo_Max];	// 終了フレーム.
-	float	MoveSpeed[EAttackNo_Max];	// 調整用の移動速度.
+	double	StartFrame[EDraggingAdjList_Max];	// 開始フレーム.
+	double	EndFrame[EDraggingAdjList_Max];		// 終了フレーム.
+	float	MoveSpeed[EDraggingAdjList_Max];	// 調整用の移動速度.
 
-	stAttackAnimDraggingFrame()
+	stAnimDraggingAdjParam()
 		: StartFrame	()
 		, EndFrame		()
 		, MoveSpeed		()
 	{
-		for( int i = 0; i < EAttackNo_Max; i++ ){
+		for( int i = 0; i < EDraggingAdjList_Max; i++ ){
 			StartFrame[i] = EndFrame[i] = MoveSpeed[i] = 0;
 		}
 	}
 
-} typedef SAttackAnimDraggingFrame;
+} typedef SAnimDraggingAdjParam;
 
 };	// namespace PLAYER.
 

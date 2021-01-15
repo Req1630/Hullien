@@ -9,7 +9,9 @@ class CCharacter : public CActor
 	inline static const float FOOT_COLLISION_SIZE	= 0.5f;	// 足の当たり判定のサイズ.
 	inline static const float GROUND_COLLISION_SIZE	= 1.0f;	// 地面の当たり判定のサイズ.
 protected:
-	const double DEFAULT_ANIM_SPEED = 0.01;	// デフォルトアニメーション速度.
+	inline static const double DEFAULT_ANIM_SPEED		= 0.01;						// デフォルトアニメーション速度.
+	inline static const double DEFAULT_ANIM_HALF_SPEED	= DEFAULT_ANIM_SPEED*0.5;	// デフォルトアニメーション速度の半分の速度.
+	inline static const double STOP_ANIM_SPEED			= 0.0;						// 停止アニメーション速度.
 
 	// 足の番号.
 	enum enFootNumber : char
@@ -51,7 +53,7 @@ public:
 	virtual void StopAnimation() override
 	{
 		m_OldAnimSpeed = m_AnimSpeed;
-		m_AnimSpeed = 0.0; 
+		m_AnimSpeed = STOP_ANIM_SPEED; 
 	}
 	// アニメーションを再開する.
 	virtual void ResumeAnimation() override { m_AnimSpeed = m_OldAnimSpeed; }
