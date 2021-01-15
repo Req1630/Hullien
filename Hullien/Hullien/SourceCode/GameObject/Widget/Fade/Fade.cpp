@@ -9,7 +9,7 @@ CFade::CFade()
 	: m_IsFade(false)
 	, m_FadeState(EFadeState::Finish)
 {
-	m_AlphaSpeed = 0.01f;
+	m_AlphaSpeed = 0.02f;
 }
 
 CFade::~CFade()

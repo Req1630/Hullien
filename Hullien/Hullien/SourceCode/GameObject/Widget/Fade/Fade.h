@@ -44,6 +44,9 @@ public:
 	// フェードアウト設定関数.
 	static void SetFadeOut();
 
+	// フェード速度の設定.
+	static void SetFadeSpeed( const float& speed ){ GetInstance()->m_AlphaSpeed = speed; }
+
 private:
 	// 更新関数.
 	void Update();

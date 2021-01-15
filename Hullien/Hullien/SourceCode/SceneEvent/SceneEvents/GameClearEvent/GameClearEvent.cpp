@@ -248,11 +248,11 @@ void CGameClearEvent::NextStep()
 // スキップ.
 void CGameClearEvent::Skip()
 {
-	if( m_EventStep == EEventStep::Move_UFO ) return;
 	if(m_EventStep == EEventStep::NextScene) return;
 	if(m_IsSkip == true) return;
 
 	CFade::SetFadeIn();
+
 	m_EventStep = EEventStep::Skip;
 	NextStep();
 
@@ -460,7 +460,6 @@ void CGameClearEvent::MoveUFO()
 void CGameClearEvent::NextScene()
 {
 	CSoundManager::FadeOutBGM("ClearEventBGM");
-
 	if (CFade::GetIsFade() == true) return;
 	while(CSoundManager::StopBGMThread("ClearEventBGM") == false);
 	m_IsEventEnd = true;

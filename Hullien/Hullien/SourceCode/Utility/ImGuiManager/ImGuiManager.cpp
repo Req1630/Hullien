@@ -123,6 +123,11 @@ void CImGuiManager::Render()
 	ImGui_ImplDX11_RenderDrawData( ImGui::GetDrawData() );
 }
 
+void CImGuiManager::DragDouble( const char* label, double* v, const double& speed )
+{
+	ImGui::DragFloat( label, (float*)v, (float)speed, -1000.0f, 1000.0f, "%.5f" );
+}
+
 void CImGuiManager::DragFloat( const char* label, float* v, const float& speed  )
 {
 	ImGui::DragFloat( label, v, speed, -1000.0f, 1000.0f, "%.5f" );

@@ -44,8 +44,8 @@ protected:
 protected:
 	bool	m_IsEventEnd;		// イベントが終了したか.
 	bool	m_IsSkip;			// スキップしたか.
-	int		m_SkipWaitCount;	//スキップするまでの時間.
-
+	int		m_SkipWaitCount;	// スキップするまでの時間.
+	bool	m_IsSkipFadeOut;	// スキップ後フェードアウトをしたか.
 };
 
 #endif	//#ifndef SCENE_EVENT_BASE_H.

@@ -24,8 +24,18 @@ public:
 	virtual void EffectRender() override;
 
 private:
-	std::unique_ptr<CPlayer>	m_pPlayer;
-	SPlayerParam		m_pPlayerParam;
+	// パラメータの設定.
+	void PlayerParamEdit();
+	// アニメーションの引きずり調整の設定.
+	void AnimAdjDrggingParamEdit();
+	// 攻撃調整の設定.
+	void AttackAdjParamEdit();
+
+private:
+	std::unique_ptr<CPlayer>			m_pPlayer;
+	player::SPlayerParam				m_pPlayerParam;
+	player::SAnimDraggingAdjParam		m_AnimAdjDrggingParam;
+	player::SAttackAdjParam				m_AttackAdjParam;
 };
 
 #endif	// #ifndef PLAYER_EDIT_H.

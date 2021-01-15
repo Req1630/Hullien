@@ -3,6 +3,8 @@
 
 #include "..\Character.h"
 
+namespace player
+{
 // プレイヤーパラメータ.
 struct stPlayerParam : public CCharacter::SParameter
 {
@@ -27,30 +29,34 @@ struct stPlayerParam : public CCharacter::SParameter
 	float		MoveSpeedMulAddValue;	// 掛け合わせる移動量の加算値.
 	float		MoveSpeedMulMaxValue;	// 掛け合わせる移動量の最大値.
 
+	float		AttackSearcLenght;		// 攻撃の索敵距離.
+	float		AttackFanRadian;		// 扇の攻撃範囲.
+	float		EnemyKnockBackPower;	// 敵のノックバック力.
 
 	stPlayerParam()
-		: SpecialAbilityMax		( 0.0f )
-		, AttackComboMax		( 0 )
-		, AttackQueueMax		( 0 )
-		, AvoidMoveDistance		( 0.0f )
-		, AvoidMoveSpeed		( 0.0f )
-		, CameraMoveSpeed		( 0.01f )
-		, CameraDistance		( 7.0f )
-		, CameraHeight			( 4.0f )
-		, CameraLookHeight		( 0.0 )
-		, CameraLerpValue		( 1.0f )
-		, SphereAdjPos			( 0.0f, 0.0f, 0.0f )
-		, SphereAdjRadius		( 0.0f )
-		, HitKnocBackMoveSpeed	( 0.3f )
-		, ToleranceRadian		( static_cast<float>(D3DXToRadian(7.0)) )
-		, RotationSpeed			( 0.2f )
-		, MoveSpeedMulAddValue	( 0.035f )
-		, MoveSpeedMulMaxValue	( 1.0f )
+		: SpecialAbilityMax			( 0.0f )
+		, AttackComboMax			( 0 )
+		, AttackQueueMax			( 0 )
+		, AvoidMoveDistance			( 0.0f )
+		, AvoidMoveSpeed			( 0.0f )
+		, CameraMoveSpeed			( 0.01f )
+		, CameraDistance			( 7.0f )
+		, CameraHeight				( 4.0f )
+		, CameraLookHeight			( 0.0 )
+		, CameraLerpValue			( 1.0f )
+		, SphereAdjPos				( 0.0f, 0.0f, 0.0f )
+		, SphereAdjRadius			( 0.0f )
+		, HitKnocBackMoveSpeed		( 0.3f )
+		, ToleranceRadian			( static_cast<float>(D3DXToRadian(7.0)) )
+		, RotationSpeed				( 0.2f )
+		, MoveSpeedMulAddValue		( 0.035f )
+		, MoveSpeedMulMaxValue		( 1.0f )
+		, AttackSearcLenght			( 20.0f )
+		, AttackFanRadian			( static_cast<float>(D3DXToRadian(180.0*0.5)) )
+		, EnemyKnockBackPower		( 0.5f )
 	{}
 } typedef SPlayerParam;
 
-namespace player
-{
 // アニメーション番号.
 enum enAnimNo : char
 {

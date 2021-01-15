@@ -26,6 +26,8 @@ void CMouse::UpdateMouse()
 // ƒXƒNƒŠ[ƒ“‚Ì’†‚©.
 bool CMouse::IsScreenMiddle()
 {
-	return (( 0 < m_NowPoint.x && m_NowPoint.x < WND_W ) &&
-			( 0 < m_NowPoint.y && m_NowPoint.y < WND_H ));
+	RECT rect;
+	if( GetClientRect( m_hWnd, &rect ) == FALSE ) return false;
+	return (( rect.left < m_NowPoint.x && m_NowPoint.x < rect.right ) &&
+			( rect.top < m_NowPoint.y && m_NowPoint.y < rect.bottom ));
 }

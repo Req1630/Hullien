@@ -207,14 +207,12 @@ void CGameOverEvent::NextStep()
 // スキップ.
 void CGameOverEvent::Skip()
 {
-	if (m_EventStep == EEventStep::Move_Back_UFO) return;
-	if (m_EventStep == EEventStep::MoveLeft_UFO) return;
-	if (m_EventStep == EEventStep::MoveRight_UFO_Second) return;
 	if (m_EventStep == EEventStep::EventEnd) return;
 	if (m_IsSkip == true) return;
-	CFade::SetFadeIn();
 
+	CFade::SetFadeIn();
 	if(CFade::GetIsFade() == true) return;
+
 	m_stGirl.IsDisp = false;
 	m_vUFOPosition = DESTINATION_BACK;
 	m_stCamera.vLookPosition = m_vUFOPosition;
@@ -308,6 +306,7 @@ void CGameOverEvent::MoveBackUFO()
 // イベント終了.
 void CGameOverEvent::EventEnd()
 {
+	if( CFade::GetFadeState() == CFade::EFadeState::In ) CFade::SetFadeOut();
 	m_IsEventEnd = true;
 }
 

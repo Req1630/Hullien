@@ -29,31 +29,31 @@ CPlayer::CPlayer()
 	, m_pWidget						()
 	, m_AttackComboCount			( player::EAttackNo_None )
 	, m_AttackDataQueue				()
-	, m_AttackPosition				( 0.0f, 0.0f, 0.0f )
-	, m_GirlPosition				( 0.0f, 0.0f, 0.0f )
-	, m_AttackVector				( 0.0f, 0.0f, 0.0f )
-	, m_AvoidVector					( 0.0f, 0.0f, 0.0f )
-	, m_HitVector					( 0.0f, 0.0f, 0.0f )
-	, m_TargetVector				( 0.0f, 0.0f, 0.0f )
+	, m_AttackPosition				( FOR_INIT_ZERO_VEC3 )
+	, m_GirlPosition				( FOR_INIT_ZERO_VEC3 )
+	, m_AttackVector				( FOR_INIT_ZERO_VEC3 )
+	, m_AvoidVector					( FOR_INIT_ZERO_VEC3 )
+	, m_HitVector					( FOR_INIT_ZERO_VEC3 )
+	, m_TargetVector				( FOR_INIT_ZERO_VEC3 )
 	, m_AnimAdjDrggingParam			()
 	, m_AttackAdjParam				()
 	, m_Parameter					()
-	, m_LifePoint					( 0.0f )
-	, m_SpecialAbility				( 0.0f )
+	, m_LifePoint					( FOR_INIT_ZERO_FLOAT )
+	, m_SpecialAbility				( FOR_INIT_ZERO_FLOAT )
 	, m_StatusFlag					( player::EStatusFlag_None )
-	, m_AttackRangeLenght			( 0.0f )
-	, m_SpecialAbilityValue			( 0.0f )
-	, m_ItemSpecialAbilityValue		( 0.0f )
-	, m_AttackPower					( 0.0f )
-	, m_MoveSpeed					( 0.0f )
-	, m_MoveSpeedMulValue			( 0.0f )
-//	, m_HitStopCameraPosition		( 0.0f, 0.0f, 0.0f )
-	, m_CameraPosition				( 0.0f, 0.0f, 0.0f )
-	, m_CameraLookPosition			( 0.0f, 0.0f, 0.0f )
+	, m_AttackRangeLenght			( FOR_INIT_ZERO_FLOAT )
+	, m_SpecialAbilityValue			( FOR_INIT_ZERO_FLOAT )
+	, m_ItemSpecialAbilityValue		( FOR_INIT_ZERO_FLOAT )
+	, m_AttackPower					( FOR_INIT_ZERO_FLOAT )
+	, m_MoveSpeed					( FOR_INIT_ZERO_FLOAT )
+	, m_MoveSpeedMulValue			( FOR_INIT_ZERO_FLOAT )
+//	, m_HitStopCameraPosition		( FOR_INIT_ZERO_VEC3 )
+	, m_CameraPosition				( FOR_INIT_ZERO_VEC3 )
+	, m_CameraLookPosition			( FOR_INIT_ZERO_VEC3 )
 	, m_CameraCount					( CAMERA_COUNT_MAX )
-	, m_CameraLerp					( 0.0f )
+	, m_CameraLerp					( FOR_INIT_ZERO_FLOAT )
 	, m_NowSPCameraStete			( player::ESPCameraState_Start )
-	, m_ParalysisCameraShakeCount	( 0 )
+	, m_ParalysisCameraShakeCount	( FOR_INIT_ZERO_INT )
 	, m_OneStepCmaeraSeting			( false )
 {
 	m_ObjectTag = EObjectTag::Player;	// プレイヤータグを設定.
@@ -94,7 +94,7 @@ bool CPlayer::Init()
 	m_pSkinMesh->ChangeAnimSet_StartPos( player::EAnimNo_Wait, 0.0 );
 
 	// プレイヤーの回転ベクトルを取得.
-	m_AttackVector = { sinf(m_vRotation.y), 0.0f, cosf(m_vRotation.y), };
+	m_AttackVector = { sinf(m_vRotation.y), FOR_INIT_ZERO_FLOAT, cosf(m_vRotation.y), };
 
 	return true;
 }
@@ -135,17 +135,17 @@ void CPlayer::Update()
 
 	// 攻撃範囲のフラグを下す.
 	bit::OffBitFlag( &m_StatusFlag, player::EStatusFlag_AttackRange );
-	m_AttackRangeLenght = 0.0f;	// 攻撃範囲の長さを初期化.
+	m_AttackRangeLenght = FOR_INIT_ZERO_FLOAT;	// 攻撃範囲の長さを初期化.
 
-	// 体力が1/3になったらSEを鳴らす.
-	if (m_LifePoint <= m_Parameter.LifeMax / 3)
+	// 体力が1/4になったらSEを鳴らす.
+	if (m_LifePoint <= m_Parameter.LifeMax * PLAY_WARNING_SE_LIFE_ONE_THIRD)
 	{
 		if (CSoundManager::GetIsPlaySE("HP", 0) == false) {
 			CSoundManager::PlaySE("HP");
 		}
 	}
 	// 足音.
-	FootStep(RIGHT_FOOT, LEFT_FOOT);
+	FootStep(RIGHT_FOOT_BONE_NAME, LEFT_FOOT_BONE_NAME);
 }
 
 // 描画関数.
@@ -241,13 +241,26 @@ bool CPlayer::CameraShake()
 	const float SHAKE_VALUE = 
 		cosf(static_cast<float>(D3DX_PI) * TWO / 15.0f * m_ParalysisCameraShakeCount) * (m_ParalysisCameraShakeCount * 0.01f);
 	const D3DXVECTOR3 lookPosition = { m_vPosition.x, m_Parameter.CameraLookHeight, m_vPosition.z };
-	m_pCamera->SetAddPositionValue( { SHAKE_VALUE, 0.0f, SHAKE_VALUE } );
+	m_pCamera->SetAddPositionValue( { SHAKE_VALUE, FOR_INIT_ZERO_FLOAT, SHAKE_VALUE } );
 	m_ParalysisCameraShakeCount--;
 	if( m_ParalysisCameraShakeCount < 0 ){
 		m_ParalysisCameraShakeCount = FPS*2;
 		return false;
 	}
 	return true;
+}
+
+// パラメータの設定(editなどで使用).
+void CPlayer::SetParameter( const player::SPlayerParam& param, const bool& isEdit )
+{
+	m_Parameter				= param;
+	m_MoveSpeed				= m_Parameter.MoveSpeed;			// 移動速度の設定.
+	m_AttackPower			= m_Parameter.AttackPower;			// 攻撃力の設定.
+	m_LifePoint				= m_Parameter.LifeMax;				// 体力の設定.
+	m_SpecialAbilityValue	= m_Parameter.SpecialAbilityValue;	// 特殊能力回復値の設定.
+	m_CameraLookPosition	= { m_vPosition.x, m_Parameter.CameraLookHeight, m_vPosition.z };
+	m_CameraLerp			= m_Parameter.CameraLerpValue;
+	if( isEdit == true ) m_SpecialAbility = m_Parameter.SpecialAbilityMax;
 }
 
 // 操作関数.
@@ -304,7 +317,7 @@ void CPlayer::AttackController()
 				m_vRotation.y = atan2f( m_AttackVector.x, m_AttackVector.z );
 			} else {
 				// プレイヤーの回転ベクトルを取得.
-				m_AttackVector = { sinf(m_vRotation.y), 0.0f, cosf(m_vRotation.y), };
+				m_AttackVector = { sinf(m_vRotation.y), FOR_INIT_ZERO_FLOAT, cosf(m_vRotation.y), };
 			}
 			return;
 		}
@@ -326,7 +339,7 @@ void CPlayer::SPController()
 	if( CInput::IsMomentPress( EKeyBind::SpecialAbility ) == true ){
 		bit::OnBitFlag( &m_StatusFlag, player::EStatusFlag_EndSPCameraMove );
 		m_CameraPosition	= m_pCamera->GetPosition();
-		m_SpecialAbility	= 0.0f;
+		m_SpecialAbility	= FOR_INIT_ZERO_FLOAT;
 
 		SetAnimationBlend( player::EAnimNo_Wait );	// 待機アニメーションを設定.
 		CSoundManager::PlaySE("PlayerVoiceSpecial");
@@ -340,7 +353,10 @@ void CPlayer::AvoidController()
 	if( bit::IsBitFlag( m_StatusFlag, player::EStatusFlag_KnockBack )		== true ) return;	// ノックバック中は終了.
 	if( bit::IsBitFlag( m_StatusFlag, player::EStatusFlag_EndSPCameraMove ) == true ) return;	// SPカメラ中は終了.
 	if( bit::IsBitFlag( m_StatusFlag, player::EStatusFlag_Dead )			== true ) return;	// 死亡中は終了.
+// 攻撃中に回避ができないと、敵からの攻撃が避けにくくなり,
+//	死亡しやすくなるので回避できるように以下の分をコメントアウト.
 //	if( m_AttackComboCount > player::EAttackNo_None ) return;	// 攻撃中は発動しない.
+
 	// 既に回避アニメーションだったら終了.
 	if( m_NowAnimNo == player::EAnimNo_Avoid ) return;
 
@@ -351,7 +367,7 @@ void CPlayer::AvoidController()
 	if( CInput::IsMomentPress( EKeyBind::Avoidance ) == true ){
 		bit::OnBitFlag( &m_StatusFlag, player::EStatusFlag_DuringAvoid );	// 回避フラグを立てる.
 		m_AvoidVector = m_MoveVector;	// 移動ベクトルを設定.
-		m_pEffects[player::EEffectNo_Avoidance]->Play( { m_vPosition.x, m_vPosition.y+10.0f, m_vPosition.z } );
+		m_pEffects[player::EEffectNo_Avoidance]->Play( { m_vPosition.x, m_vPosition.y+AVOID_EFFECT_RENDER_HEIGHT, m_vPosition.z } );
 		// 回避アニメーションの設定.
 		SetAnimationBlend( player::EAnimNo_Avoid );
 		// 攻撃キューを全部取り出す.
@@ -374,7 +390,7 @@ void CPlayer::Move()
 	// 各値が有効範囲外なら終了.
 	if( m_MoveVector.x < IDLE_THUMB_MAX && IDLE_THUMB_MIN < m_MoveVector.x &&
 		m_MoveVector.z < IDLE_THUMB_MAX && IDLE_THUMB_MIN < m_MoveVector.z ){
-		m_MoveSpeedMulValue = 0.0f;	// 初期化.
+		m_MoveSpeedMulValue = FOR_INIT_ZERO_FLOAT;	// 初期化.
 		if( m_NowAnimNo == player::EAnimNo_Attack1 )	return;	// アニメーションが攻撃1,2,3の時は.
 		if( m_NowAnimNo == player::EAnimNo_Attack2 )	return;	//　待機モーションに設定できないようにする.
 		if( m_NowAnimNo == player::EAnimNo_Attack3 )	return;	// 
@@ -389,7 +405,7 @@ void CPlayer::Move()
 
 	// ターゲットのベクトルを用意 カメラのラジアン値を足して調整.
 	const float targetRot = atan2f( m_MoveVector.x, m_MoveVector.z ) + m_pCamera->GetRadianX();
-	D3DXVECTOR3 targetVec = { 0.0f, 0.0f, 0.0f };
+	D3DXVECTOR3 targetVec = FOR_INIT_ZERO_VEC3;
 	targetVec.x = sinf( targetRot );
 	targetVec.z = cosf( targetRot );
 
@@ -419,7 +435,7 @@ void CPlayer::AttackMove()
 	if( bit::IsBitFlag( m_StatusFlag, player::EStatusFlag_KnockBack )	== true ) return;	// ノックバック中なら終了.
 	if( bit::IsBitFlag( m_StatusFlag, player::EStatusFlag_Dead )		== true ) return;	// 死亡中なら終了.
 
-	int ATTACK_NO = 0;
+	int ATTACK_NO = FOR_INIT_ZERO_INT;
 	switch( m_NowAnimNo )
 	{
 	case player::EAnimNo_Attack1:	ATTACK_NO = player::EAttackNo_One-1;	break;
@@ -537,7 +553,7 @@ void CPlayer::EffectRender()
 	// エフェクトの描画.
 	for( auto& e : m_pEffects ){
 		e->SetLocation( m_vPosition );
-		e->SetRotation( {0.0f, static_cast<float>(D3DX_PI)+m_vRotation.y, 0.0f} );
+		e->SetRotation( { FOR_INIT_ZERO_FLOAT, static_cast<float>(D3DX_PI)+m_vRotation.y, FOR_INIT_ZERO_FLOAT } );
 		e->Render();
 	}
 }
@@ -553,11 +569,11 @@ void CPlayer::AttackCollision( CActor* pActor )
 	if( m_AnimFrameList[m_NowAnimNo].NowFrame >= m_AttackDataQueue.front().AttackCollEndFrame ) return;
 	if( pActor->IsPossibleToHit() == false ) return;
 
-	D3DXVECTOR3 littleFingerPos = { 0.0f, 0.0f, 0.0f };	// 小指ボーンの座標.
-	D3DXVECTOR3 ringFingerPos = { 0.0f, 0.0f, 0.0f };	// 薬指のボーン座標.
+	D3DXVECTOR3 littleFingerPos	= FOR_INIT_ZERO_VEC3;	// 小指ボーンの座標.
+	D3DXVECTOR3 ringFingerPos	= FOR_INIT_ZERO_VEC3;	// 薬指のボーン座標.
 	// 指のボーン座標を取得.
-	m_pSkinMesh->GetPosFromBone("kaito_rifa_2_L_yubi_5_1", &littleFingerPos );
-	m_pSkinMesh->GetPosFromBone("kaito_rifa_2_L_yubi_4_1", &ringFingerPos );
+	m_pSkinMesh->GetPosFromBone( LITTLE_FINGER_BONE_NAME, &littleFingerPos );
+	m_pSkinMesh->GetPosFromBone( RING_FINGER_BONE_NAME, &ringFingerPos );
 	// 指のベクトルを取得して当たり判定の座標を計算.
 	D3DXVECTOR3 fingerVec = ringFingerPos - littleFingerPos;
 	D3DXVec3Normalize( &fingerVec, &fingerVec );
@@ -570,12 +586,12 @@ void CPlayer::AttackCollision( CActor* pActor )
 	D3DXVECTOR3 vec =
 	{
 		m_AttackPosition.x - pActor->GetPosition().x,
-		0.0f,
+		FOR_INIT_ZERO_FLOAT,
 		m_AttackPosition.z - pActor->GetPosition().z
 	};
 	D3DXVec3Normalize( &vec, &vec );
-	vec.x *= m_AttackComboCount*0.5f;
-	vec.z *= m_AttackComboCount*0.5f;
+	vec.x *= m_AttackComboCount*m_Parameter.EnemyKnockBackPower;
+	vec.z *= m_AttackComboCount*m_Parameter.EnemyKnockBackPower;
 	pActor->SetVector( vec );
 
 	// 攻撃関数.
@@ -607,7 +623,7 @@ void CPlayer::AttackRangeDecision( CActor* pActor )
 	D3DXVECTOR3 vec =
 	{
 		m_vPosition.x - pActor->GetPosition().x,
-		0.0f,
+		FOR_INIT_ZERO_FLOAT,
 		m_vPosition.z - pActor->GetPosition().z,
 	};
 	// ベクトルの長さ算出.
@@ -619,23 +635,19 @@ void CPlayer::AttackRangeDecision( CActor* pActor )
 		rot = atan2f( m_MoveVector.x, m_MoveVector.z ) + m_pCamera->GetRadianX();
 	}
 	// プレイヤーの回転ベクトルを取得.
-	const D3DXVECTOR3 playerVec = { sinf(rot), 0.0f, cosf(rot), };
+	const D3DXVECTOR3 playerVec = { sinf(rot), FOR_INIT_ZERO_FLOAT, cosf(rot), };
 
-	// 範囲の長さ.
-	const float range_Lenght = 20.0f;
 	// 宇宙人との距離が一定範囲外なので終了.
-	if( vec_length > range_Lenght ) return;
+	if( vec_length > m_Parameter.AttackSearcLenght ) return;
 
 	// 単位ベクトルに変換.
 	D3DXVec3Normalize( &vec, &vec );
 
 	// 内積を取得.
 	const float dot = vec.x * playerVec.x + vec.z * playerVec.z;
-	// 扇の範囲をcosにする.
-	const float fan_cos = cosf( static_cast<float>(D3DXToRadian(180.0*0.5)));
 
 	// 点が範囲外であれば終了.
-	if( dot < fan_cos ) return;
+	if( dot < cos(m_Parameter.AttackFanRadian) ) return;
 
 	// 長さが初期化状態なら長さを入れる.
 	if( m_AttackRangeLenght <= 0.0f ) m_AttackRangeLenght = dot;
@@ -727,7 +739,7 @@ void CPlayer::SPCameraUpdate()
 		if( m_CameraCount <= 0 ){
 			m_CameraCount			= CAMERA_COUNT_MAX;			// カウントを初期化.
 			m_CameraNextPosition	= m_pCamera->GetPosition();	// メインカメラの座標を設定.
-			m_CameraReturnCount		= 0.0f;						// カメラを戻すカウントを初期化.
+			m_CameraReturnCount		= FOR_INIT_ZERO_FLOAT;		// カメラを戻すカウントを初期化.
 			m_NowSPCameraStete		= player::ESPCameraState_CameraReturn;	// 次の状態へ移動.
 			m_AnimSpeed				= DEFAULT_ANIM_SPEED;
 			SetAnimationBlend( player::EAnimNo_Wait );
@@ -751,8 +763,8 @@ void CPlayer::SPCameraUpdate()
 			m_pCamera->SetLookPosition( m_CameraLookPosition );	// メインカメラの視点座標を設定.
 			m_pCamera->SetPosition( m_CameraPosition );			// メインカメラの座標を設定.
 			bit::OffBitFlag( &m_StatusFlag, player::EStatusFlag_EndSPCameraMove );	// SPカメラのフラグを下す.
-			m_CameraReturnCount = 0.0f;		// カメラを戻すカウントを初期化.
-			m_CameraLerp		= 0.0f;		// カメラの補完値を初期化.
+			m_CameraReturnCount = FOR_INIT_ZERO_FLOAT;			// カメラを戻すカウントを初期化.
+			m_CameraLerp		= FOR_INIT_ZERO_FLOAT;			// カメラの補完値を初期化.
 			m_NowSPCameraStete	= player::ESPCameraState_Start;	// 初めの状態へ戻す.
 
 			return;	// 特殊カメラは設定しなくてもよいのでここで終了.
@@ -859,8 +871,8 @@ void CPlayer::AttackAnimation()
 			return;
 		}
 		// エフェクトを再生.
-		m_pEffects[m_AttackComboCount-1]->Play( {m_vPosition.x, m_vPosition.y+5.0f, m_vPosition.z } );
-		float attackCollisionRadius = 0.0f;	// 攻撃の当たり判定.
+		m_pEffects[m_AttackComboCount-1]->Play( {m_vPosition.x, m_vPosition.y+ATTACK_EFFECT_RENDER_HEIGHT, m_vPosition.z } );
+		float attackCollisionRadius = FOR_INIT_ZERO_FLOAT;	// 攻撃の当たり判定.
 		// 攻撃SEを鳴らす.
 		CSoundManager::PlaySE("PlayerAttack");
 		if(m_AttackComboCount == player::EAttackNo_Two){
@@ -911,6 +923,10 @@ bool CPlayer::IsPushAttack()
 		tmpAttackData.AttackCollEndFrame= m_AnimFrameList[animNo].EndFrame - m_AttackAdjParam.CollEnabledEndFrame[atkNo];
 	};
 
+	// "player::EAttackNo_One"が 数値"1"なので,
+	//	-1して配列の添え字を調整する.
+	const int ATTACK_ADJ_NO = m_AttackComboCount-1;
+
 	switch( m_AttackComboCount )
 	{
 	case player::EAttackNo_One:	// 攻撃1.
@@ -920,22 +936,22 @@ bool CPlayer::IsPushAttack()
 			&m_vRotation,
 			&m_vScale.x,
 			m_Parameter.SphereAdjPos,
-			m_AttackAdjParam.CollisionRadius[m_AttackComboCount-1] ) )) return false;
-		setAttackData( player::EAnimNo_Attack1, m_AttackComboCount-1 );
+			m_AttackAdjParam.CollisionRadius[ATTACK_ADJ_NO] ) )) return false;
+		setAttackData( player::EAnimNo_Attack1, ATTACK_ADJ_NO );
 		// 最初の攻撃はアニメーションを設定する.
 		SetAnimation( tmpAttackData.AnimNo );
-		m_pEffects[m_AttackComboCount-1]->Play( m_vPosition );
+		m_pEffects[player::EEffectNo_AttackOne]->Play( m_vPosition );
 		CSoundManager::PlaySE("PlayerAttack");
 		CSoundManager::PlaySE("PlayerVoiceAttack1");
 		bit::OffBitFlag( &m_StatusFlag, player::EStatusFlag_AttackSE );
 		break;
 
 	case player::EAttackNo_Two:	// 攻撃2.
-		setAttackData( player::EAnimNo_Attack2, m_AttackComboCount-1 );
+		setAttackData( player::EAnimNo_Attack2, ATTACK_ADJ_NO );
 		break;
 
 	case player::EAttackNo_Three:// 攻撃3.
-		setAttackData( player::EAnimNo_Attack3, m_AttackComboCount-1 );
+		setAttackData( player::EAnimNo_Attack3, ATTACK_ADJ_NO );
 		break;
 
 	default:
@@ -967,21 +983,21 @@ void CPlayer::LifeCalculation( const std::function<void(float&,bool&)>& proc )
 	}
 	// 攻撃を食らったら.
 	if( isAttack == true ){
-		if (m_LifePoint > 0.0f) CSoundManager::PlaySE("PlayerVoiceHit");
+		if (m_LifePoint > FOR_INIT_ZERO_FLOAT) CSoundManager::PlaySE("PlayerVoiceHit");
 		// ダメージアニメーションを設定.
 		SetAnimation( player::EAnimNo_Damage );
 		bit::OnBitFlag( &m_StatusFlag, player::EStatusFlag_KnockBack );
 		m_vRotation.y	= atan2( m_HitVector.x, m_HitVector.z )+static_cast<float>(D3DX_PI);
 		m_MoveVector	= m_HitVector;
 		// 攻撃キューを全部取り出す.
-		for( int i = 0; i < static_cast<int>(m_AttackDataQueue.size()); i++ ) m_AttackDataQueue.pop();
+		for( int i = FOR_INIT_ZERO_INT; i < static_cast<int>(m_AttackDataQueue.size()); i++ ) m_AttackDataQueue.pop();
 		m_AttackComboCount = player::EAttackNo_None;
 	}
 	// 体力がなくなったら.
 	if( m_LifePoint <= 0.0f ){
 		CSoundManager::PlaySE("PlayerVoiceDead");
 		// 攻撃キューを全部取り出す.
-		for( int i = 0; i < static_cast<int>(m_AttackDataQueue.size()); i++ ) m_AttackDataQueue.pop();
+		for( int i = FOR_INIT_ZERO_INT; i < static_cast<int>(m_AttackDataQueue.size()); i++ ) m_AttackDataQueue.pop();
 		m_AttackComboCount = player::EAttackNo_None;
 		// 死亡アニメーションを設定.
 		SetAnimation( player::EAnimNo_Dead );
@@ -1000,7 +1016,7 @@ void CPlayer::SetSPEffectTime( const std::function<void(float&,float&)>& proc )
 {
 	if( m_pEffectTimers[player::EEffectTimerNo_SPRecovery]->IsUpdate() == true ) return;
 
-	float tmpTime = 0.0f;
+	float tmpTime = FOR_INIT_ZERO_FLOAT;
 	proc( m_ItemSpecialAbilityValue, tmpTime );
 	m_pEffectTimers[player::EEffectTimerNo_SPRecovery]->SetTime( tmpTime );
 
@@ -1013,7 +1029,7 @@ void CPlayer::SetAttackEffectTime( const std::function<void(float&,float&)>& pro
 {
 	if( m_pEffectTimers[player::EEffectTimerNo_Attack]->IsUpdate() == true ) return;
 
-	float tmpTime = 0.0f;
+	float tmpTime = FOR_INIT_ZERO_FLOAT;
 	proc( m_AttackPower, tmpTime );
 	m_pEffectTimers[player::EEffectTimerNo_Attack]->SetTime( tmpTime );
 	m_pEffectTimers[player::EEffectTimerNo_Attack]->Set();
@@ -1024,7 +1040,7 @@ void CPlayer::SetMoveSpeedEffectTime( const std::function<void(float&,float&)>& 
 {
 	if( m_pEffectTimers[player::EEffectTimerNo_MoveSpeedUp]->IsUpdate() == true ) return;
 
-	float tmpTime = 0.0f;
+	float tmpTime = FOR_INIT_ZERO_FLOAT;
 	proc( m_MoveSpeed, tmpTime );
 	m_pEffectTimers[player::EEffectTimerNo_MoveSpeedUp]->SetTime( tmpTime );
 	m_pEffectTimers[player::EEffectTimerNo_MoveSpeedUp]->Set();
@@ -1038,7 +1054,7 @@ void CPlayer::SetParalysisTime( const std::function<void(float&)>& proc )
 	if( bit::IsBitFlag( m_StatusFlag, player::EStatusFlag_EndSPCameraMove ) == true ) return;	// SPカメラが動作中なら終了.
 	if( bit::IsBitFlag( m_StatusFlag, player::EStatusFlag_Dead )			== true ) return;	// 死亡中なら終了.
 
-	float tmpTime = 0.0f;
+	float tmpTime = FOR_INIT_ZERO_FLOAT;
 	proc( tmpTime );
 	m_pEffectTimers[player::EEffectTimerNo_Paralysis]->SetTime( tmpTime );
 	m_pEffectTimers[player::EEffectTimerNo_Paralysis]->Set();
@@ -1086,7 +1102,7 @@ bool CPlayer::ColliderSetting()
 		&m_vScale.x,
 		m_Parameter.SphereAdjPos,
 		-18.0f,
-		0.0f ) )) return false;
+		FOR_INIT_ZERO_FLOAT ) )) return false;
 
 	// 攻撃用の当たり判定初期化.
 	if( m_pAttackCollManager == nullptr ){
@@ -1117,7 +1133,7 @@ bool CPlayer::EffectSetting()
 	// メモリの最大値設定.
 	m_pEffects.reserve(effectNum);
 
-	for( int i = 0; i < effectNum; i++ ){
+	for( int i = FOR_INIT_ZERO_INT; i < effectNum; i++ ){
 		m_pEffects.emplace_back( std::make_shared<CEffectManager>() );
 		if( m_pEffects[i]->SetEffect( effectNames[i] ) == false ) return false;
 	}
@@ -1133,14 +1149,12 @@ bool CPlayer::SetAnimFrameList()
 	player::SAnimationAdjFrameList list;
 	if( CFileManager::BinaryReading( "Data\\GameParam\\Player\\PlayerAnimAdjList.bin", list ) == false ) return false;
 
-
 	for( int i = player::EAnimNo_Begin; i < player::EAnimNo_End; i++ ){
 		m_AnimFrameList.at(i) = { 0.0, m_pSkinMesh->GetAnimPeriod(i)-list.Frame[i] };
 	}
 
 	// アニメーションの引きずり調整リストを読み込む.
 	if( CFileManager::BinaryReading( "Data\\GameParam\\Player\\PlayerAnimDragging.bin", m_AnimAdjDrggingParam ) == false ) return false;
-
 	// 攻撃調整用パラメーターを読み込む.
 	if( CFileManager::BinaryReading( "Data\\GameParam\\Player\\PlayerAtkAdjParam.bin", m_AttackAdjParam ) == false ) return false;
 
@@ -1180,31 +1194,95 @@ void CPlayer::EditRender()
 	ImGui::GetStyle().Colors[ImGuiCol_::ImGuiCol_WindowBg] = { 0.3f, 0.3f, 0.3f, 0.9f };
 	ImGui::Begin( u8"プレイヤーの設定", &isOpen );
 
-	// 各パラメータの設定.
-	ImGui::InputFloat( u8"移動速度", &m_MoveSpeed );
-	ImGui::InputFloat( u8"体力", &m_LifePoint );
-	ImGui::InputFloat( u8"攻撃力", &m_Parameter.AttackPower );
-	ImGui::InputInt( u8"無敵時間", &m_Parameter.InvincibleTime );
-	ImGui::InputFloat( u8"特殊能力最大値", &m_Parameter.SpecialAbilityMax );
-	ImGui::InputFloat( u8"特殊能力回復値", &m_Parameter.SpecialAbilityValue );
-	ImGui::InputInt( u8"攻撃コンボ最大数", &m_Parameter.AttackComboMax );
-	ImGui::InputInt( u8"攻撃キュー追加最大数", &m_Parameter.AttackQueueMax );
-	ImGui::InputFloat( u8"回避の移動距離", &m_Parameter.AvoidMoveDistance );
-	ImGui::InputFloat( u8"回避用の移動速度", &m_Parameter.AvoidMoveSpeed );
-	ImGui::InputFloat( u8"カメラの移動速度", &m_Parameter.CameraMoveSpeed );
-	ImGui::InputFloat( u8"カメラの距離", &m_Parameter.CameraDistance );
-	ImGui::InputFloat( u8"カメラの高さ", &m_Parameter.CameraHeight );
-	ImGui::InputFloat( u8"カメラ注視点の高さ", &m_Parameter.CameraLookHeight );
-	ImGui::InputFloat( u8"カメラ移動の補完値", &m_Parameter.CameraLerpValue );
-	ImGui::InputFloat( u8"スフィアの調整座標 X", &m_Parameter.SphereAdjPos.x );
-	ImGui::InputFloat( u8"スフィアの調整座標 Y", &m_Parameter.SphereAdjPos.y );
-	ImGui::InputFloat( u8"スフィアの調整座標 Z", &m_Parameter.SphereAdjPos.z );
-	ImGui::InputFloat( u8"スフィアの調整半径", &m_Parameter.SphereAdjRadius );
+	if( ImGui::TreeNode( u8"パラメータの設定" )){
+		CImGuiManager::DragFloat( u8"移動速度",						&m_Parameter.MoveSpeed );
+		CImGuiManager::DragFloat( u8"体力",							&m_Parameter.LifeMax );
+		CImGuiManager::DragFloat( u8"攻撃力",						&m_Parameter.AttackPower );
+		CImGuiManager::DragInt(   u8"無敵時間",						&m_Parameter.InvincibleTime );
+		CImGuiManager::DragFloat( u8"特殊能力最大値",				&m_Parameter.SpecialAbilityMax );
+		CImGuiManager::DragFloat( u8"特殊能力回復値",				&m_Parameter.SpecialAbilityValue );
+		CImGuiManager::DragInt(   u8"攻撃コンボ最大数",				&m_Parameter.AttackComboMax );
+		CImGuiManager::DragInt(   u8"攻撃キュー追加最大数",			&m_Parameter.AttackQueueMax );
+		CImGuiManager::DragFloat( u8"回避の移動距離",				&m_Parameter.AvoidMoveDistance );
+		CImGuiManager::DragFloat( u8"回避用の移動速度",				&m_Parameter.AvoidMoveSpeed );
+		CImGuiManager::DragFloat( u8"カメラの移動速度",				&m_Parameter.CameraMoveSpeed );
+		CImGuiManager::DragFloat( u8"カメラの距離",					&m_Parameter.CameraDistance );
+		CImGuiManager::DragFloat( u8"カメラの高さ",					&m_Parameter.CameraHeight );
+		CImGuiManager::DragFloat( u8"スフィアの調整座標 X",			&m_Parameter.SphereAdjPos.x );
+		CImGuiManager::DragFloat( u8"スフィアの調整座標 Y",			&m_Parameter.SphereAdjPos.y );
+		CImGuiManager::DragFloat( u8"スフィアの調整座標 Z",			&m_Parameter.SphereAdjPos.z );
+		CImGuiManager::DragFloat( u8"スフィアの調整半径",			&m_Parameter.SphereAdjRadius );
+		CImGuiManager::DragFloat( u8"ノックバック移動速度",			&m_Parameter.HitKnocBackMoveSpeed );
+		CImGuiManager::DragFloat( u8"回転の許容範囲",				&m_Parameter.ToleranceRadian );
+		CImGuiManager::DragFloat( u8"回転速度",						&m_Parameter.RotationSpeed );
+		CImGuiManager::DragFloat( u8"掛け合わせる移動量の加算値",	&m_Parameter.MoveSpeedMulAddValue );
+		CImGuiManager::DragFloat( u8"掛け合わせる移動量の最大値",	&m_Parameter.MoveSpeedMulMaxValue );
+		CImGuiManager::DragFloat( u8"攻撃の索敵距離",				&m_Parameter.AttackSearcLenght );
+		CImGuiManager::DragFloat( u8"扇の攻撃範囲",					&m_Parameter.AttackFanRadian );
+		CImGuiManager::DragFloat( u8"敵のノックバック力",			&m_Parameter.EnemyKnockBackPower );	
+		
+		ImGui::TreePop();
+	}
+	if( ImGui::TreeNode( u8"アニメーションの引きずり調整パラメータの設定" )){
+		if( ImGui::TreeNode( u8"攻撃1" )){
+			CImGuiManager::DragDouble(	u8"開始フレーム",		&m_AnimAdjDrggingParam.StartFrame[player::EDraggingAdjList_Attack1] );
+			CImGuiManager::DragDouble(	u8"終了フレーム",		&m_AnimAdjDrggingParam.EndFrame[player::EDraggingAdjList_Attack1] );
+			CImGuiManager::DragFloat(	u8"調整用の移動速度",	&m_AnimAdjDrggingParam.MoveSpeed[player::EDraggingAdjList_Attack1] );
+			ImGui::TreePop();
+		}
+		if( ImGui::TreeNode( u8"攻撃2" )){
+			CImGuiManager::DragDouble(	u8"開始フレーム",		&m_AnimAdjDrggingParam.StartFrame[player::EDraggingAdjList_Attack2] );
+			CImGuiManager::DragDouble(	u8"終了フレーム",		&m_AnimAdjDrggingParam.EndFrame[player::EDraggingAdjList_Attack2] );
+			CImGuiManager::DragFloat(	u8"調整用の移動速度",	&m_AnimAdjDrggingParam.MoveSpeed[player::EDraggingAdjList_Attack2] );
+			ImGui::TreePop();
+		}
+		if( ImGui::TreeNode( u8"攻撃3" )){
+			CImGuiManager::DragDouble(	u8"開始フレーム",		&m_AnimAdjDrggingParam.StartFrame[player::EDraggingAdjList_Attack3] );
+			CImGuiManager::DragDouble(	u8"終了フレーム",		&m_AnimAdjDrggingParam.EndFrame[player::EDraggingAdjList_Attack3] );
+			CImGuiManager::DragFloat(	u8"調整用の移動速度",	&m_AnimAdjDrggingParam.MoveSpeed[player::EDraggingAdjList_Attack3] );
+			ImGui::TreePop();
+		}
+		if( ImGui::TreeNode( u8"死亡" )){
+			CImGuiManager::DragDouble(	u8"開始フレーム",		&m_AnimAdjDrggingParam.StartFrame[player::EDraggingAdjList_Dead] );
+			CImGuiManager::DragDouble(	u8"終了フレーム",		&m_AnimAdjDrggingParam.EndFrame[player::EDraggingAdjList_Dead] );
+			CImGuiManager::DragFloat(	u8"調整用の移動速度",	&m_AnimAdjDrggingParam.MoveSpeed[player::EDraggingAdjList_Dead] );
+			ImGui::TreePop();
+		}
+		
+		ImGui::TreePop();
+	}
+	if( ImGui::TreeNode( u8"攻撃調整パラメータの設定" )){
+		if( ImGui::TreeNode( u8"攻撃1" )){
+			CImGuiManager::DragDouble(	u8"有効終了フレーム",			&m_AttackAdjParam.EnabledEndFrame[player::EAttackNo_One-1] );
+			CImGuiManager::DragDouble(	u8"当たり判定有効終了フレーム",	&m_AttackAdjParam.CollEnabledEndFrame[player::EAttackNo_One-1] );
+			CImGuiManager::DragFloat(	u8"当たり判定半径",				&m_AttackAdjParam.CollisionRadius[player::EAttackNo_One-1] );
+			ImGui::TreePop();
+		}
+		if( ImGui::TreeNode( u8"攻撃2" )){
+			CImGuiManager::DragDouble(	u8"有効終了フレーム",			&m_AttackAdjParam.EnabledEndFrame[player::EAttackNo_Two-1] );
+			CImGuiManager::DragDouble(	u8"当たり判定有効終了フレーム",	&m_AttackAdjParam.CollEnabledEndFrame[player::EAttackNo_Two-1] );
+			CImGuiManager::DragFloat(	u8"当たり判定半径",				&m_AttackAdjParam.CollisionRadius[player::EAttackNo_Two-1] );
+			ImGui::TreePop();
+		}
+		if( ImGui::TreeNode( u8"攻撃3" )){
+			CImGuiManager::DragDouble(	u8"有効終了フレーム",			&m_AttackAdjParam.EnabledEndFrame[player::EAttackNo_Three-1] );
+			CImGuiManager::DragDouble(	u8"当たり判定有効終了フレーム",	&m_AttackAdjParam.CollEnabledEndFrame[player::EAttackNo_Three-1] );
+			CImGuiManager::DragFloat(	u8"当たり判定半径",				&m_AttackAdjParam.CollisionRadius[player::EAttackNo_Three-1] );
+			ImGui::TreePop();
+		}
+		
+		ImGui::TreePop();
+	}
+
+	// パラメータの設定.
+	SetParameter( m_Parameter );
 
 	static CImGuiManager::SSuccess s_Success;
 	if( ImGui::Button(u8"読込") == true ){
 		// データの読み込み.
 		s_Success.IsSucceeded = CFileManager::BinaryReading( PARAMETER_FILE_PATH, m_Parameter );
+		s_Success.IsSucceeded = CFileManager::BinaryReading( "Data\\GameParam\\Player\\PlayerAnimDragging.bin", m_AnimAdjDrggingParam );
+		s_Success.IsSucceeded = CFileManager::BinaryReading( "Data\\GameParam\\Player\\PlayerAtkAdjParam.bin", m_AttackAdjParam );
 		if( s_Success.IsSucceeded == true ){
 			ColliderSetting();
 		}
@@ -1213,6 +1291,8 @@ void CPlayer::EditRender()
 	if( ImGui::Button(u8"保存") == true ){
 		// データの書き込み.
 		s_Success.IsSucceeded = CFileManager::BinaryWriting( PARAMETER_FILE_PATH, m_Parameter );
+		s_Success.IsSucceeded = CFileManager::BinaryReading( "Data\\GameParam\\Player\\PlayerAnimDragging.bin", m_AnimAdjDrggingParam );
+		s_Success.IsSucceeded = CFileManager::BinaryReading( "Data\\GameParam\\Player\\PlayerAtkAdjParam.bin", m_AttackAdjParam );
 	}
 	ImGui::SameLine();
 	s_Success.Render();	// 成功かどうかを描画.

@@ -21,7 +21,6 @@ CEditCamera::CEditCamera()
 	, m_Radian	( 0.0f, 0.0f )
 {
 	m_pMouse = std::make_unique<CMouse>();
-	m_pMouse->SetHWND( m_hWnd );
 	m_vPosition = INIT_POSITION;
 }
 
@@ -32,6 +31,7 @@ CEditCamera::~CEditCamera()
 // 更新関数.
 void CEditCamera::Updata()
 {
+	m_pMouse->SetHWND( m_hWnd );
 	D3DXMATRIX mRot;
 	D3DXMatrixRotationYawPitchRoll( &mRot, m_Radian.x, 0.0f, 0.0f );
 	// 軸ベクトルを用意.

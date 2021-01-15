@@ -56,6 +56,7 @@ public:
 	static void Render();
 
 	// ドラッグの表示.
+	static void DragDouble( const char* label, double* v, const double& speed = 0.001 );
 	static void DragFloat( const char* label, float* v, const float& speed = 0.001f );
 	static void DragInt( const char* label, int* v, const float& speed = 1.0f );
 };

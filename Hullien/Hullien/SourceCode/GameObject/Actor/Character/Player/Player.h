@@ -14,23 +14,23 @@ class CPlayer : public CCharacter
 {
 	// パラメータのファイルパス.
 	const char* PARAMETER_FILE_PATH = "Data\\GameParam\\Player\\Player.bin";
-	const char*	MODEL_NAME			= "kaito_s";	// モデル名.
-	const char* MODEL_TEMP_NAME		= "kaito";		// 仮モデル名.
 
-	// 使用攻撃エフェクト名.
-	const char* ATTACK_ONE_EFFECT_NAME		= "slash_effect_1";
-	const char* ATTACK_TWO_EFFECT_NAME		= "slash_effect_2";
-	const char* ATTACK_THREE_EFFECT_NAME	= "slash_effect_3";
-	// 特殊能力エフェクト名.
-	const char* SPECIAL_ABILITY_EFFECT_NAME	= "uvtest";
-	// 回避エフェクト名.
-	const char* AVOIDANCE_EFFECT_NAME		= "sandSmoke";
-	// 麻痺エフェクト名.
-	const char* PARALYSIS_EFFECT_NAME		= "uvtest";
+	// モデル名.
+	const char*	MODEL_NAME			= "kaito_s";
 
-	// 足のボーン名.
-	const char* RIGHT_FOOT	= "kaito_rifa_2_R_asi_4";
-	const char* LEFT_FOOT	= "kaito_rifa_2_L_asi_4";
+	// エフェクト名.
+	const char* ATTACK_ONE_EFFECT_NAME		= "slash_effect_1";	// 攻撃1.
+	const char* ATTACK_TWO_EFFECT_NAME		= "slash_effect_2";	// 攻撃2.
+	const char* ATTACK_THREE_EFFECT_NAME	= "slash_effect_3";	// 攻撃3.
+	const char* SPECIAL_ABILITY_EFFECT_NAME	= "uvtest";			// 特殊能力.
+	const char* AVOIDANCE_EFFECT_NAME		= "sandSmoke";		// 回避.
+	const char* PARALYSIS_EFFECT_NAME		= "uvtest";			// 麻痺.
+
+	// ボーン名.
+	const char* RIGHT_FOOT_BONE_NAME	= "kaito_rifa_2_R_asi_4";		// 右足.
+	const char* LEFT_FOOT_BONE_NAME		= "kaito_rifa_2_L_asi_4";		// 左足.
+	const char* LITTLE_FINGER_BONE_NAME	= "kaito_rifa_2_L_yubi_5_1";	// 小指.
+	const char* RING_FINGER_BONE_NAME	= "kaito_rifa_2_L_yubi_4_1";	// 薬指.
 
 	const float TWO = 2.0f;
 	const float CAMERA_COUNT_MAX			= 100.0f;	// カメラのカウント最大値.
@@ -42,6 +42,16 @@ class CPlayer : public CCharacter
 	const float CAMERA_AMPLITUDE_LOOKPOS	= 0.01f;	// カメラ注視位置の振幅.
 	const float CAMERA_RETURN_COUNT_ADD		= 0.001f;	// カメラの戻るときのカウント加算値.
 	const float CAMERA_RETURN_COUNT_MAX		= 0.1f;		// カメラの戻るときのカウント最大値.
+
+	// 初期化用 0値.
+	const int			FOR_INIT_ZERO_INT	= 0;
+	const float			FOR_INIT_ZERO_FLOAT	= 0.0f;
+	const D3DXVECTOR3	FOR_INIT_ZERO_VEC3	= { 0.0f, 0.0f, 0.0f };
+
+	const float ATTACK_EFFECT_RENDER_HEIGHT	= 5.0f;		// 攻撃エフェクトの描画高さ.
+	const float AVOID_EFFECT_RENDER_HEIGHT	= 10.0f;	// 回避エフェクトの描画高さ.
+
+	const float PLAY_WARNING_SE_LIFE_ONE_THIRD	= 1.0f / 4.0f;
 
 	// 声の音量.
 	const float VOICE_VOLUME = 1.5f;
@@ -78,6 +88,9 @@ public:
 	virtual void ResumeAnimation() override;
 	// カメラを揺らす.
 	bool CameraShake();
+
+	// パラメータの設定(editなどで使用).
+	void SetParameter( const player::SPlayerParam& param, const bool& isEdit = false );
 
 private:
 	// 操作関数.
@@ -179,7 +192,7 @@ private:
 
 	player::SAnimDraggingAdjParam		m_AnimAdjDrggingParam;
 	player::SAttackAdjParam				m_AttackAdjParam;
-	SPlayerParam	m_Parameter;			// パラメーター.
+	player::SPlayerParam	m_Parameter;			// パラメーター.
 	float			m_LifePoint;			// 体力.
 	float			m_SpecialAbility;		// 特殊能力.
 	unsigned char	m_StatusFlag;			// 現在の状態のフラグ.

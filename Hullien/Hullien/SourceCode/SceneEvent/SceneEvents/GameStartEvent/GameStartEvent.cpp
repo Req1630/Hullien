@@ -278,8 +278,6 @@ void CGameStartEvent::NextStep()
 void CGameStartEvent::Skip()
 {
 	if (m_EventStep == EEventStep::Disp_Preserve_Girl) return;
-	if (m_EventStep == EEventStep::GetCaught_Girl) return;
-	if (m_EventStep == EEventStep::GameStart) return;
 	if (m_IsSkip == true) return;
 
 	CFade::SetFadeIn();
@@ -510,6 +508,7 @@ void CGameStartEvent::InvocatingOrderBarrier()
 	// UIの設定.
 	m_pWidget->SetWidgetState(CGameStartEventWidget::EWidgetState::Push_YButton);
 	
+	if( CFade::GetFadeState() == CFade::EFadeState::In ) CFade::SetFadeOut();
 	if (CFade::GetIsFade() == true) return;	//フェード中なら終了.
 	if (m_pWidget->IsDispEnd() == false) return;
 	// プレイヤーの更新.

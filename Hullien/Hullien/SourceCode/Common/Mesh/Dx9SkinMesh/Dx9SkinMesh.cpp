@@ -78,7 +78,7 @@ CDX9SkinMesh::~CDX9SkinMesh()
 
 	m_pReleaseMaterial = nullptr;
 
-	SAFE_RELEASE(m_pMeshForRay);
+	SAFE_RELEASE(m_pD3dxMesh);
 
 	//Dx9 デバイス関係.
 	m_pDevice9 = nullptr;
