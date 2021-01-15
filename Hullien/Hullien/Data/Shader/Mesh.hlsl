@@ -186,7 +186,7 @@ PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
 	p = p * p;
 	// 計算結果よりトゥーンシェーダー用のテクスチャから色をフェッチする
 	float4 toonColor = g_ToonMap.Sample(g_ToonSamLinear, float2(p, 0.0f));
-	color.rgb *= toonColor.rgb * g_fIntensity.x;
+	color.rgb *= toonColor.rgb * g_fIntensity.x + + g_vSpecular.rgb;;
 	
 	//-----高さフォグ処理------.
 	// fogテクスチャの座標を取得、計算.
@@ -301,7 +301,7 @@ PS_OUTPUT PS_NoTex(VS_OUTPUT input) : SV_Target
 	p = p * p;
 	// 計算結果よりトゥーンシェーダー用のテクスチャから色をフェッチする
 	float4 toonColor = g_ToonMap.Sample(g_ToonSamLinear, float2(p, 0.0f));
-	color.rgb *= toonColor.rgb * g_fIntensity.x;
+	color.rgb *= toonColor.rgb * g_fIntensity.x + g_vSpecular.rgb;
 	
 	//-----高さフォグ処理------.
 	// fogテクスチャの座標を取得、計算.
