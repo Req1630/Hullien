@@ -29,6 +29,12 @@ const int WND_W = 1280;	// ウィンドウの幅.
 const int WND_H = 720;	// ウィンドウの高さ.
 const int FPS = 60;
 
+// 初期化用 0値.
+const int			FOR_INIT_ZERO_INT		= 0;
+const float			FOR_INIT_ZERO_FLOAT		= 0.0f;
+const double		FOR_INIT_ZERO_DOUBLE	= 0.0;
+const D3DXVECTOR3	FOR_INIT_ZERO_VEC3		= { 0.0f, 0.0f, 0.0f };
+
 class CCamera;
 class CDX9SkinMesh;
 class CDX9StaticMesh;

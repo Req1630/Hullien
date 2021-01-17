@@ -43,11 +43,6 @@ class CPlayer : public CCharacter
 	const float CAMERA_RETURN_COUNT_ADD		= 0.001f;	// カメラの戻るときのカウント加算値.
 	const float CAMERA_RETURN_COUNT_MAX		= 0.1f;		// カメラの戻るときのカウント最大値.
 
-	// 初期化用 0値.
-	const int			FOR_INIT_ZERO_INT	= 0;
-	const float			FOR_INIT_ZERO_FLOAT	= 0.0f;
-	const D3DXVECTOR3	FOR_INIT_ZERO_VEC3	= { 0.0f, 0.0f, 0.0f };
-
 	const float ATTACK_EFFECT_RENDER_HEIGHT	= 5.0f;				// 攻撃エフェクトの描画高さ.
 	const float AVOID_EFFECT_RENDER_HEIGHT	= 10.0f;			// 回避エフェクトの描画高さ.
 

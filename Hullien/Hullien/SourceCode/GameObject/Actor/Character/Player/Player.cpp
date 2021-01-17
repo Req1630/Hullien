@@ -435,27 +435,16 @@ void CPlayer::AttackMove()
 	if( bit::IsBitFlag( m_StatusFlag, player::EStatusFlag_KnockBack )	== true ) return;	// ノックバック中なら終了.
 	if( bit::IsBitFlag( m_StatusFlag, player::EStatusFlag_Dead )		== true ) return;	// 死亡中なら終了.
 
-	int ATTACK_NO = FOR_INIT_ZERO_INT;
+	int attackNo = FOR_INIT_ZERO_INT;
 	switch( m_NowAnimNo )
 	{
-	case player::EAnimNo_Attack1:	ATTACK_NO = player::EAttackNo_One-1;	break;
-	case player::EAnimNo_Attack3:	ATTACK_NO = player::EAttackNo_Two-1;	break;
-	case player::EAnimNo_Attack2:	ATTACK_NO = player::EAttackNo_Three-1;	break;
+	case player::EAnimNo_Attack1:	attackNo = player::EAttackNo_One-1;		break;
+	case player::EAnimNo_Attack3:	attackNo = player::EAttackNo_Two-1;		break;
+	case player::EAnimNo_Attack2:	attackNo = player::EAttackNo_Three-1;	break;
 	default: break;
 	}
 	// 攻撃アニメーションのずれ(引きずり)を調整.
-	AnimationDraggingAdj( ATTACK_NO );
-
-	//if( m_AnimAdjDrggingParam.StartFrame[ATTACK_NO] <= m_AnimFrameList[m_NowAnimNo].NowFrame && 
-	//	m_AnimFrameList[m_NowAnimNo].NowFrame <= m_AnimAdjDrggingParam.EndFrame[ATTACK_NO] ){
-	//	// アニメーションのずれを調整.
-	//	m_vPosition.x -= sinf(m_vRotation.y)*m_AnimAdjDrggingParam.MoveSpeed[ATTACK_NO];
-	//	m_vPosition.z -= cosf(m_vRotation.y)*m_AnimAdjDrggingParam.MoveSpeed[ATTACK_NO];
-
-	//	// 見えない壁との当たり判定.
-	//	if( CActor::IsCrashedWallX() == true ) m_vPosition.x += sinf(m_vRotation.y)*m_AnimAdjDrggingParam.MoveSpeed[ATTACK_NO];
-	//	if( CActor::IsCrashedWallZ() == true ) m_vPosition.z += cosf(m_vRotation.y)*m_AnimAdjDrggingParam.MoveSpeed[ATTACK_NO];
-	//}
+	AnimationDraggingAdj( attackNo );
 }
 
 // 回避動作関数.
@@ -627,7 +616,7 @@ void CPlayer::AttackRangeDecision( CActor* pActor )
 		m_vPosition.z - pActor->GetPosition().z,
 	};
 	// ベクトルの長さ算出.
-	const float vec_length = sqrtf((vec.x * vec.x) + (vec.z * vec.z));
+	const float vecLength = sqrtf((vec.x * vec.x) + (vec.z * vec.z));
 	float rot = m_vRotation.y;
 	// 各値が有効範囲内なら移動ベクトルから回転値を算出.
 	if( m_MoveVector.x >= IDLE_THUMB_MAX || IDLE_THUMB_MIN >= m_MoveVector.x ||
@@ -638,7 +627,7 @@ void CPlayer::AttackRangeDecision( CActor* pActor )
 	const D3DXVECTOR3 playerVec = { sinf(rot), FOR_INIT_ZERO_FLOAT, cosf(rot), };
 
 	// 宇宙人との距離が一定範囲外なので終了.
-	if( vec_length > m_Parameter.AttackSearcLenght ) return;
+	if( vecLength > m_Parameter.AttackSearcLenght ) return;
 
 	// 単位ベクトルに変換.
 	D3DXVec3Normalize( &vec, &vec );
@@ -872,7 +861,6 @@ void CPlayer::AttackAnimation()
 		}
 		// エフェクトを再生.
 		m_pEffects[m_AttackComboCount-1]->Play( {m_vPosition.x, m_vPosition.y+ATTACK_EFFECT_RENDER_HEIGHT, m_vPosition.z } );
-		float attackCollisionRadius = FOR_INIT_ZERO_FLOAT;	// 攻撃の当たり判定.
 		// 攻撃SEを鳴らす.
 		CSoundManager::PlaySE("PlayerAttack");
 		if(m_AttackComboCount == player::EAttackNo_Two){
@@ -925,7 +913,7 @@ bool CPlayer::IsPushAttack()
 
 	// "player::EAttackNo_One"が 数値"1"なので,
 	//	-1して配列の添え字を調整する.
-	const int ATTACK_ADJ_NO = m_AttackComboCount-1;
+	const int attackAdjNo = m_AttackComboCount-1;
 
 	switch( m_AttackComboCount )
 	{
@@ -936,8 +924,8 @@ bool CPlayer::IsPushAttack()
 			&m_vRotation,
 			&m_vScale.x,
 			m_Parameter.SphereAdjPos,
-			m_AttackAdjParam.CollisionRadius[ATTACK_ADJ_NO] ) )) return false;
-		setAttackData( player::EAnimNo_Attack1, ATTACK_ADJ_NO );
+			m_AttackAdjParam.CollisionRadius[attackAdjNo] ) )) return false;
+		setAttackData( player::EAnimNo_Attack1, attackAdjNo );
 		// 最初の攻撃はアニメーションを設定する.
 		SetAnimation( tmpAttackData.AnimNo );
 		m_pEffects[player::EEffectNo_AttackOne]->Play( m_vPosition );
@@ -947,11 +935,11 @@ bool CPlayer::IsPushAttack()
 		break;
 
 	case player::EAttackNo_Two:	// 攻撃2.
-		setAttackData( player::EAnimNo_Attack2, ATTACK_ADJ_NO );
+		setAttackData( player::EAnimNo_Attack2, attackAdjNo );
 		break;
 
 	case player::EAttackNo_Three:// 攻撃3.
-		setAttackData( player::EAnimNo_Attack3, ATTACK_ADJ_NO );
+		setAttackData( player::EAnimNo_Attack3, attackAdjNo );
 		break;
 
 	default:
