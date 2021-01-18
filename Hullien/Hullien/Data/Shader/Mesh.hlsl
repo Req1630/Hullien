@@ -197,17 +197,19 @@ PS_OUTPUT PS_Main(VS_OUTPUT input) : SV_Target
 	float alphas = 1.0f - (1.0f - alpha) * fogColor;
 
 	color.rgb = color.rgb * alphas + g_Fog.FogColor.rgb * (1.0f - alphas);
-	
+	float depthAlpha = 1.0f;
 	if (length(input.Normal) <= 0.0){
 		color = g_Texture.Sample(g_SamLinear, input.Tex) * g_Color;
 		input.Pos.z = 0.0f;
 		input.Pos.w = 1.0f;
+		depthAlpha = 0.0f;
 	}
 	
 	PS_OUTPUT output = (PS_OUTPUT) 0;
 	output.Color = color;
 	output.Normal = float4(input.Normal, 1.0f);
-	output.ZDepth = input.Pos.z / input.Pos.w;
+	float z = input.Pos.z/input.Pos.w;
+	output.ZDepth = float4(z, z, z, depthAlpha);
 	if (output.Color.a <= 0.0f) discard;
 	
 	return output;

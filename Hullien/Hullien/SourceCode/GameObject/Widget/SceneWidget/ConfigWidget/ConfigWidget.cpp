@@ -6,6 +6,7 @@
 #include "..\..\..\..\Utility\Input\Input.h"
 #include "..\..\..\..\XAudio2\SoundManager.h"
 #include "..\..\Cursor\ConfigCursor.h"
+#include "..\..\ButtonExplanation\ButtonExplanation.h"
 #include "VolumeConfigWidget/VolumeConfigWidget.h"
 #include "CameraConfigWidget/CameraConfigWidget.h"
 #include "ControllerConfigWidget/ControllerConfigWidget.h"
@@ -26,6 +27,7 @@ CConfigWidget::CConfigWidget( const bool& isGame )
 	, m_pVolumeConfig		( nullptr )
 	, m_pCameraConfig		( nullptr )
 	, m_pControllerConfig	( nullptr )
+	, m_pButtonExp			( nullptr )
 	, m_pGraphicConfig		( nullptr )
 	, m_pBlendSprite		( nullptr )
 	, m_pTransition			( nullptr )
@@ -44,9 +46,12 @@ CConfigWidget::CConfigWidget( const bool& isGame )
 	m_pVolumeConfig		= std::make_unique<CVolumeConfigWidget>();
 	m_pCameraConfig		= std::make_unique<CCameraConfigWidget>();
 	m_pControllerConfig	= std::make_unique<CControllerConfigWidget>();
+	m_pButtonExp		= std::make_unique<CButtonExp>( BUTTON_EXP_RENDER_POS.x, BUTTON_EXP_RENDER_POS.y );
 	m_pGraphicConfig	= std::make_unique<CGraphicConfigWidget>();
 	m_pBlendSprite		= std::make_unique<CBlendSprite>();
 	m_pTransition		= std::make_unique<CTransition>();
+
+	m_pButtonExp->SetBackString();
 }
 
 CConfigWidget::~CConfigWidget()
@@ -62,6 +67,7 @@ bool CConfigWidget::Init()
 	if( GetInstance()->m_pVolumeConfig->Init()		== false ) return false;
 	if( GetInstance()->m_pCameraConfig->Init()		== false ) return false;
 	if( GetInstance()->m_pControllerConfig->Init()	== false ) return false;
+	if( GetInstance()->m_pButtonExp->Init()			== false ) return false;
 	if( GetInstance()->m_pGraphicConfig->Init()	== false ) return false;
 	if( FAILED( GetInstance()->m_pTransition->Init( CDirectX11::GetDevice(), CDirectX11::GetContext(), 
 		"Data\\Texture\\UI\\Fade\\009TransitoinRule.png",
@@ -169,6 +175,7 @@ void CConfigWidget::Render()
 	switch( GetInstance()->m_NowConfigState )
 	{
 	case EConfigState_None:
+		
 		break;
 	case EConfigState_Volume:
 		GetInstance()->m_pVolumeConfig->Render();	// âπó ê›íËUIÇÃï`âÊ.
@@ -185,6 +192,7 @@ void CConfigWidget::Render()
 	default:
 		break;
 	}
+	GetInstance()->m_pButtonExp->Render();
 }
 
 // âπó ÇÃê›íËÇÇ≈Ç´Ç»Ç¢ÇÊÇ§Ç…Ç∑ÇÈ.

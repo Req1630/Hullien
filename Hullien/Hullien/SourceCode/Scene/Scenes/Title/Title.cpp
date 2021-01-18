@@ -11,17 +11,20 @@
 #include "..\..\..\Utility\Input\Input.h"
 #include "..\..\..\XAudio2\SoundManager.h"
 #include "..\..\..\Common\SceneTexRenderer\SceneTexRenderer.h"
+#include "..\..\..\GameObject\Widget\ButtonExplanation\ButtonExplanation.h"
 #include "..\..\..\GameObject\Widget\SceneTransition\SceneTransition.h"
 
 CTitle::CTitle( CSceneManager* pSceneManager )
 	: CSceneBase		( pSceneManager )
 	, m_pWidget			( nullptr )
+	, m_pButtonExp		( nullptr )
 	, m_IsChangeScene	( false )
 	, m_IsGameStart		( false )
 	, m_IsDecision		( false )
 	, m_IsNowConfig		( false )
 {
 	m_pWidget		= std::make_unique< CTitleWidget >();
+	m_pButtonExp	= std::make_unique<CButtonExp>();
 	CFade::SetFadeOut();
 }
 
@@ -36,6 +39,9 @@ bool CTitle::Load()
 {
 	if ( m_pWidget->Init() == false ) return false;
 	if( CConfigWidget::Init() == false ) return false;
+	// ボタン説明UIの読み込み.
+	if( m_pButtonExp->Init() == false ) return false;
+
 	CConfigWidget::SetIsNowGameScene( false );
 	CSoundManager::ThreadPlayBGM("TitleBGM");
 	CSoundManager::FadeInBGM("TitleBGM");
@@ -83,6 +89,11 @@ void CTitle::Render()
 	// タイトルUIの描画.
 	if ( m_pWidget == nullptr ) return;
 	m_pWidget->Render();
+
+	if( m_IsNowConfig == false ){
+		m_pButtonExp->SetIsCancelRender( false );
+		m_pButtonExp->Render();
+	}
 
 	//--------------------------------------------.
 	// 最終描画.

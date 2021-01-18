@@ -1,6 +1,7 @@
 #include "TitleWidget.h"
 
 #include "..\..\Cursor\Cursor.h"
+#include "..\..\ButtonExplanation\ButtonExplanation.h"
 #include "..\..\..\..\Common\Sprite\CSprite.h"
 #include "..\..\..\..\Resource\SpriteResource\SpriteResource.h"
 #include "..\..\..\..\Utility\Input\XInput\XInput.h"
@@ -10,8 +11,8 @@
 *	タイトルUI元クラス.
 **/
 CTitleWidget::CTitleWidget()
-	: m_pSprite				()
-	, m_pCursor				( nullptr )
+	: m_pSprite			()
+	, m_pCursor			( nullptr )
 	, m_SelectState		( CTitleWidget::ESelectState::Start )
 	, m_OldSelectState	( CTitleWidget::ESelectState::Start )
 {

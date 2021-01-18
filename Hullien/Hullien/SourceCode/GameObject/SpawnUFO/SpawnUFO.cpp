@@ -83,7 +83,9 @@ void CSpawnUFO::Render()
 	m_pStaticMesh->SetPosition( m_vPosition );
 	m_pStaticMesh->SetScale( m_vScale );
 	m_pStaticMesh->SetRasterizerState( ERS_STATE::Back );
+	m_pStaticMesh->SetBlend( true );
 	m_pStaticMesh->Render();
+	m_pStaticMesh->SetBlend( false );
 	m_pStaticMesh->SetRasterizerState( ERS_STATE::None );
 
 	m_pUFOLight->SetPosition( m_vPosition );

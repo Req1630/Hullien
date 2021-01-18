@@ -11,6 +11,7 @@ class CControllerConfigWidget;	// コントローラー設定UIクラス.
 class CGraphicConfigWidget;		// グラフィック設定UIクラス.
 class CBlendSprite;				// ブレンド描画用クラス.
 class CTransition;				// トランジションクラス.
+class CButtonExp;				// ボタン説明UIクラス.
 
 /********************************************
 *	設定UIクラス.
@@ -36,6 +37,8 @@ class CConfigWidget
 	const float FADE_SPEED = 0.03f;
 
 	const float INPUT_WAIT_TIME_MAX = 30.0f;
+
+	const D3DXVECTOR3 BUTTON_EXP_RENDER_POS = { 900.0f, 650.0f, 0.0f };
 
 	enum enConfigState
 	{
@@ -95,6 +98,7 @@ private:
 	std::unique_ptr<CVolumeConfigWidget>	m_pVolumeConfig;		// 音量設定UI.
 	std::unique_ptr<CCameraConfigWidget>	m_pCameraConfig;		// カメラ設定UI.
 	std::unique_ptr<CControllerConfigWidget>m_pControllerConfig;	// コントローラー設定UI.
+	std::unique_ptr<CButtonExp>				m_pButtonExp;			// ボタン説明UI.
 	std::unique_ptr<CGraphicConfigWidget>	m_pGraphicConfig;		// グラフィック設定UI.
 	std::unique_ptr<CBlendSprite>			m_pBlendSprite;			// ブレンド描画用.
 	std::unique_ptr<CTransition>			m_pTransition;			// トランジション.
