@@ -10,6 +10,8 @@ CLoadManager::CLoadManager()
 	: m_Thread				()
 	, m_Sprites				()
 	, m_Mutex				()
+	, m_UFOSpriteSize		( 1.0f )
+	, m_isAllLoadEnd		( false )
 	, m_isLoadEnd			( false )
 	, m_isThreadJoined		( false )
 	, m_isLoadFailed		( false )
@@ -40,6 +42,7 @@ void CLoadManager::LoadResource(
 
 	CFontResource::Load( pDevice11, pContext11 );
 	CSoundManager::CreateSoundData();
+	Sleep(100);
 	auto load = [&]( 
 		HWND hWnd, 
 		ID3D11Device* pDevice11, 
@@ -70,13 +73,20 @@ void CLoadManager::LoadResource(
 //------------------------.
 void CLoadManager::Render()
 {
+	if( m_isLoadEnd == true ){
+		m_UFOSpriteSize -= 0.01f;
+		if( m_UFOSpriteSize < 0.0f ) m_isAllLoadEnd = true;
+	}
+	int i = 0;
 	for( auto& s : m_Sprites ){
+		if( i == 1 ) s->SetScale( m_UFOSpriteSize );
 		s->SetFrameTime( 20 );
 		s->SetBlend( true );
 		s->SetDeprh( false );
 		s->RenderUI();
 		s->SetBlend( false );
 		s->SetDeprh( true );
+		i++;
 	}
 }
 

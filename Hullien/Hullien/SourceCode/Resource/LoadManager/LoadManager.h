@@ -36,7 +36,8 @@ public:
 	void Render();
 	// ロード失敗.
 	inline bool IsLoadFailed() const { return m_isLoadFailed; }
-
+	// ロードが終了したか.
+	inline bool	IsLoadEnd() const { return m_isAllLoadEnd; }
 private:
 	// スプライトの取得.
 	HRESULT GetSprite( 
@@ -47,7 +48,8 @@ private:
 	std::thread m_Thread;		// スレッド.
 	std::mutex	m_Mutex;
 	std::vector<std::shared_ptr<CSprite>>	m_Sprites;
-	
+	float	m_UFOSpriteSize;
+	bool m_isAllLoadEnd;
 	bool m_isLoadEnd;			// ロードが終了したか.
 	bool m_isThreadJoined;		// スレッドが解放されたか.
 	bool m_isLoadFailed;		// ロード失敗.

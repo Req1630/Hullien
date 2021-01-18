@@ -56,6 +56,8 @@ private:
 
 	std::shared_ptr<CSceneManager>	m_pSceneManager;
 	std::unique_ptr<CLoadManager>	m_pLoadManager;
+
+	bool	m_OneTexterRender;
 };
 
 #endif	// #ifndef MAIN_H.

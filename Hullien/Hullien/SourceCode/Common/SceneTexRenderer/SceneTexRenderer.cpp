@@ -312,8 +312,8 @@ void CSceneTexRenderer::ClearBuffer()
 	GetInstance()->m_pContext11->ClearRenderTargetView( 
 		GetInstance()->m_pDownLuminanceRTV, GetInstance()->CLEAR_BACK_COLOR );
 	// 全描画用テクスチャのクリア.
-	GetInstance()->m_pContext11->ClearRenderTargetView( 
-		GetInstance()->m_pScreenRTV[EScreenRenderNo_None], GetInstance()->CLEAR_BACK_COLOR );
+	//GetInstance()->m_pContext11->ClearRenderTargetView( 
+	//	GetInstance()->m_pScreenRTV[EScreenRenderNo_None], GetInstance()->CLEAR_BACK_COLOR );
 
 	GetInstance()->m_pBloom->ClearBuffer();
 }

@@ -19,6 +19,7 @@
 #include "..\Common\Shader\ShadowMap\ShadowMap.h"
 #include "..\Common\Shader\TranslucentShader\TranslucentShader.h"
 #include "..\Common\SceneTexRenderer\SceneTexRenderer.h"
+#include "..\GameObject\Widget\SceneTransition\SceneTransition.h"
 
 #include "..\Common\Font\FontCreate.h"
 #include "..\Common\Font\Font.h"
@@ -34,6 +35,7 @@ CMain::CMain()
 	, m_pLight			( nullptr )
 	, m_pSceneManager	( nullptr )
 	, m_pLoadManager	( nullptr )
+	, m_OneTexterRender	( false )
 {
 	m_pFrameRate	= std::make_unique<CFrameRate>( FPS );
 	m_pCamera		= std::make_shared<CCamera>();
@@ -124,12 +126,26 @@ void CMain::Update()
 
 	CCameraManager::Update();
 	m_pSceneManager->Update();
-	CSceneTexRenderer::FinalRender();
 	// FPSの表示.
 #if _DEBUG
 	CDebugText::SetPosition( D3DXVECTOR3( 0.0f, 0.0f, 0.0f ) );
 	CDebugText::Render( "FPS:", (int)m_pFrameRate->GetFrameTime() );
 #endif
+	// 一回だけロード画像を表示し、
+	//	その画像を保存して、フェードで使用する.
+	if( m_OneTexterRender == false ){
+		CSceneTexRenderer::SetRenderPass( CSceneTexRenderer::ERenderPass::GBuffer );
+		CSceneTexRenderer::SetGBuffer();
+
+		m_pLoadManager->Render();
+		CSceneTexRenderer::Render( false );
+		CSceneTexRenderer::SetSaveScreen( true );
+		CSceneTransition::SetSrcTexture( CSceneTexRenderer::GetTmpScreenTexture() );
+		CSceneTransition::SetFadeIn();
+		m_OneTexterRender = true;
+	}
+
+	CSceneTexRenderer::FinalRender();
 }
 
 //====================================.
@@ -151,7 +167,7 @@ void CMain::Loop()
 		} else {
 			// 画面のクリア.
 			CDirectX11::ClearBackBuffer();
-			if( m_pLoadManager->ThreadRelease() == true ){
+			if( m_pLoadManager->IsLoadEnd() == true ){
 				Update();
 			} else {
 				m_pLoadManager->Render();

@@ -13,6 +13,8 @@
 #include "..\..\..\Common\SceneTexRenderer\SceneTexRenderer.h"
 #include "..\..\..\GameObject\Widget\ButtonExplanation\ButtonExplanation.h"
 #include "..\..\..\GameObject\Widget\SceneTransition\SceneTransition.h"
+#include "..\..\..\Utility\ImGuiManager\ImGuiManager.h"
+#include "..\..\..\Editor\EditRenderer\EditRenderer.h"
 
 CTitle::CTitle( CSceneManager* pSceneManager )
 	: CSceneBase		( pSceneManager )
@@ -104,6 +106,17 @@ void CTitle::Render()
 
 	// ê›íËUIÇÃï`âÊ.
 	if( m_IsNowConfig == true ) CConfigWidget::Render();
+
+	CEditRenderer::PushRenderProc( 
+		[&]()
+	{
+		ImGui::Image( CSceneTexRenderer::GetGBuffer()[0], ImVec2(800, 400) );
+		ImGui::Image( CSceneTexRenderer::GetGBuffer()[1], ImVec2(800, 400) );
+		ImGui::Image( CSceneTexRenderer::GetGBuffer()[2], ImVec2(800, 400) );
+		ImGui::Image( CSceneTexRenderer::GetTransBaffer(), ImVec2(800, 400) );
+		ImGui::Image( CSceneTexRenderer::GetBlurTexture(), ImVec2(800, 400) );
+		ImGui::Image( CSceneTexRenderer::GetTmpScreenTexture(), ImVec2(800, 400) );
+	});	
 }
 
 //============================.
