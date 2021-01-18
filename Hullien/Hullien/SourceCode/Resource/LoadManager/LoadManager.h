@@ -14,9 +14,10 @@
 */
 class CLoadManager
 {
-	const char* LOAD_BACK_IMAGE = "Data\\Texture\\_LoadTexture\\LoadBackImage.png";
-	const char* LOAD_ANIM_IMAGE = "Data\\Texture\\_LoadTexture\\LoadAnim.png";
-	const char* LOAD_TEXT_IMAGE = "Data\\Texture\\_LoadTexture\\LoadText.png";
+	const char* LOAD_BACK_IMAGE = "Data\\Texture\\_LoadTexture\\loadBase.png";
+	const char* LOAD_ANIM_IMAGE = "Data\\Texture\\_LoadTexture\\loadUfo.png";
+	const char* LOAD_TEXT_IMAGE = "Data\\Texture\\_LoadTexture\\loadLogo.png";
+	const char* LOAD_IOCN_IMAGE = "Data\\Texture\\_LoadTexture\\2loadLogo.png";
 
 public:
 	CLoadManager();

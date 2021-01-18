@@ -75,6 +75,7 @@ struct stSpriteData
 	int				FrameCountSpeed;	// フレームカウント速度.
 	int				FrameTime;			// フレームタイム.
 	bool			IsAnimation;		// アニメーションするか.
+	bool			IsUVScroll;			// UVスクロールをするか.
 	enLocalPosition enLocalPosition;	// ローカル座標の種類.
 
 	stSpriteData()
@@ -85,12 +86,13 @@ struct stSpriteData
 		, SState			()
 		, PatternNo			{ 1, 1 }
 		, PatternMax		{ 1, 1 }
-		, UV				( 1.0f, 1.0f )
+		, UV				( 0.0f, 0.0f )
 		, AnimNumber		( 0 )
 		, FrameCount		( 0 )
 		, FrameCountSpeed	( 1 )
 		, FrameTime			( 20 )
-		, IsAnimation		( true )
+		, IsAnimation		( false )
+		, IsUVScroll		( false )
 		, enLocalPosition	( ELocalPosition::None )
 	{}
 	~stSpriteData()

@@ -46,6 +46,11 @@ public:
 	void SetSpriteData( const std::shared_ptr<SSpriteData>& pSpriteData ){ m_pSpriteData = pSpriteData; }
 	// スプライト情報の取得.
 	std::shared_ptr<SSpriteData> GetSpriteData(){ return m_pSpriteData; }
+
+	// アニメーションをするかどうか.
+	void SetIsAnimation( const bool& isAnim ){ m_pSpriteData->IsAnimation = isAnim; }
+	// UVスクロールをするかどうか.
+	void SetIsUVScroll( const bool& isScroll ){ m_pSpriteData->IsUVScroll = isScroll; }
 private:
 	// モデル作成.
 	HRESULT InitModel();
@@ -60,6 +65,8 @@ private:
 	D3DXVECTOR2 ConvertIntoUV();
 	// アニメーションの更新.
 	void AnimUpdate();
+	// UVスクロールの更新.
+	void UVScrollUpdate();
 
 	// 頂点情報の作成.
 	void CreateVERTEX(

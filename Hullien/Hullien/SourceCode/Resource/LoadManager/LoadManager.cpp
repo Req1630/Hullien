@@ -71,7 +71,7 @@ void CLoadManager::LoadResource(
 void CLoadManager::Render()
 {
 	for( auto& s : m_Sprites ){
-		s->SetFrameTime( 6 );
+		s->SetFrameTime( 20 );
 		s->SetBlend( true );
 		s->SetDeprh( false );
 		s->RenderUI();
@@ -103,7 +103,8 @@ HRESULT CLoadManager::GetSprite(
 	{
 		LOAD_BACK_IMAGE,
 		LOAD_ANIM_IMAGE,
-		LOAD_TEXT_IMAGE
+		LOAD_TEXT_IMAGE,
+		LOAD_IOCN_IMAGE,
 	};
 	const int size = sizeof(names)/sizeof(names[0]);
 
@@ -111,6 +112,8 @@ HRESULT CLoadManager::GetSprite(
 		SSpriteState ss = CSpriteResource::SpriteStateRead( names[i] );
 		m_Sprites.emplace_back( std::make_shared<CSprite>() );
 		if( FAILED( m_Sprites.back()->Init( pDevice11, pContext11, names[i], ss ) )) return E_FAIL;
+		if( i == 0 ) m_Sprites[i]->SetIsUVScroll( true );
+		if( i == 3 ) m_Sprites[i]->SetIsAnimation( true );
 	}
 
 	return S_OK;
