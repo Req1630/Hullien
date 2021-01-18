@@ -60,7 +60,7 @@ HRESULT CFontCreate::CreateFontTexture2D( const char* c, ID3D11ShaderResourceVie
 		CLIP_DEFAULT_PRECIS,			// クリッピングの精度.
 		PROOF_QUALITY,					// 出力品質.
 		FIXED_PITCH | FF_MODERN,		// ピッチとファミリ.
-		TEXT("UD デジタル 教科書体 N-B")// フォント名.
+		TEXT("GN-カガクゴ")				// フォント名.
 	};
 
 	HFONT hFont = nullptr;

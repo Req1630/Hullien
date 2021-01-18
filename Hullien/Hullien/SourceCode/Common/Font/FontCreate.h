@@ -6,8 +6,8 @@
 
 class CFontCreate
 {
-	const char*	FONT_PATH = "Data\\Font\\UDDigiKyokashoN-B.ttf";
-	const char*	FONT_NAME = "UD デジタル 教科書体 N-B";
+	const char*	FONT_PATH = "Data\\Texture\\_Font\\GN-KagakuGothic.ttf";
+	const char*	FONT_NAME = "GN-カガクゴ";
 	const int	FONT_BMP_SIZE = 256;
 public:
 	CFontCreate( ID3D11Device* pDevice11, ID3D11DeviceContext* pContext11 );
