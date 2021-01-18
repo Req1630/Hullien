@@ -175,7 +175,7 @@ void CConfigWidget::Render()
 	switch( GetInstance()->m_NowConfigState )
 	{
 	case EConfigState_None:
-		
+		GetInstance()->m_pButtonExp->Render();
 		break;
 	case EConfigState_Volume:
 		GetInstance()->m_pVolumeConfig->Render();	// ‰¹—Êİ’èUI‚Ì•`‰æ.
@@ -192,7 +192,6 @@ void CConfigWidget::Render()
 	default:
 		break;
 	}
-	GetInstance()->m_pButtonExp->Render();
 }
 
 // ‰¹—Ê‚Ìİ’è‚ğ‚Å‚«‚È‚¢‚æ‚¤‚É‚·‚é.

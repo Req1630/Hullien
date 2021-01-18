@@ -8,12 +8,16 @@
 class CConfigCursor;
 class CSlinder;
 class CSwitch;
+class CButtonExp;		// ボタン説明UIクラス.
 
 class CGraphicConfigWidget : public CWidget
 {
 	const char* SPRITE_FULL_SC_NAME		= "FullSC";
 	const char* SPRITE_MARK_NAME		= "GraphicMark";
 	const float INPUT_WAIT_TIME_MAX		= 30.0;
+
+	const D3DXVECTOR3 BUTTON_EXP_RENDER_POS = { 900.0f, 650.0f, 0.0f };
+
 	// 選択状態.
 	enum enSelectState
 	{
@@ -59,9 +63,10 @@ private:
 	virtual bool SpriteSetting() override;
 
 private:
-	std::vector<std::shared_ptr<CSprite>>	m_pSprites;	// 画像.
+	std::vector<std::shared_ptr<CSprite>>	m_pSprites;		// 画像.
 	std::unique_ptr<CConfigCursor>			m_pCursor;
 	std::unique_ptr<CSwitch>				m_pSwitch;
+	std::unique_ptr<CButtonExp>				m_pButtonExp;	// ボタン説明UI.
 	bool	m_IsFullScreen;
 	int		m_NowSelectState;
 	int		m_OldNowSelectState;

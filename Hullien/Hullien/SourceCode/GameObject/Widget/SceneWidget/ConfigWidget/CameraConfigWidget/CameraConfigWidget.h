@@ -8,6 +8,7 @@
 class CConfigCursor;
 class CSlinder;
 class CSwitch;
+class CButtonExp;	// ボタン説明UIクラス.
 
 class CCameraConfigWidget : public CWidget
 {
@@ -18,6 +19,8 @@ class CCameraConfigWidget : public CWidget
 	const char* SPRITE_MARK_NAME		= "CameraMark";
 
 	const float INPUT_WAIT_TIME_MAX		= 30.0;
+
+	const D3DXVECTOR3 BUTTON_EXP_RENDER_POS = { 900.0f, 650.0f, 0.0f };
 	// 選択状態.
 	enum enSelectState
 	{
@@ -71,6 +74,7 @@ private:
 	std::unique_ptr<CConfigCursor>			m_pCursor;
 	std::unique_ptr<CSlinder>				m_pSpeedSlinder;
 	std::unique_ptr<CSwitch>				m_pSwitch;
+	std::unique_ptr<CButtonExp>				m_pButtonExp;
 	CRotLookAtCenter::SConfigState			m_ConfigState;
 	D3DXVECTOR3								m_SlinderPosition;
 	bool	m_IsOlsReverse;

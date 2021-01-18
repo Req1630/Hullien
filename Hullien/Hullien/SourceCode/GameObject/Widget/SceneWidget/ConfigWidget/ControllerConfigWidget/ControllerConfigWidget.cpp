@@ -4,6 +4,7 @@
 #include "..\..\..\..\..\Utility\Input\Input.h"
 #include "..\..\..\..\..\XAudio2\SoundManager.h"	
 #include "..\..\..\Cursor\ConfigCursor.h"
+#include "..\..\..\ButtonExplanation\ButtonExplanation.h"
 #include "..\..\..\Switch\Switch.h"
 #include "..\..\..\..\..\Utility\FileManager\FileManager.h"
 
@@ -11,13 +12,15 @@ CControllerConfigWidget::CControllerConfigWidget()
 	: m_pSprites			()
 	, m_pCursor				( nullptr )
 	, m_pSwitch				( nullptr )
+	, m_pButtonExp			( nullptr )
 	, m_NowSelectState		( ESelectState_Vibration )
 	, m_OldNowSelectState	( ESelectState_Vibration )
 	, m_NowConfigState		( ESelectState_Select )
 	, m_InputWaitTime		( 0.0f )
 {
-	m_pCursor = std::make_unique<CConfigCursor>();
-	m_pSwitch = std::make_unique<CSwitch>();
+	m_pCursor		= std::make_unique<CConfigCursor>();
+	m_pSwitch		= std::make_unique<CSwitch>();
+	m_pButtonExp	= std::make_unique<CButtonExp>( BUTTON_EXP_RENDER_POS.x, BUTTON_EXP_RENDER_POS.y );
 	m_pSwitch->SetValue( CXInput::IsVibration() );
 }
 
@@ -28,9 +31,10 @@ CControllerConfigWidget::~CControllerConfigWidget()
 // èâä˙âªä÷êî.
 bool CControllerConfigWidget::Init()
 {
-	if( SpriteSetting()		== false ) return false;
-	if( m_pCursor->Init()	== false ) return false;
-	if( m_pSwitch->Init()	== false ) return false;
+	if( SpriteSetting()			== false ) return false;
+	if( m_pCursor->Init()		== false ) return false;
+	if( m_pSwitch->Init()		== false ) return false;
+	if( m_pButtonExp->Init()	== false ) return false;
 
 	return true;
 }
@@ -84,6 +88,8 @@ void CControllerConfigWidget::Render()
 	}
 	m_pSwitch->SetPosition( m_pSprites[m_NowSelectState-2]->GetRenderPos() );
 	m_pSwitch->Render();
+
+	m_pButtonExp->Render();
 }
 
 // èIóπÇµÇΩÇ©.

@@ -4,8 +4,9 @@
 #include "..\..\..\Widget.h"
 #include <vector>
 
-class CSlinder;	// スライダー.
+class CSlinder;			// スライダー.
 class CConfigCursor;	// カーソル.
+class CButtonExp;		// ボタン説明UIクラス.
 
 /********************************************
 *	音量設定UIクラス.
@@ -23,6 +24,7 @@ class CVolumeConfigWidget : public CWidget
 	const float MARK_ICON_POS_X = 10.0f;
 
 	inline static const float INPUT_WAIT_TIME_MAX = 30.0f;	// 入力時の待機フレーム.
+	const D3DXVECTOR3 BUTTON_EXP_RENDER_POS = { 900.0f, 650.0f, 0.0f };
 
 	// 設定の状態.
 	enum enConfigState
@@ -98,7 +100,8 @@ private:
 	virtual bool SpriteSetting() override;
 
 private:
-	std::unique_ptr<CConfigCursor>				m_pCursor;			// カーソルクラス.
+	std::unique_ptr<CConfigCursor>			m_pCursor;			// カーソルクラス.
+	std::unique_ptr<CButtonExp>				m_pButtonExp;		// ボタン説明UI.
 	std::vector<std::shared_ptr<CSlinder>>	m_pVolumeSlinders;	// 音量スライダー.
 	std::vector<std::shared_ptr<CSprite>>	m_pSprites;			// 画像.
 	std::vector<D3DXVECTOR3>				m_SlinderPositions;	// スライダーの座標.

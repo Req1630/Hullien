@@ -5,12 +5,14 @@
 #include "..\..\..\..\..\XAudio2\SoundManager.h"	
 #include "..\..\..\Slider\Slider.h"
 #include "..\..\..\Cursor\ConfigCursor.h"
+#include "..\..\..\ButtonExplanation\ButtonExplanation.h"
 
 /********************************************
 *	設定UIクラス.
 **/
 CVolumeConfigWidget::CVolumeConfigWidget()
 	: m_pCursor				( nullptr )
+	, m_pButtonExp			( nullptr )
 	, m_pVolumeSlinders		( ESelectType_VolumeMax )
 	, m_pSprites			()
 	, m_SlinderPositions	( ESelectType_VolumeMax )
@@ -22,7 +24,8 @@ CVolumeConfigWidget::CVolumeConfigWidget()
 	, m_InputWaitTime		( 0.0f )
 	, m_IsOneStep			( false )
 {
-	m_pCursor = std::make_unique<CConfigCursor>();
+	m_pCursor		= std::make_unique<CConfigCursor>();
+	m_pButtonExp	= std::make_unique<CButtonExp>( BUTTON_EXP_RENDER_POS.x, BUTTON_EXP_RENDER_POS.y );
 	for( auto& v : m_pVolumeSlinders ) v = std::make_shared<CSlinder>();
 
 	// 現在の音量の値の取得.
@@ -38,8 +41,9 @@ CVolumeConfigWidget::~CVolumeConfigWidget()
 // 初期化関数.
 bool CVolumeConfigWidget::Init()
 {
-	if( SpriteSetting() == false ) return false;
-	if( m_pCursor->Init() == false ) return false;
+	if( SpriteSetting()			== false ) return false;
+	if( m_pCursor->Init()		== false ) return false;
+	if( m_pButtonExp->Init()	== false ) return false;
 	for( auto& v : m_pVolumeSlinders ) if( v->Init() == false ) return false;
 
 	return true;
@@ -124,6 +128,8 @@ void CVolumeConfigWidget::Render()
 		m_pSprites[i]->SetBlend( false );
 		m_pSprites[i]->SetDeprh( true );
 	}
+
+	m_pButtonExp->Render();
 }
 
 // 音量の選択.
