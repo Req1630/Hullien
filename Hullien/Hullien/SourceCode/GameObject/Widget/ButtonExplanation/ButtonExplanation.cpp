@@ -43,6 +43,7 @@ void CButtonExp::Render()
 		D3DXVECTOR3 renderPos = m_PositionList[i];
 
 		if( m_IsCancelStringRender == false ) renderPos.x += SPRITE_RENDER_WIDTH;
+		m_pSprites[i]->SetAlpha( ALPHA_MAX );
 		m_pSprites[i]->SetPosition( renderPos );
 		m_pSprites[i]->SetScale( m_SpriteSizeList[i] );
 		m_pSprites[i]->SetDeprh( false );

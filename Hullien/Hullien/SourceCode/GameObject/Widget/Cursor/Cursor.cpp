@@ -11,6 +11,18 @@ CCursor::CCursor()
 	,	m_Acceleration( 0.0f )
 	,	m_TargetWidth(0.0f)
 	,	m_IsSetting(false)
+	,	m_IsBlueSelect(false)
+{
+	m_vScale.x = 0.0f;
+}
+
+CCursor::CCursor( const bool& isBlue )
+	:	m_pSelectSprite(nullptr)
+	,	m_vOldPosition(D3DXVECTOR3( 0.0f, 0.0f ,0.0f ))
+	,	m_Acceleration( 0.0f )
+	,	m_TargetWidth(0.0f)
+	,	m_IsSetting(false)
+	,	m_IsBlueSelect(isBlue)
 {
 	m_vScale.x = 0.0f;
 }
@@ -64,10 +76,12 @@ void CCursor::Render()
 // スプライト設定関数.
 bool CCursor::SpriteSetting()
 {
+	const char* spriteName = m_IsBlueSelect == false ? SPRITE_BLACK_NAME : SPRITE_BLUE_NAME;
+	const char* spriteName2 = m_IsBlueSelect == false ? SPRITE_BLACK_NAME2 : SPRITE_BLUE_NAME2;
 	if (m_pSprite != nullptr) return true;
-	m_pSprite = CSpriteResource::GetSprite(SPRITE_NAME);
+	m_pSprite = CSpriteResource::GetSprite(spriteName);
 	if (m_pSprite == nullptr) return false;
-	m_pSelectSprite = CSpriteResource::GetSprite(SPRITE_NAME2);
+	m_pSelectSprite = CSpriteResource::GetSprite(spriteName2);
 	if (m_pSelectSprite == nullptr) return false;
 	m_SlectPosition = m_pSelectSprite->GetRenderPos();
 	return true;

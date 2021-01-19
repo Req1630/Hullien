@@ -9,8 +9,10 @@
 class CCursor : public CWidget
 {
 private:
-	const char* SPRITE_NAME = "select1";	//スプライトのファイル名.
-	const char* SPRITE_NAME2 = "select2";	//スプライトのファイル名.
+	const char* SPRITE_BLACK_NAME	= "selectBlack1";	//スプライトのファイル名.
+	const char* SPRITE_BLACK_NAME2	= "selectBlack2";	//スプライトのファイル名.
+	const char* SPRITE_BLUE_NAME	= "selectBlue1";	//スプライトのファイル名.
+	const char* SPRITE_BLUE_NAME2	= "selectBlue2";	//スプライトのファイル名.
 	const float SCALE_MAX	= 1.0f;			//拡大最大値.
 	const float SCALE_SPEED = 0.05f;		//拡大速度.
 	const float ACC_SPEED   = 0.0011f;		//加速度.
@@ -19,6 +21,7 @@ private:
 
 public:
 	CCursor();
+	CCursor( const bool& isBlue );
 	 virtual ~CCursor();
 
 	// 初期化関数.
@@ -50,6 +53,7 @@ private:
 	float		m_Acceleration;	//加速値.
 	float		m_TargetWidth;
 	bool		m_IsSetting;
+	bool		m_IsBlueSelect;
 };
 
 #endif	//#ifndef CURSOR_H.

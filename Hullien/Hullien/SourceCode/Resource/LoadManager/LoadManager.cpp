@@ -75,7 +75,10 @@ void CLoadManager::Render()
 {
 	if( m_isLoadEnd == true ){
 		m_UFOSpriteSize -= 0.01f;
-		if( m_UFOSpriteSize < 0.0f ) m_isAllLoadEnd = true;
+		if( m_UFOSpriteSize < 0.0f ){
+			m_isAllLoadEnd = true;
+			ThreadRelease();
+		}
 	}
 	int i = 0;
 	for( auto& s : m_Sprites ){

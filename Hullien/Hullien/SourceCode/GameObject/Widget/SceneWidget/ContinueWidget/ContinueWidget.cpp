@@ -17,7 +17,7 @@ CContinueWidget::CContinueWidget()
 	, m_OldSelectState		( ESelectState::Yes )
 	, m_DrawTurn			( EDrawTurn::BackGround )
 {
-	m_pCursor = std::make_shared<CCursor>();
+	m_pCursor = std::make_shared<CCursor>( true );
 	m_vScale = D3DXVECTOR3(0.9f, 0.9f, 0.9f);
 }
 
