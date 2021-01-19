@@ -75,7 +75,7 @@ void CConfigCursor::MoveScale()
 	if (m_vScale.x >= SCALE_MAX){
 		m_vScale.y = SCALE_MAX + sinf(static_cast<float>(D3DX_PI*D3DXToRadian(m_ScaleCount)))*0.05f;
 		m_ScaleCount++;
-		if( m_ScaleCount >= 360.0f ) m_ScaleCount = 0.0f;
+		if( D3DXToRadian(m_ScaleCount) >= 360.0f ) m_ScaleCount = 0.0f;
 		return;
 	}
 	// КgСе.
