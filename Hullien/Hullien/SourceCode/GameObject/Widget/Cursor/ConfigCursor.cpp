@@ -10,6 +10,7 @@ CConfigCursor::CConfigCursor()
 	:	m_vOldPosition(D3DXVECTOR3( 0.0f, 0.0f ,0.0f ))
 	,	m_Acceleration( 0.0f )
 	,	m_TargetWidth(0.0f)
+	,	m_ScaleCount(0.0f)
 	,	m_IsSetting(false)
 {
 }
@@ -29,7 +30,7 @@ bool CConfigCursor::Init()
 void CConfigCursor::Update()
 {
 	if (m_pSprite == nullptr) return;
-//	MoveScale();	// スケールの動き.
+	MoveScale();	// スケールの動き.
 }
 
 // 描画関数.
@@ -65,11 +66,18 @@ void CConfigCursor::MoveScale()
 	{
 		// 数値を初期化.
 		m_vScale.x = 0.0f;
+		m_vScale.y = SCALE_MAX;
 		m_Acceleration = 0.0f;
+		m_ScaleCount = 0.0f;
 	}
 
 	// 拡大値が標準ならば処理しない.
-	if (m_vScale.x >= SCALE_MAX) return;
+	if (m_vScale.x >= SCALE_MAX){
+		m_vScale.y = SCALE_MAX + sinf(static_cast<float>(D3DX_PI*D3DXToRadian(m_ScaleCount)))*0.05f;
+		m_ScaleCount++;
+		if( m_ScaleCount >= 360.0f ) m_ScaleCount = 0.0f;
+		return;
+	}
 	// 拡大.
 	IncreaseScale();
 }

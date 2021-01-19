@@ -6,14 +6,8 @@
 *	カーソルクラス.
 **/
 CCursor::CCursor()
-	:	m_pSelectSprite(nullptr)
-	,	m_vOldPosition(D3DXVECTOR3( 0.0f, 0.0f ,0.0f ))
-	,	m_Acceleration( 0.0f )
-	,	m_TargetWidth(0.0f)
-	,	m_IsSetting(false)
-	,	m_IsBlueSelect(false)
+	:	CCursor( false )
 {
-	m_vScale.x = 0.0f;
 }
 
 CCursor::CCursor( const bool& isBlue )
@@ -21,6 +15,7 @@ CCursor::CCursor( const bool& isBlue )
 	,	m_vOldPosition(D3DXVECTOR3( 0.0f, 0.0f ,0.0f ))
 	,	m_Acceleration( 0.0f )
 	,	m_TargetWidth(0.0f)
+	,	m_ScaleCount(0.0f)
 	,	m_IsSetting(false)
 	,	m_IsBlueSelect(isBlue)
 {
@@ -65,6 +60,7 @@ void CCursor::Render()
 
 	m_SlectPosition = m_vPosition;
 	m_SlectPosition.x += ADJ_POSITOIN_X_SIDE;
+	m_pSelectSprite->SetScale( {SCALE_MAX, m_vScale.y, SCALE_MAX} );
 	m_pSelectSprite->SetPosition( m_SlectPosition );
 	m_pSelectSprite->SetDeprh( false );
 	m_pSelectSprite->SetBlend( true );
@@ -95,11 +91,18 @@ void CCursor::MoveScale()
 	{
 		// 数値を初期化.
 		m_vScale.x = 0.0f;
+		m_vScale.y = SCALE_MAX;
 		m_Acceleration = 0.0f;
+		m_ScaleCount = 0.0f;
 	}
 
 	// 拡大値が標準ならば処理しない.
-	if (m_vScale.x >= SCALE_MAX) return;
+	if (m_vScale.x >= SCALE_MAX){
+		m_vScale.y = SCALE_MAX + sinf(static_cast<float>(D3DX_PI*D3DXToRadian(m_ScaleCount)))*0.05f;
+		m_ScaleCount++;
+		if( m_ScaleCount >= 360.0f ) m_ScaleCount = 0.0f;
+		return;
+	}
 	// 拡大.
 	IncreaseScale();
 }

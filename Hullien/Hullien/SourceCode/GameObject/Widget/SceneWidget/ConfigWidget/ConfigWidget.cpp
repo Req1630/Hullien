@@ -287,7 +287,6 @@ void CConfigWidget::CursorSetting()
 		break;
 	}
 
-	m_pCursor->Update();
 }
 
 // スプライト設定関数.

@@ -52,6 +52,7 @@ private:
 	D3DXVECTOR3	m_vOldPosition;	//ˆÚ“®‘O‚ÌÀ•W.
 	float		m_Acceleration;	//‰Á‘¬’l.
 	float		m_TargetWidth;
+	float		m_ScaleCount;
 	bool		m_IsSetting;
 	bool		m_IsBlueSelect;
 };
