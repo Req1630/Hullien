@@ -77,6 +77,9 @@ public:
 	// カメラのラジアン値の設定関数.
 	inline void SetCameraRadianX( const float& radian ) { m_CameraRadianX = radian; }
 
+	// パラメータの設定(editなどで使用).
+	void SetParameter( const SGirlParam& param, const bool& isEdit = false );
+
 private:
 	// 移動関数.
 	virtual void Move() override;

@@ -130,6 +130,14 @@ void CGirl::SpriteRender()
 	}
 }
 
+// パラメータの設定(editなどで使用).
+void CGirl::SetParameter( const SGirlParam& param, const bool& isEdit )
+{
+	m_Parameter = param;
+	// 当たり判定の作成.
+	ColliderSetting();
+}
+
 // 移動関数.
 void CGirl::Move()
 {
