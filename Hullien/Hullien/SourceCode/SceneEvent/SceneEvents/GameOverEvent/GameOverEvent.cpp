@@ -139,6 +139,7 @@ bool CGameOverEvent::GirlInit()
 void CGameOverEvent::ActorUpdate()
 {
 	// UFO.
+	m_vUFOPosition.y = m_pUFO->GetPosition().y;
 	m_pUFO->SetPosition( m_vUFOPosition );
 	m_pUFO->Update();
 	// —‚Ìq.
