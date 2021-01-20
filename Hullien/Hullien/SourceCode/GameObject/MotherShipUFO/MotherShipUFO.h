@@ -34,6 +34,7 @@ public:
 private:
 	const char* MODEL_NAME = "ufo";	// ƒ‚ƒfƒ‹–¼.
 	const char* PARAMETER_FILE_PATH = "Data\\GameParam\\Alien\\MotherShipUFOParam\\MotherShipUFOParam.bin";
+	const float WND_OUT_SIZE = 700.0f;
 
 public:
 	CMotherShipUFO();

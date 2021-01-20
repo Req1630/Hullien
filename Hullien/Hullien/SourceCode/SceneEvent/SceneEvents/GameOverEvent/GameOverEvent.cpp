@@ -123,6 +123,7 @@ bool CGameOverEvent::SpawnUFOInit()
 	if(m_pUFO->Init() == false ) return false;
 	m_pUFO->DischargePreparation();
 	m_vUFOPosition = UFO_INITPOSITION;
+	m_vUFOPosition.y = m_pUFO->GetPosition().y;
 	return true;
 }
 
@@ -139,7 +140,6 @@ bool CGameOverEvent::GirlInit()
 void CGameOverEvent::ActorUpdate()
 {
 	// UFO.
-	m_vUFOPosition.y = m_pUFO->GetPosition().y;
 	m_pUFO->SetPosition( m_vUFOPosition );
 	m_pUFO->Update();
 	// —‚Ìq.

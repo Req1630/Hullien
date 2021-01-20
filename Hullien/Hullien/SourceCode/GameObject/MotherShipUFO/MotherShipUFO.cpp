@@ -46,7 +46,7 @@ void CMotherShipUFO::Update()
 void CMotherShipUFO::Render()
 {
 	// ‰æ–ÊŠO‚È‚çI—¹.
-	if( IsDisplayOut()	== true ) return;
+	if( IsDisplayOut( WND_OUT_SIZE )	== true ) return;
 	if( m_pStaticMesh	== nullptr ) return;
 	if( m_IsDisp		== false ) return;
 
