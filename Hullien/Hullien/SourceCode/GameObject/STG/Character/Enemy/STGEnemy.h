@@ -26,7 +26,7 @@ namespace STG
 		inline static const float SHAKE_COUNT_MAX		= 10.0f;	// 揺れのカウント.
 		inline static const float SHAKE_SUB_VALUE		= 0.4f;		// 揺れカウントを引く値.
 		inline static const float SHAKE_SPEED			= 0.1f;		// 揺れの速度.
-		inline static const float DEAD_SCALE_SUB_VALUE	= 0.02f;	// 死亡時のスケール減算値.
+		inline static const float DEAD_SCALE_SUB_VALUE	= 0.03f;	// 死亡時のスケール減算値.
 		inline static const float DEAD_ROTATION_SPEED	= 0.1f;		// 死亡時の回転速度.
 		inline static const float ESCAPE_MOVE_DISTANCE	= 4.0f;		// 逃げる移動距離.
 		inline static const float ESCAPE_COUNT_MAX		= 10*FPS;	// 逃げる時間.
@@ -41,7 +41,7 @@ namespace STG
 		inline static const float DEAD_TARGET_MOVE_SPEED		= 0.045f;	// 死亡時のターゲットとの移動速度.
 		inline static const float DEAD_MOVE_ACC_ADD_VALUE		= 0.1f;		// 死亡移動加速加算値.
 		inline static const float DEAD_MOVE_ACC_VALUE_MAX		= 1.5f;		// 死亡移動加速度最大値.
-		inline static const float DEAD_POSITION_Y_ADJ_VALUE		= 10.0f;	// 死亡座標の調整値.
+		inline static const float DEAD_POSITION_Y_ADJ_VALUE		= 40.0f;	// 死亡座標の調整値.
 		inline static const float DEAD_CAMERA_SHAKE_ADJ_VALUE	= 10.0f;	// 死亡カメラ揺れ値.
 
 		const STG::SEnemyParam PARAMETER;	// パラメータ.

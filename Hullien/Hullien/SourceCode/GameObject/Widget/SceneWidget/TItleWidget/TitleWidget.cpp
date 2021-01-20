@@ -15,6 +15,7 @@ CTitleWidget::CTitleWidget()
 	, m_pCursor			( nullptr )
 	, m_SelectState		( CTitleWidget::ESelectState::Start )
 	, m_OldSelectState	( CTitleWidget::ESelectState::Start )
+	, m_MoonRotationZ	( 0.0f )
 {
 	m_pCursor = std::make_shared<CCursor>();
 }
@@ -49,17 +50,27 @@ void CTitleWidget::Render()
 {
 	if (m_pSprite.size() == 0) return;
 
-	for (size_t sprite = 0; sprite < m_pSprite.size(); sprite++)
+	m_MoonRotationZ += MOON_ROT_SPEED;
+	for (int sprite = 0; sprite < START; sprite++)
+	{
+		if( sprite == MOON ){
+			m_pSprite[sprite]->SetRotation( { 0.0f, 0.0f, m_MoonRotationZ } );
+		}
+		m_pSprite[sprite]->SetDeprh(false);
+		m_pSprite[sprite]->SetBlend( true );
+		m_pSprite[sprite]->RenderUI();
+		m_pSprite[sprite]->SetBlend(false);
+		m_pSprite[sprite]->SetDeprh(true);
+	}
+	// カーソル.
+	m_pCursor->Render();
+	for (size_t sprite = START; sprite < m_pSprite.size(); sprite++)
 	{
 		m_pSprite[sprite]->SetDeprh(false);
 		m_pSprite[sprite]->SetBlend( true );
 		m_pSprite[sprite]->RenderUI();
-		m_pSprite[sprite]->SetBlend( false );
+		m_pSprite[sprite]->SetBlend(false);
 		m_pSprite[sprite]->SetDeprh(true);
-
-		if (sprite != BACKGROUND) continue;
-		// カーソル.
-		m_pCursor->Render();
 	}
 }
 
@@ -69,6 +80,7 @@ bool CTitleWidget::SpriteSetting()
 	const char* spriteName[] =
 	{
 		SPRITE_BACKGROUND,		//背景.
+		SPRITE_MOON,
 		SPRITE_SELECTSTART,		//開始.
 #ifndef IS_CONFIG_RENDER
 		SPRITE_SELECTCONFIG,	//設定.

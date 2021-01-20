@@ -33,6 +33,8 @@ struct stPlayerParam : public CCharacter::SParameter
 	float		AttackFanRadian;		// 扇の攻撃範囲.
 	float		EnemyKnockBackPower;	// 敵のノックバック力.
 
+	float		CapsuleAdjRadius;		// カプセルの調整半径.
+
 	stPlayerParam()
 		: SpecialAbilityMax			( 0.0f )
 		, AttackComboMax			( 0 )
@@ -54,6 +56,7 @@ struct stPlayerParam : public CCharacter::SParameter
 		, AttackSearcLenght			( 20.0f )
 		, AttackFanRadian			( static_cast<float>(D3DXToRadian(180.0*0.5)) )
 		, EnemyKnockBackPower		( 0.5f )
+		, CapsuleAdjRadius			( -18.0f )
 	{}
 } typedef SPlayerParam;
 

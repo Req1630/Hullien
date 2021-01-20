@@ -74,7 +74,7 @@ void CLoadManager::LoadResource(
 void CLoadManager::Render()
 {
 	if( m_isLoadEnd == true ){
-		m_UFOSpriteSize -= 0.01f;
+		m_UFOSpriteSize -= SCALE_DOWN_SPEED;
 		if( m_UFOSpriteSize < 0.0f ){
 			m_isAllLoadEnd = true;
 			ThreadRelease();

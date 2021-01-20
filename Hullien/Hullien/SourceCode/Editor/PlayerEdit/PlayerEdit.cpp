@@ -121,6 +121,7 @@ void CPlayerEdit::PlayerParamEdit()
 	CImGuiManager::DragFloat( u8"スフィアの調整座標 Y",			&m_pPlayerParam.SphereAdjPos.y );
 	CImGuiManager::DragFloat( u8"スフィアの調整座標 Z",			&m_pPlayerParam.SphereAdjPos.z );
 	CImGuiManager::DragFloat( u8"スフィアの調整半径",			&m_pPlayerParam.SphereAdjRadius );
+	CImGuiManager::DragFloat( u8"カプセルの調整半径",			&m_pPlayerParam.CapsuleAdjRadius );
 	CImGuiManager::DragFloat( u8"ノックバック移動速度",			&m_pPlayerParam.HitKnocBackMoveSpeed );
 	CImGuiManager::DragFloat( u8"回転の許容範囲",				&m_pPlayerParam.ToleranceRadian );
 	CImGuiManager::DragFloat( u8"回転速度",						&m_pPlayerParam.RotationSpeed );

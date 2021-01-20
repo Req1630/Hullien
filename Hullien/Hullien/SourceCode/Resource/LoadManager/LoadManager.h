@@ -19,6 +19,8 @@ class CLoadManager
 	const char* LOAD_TEXT_IMAGE = "Data\\Texture\\_LoadTexture\\loadLogo.png";
 	const char* LOAD_IOCN_IMAGE = "Data\\Texture\\_LoadTexture\\2loadLogo.png";
 
+	const float SCALE_DOWN_SPEED = 0.02f;
+
 public:
 	CLoadManager();
 	~CLoadManager();

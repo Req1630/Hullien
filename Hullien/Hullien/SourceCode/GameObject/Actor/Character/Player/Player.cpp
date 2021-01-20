@@ -261,6 +261,7 @@ void CPlayer::SetParameter( const player::SPlayerParam& param, const bool& isEdi
 	m_CameraLookPosition	= { m_vPosition.x, m_Parameter.CameraLookHeight, m_vPosition.z };
 	m_CameraLerp			= m_Parameter.CameraLerpValue;
 	if( isEdit == true ) m_SpecialAbility = m_Parameter.SpecialAbilityMax;
+	ColliderSetting();
 }
 
 // ‘€ìŠÖ”.
@@ -1089,7 +1090,7 @@ bool CPlayer::ColliderSetting()
 		&m_vRotation,
 		&m_vScale.x,
 		m_Parameter.SphereAdjPos,
-		-18.0f,
+		m_Parameter.CapsuleAdjRadius,
 		FOR_INIT_ZERO_FLOAT ) )) return false;
 
 	// UŒ‚—p‚Ì“–‚½‚è”»’è‰Šú‰».

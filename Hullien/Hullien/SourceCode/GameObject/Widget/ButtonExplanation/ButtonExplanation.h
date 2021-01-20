@@ -8,7 +8,7 @@
 class CButtonExp : public CWidget
 {
 	const char* SPRITE_L_STICK_NAME			= "stickL";			// Lボタンの画像.
-	const char* SPRITE_SELECT_NAME			= "title";			// selectの画像.
+	const char* SPRITE_SELECT_NAME			= "move";			// selectの画像.
 	const char* SPRITE_B_BUTTON_NAME		= "buttonB";		// Bボタンの画像.
 	const char* SPRITE_DETERMINATION_NAME	= "determination";	// 決定画像.
 	const char* SPRITE_A_BUTTON_NAME		= "buttonA";		// Aボタンの画像.
