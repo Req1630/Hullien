@@ -16,7 +16,7 @@ private:
 	const float SCALE_MAX	= 1.0f;			//ägëÂç≈ëÂíl.
 	const float SCALE_SPEED = 0.05f;		//ägëÂë¨ìx.
 	const float ACC_SPEED   = 0.0011f;		//â¡ë¨ìx.
-	const float ADJ_POSITOIN_X_MAIN = 20.0f; 
+	const float ADJ_POSITOIN_X_MAIN = 25.0f; 
 	const float ADJ_POSITOIN_X_SIDE = -10.0f; 
 
 public:
