@@ -19,6 +19,9 @@ public:
 	// 当たり判定関数.
 	virtual void Collision( CActor* pActor ) override;
 
+	// パラメーターの設定.
+	virtual void SetParamter( const SAlienParam& param ) override;
+
 private:
 	// スポーン.
 	virtual void Spawning() override;

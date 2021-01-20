@@ -120,6 +120,8 @@ HRESULT CBloom::InitBlurTex()
 		// 右にシフトしてテクスチャサイズを段階的に落とす.
 		texDesc.Width	>>= 1;
 		texDesc.Height	>>= 1;
+		if( texDesc.Width <= 0 ) texDesc.Width = 1;
+		if( texDesc.Height <= 0 ) texDesc.Height = 1;
 	}
 
 	return S_OK;

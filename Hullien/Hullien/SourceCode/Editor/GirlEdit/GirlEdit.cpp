@@ -49,7 +49,9 @@ void CGirlEdit::Render()
 	CImGuiManager::DragFloat( u8"スフィア調整用座標 : Z",	&m_GirlParam.SphereAdjPos.z );
 	CImGuiManager::DragFloat( u8"スフィア調整用半径",		&m_GirlParam.SphereAdjRadius );
 
-	m_pGirl->SetParameter( m_GirlParam );
+	if( ImGui::Button(u8"変更したパラメータを反映") == true ){
+		m_pGirl->SetParameter( m_GirlParam );
+	}
 
 	static CImGuiManager::SSuccess s_Success;
 	if( ImGui::Button(u8"読込") == true ){

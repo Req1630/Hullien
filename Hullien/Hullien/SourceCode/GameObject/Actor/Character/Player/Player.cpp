@@ -875,7 +875,7 @@ void CPlayer::AttackAnimation()
 			&m_AttackPosition,
 			&m_vRotation,
 			&m_vScale.x,
-			m_Parameter.SphereAdjPos,
+			FOR_INIT_ZERO_VEC3,
 			m_AttackAdjParam.CollisionRadius[m_AttackComboCount-1] ) )) return;
 		// 各値が有効範囲内ならベクトルから回転値を入れる.
 		if( m_MoveVector.x >= IDLE_THUMB_MAX || IDLE_THUMB_MIN >= m_MoveVector.x ||
@@ -924,7 +924,7 @@ bool CPlayer::IsPushAttack()
 			&m_AttackPosition,
 			&m_vRotation,
 			&m_vScale.x,
-			m_Parameter.SphereAdjPos,
+			FOR_INIT_ZERO_VEC3,
 			m_AttackAdjParam.CollisionRadius[attackAdjNo] ) )) return false;
 		setAttackData( player::EAnimNo_Attack1, attackAdjNo );
 		// 最初の攻撃はアニメーションを設定する.
@@ -1101,7 +1101,7 @@ bool CPlayer::ColliderSetting()
 		&m_AttackPosition,
 		&m_vRotation,
 		&m_vScale.x,
-		m_Parameter.SphereAdjPos,
+		FOR_INIT_ZERO_VEC3,
 		m_AttackAdjParam.CollisionRadius[0] ) )) return false;
 	return true;
 }

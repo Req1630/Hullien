@@ -13,6 +13,8 @@ public:
 	// ƒXƒ|[ƒ“.
 	virtual bool Spawn( const D3DXVECTOR3& spawnPos ) override;
 
+	// ˆÚ“®‚ÌÄ¶.
+	void PlayMove();
 	// UŒ‚‚ÌÄ¶.
 	virtual void PlayAttack();
 	// ‹¯‚İ‚ÌÄ¶.

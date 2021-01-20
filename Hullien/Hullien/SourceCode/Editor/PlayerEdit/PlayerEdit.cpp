@@ -1,14 +1,17 @@
 #include "PlayerEdit.h"
+#include "..\..\GameObject\Actor\Character\Alien\EditAlien\Alien_A\EditAlien_A.h"
 #include "..\..\Utility\FileManager\FileManager.h"
 #include "..\..\Utility\Input\Input.h"
 
 CPlayerEdit::CPlayerEdit()	
 	: m_pPlayer				( nullptr )
+	, m_pAlien				( nullptr )
 	, m_pPlayerParam		()
 	, m_AnimAdjDrggingParam	()
 	, m_AttackAdjParam		()
 {
-	m_pPlayer = std::make_unique<CPlayer>();
+	m_pPlayer	= std::make_unique<CPlayer>();
+	m_pAlien	= std::make_shared<CEditAlienA>();
 }
 
 CPlayerEdit::~CPlayerEdit()
@@ -18,10 +21,15 @@ CPlayerEdit::~CPlayerEdit()
 // 初期化関数.
 bool CPlayerEdit::Init() 
 {
-	if( m_pPlayer->Init() == false ) return false;
+	if( m_pPlayer->Init()	== false ) return false;
+	if( m_pAlien->Init()	== false ) return false; 
 	if( CFileManager::BinaryReading( PARAMETER_FILE_PATH, m_pPlayerParam ) == false )			return false;
 	if( CFileManager::BinaryReading( "Data\\GameParam\\Player\\PlayerAnimDragging.bin", m_AnimAdjDrggingParam ) == false )	return false;
 	if( CFileManager::BinaryReading( "Data\\GameParam\\Player\\PlayerAtkAdjParam.bin", m_AttackAdjParam ) == false )			return false;
+	SAlienParam alienParam = {};
+	// バイナリ読み込み.
+	if( CFileManager::BinaryReading( "Data\\GameParam\\Alien\\Alien_A\\Alien_A.bin", alienParam ) == false ) return false;
+	m_pAlien->SetParamter( alienParam );
 	return true;
 }
 
@@ -30,6 +38,8 @@ void CPlayerEdit::Update()
 {
 	if( m_IsSetCamera == true ){
 		m_pPlayer->Update();
+		m_pPlayer->Collision( m_pAlien.get() );
+		m_pAlien->Update();
 	}
 	if( CInput::IsMomentPress( EKeyBind::Back ) == true ){
 		m_IsSetCamera = false;
@@ -58,8 +68,9 @@ void CPlayerEdit::Render()
 		AttackAdjParamEdit();		ImGui::TreePop();
 	}
 	
-	
-	m_pPlayer->SetParameter( m_pPlayerParam, true );
+	if( ImGui::Button(u8"変更したパラメータを反映") == true ){
+		m_pPlayer->SetParameter( m_pPlayerParam, true );
+	}
 
 	static CImGuiManager::SSuccess s_Success;
 	if( ImGui::Button(u8"読込") == true ){
@@ -92,6 +103,9 @@ void CPlayerEdit::Render()
 void CPlayerEdit::ModelRender() 
 {
 	m_pPlayer->Render();
+	if( m_IsSetCamera == true ){
+		m_pAlien->Render();
+	}
 }
 
 // エフェクトの描画.

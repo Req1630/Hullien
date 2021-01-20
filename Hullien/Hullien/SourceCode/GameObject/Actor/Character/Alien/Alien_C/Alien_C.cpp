@@ -93,6 +93,7 @@ bool CAlienC::Spawn( const D3DXVECTOR3& spawnPos )
 {
 	// 既にスポーン済みなら終了.
 	if( m_NowState != alien::EAlienState::None ) return true;
+	m_vScale		= { SCALE_MIN, SCALE_MIN, SCALE_MIN };
 	m_vPosition		= spawnPos;						// スポーン座標の設定.
 	m_LifePoint		= pPARAMETER->LifeMax;			// 体力の設定.
 	m_NowState		= alien::EAlienState::Spawn;	// 現在の状態をスポーンに変更.

@@ -30,6 +30,7 @@ bool CEditAlienB::Init()
 // 更新関数.
 void CEditAlienB::Update()
 {
+	m_IsPossibleToHit = true;
 	// アニメーションフレームの更新.
 	m_AnimFrameList[m_NowAnimNo].UpdateFrame( m_AnimSpeed );
 	CurrentStateUpdate();				// 現在の状態の更新.
@@ -68,6 +69,14 @@ void CEditAlienB::PlayAttack()
 	m_NowState = alien::EAlienState::Move;
 	m_NowMoveState = alien::EMoveState::Attack;
 	m_IsPlaying = true;
+}
+
+// パラメーターの設定.
+void CEditAlienB::SetParamter( const SAlienParam& param )
+{
+	m_Paramter = param;
+	// 当たり判定の設定.
+	ColliderSetting();
 }
 
 // スポーン.

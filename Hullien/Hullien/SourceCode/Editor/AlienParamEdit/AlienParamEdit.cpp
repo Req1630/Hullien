@@ -58,7 +58,6 @@ bool CAlienParamEdit::Init()
 // 更新関数.
 void CAlienParamEdit::Update()
 {
-	m_pEditAliens[m_AlienIndex]->SetParamter(m_AlienParamList[m_NowParamIndex]);
 	m_pEditAliens[m_AlienIndex]->Update();
 
 	// マザーシップに上る処理.
@@ -205,6 +204,10 @@ void CAlienParamEdit::SpawnParamRender( const int& index )
 	CImGuiManager::DragFloat( u8"スフィアの調整座標 Z", &s.SphereAdjPos.z );
 	CImGuiManager::DragFloat( u8"スフィアの調整半径", &s.SphereAdjRadius );
 
+	if( ImGui::Button(u8"変更したパラメータを反映") == true ){
+		m_pEditAliens[m_AlienIndex]->SetParamter(m_AlienParamList[m_NowParamIndex]);
+	}
+
 	static CImGuiManager::SSuccess s_success = {};
 	if( ImGui::Button(u8"読込") ) 
 		s_success.IsSucceeded = FileReading( m_AlienPathList[index].c_str(), s );
@@ -222,6 +225,7 @@ void CAlienParamEdit::SpawnParamRender( const int& index )
 				m_SpawnUFOParam.Position.z
 			} );
 	}
+	if( ImGui::Button(u8"移動プレビュー") ) m_pEditAliens[m_AlienIndex]->PlayMove();
 	if( ImGui::Button(u8"アタックプレビュー") ) m_pEditAliens[m_AlienIndex]->PlayAttack();
 	if( ImGui::Button(u8"怯みプレビュー") ) m_pEditAliens[m_AlienIndex]->PlayFright();
 	if( ImGui::Button(u8"死亡プレビュー") ) m_pEditAliens[m_AlienIndex]->PlayDeath();
@@ -272,6 +276,7 @@ bool CAlienParamEdit::InitAlien()
 			break;
 		}
 		if( m_pEditAliens.back()->Init() == false ) return false;
+		m_pEditAliens.back()->SetParamter(m_AlienParamList[i]);
 		i++;
 	}
 	return true;

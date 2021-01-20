@@ -56,7 +56,7 @@ void CReturnTitle::Render()
 	// ボタンスプライトの表示.
 	m_pSprite->SetPosition( m_vPosition );
 	m_pSprite->SetAlpha(m_Alpha);
-	m_pSprite->SetScale( 0.5f );
+	m_pSprite->SetScale( 0.4f );
 	m_pSprite->SetBlend( true );
 	m_pSprite->SetDeprh( false );
 	m_pSprite->RenderUI();
@@ -66,6 +66,7 @@ void CReturnTitle::Render()
 	for( auto& s : m_pSprites ){
 		s->SetPosition( SPRITE_RENDER_POS );
 		s->SetAlpha(m_Alpha);
+		s->SetScale( 0.9f );
 		s->SetBlend( true );
 		s->SetDeprh( false );
 		s->RenderUI();

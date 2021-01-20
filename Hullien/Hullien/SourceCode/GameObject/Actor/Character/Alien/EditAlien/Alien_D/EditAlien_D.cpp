@@ -36,6 +36,7 @@ bool CEditAlienD::Init()
 // 更新関数.
 void CEditAlienD::Update()
 {
+	m_IsPossibleToHit = true;
 	// アニメーションフレームの更新.
 	m_AnimFrameList[m_NowAnimNo].UpdateFrame( m_AnimSpeed );
 	CurrentStateUpdate();				// 現在の状態の更新.
@@ -88,6 +89,9 @@ void CEditAlienD::SetParamter( const SAlienParam& param )
 	m_pLaserBeam->SetMoveSpped( param.LaserMoveSpeed );
 	// レーザーの麻痺時間の設定.
 	m_pLaserBeam->SetParalysisTime( param.ParalysisTime );
+
+	// 当たり判定の設定.
+	ColliderSetting();
 }
 
 // スポーン.

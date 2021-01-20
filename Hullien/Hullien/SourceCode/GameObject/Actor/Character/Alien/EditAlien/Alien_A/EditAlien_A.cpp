@@ -27,6 +27,7 @@ bool CEditAlienA::Init()
 // 更新関数.
 void CEditAlienA::Update()
 {
+	m_IsPossibleToHit = true;
 	// アニメーションフレームの更新.
 	m_AnimFrameList[m_NowAnimNo].UpdateFrame( m_AnimSpeed );
 	CurrentStateUpdate();				// 現在の状態の更新.
@@ -56,6 +57,14 @@ void CEditAlienA::Render()
 // 当たり判定関数.
 void CEditAlienA::Collision( CActor* pActor )
 {}
+
+// パラメーターの設定.
+void CEditAlienA::SetParamter( const SAlienParam& param )
+{
+	m_Paramter = param;
+	// 当たり判定の設定.
+	ColliderSetting();
+}
 
 // スポーン.
 void CEditAlienA::Spawning()

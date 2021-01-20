@@ -39,7 +39,7 @@ CAlien::CAlien( const SAlienParam* pParam )
 	, m_IsExplosion				( false )
 	, m_IsDelete				( false )
 {
-	m_vScale = { SCALE_MIN, SCALE_MIN, SCALE_MIN };
+//	m_vScale = { SCALE_MIN, SCALE_MIN, SCALE_MIN };
 	m_AnimFrameList.resize( alien::EAnimNo_Max );
 	m_PossibleCount = 0;
 }

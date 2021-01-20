@@ -8,6 +8,7 @@ CEditAlien::CEditAlien()
 {
 	m_NowState	= alien::EAlienState::Move;
 	m_NowMoveState = alien::EMoveState::Wait;
+	m_IsPossibleToHit = true;
 }
 
 CEditAlien::~CEditAlien()
@@ -17,14 +18,23 @@ CEditAlien::~CEditAlien()
 bool CEditAlien::Spawn( const D3DXVECTOR3& spawnPos )
 {
 	if( m_IsPlaying == true ) return false;
-	m_vPosition	= spawnPos;						// スポーン座標の設定.
-	m_LifePoint	= m_Paramter.LifeMax;			// 体力の設定.
-	m_NowState	= alien::EAlienState::Spawn;	// 現在の状態をスポーンに変更.
-	m_AnimSpeed	= 0.0;							// アニメーション速度を止める.
-	m_vScale	= { SCALE_MIN, SCALE_MIN, SCALE_MIN };
+	m_vPosition		= spawnPos;						// スポーン座標の設定.
+	m_LifePoint		= m_Paramter.LifeMax;			// 体力の設定.
+	m_NowState		= alien::EAlienState::Spawn;	// 現在の状態をスポーンに変更.
+	m_NowMoveState	= alien::EMoveState::Wait;
+	m_AnimSpeed		= 0.0;							// アニメーション速度を止める.
+	m_vScale		= { SCALE_MIN, SCALE_MIN, SCALE_MIN };
 	m_pEffects[alien::EEffectNo_Spawn]->Play( m_vPosition );
 	m_IsPlaying = true;
 	return true;
+}
+
+// 移動の再生.
+void CEditAlien::PlayMove()
+{
+	if( m_IsPlaying == true ) return;
+	m_NowMoveState = alien::EMoveState::Move;
+	m_IsPlaying = true;
 }
 
 // 攻撃の再生.
@@ -66,7 +76,7 @@ void CEditAlien::PlayRisingMotherShip( const D3DXVECTOR3& vPos )
 // 待機関数.
 void CEditAlien::WaitMove()
 {
-	if( m_NowMoveState != alien::EMoveState::Wait ) return;
+	if( m_NowMoveState != alien::EMoveState::Move ) return;
 
 	// 移動用ベクトルを取得.
 	m_MoveVector.x = sinf( m_vRotation.y );
@@ -81,6 +91,8 @@ void CEditAlien::WaitMove()
 		MOVE_DISTANCE >= m_vPosition.z && m_vPosition.z >= -MOVE_DISTANCE ) return;
 	m_vPosition.x = 0.0f;
 	m_vPosition.z = 0.0f;
+	m_NowMoveState = alien::EMoveState::Wait;
+	m_IsPlaying = false;
 }
 
 // スポーン中.
@@ -139,6 +151,7 @@ void CEditAlien::KnockBack()
 // 怯み.
 void CEditAlien::Fright()
 {
+	if( m_NowState != alien::EAlienState::Fright ) return;
 	if( m_AnimFrameList[alien::EAnimNo_Damage].IsNowFrameOver() == false ) return;
 
 	m_KnockBackCount	= 0;	// 無敵カウントの初期化.

@@ -22,6 +22,9 @@ public:
 	// 攻撃の再生.
 	virtual void PlayAttack() override;
 
+	// パラメーターの設定.
+	virtual void SetParamter( const SAlienParam& param ) override;
+
 private:
 	// スポーン.
 	virtual void Spawning() override;

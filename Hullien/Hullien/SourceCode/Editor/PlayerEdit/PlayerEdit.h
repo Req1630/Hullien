@@ -4,6 +4,8 @@
 #include "..\EditBase.h"
 #include "..\..\GameObject\Actor\Character\Player\Player.h"
 
+class CEditAlienA;
+
 class CPlayerEdit : public CEditBase
 {
 	// パラメータのファイルパス.
@@ -33,6 +35,7 @@ private:
 
 private:
 	std::unique_ptr<CPlayer>			m_pPlayer;
+	std::shared_ptr<CEditAlienA>		m_pAlien;
 	player::SPlayerParam				m_pPlayerParam;
 	player::SAnimDraggingAdjParam		m_AnimAdjDrggingParam;
 	player::SAttackAdjParam				m_AttackAdjParam;
