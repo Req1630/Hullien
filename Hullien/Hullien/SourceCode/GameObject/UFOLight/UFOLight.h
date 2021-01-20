@@ -14,9 +14,6 @@ class CUFOLight : public CGameObject
 	const float DEFAULT_SCALE_WEDTH_MAX		= 1.0f;		// 幅の最大サイズ,
 	const float DEFAULT_SCALE_HEIGHT_MIN	= 0.0f;		// 高さの最小サイズ.
 	const float DEFAULT_SCALE_WEDTH_MIN		= 0.0f;		// 幅の最小サイズ,
-	
-	const float SCALE_HEIGHT_MAX;	// 高さ拡大速度.
-	const float SCALE_WEDTH_MAX;	// 幅拡大速度.
 
 	// UFOライトの状態.
 	enum class enUFOLightState
@@ -32,7 +29,7 @@ class CUFOLight : public CGameObject
 	} typedef EUFOLightState;
 public:
 	CUFOLight();
-	CUFOLight( const float& height, const float& wedht );
+	CUFOLight( const float& height, const float& wedth );
 	virtual ~CUFOLight();
 
 	// 初期化関数.
@@ -50,9 +47,14 @@ public:
 	// 光を片づける.
 	void CleanUPPreparation();
 
+	// ライトの大きさを設定.
+	void SetLightScale( const float& height, const float& wedth );
+
 private:
 	std::shared_ptr<CDX9StaticMesh>	m_pStaticMesh;	// メッシュ.
 	EUFOLightState					m_NowState;		// 現在の状態.
+	float	m_ScaleHeightMax;
+	float	m_ScaleWedthMax;
 };
 
 #endif	// #ifndef UFO_LIGHT_H.

@@ -17,12 +17,16 @@ public:
 		float		AddPosYPower;		// 持ち上げる力.
 		D3DXVECTOR3 SphereAdjPos;		// スフィアの調整座標.
 		float		CollisionRadius;	// 当たり判定の半径.
+		D3DXVECTOR3 LightPosition;
+		D3DXVECTOR2 LightSize;
 
 		stMotherShipUFOParam()
 			: Position			( 0.0f, 0.0f, 0.0f )
 			, AddPosYPower		( 0.0f )
 			, SphereAdjPos		( 0.0f, 0.0f, 0.0f )
 			, CollisionRadius	( 1.0f )
+			, LightPosition		( 0.0f, 0.0f, 0.0f )
+			, LightSize			( 2.85f, 2.5f )
 		{}
 
 	} typedef SMotherShipUFOParam;
@@ -30,9 +34,6 @@ public:
 private:
 	const char* MODEL_NAME = "ufo";	// モデル名.
 	const char* PARAMETER_FILE_PATH = "Data\\GameParam\\Alien\\MotherShipUFOParam\\MotherShipUFOParam.bin";
-//	const SMotherShipUFOParam*	pPRAMETER;	// パラメータ(外部からポインタで受け取る).
-	const float LIGHT_HEIGHT	= 1.85f;
-	const float LIGHT_WEDTH		= 1.5f;
 
 public:
 	CMotherShipUFO();

@@ -18,8 +18,8 @@ class CButtonExp : public CWidget
 	const float DEFAULT_SPRITE_RENDER_POS_X	= 950.0f;
 	const float DEFAULT_SPRITE_RENDER_POS_Y	= 680.0f;
 
-	const float L_STICK_SPRITE_RENDER_POS_X	= -100.0f;
-	const float SELECT_SPRITE_RENDER_POS_X	= -70.0f;
+	const float L_STICK_SPRITE_RENDER_POS_X	= -70.0f;
+	const float SELECT_SPRITE_RENDER_POS_X	= -40.0f;
 	const float B_SPRITE_RENDER_POS_X		= 50.0f;
 	const float DET_SPRITE_RENDER_POS_X		= 80.0f;
 	const float A_SPRITE_RENDER_POS_X		= 170.0f;

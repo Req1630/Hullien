@@ -95,6 +95,7 @@ void CSceneManager::NextSceneMove()
 		m_IsGameOver	= false;
 		m_NowScene		= m_NextScene;
 		m_NextScene		= EScene::GameMain;
+		m_IsRetry		= false;
 		break;
 	case EScene::GameMain:
 		m_pScene	= std::make_shared<CGame>( this );

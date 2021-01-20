@@ -15,8 +15,8 @@ CMotherShipUFO::CMotherShipUFO()
 	, m_IsDisp			( true )
 	, m_IsReturnAlien	( false )
 {
-	m_pUFOLight = std::make_unique<CUFOLight>( LIGHT_HEIGHT, LIGHT_WEDTH );
 	m_ObjectTag = EObjectTag::MotherShipUFO;
+	m_pUFOLight = std::make_unique<CUFOLight>();
 }
 
 CMotherShipUFO::~CMotherShipUFO()
@@ -31,6 +31,7 @@ bool CMotherShipUFO::Init()
 	if( CollisionSetting()	== false ) return false;
 	if( m_pUFOLight->Init() == false ) return false;
 	m_vPosition = m_Param.Position;
+	m_pUFOLight->SetLightScale( m_Param.LightSize.y, m_Param.LightSize.x );
 
 	return true;
 }
@@ -57,7 +58,14 @@ void CMotherShipUFO::Render()
 	m_pStaticMesh->SetBlend( false );
 	m_pStaticMesh->SetRasterizerState( ERS_STATE::None );
 
-	m_pUFOLight->SetPosition( m_vPosition );
+	const D3DXVECTOR3 lightPos = 
+	{
+		m_vPosition.x - m_Param.LightPosition.x,
+		m_vPosition.y - m_Param.LightPosition.y,
+		m_vPosition.z - m_Param.LightPosition.z,
+	};
+
+	m_pUFOLight->SetPosition( lightPos );
 	m_pUFOLight->Render();
 
 #if _DEBUG
@@ -91,6 +99,7 @@ void CMotherShipUFO::SetParameter( const SMotherShipUFOParam& param )
 {
 	m_Param = param;
 	m_vPosition = m_Param.Position;
+	m_pUFOLight->SetLightScale( m_Param.LightSize.y, m_Param.LightSize.x );
 	if( m_pCollManager != nullptr ){
 		m_pCollManager->InitSphere(
 			&m_vPosition,
