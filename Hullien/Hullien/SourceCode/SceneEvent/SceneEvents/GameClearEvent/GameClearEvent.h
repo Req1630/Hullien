@@ -6,7 +6,7 @@
 #include "..\..\..\Camera\EvevtCamera\EvevtCamera.h"
 
 class CGroundStage;				// 地面クラス.
-class CSpawnUFO;				// イベント用UFOクラス.
+class CMotherShipUFO;			// イベント用UFOクラス.
 class CEventPlayer;				// イベント用プレイヤークラス.
 class CEventGirl;				// イベント用女の子クラス.
 class CEventAlienA;				// イベント用宇宙人Aクラス.
@@ -31,15 +31,15 @@ class CGameClearEvent : public CEventBase
 
 
 	// カメラ.
-	const D3DXVECTOR3 INIT_CAMERAPOSITION		= D3DXVECTOR3(-27.0f, 7.5f, -65.5f);	// カメラの初期位置.
-	const D3DXVECTOR3 CAMERAPOSITION			= D3DXVECTOR3(-8.0f, 19.0f, -114.5f);	// カメラの位置.
-	const float CORRECTION_PLAYER_LOOKPOS_Y		= 3.0f;									// プレイヤー注視位置y座標補正.
+	const D3DXVECTOR3 INIT_CAMERAPOSITION		= D3DXVECTOR3(-60.0f, 10.5f, -55.5f);	// カメラの初期位置.
+	const D3DXVECTOR3 CAMERAPOSITION			= D3DXVECTOR3(-60.0f, 10.5f, -55.5f);	// カメラの位置.
+	const float CORRECTION_PLAYER_LOOKPOS_Y		= 2.0f;									// プレイヤー注視位置y座標補正.
 	const float INIT_VIEWING_ANGLE				= 0.5f;									// 視野角の初期値.
-	const float MOVE_LIMIT_Z_SUCKED_INTO_UFO	= 18.0f;								// UFOに吸い込まれるときの移動限界.
-	const float MOVESPEED_Z_SUCKED_INTO_UFO		= 0.15f;								// UFOに吸い込まれるときの移動速度.
-	const float VIEWING_ANGLE_MOVESPEED			= 0.01f;								// 視野角移動速度.
-	const float VIEWING_ANGLE_UP_UFO			= 0.34f;								// UFOアップ時の視野角.
-	const float CAMERA_LIMITPOS_Y_KICKEDOUT_ALIEN = 1.3f;	// 宇宙人が追い出されるときのカメラの限界値.
+	const float MOVE_LIMIT_Z_SUCKED_INTO_UFO	= 55.0f;								// UFOに吸い込まれるときの移動限界.
+	const float MOVESPEED_Z_SUCKED_INTO_UFO		= 0.3f;								// UFOに吸い込まれるときの移動速度.
+	const float VIEWING_ANGLE_MOVESPEED			= 0.01f;							// 視野角移動速度.
+	const float VIEWING_ANGLE_UP_UFO			= 0.45f;							// UFOアップ時の視野角.
+	const float CAMERA_LIMITPOS_Y_KICKEDOUT_ALIEN = 1.0f;	// 宇宙人が追い出されるときのカメラの限界値.
 	const float CAMERA_SPEED_Y_KICKEDOUT_ALIEN	= 0.3f;		// 宇宙人が追い出されるときのカメラの移動速度.
 	const float FREQUENCY_LOOKPOS_Y				= 10.0f;	// カメラ注視位置の周波数.
 	const float AMPLITUDE_LOOKPOS				= 0.1f;		// カメラ注視位置の振幅.
@@ -55,9 +55,9 @@ class CGameClearEvent : public CEventBase
 	const float INIT_ALIENPOSITION_Y			= 9.0f;	//宇宙人の初期y座標.
 	const float ALIEN_ROTATION_Y				= static_cast<float>(D3DXToRadian(145)); // 宇宙人のy座標回転値.
 	const float ALIEN_FALL_POSITION_Y			= 7.0f;		//宇宙人の落下位置.
-	const float ALIEN_FALL_SPEED_X				= 0.19f;	//宇宙人の落下速度.
+	const float ALIEN_FALL_SPEED_X				= 0.35f;		//宇宙人の落下速度.
 	const float ALIEN_FALL_SPEED_Y				= 0.4f;		//宇宙人の落下速度.
-	const float ALIEN_FALL_SPEED_Z				= 0.2f;		//宇宙人の落下速度.
+	const float ALIEN_FALL_SPEED_Z				= 0.22f;		//宇宙人の落下速度.
 	const float ADD_GRAVITY						= 0.005f;	//重力の加算値.
 	const float ALIEN_FALL_ROTATION				= static_cast<float>(D3DXToRadian(160));	//宇宙人の落下時の回転値.
 	const float ALIEN_FALL_ROTATION_SPEED		= static_cast<float>(D3DXToRadian(20));		//宇宙人の落下時の回転速度.
@@ -154,7 +154,7 @@ private:
 
 private:
 	std::shared_ptr<CGroundStage>			m_pGroundStage;
-	std::shared_ptr<CSpawnUFO>				m_pSpawnUFO;
+	std::shared_ptr<CMotherShipUFO>			m_pSpawnUFO;
 	std::shared_ptr<CEventPlayer>			m_pPlayer;
 	std::shared_ptr<CEventGirl>				m_pGirl;
 	std::shared_ptr<CEventAlienA>			m_pAlienA;

@@ -64,6 +64,8 @@ public:
 	// 光を片づける.
 	void CleanUPPreparation();
 
+	// 当たり判定(イベントで使用).
+	D3DXVECTOR3 Collision( CActor* pActor, const bool& isEvent );
 private:
 	// モデルの取得.
 	bool GetModel();

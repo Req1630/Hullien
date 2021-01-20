@@ -134,6 +134,20 @@ void CMotherShipUFO::CleanUPPreparation()
 	m_pUFOLight->CleanUPPreparation();
 }
 
+// 当たり判定(イベントで使用).
+D3DXVECTOR3 CMotherShipUFO::Collision( CActor* pActor, const bool& isEvent )
+{
+	// 対象オブジェクトじゃなければ終了.
+	if ((pActor->GetObjectTag() != EObjectTag::Player) &&
+		(pActor->GetObjectTag() != EObjectTag::Girl)) return pActor->GetPosition();
+
+	if (m_pCollManager->IsShereToShere(pActor->GetCollManager()) == false) return pActor->GetPosition();
+
+	D3DXVECTOR3 pos = pActor->GetPosition();
+	pos.y += m_Param.AddPosYPower;	// 座標を上にあげる.
+
+	return pos;
+}
 
 // モデルの取得.
 bool CMotherShipUFO::GetModel()

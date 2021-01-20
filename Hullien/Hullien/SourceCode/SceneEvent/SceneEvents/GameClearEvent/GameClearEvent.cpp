@@ -1,7 +1,7 @@
 #include "GameClearEvent.h"
 #include "..\..\..\Utility\Input\Input.h"
 #include "..\..\..\GameObject\GroundStage\GroundStage.h"
-#include "..\..\..\GameObject\SpawnUFO\SpawnUFO.h"
+#include "..\..\..\GameObject\MotherShipUFO\MotherShipUFO.h"
 #include "..\..\..\GameObject\Actor\EventCharacter\EventPlayer\EventPlayer.h"
 #include "..\..\..\GameObject\Actor\EventCharacter\EventGirl\EventGirl.h"
 #include "..\..\..\GameObject\Actor\EventCharacter\EventAlien\EventAlien_A\EventAlien_A.h"
@@ -40,7 +40,7 @@ CGameClearEvent::CGameClearEvent()
 	, m_UFOStep				( 0 )
 {
 	m_pGroundStage	= std::make_shared<CGroundStage>();
-	m_pSpawnUFO		= std::make_shared<CSpawnUFO>();
+	m_pSpawnUFO		= std::make_shared<CMotherShipUFO>();
 	m_pPlayer		= std::make_shared<CEventPlayer>();
 	m_pGirl			= std::make_shared<CEventGirl>();
 	m_pAlienA		= std::make_shared<CEventAlienA>();
@@ -134,6 +134,7 @@ bool CGameClearEvent::SpawnUFOInit()
 	if( m_pSpawnUFO->Init() == false ) return false;
 	m_pSpawnUFO->DischargePreparation();
 	m_vUFOPosition = INIT_UFOPOSITION;
+	m_vUFOPosition.y = m_pSpawnUFO->GetPosition().y;
 	return true;
 }
 
@@ -297,8 +298,8 @@ void CGameClearEvent::SuckedIntoUFO()
 	ScaleDownActor(m_stGirl.vScale, SCALEDOWN_SPEED);
 
 	// “–‚½‚è”»’è.
-	m_stPlayer.vPosition = m_pSpawnUFO->Collision(m_pPlayer.get());
-	m_stGirl.vPosition = m_pSpawnUFO->Collision(m_pGirl.get());
+	m_stPlayer.vPosition = m_pSpawnUFO->Collision(m_pPlayer.get(), true);
+	m_stGirl.vPosition = m_pSpawnUFO->Collision(m_pGirl.get(), true);
 
 	if (m_stPlayer.vScale.x > 0.0f) return;
 	m_stPlayer.IsDisp = false;
