@@ -56,6 +56,7 @@ void CAlien::EffectRender()
 	m_pEffects[alien::EEffectNo_Hit]->Render();
 
 	// スポーンエフェクト.
+	m_pEffects[alien::EEffectNo_Spawn]->SetScale( m_vScale.x + SPAWN_EFFECT_ADD_SIZE );
 	m_pEffects[alien::EEffectNo_Spawn]->SetLocation( m_vPosition );
 	m_pEffects[alien::EEffectNo_Spawn]->Render();
 

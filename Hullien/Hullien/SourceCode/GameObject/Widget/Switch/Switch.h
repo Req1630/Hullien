@@ -2,7 +2,6 @@
 #define SWITCH_H
 
 #include "..\Widget.h"
-
 #include <vector>
 
 class CSwitch : public CWidget

@@ -80,7 +80,7 @@ void CAlienD::EffectRender()
 
 	// スポーンエフェクト.
 	m_pEffects[alien::EEffectNo_Spawn]->SetLocation( m_vPosition );
-	m_pEffects[alien::EEffectNo_Spawn]->SetScale( SPAWN_EFFECT_SCALE );
+	m_pEffects[alien::EEffectNo_Spawn]->SetScale( m_vScale * SPAWN_EFFECT_SCALE );
 	m_pEffects[alien::EEffectNo_Spawn]->Render();
 
 	// 死亡エフェクト.
@@ -113,6 +113,7 @@ bool CAlienD::Spawn( const D3DXVECTOR3& spawnPos )
 	m_LifePoint		= pPARAMETER->LifeMax;		// 体力の設定.
 	m_NowState = alien::EAlienState::Spawn;		// 現在の状態をスポーンに変更.
 	m_pEffects[alien::EEffectNo_Spawn]->Play( m_vPosition );
+	m_pEffects[alien::EEffectNo_Spawn]->SetSpeed( 0.5f );
 	// レーザーの移動速度の設定.
 	m_pLaserBeam->SetMoveSpped( pPARAMETER->LaserMoveSpeed );
 	// レーザーの麻痺時間の設定.

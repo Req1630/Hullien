@@ -99,6 +99,7 @@ bool CAlienC::Spawn( const D3DXVECTOR3& spawnPos )
 	m_NowState		= alien::EAlienState::Spawn;	// 現在の状態をスポーンに変更.
 	m_AnimSpeed		= 0.0;							// アニメーション速度を止める.
 	m_pEffects[alien::EEffectNo_Spawn]->Play( m_vPosition );
+	m_pEffects[alien::EEffectNo_Spawn]->SetSpeed( 0.5f );
 	return true;
 }
 

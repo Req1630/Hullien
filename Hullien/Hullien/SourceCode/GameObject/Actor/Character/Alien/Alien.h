@@ -14,7 +14,7 @@ class CAlien : public CCharacter
 {
 protected:
 	inline static const char* HIT_EEFECT_NAME			= "hiteffekt";		// ヒットエフェクト.
-	inline static const char* SPAWN_EFFECT_NAME			= "uvtest";			// スポーンエフェクト.
+	inline static const char* SPAWN_EFFECT_NAME			= "spawnEffect";			// スポーンエフェクト.
 	inline static const char* DEAD_EFFECT_NAME			= "uvtest";			// 死亡エフェクト.
 	inline static const char* ATTACK_EFFECT_NAME		= "b_attackeffkt";	// 攻撃エフェクト.
 	inline static const float TOLERANCE_RADIAN			= static_cast<float>(D3DXToRadian(10.0));	// 回転の許容範囲.
@@ -26,6 +26,8 @@ protected:
 
 	inline static const float HIT_EFFECT_SCALE		= 2.0f;				// ヒットエフェクトのサイズ.
 	inline static const float HIT_EFFECT_HEIGHT		= 4.0f;				// ヒットエフェクトの高さ.
+
+	inline static const float SPAWN_EFFECT_ADD_SIZE	= 0.2f;				// スポーンエフェクト調整加算値.
 
 	inline static const int	POSSIBLE_TIME = 80;
 	inline static const int MAX_HIT_COUNT = 3;

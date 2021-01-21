@@ -14,7 +14,7 @@
 #include "..\..\..\GameObject\Widget\SceneTransition\SceneTransition.h"
 #include "..\..\..\Utility\Input\Input.h"
 #include "..\..\..\XAudio2\SoundManager.h"
-
+#include "..\..\..\GameObject\Widget\Tutorial\Tutorial.h"
 #include "..\..\..\Utility\ImGuiManager\ImGuiManager.h"
 #include "..\..\..\Editor\EditRenderer\EditRenderer.h"
 #include "..\..\..\Common\D3DX\D3DX11.h"
@@ -29,6 +29,7 @@ CGame::CGame( CSceneManager* pSceneManager )
 	, m_pWidgetManager		( nullptr )
 	, m_pContinueWidget		( nullptr )
 	, m_pEventManager		( nullptr )
+	, m_pTutorial			( nullptr )
 	, m_NowEventScene		( EEventSceneState::GameStart )
 	, m_NextSceneState		( ENextSceneState::None )
 	, m_WaitCount			( 0.0f )
@@ -41,6 +42,7 @@ CGame::CGame( CSceneManager* pSceneManager )
 	m_pWidgetManager		= std::make_unique<CGameWidgetManager>();
 	m_pContinueWidget		= std::make_unique<CContinueWidget>();
 	m_pEventManager			= std::make_unique<CEventManager>();
+	m_pTutorial				= std::make_unique<CTutorial>();
 }
 
 CGame::~CGame()
@@ -57,10 +59,12 @@ bool CGame::Load()
 	if( m_pGameObjManager->Init()	== false )	return false;
 	if( m_pWidgetManager->Init()	== false )	return false;
 	if( m_pContinueWidget->Init()	== false )	return false;
+	if( m_pTutorial->Init()			== false )	return false; 
 	if( CConfigWidget::Init()		== false )	return false;
 	CConfigWidget::SetIsNowGameScene( true );
 	if (m_pSceneManager->GetRetry() == false)
 	{
+		m_pTutorial->SetupTurorial();
 		m_NowEventScene = EEventSceneState::GameStart;
 		CSceneTransition::SetFadeIn();
 	}
@@ -134,6 +138,7 @@ void CGame::Render()
 		ModelRender();
 		m_pGameObjManager->SpriteRender();
 		m_pWidgetManager->Render();
+		m_pTutorial->Render();
 		break;
 	case EEventSceneState::Continue:
 		if (m_pGameObjManager->IsGameOver() == false) {
@@ -246,20 +251,24 @@ void CGame::GameUpdate()
 		}
 	}
 
-	// 設定中じゃなければ.
-	if( m_IsConfig == false && CFade::GetIsFade() == false ){
-		// スタートボタンを押して設定画面を表示させる.
-		if( CInput::IsMomentPress( EKeyBind::Start ) == true ){
-			m_IsConfig = true;
-			m_pGameObjManager->AnimationStop();	// アニメーションを停止する.
+	if( m_pTutorial->IsTurorialEnd() == true ){
+		// 設定中じゃなければ.
+		if( m_IsConfig == false && CFade::GetIsFade() == false ){
+			// スタートボタンを押して設定画面を表示させる.
+			if( CInput::IsMomentPress( EKeyBind::Start ) == true ){
+				m_IsConfig = true;
+				m_pGameObjManager->AnimationStop();	// アニメーションを停止する.
+			}
 		}
-	}
 
-	if( m_IsConfig == false ){
-		m_pGameObjManager->Update();
-		m_pWidgetManager->Update(m_pGameObjManager.get());
+		if( m_IsConfig == false ){
+			m_pGameObjManager->Update();
+			m_pWidgetManager->Update(m_pGameObjManager.get());
+		} else {
+			ConfigUpdate();		
+		}
 	} else {
-		ConfigUpdate();		
+		m_pTutorial->Update();
 	}
 }
 

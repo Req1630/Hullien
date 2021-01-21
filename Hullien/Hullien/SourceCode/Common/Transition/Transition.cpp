@@ -18,6 +18,7 @@ CTransition::CTransition()
 	, m_pMaskTexture			( nullptr )
 	, m_pTexture				( nullptr )
 	, m_TransitionOutMode		( ETRANSITION_OUT_MODE_Alpha )
+	, m_IsScreenSize			( true )
 {
 	// PSシェーダーのサイズを確保.
 	const int psShaderListSize = sizeof(PS_SHADER_LIST)/sizeof(PS_SHADER_LIST[0]);
@@ -106,6 +107,7 @@ void CTransition::Render()
 		cb.mW	= mWorld;
 		D3DXMatrixTranspose( &cb.mW, &cb.mW ); // 行列を転置する.
 		cb.Value = m_Value;
+		cb.IsScreenSize = m_IsScreenSize == true ? 1.0f : 0.0f;
 
 		memcpy_s( pData.pData, pData.RowPitch, (void*)(&cb), sizeof(cb) );
 

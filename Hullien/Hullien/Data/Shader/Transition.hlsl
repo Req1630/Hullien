@@ -21,8 +21,9 @@ cbuffer CBufferPerInit : register(b0)
 // フレーム毎で変わる値.
 cbuffer CBufferPerFrame : register(b1)
 {
-	matrix	g_mWorld	: packoffset(c0); // ワールド行列.
-	float	g_Value		: packoffset(c4); // フェード値.
+	matrix	g_mWorld		: packoffset(c0); // ワールド行列.
+	float	g_Value			: packoffset(c4); // フェード値.
+	float	g_IsScreenSize	: packoffset(c5); // screenサイズに合わせるかどうか.
 };
 
 //-----------------------------------------------.
@@ -50,8 +51,13 @@ VS_OUTPUT VS_Main(
 	output.Pos.x = (output.Pos.x / g_ViewPort.x) * 2.0f - 1.0f;
 	output.Pos.y = 1.0f - (output.Pos.y / g_ViewPort.y) * 2.0f;
 
-	output.Tex.x = (output.Pos.x + 1.0) / 2;
-	output.Tex.y = (-output.Pos.y + 1.0) / 2;
+	if( g_IsScreenSize >= 1.0f ) {
+		output.Tex.x = (output.Pos.x + 1.0) / 2;
+		output.Tex.y = (-output.Pos.y + 1.0) / 2;
+	} else {
+		output.Tex = Tex;
+	}
+	
 	
 
 	return output;

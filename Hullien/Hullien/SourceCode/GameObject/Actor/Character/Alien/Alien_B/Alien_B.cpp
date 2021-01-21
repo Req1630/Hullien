@@ -112,6 +112,7 @@ void CAlienB::EffectRender()
 	m_pEffects[alien::EEffectNo_Hit]->Render();
 
 	// スポーンエフェクト.
+	m_pEffects[alien::EEffectNo_Spawn]->SetScale( m_vScale.x + SPAWN_EFFECT_ADD_SIZE );
 	m_pEffects[alien::EEffectNo_Spawn]->SetLocation( m_vPosition );
 	m_pEffects[alien::EEffectNo_Spawn]->Render();
 
@@ -154,6 +155,7 @@ bool CAlienB::Spawn( const D3DXVECTOR3& spawnPos )
 	m_NowState		= alien::EAlienState::Spawn;	// 現在の状態をスポーンに変更.
 	m_AnimSpeed		= 0.0;							// アニメーション速度を止める.
 	m_pEffects[alien::EEffectNo_Spawn]->Play( m_vPosition );
+	m_pEffects[alien::EEffectNo_Spawn]->SetSpeed( 0.5f );
 	return true;
 }
 

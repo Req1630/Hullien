@@ -197,6 +197,7 @@
     <ClCompile Include="SourceCode\Common\Blur\Blur.cpp" />
     <ClCompile Include="SourceCode\Common\InvisibleWall\InvisibleWallShader.cpp" />
     <ClCompile Include="SourceCode\GameObject\Widget\ButtonExplanation\ButtonExplanation.cpp" />
+    <ClCompile Include="SourceCode\GameObject\Widget\Tutorial\Tutorial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\ImGui\imconfig.h" />
@@ -400,6 +401,7 @@
     <ClInclude Include="SourceCode\Common\Blur\Blur.h" />
     <ClInclude Include="SourceCode\Common\InvisibleWall\InvisibleWallShader.h" />
     <ClInclude Include="SourceCode\GameObject\Widget\ButtonExplanation\ButtonExplanation.h" />
+    <ClInclude Include="SourceCode\GameObject\Widget\Tutorial\Tutorial.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

@@ -9,6 +9,7 @@ class CContinueWidget;		// コンテニューUIクラス.
 class CConfigWidget;		// 設定UIクラス.
 class CSkyDome;				// 背景クラス.
 class CEventManager;		// イベント管理クラス.
+class CTutorial;			// チュートリアルUIクラス.
 
 /**********************************
 *	ゲームシーンクラス.
@@ -79,6 +80,7 @@ private:
 	std::unique_ptr<CGameWidgetManager>	m_pWidgetManager; 	// ゲームUI管理クラス.
 	std::unique_ptr<CContinueWidget>	m_pContinueWidget;	// コンテニューUIクラス.
 	std::unique_ptr<CEventManager>		m_pEventManager; 	// イベント管理クラス.
+	std::unique_ptr<CTutorial>			m_pTutorial;		// チュートリアルクラス.
 	EEventSceneState					m_NowEventScene;	// 現在のイベントシーン.
 	ENextSceneState						m_NextSceneState;	// 次のシーン状態.
 	float								m_WaitCount;		// 待機カウント.

@@ -26,6 +26,7 @@ class CTransition : public CCommon
 	{
 		ALIGN16 D3DXMATRIX	mW;		// ワールド行列.
 		ALIGN16 float Value;
+		ALIGN16 float IsScreenSize;	// screenサイズに合わせるかどうか.
 	};
 	// 頂点の構造体.
 	struct VERTEX
@@ -62,7 +63,9 @@ public:
 	void SetTexture( ID3D11ShaderResourceView* pTexture );
 	void SetDestTexture( ID3D11ShaderResourceView* pTexture );
 	// 値の設定.
-	void SetValue( const float& value ){ m_Value = value; }
+	inline void SetValue( const float& value ){ m_Value = value; }
+	// screenサイズに合わせるかどうか.
+	inline void IsScreenSize( const bool& isScreenSize ){ m_IsScreenSize = isScreenSize; };
 
 	// トランジションの切り抜き方法の設定.
 	void SetTransitionCutMode( const ETRANSITION_OUT_MODE& mode ){ m_TransitionOutMode = mode; }
@@ -98,6 +101,7 @@ private:
 	ETRANSITION_OUT_MODE		m_TransitionOutMode;// トランジションの切り抜き方法.
 
 	float m_Value;
+	bool m_IsScreenSize;
 };
 
 #endif	// #ifndef TRANSITION_H.
