@@ -67,7 +67,7 @@ D3DXVECTOR3 CSpawnUFO::Collision(CActor * pActor)
 void CSpawnUFO::Update()
 {
 	m_SpawnCount++;	// スポーンカウントの加算.
-
+	if( m_SpawnCount == (m_SpawnParameter.SpawnTime*FPS) / 4 )LightCleanUP();
 	m_pUFOLight->Update();
 	m_pUltemateSing->Update();
 }
@@ -120,6 +120,7 @@ void CSpawnUFO::SpawnAlien( std::vector<std::shared_ptr<CAlien>>& alienList )
 	if( alienList.back()->GetObjectTag() == EObjectTag::Alien_D ) m_pUltemateSing->SetAppUltemate( true );
 	m_SpawnCount = 0;
 	m_AlienSpawnCount++;
+	LightDischarge();
 }
 
 // 宇宙人のパラメータリストを設定する.

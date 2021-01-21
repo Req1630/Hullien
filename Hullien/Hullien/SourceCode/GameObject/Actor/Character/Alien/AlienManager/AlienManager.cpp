@@ -209,7 +209,7 @@ bool CAlienManager::ReadAlienParamList()
 	// スポーンUFOに各宇宙人のパラメータ設定.
 	for( auto& s : m_SpawnUFOList ){
 		s->SetAlienParameterList( &m_AlienParamList );
-		s->LightDischarge();
+//		s->LightDischarge();
 	}
 
 	return true;
