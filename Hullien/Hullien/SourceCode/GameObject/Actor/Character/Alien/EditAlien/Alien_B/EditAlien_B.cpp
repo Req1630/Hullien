@@ -66,9 +66,11 @@ void CEditAlienB::PlayAttack()
 {
 	if( m_IsPlaying == true ) return;
 	m_RotAccValue	= m_Paramter.AttackRotInitPower;
-	m_NowState = alien::EAlienState::Move;
-	m_NowMoveState = alien::EMoveState::Attack;
-	m_IsPlaying = true;
+	m_NowState		= alien::EAlienState::Move;
+	m_NowMoveState	= alien::EMoveState::Attack;
+	m_MoveVector.x	= sinf( m_vRotation.y );
+	m_MoveVector.z	= cosf( m_vRotation.y );
+	m_IsPlaying		= true;
 }
 
 // パラメーターの設定.
@@ -130,7 +132,7 @@ void CEditAlienB::Attack()
 		m_vPosition.x -= m_MoveVector.x * m_Paramter.AttackMoveSpeed;
 		m_vPosition.z -= m_MoveVector.z * m_Paramter.AttackMoveSpeed;
 	}
-	if (m_IsAttackSE == false)
+	if( m_IsAttackSE == false )
 	{
 		CSoundManager::NoMultipleSEPlay("AlienAttack");
 		m_IsAttackSE = true;
@@ -156,5 +158,13 @@ bool CEditAlienB::ColliderSetting()
 		&m_vScale.x,
 		m_Paramter.SphereAdjPos,
 		m_Paramter.SphereAdjRadius ) )) return false;
+	if( FAILED( m_pCollManager->InitCapsule( 
+		m_pSkinMesh->GetMesh(),
+		&m_vPosition,
+		&m_vRotation,
+		&m_vScale.x,
+		m_Paramter.SphereAdjPos,
+		m_Paramter.CapsuleAdjRadius,
+		0.0f ) )) return false;
 	return true;
 }

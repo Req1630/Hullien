@@ -366,7 +366,7 @@ bool CAlienB::ColliderSetting()
 		&m_vRotation,
 		&m_vScale.x,
 		pPARAMETER->SphereAdjPos,
-		-1.0f,
+		pPARAMETER->CapsuleAdjRadius,
 		0.0f ) )) return false;
 	return true;
 }

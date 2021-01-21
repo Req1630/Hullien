@@ -54,6 +54,7 @@ private:
 	stSpawnUFOParam									m_SpawnUFOParam;
 	int		m_AlienIndex;
 	int		m_NowParamIndex;
+	int		m_OldParamIndex;
 	bool	m_IsRisingMotherShip;
 
 };

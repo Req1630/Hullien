@@ -27,6 +27,7 @@ CAlienParamEdit::CAlienParamEdit()
 	, m_SpawnUFOParam		()
 	, m_AlienIndex			( 0 )
 	, m_NowParamIndex		( 0 )
+	, m_OldParamIndex		( 0 )
 	, m_IsRisingMotherShip	( false )
 {
 	m_pMotherShipUFO = std::make_unique<CMotherShipUFO>();
@@ -48,8 +49,7 @@ bool CAlienParamEdit::Init()
 	if( CFileManager::BinaryVectorReading( SPAWN_UFO_PARAM_FILE_PATH, tempPram ) == false ) return false;
 	m_SpawnUFOParam = tempPram[0];
 	m_pSpawnUFO->SetSpawnParameter( m_SpawnUFOParam );
-	m_pSpawnUFO->DischargePreparation()
-		;
+	m_pSpawnUFO->DischargePreparation();
 	m_pMotherShipUFO->DischargePreparation();
 
 	return true;
@@ -203,8 +203,13 @@ void CAlienParamEdit::SpawnParamRender( const int& index )
 	CImGuiManager::DragFloat( u8"スフィアの調整座標 Y", &s.SphereAdjPos.y );
 	CImGuiManager::DragFloat( u8"スフィアの調整座標 Z", &s.SphereAdjPos.z );
 	CImGuiManager::DragFloat( u8"スフィアの調整半径", &s.SphereAdjRadius );
+	CImGuiManager::DragFloat( u8"カプセルの調整半径", &s.CapsuleAdjRadius );
 
 	if( ImGui::Button(u8"変更したパラメータを反映") == true ){
+		m_pEditAliens[m_AlienIndex]->SetParamter(m_AlienParamList[m_NowParamIndex]);
+	}
+	// タグが切り替えられたらパラメータを反映させる.
+	if( m_OldParamIndex != m_NowParamIndex ){
 		m_pEditAliens[m_AlienIndex]->SetParamter(m_AlienParamList[m_NowParamIndex]);
 	}
 
@@ -249,6 +254,8 @@ void CAlienParamEdit::SpawnParamRender( const int& index )
 	}
 
 	ImGui::PopItemWidth();
+
+	m_OldParamIndex = m_NowParamIndex;
 }
 
 // 宇宙人の初期化.

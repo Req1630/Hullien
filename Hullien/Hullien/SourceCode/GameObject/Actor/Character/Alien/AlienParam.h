@@ -19,7 +19,7 @@ struct stAlienParam : public CCharacter::SParameter
 	float		DeadCountAddValue;			// 死亡カウントの加算値.
 	float		DeadScaleSubValue;			// 死亡時のスケールの減算値.
 
-											// 宇宙人Bパラメータ------------------.
+	// 宇宙人Bパラメータ------------------.
 	float		PlayerAimLenght;			// プレイヤーを狙う範囲.
 
 	float		ResearchLenght;				// 再検査する際の距離.
@@ -31,7 +31,7 @@ struct stAlienParam : public CCharacter::SParameter
 	float		AttackMoveSpeed;			// 攻撃移動速度.
 	float		AttackMoveRange;			// 攻撃移動範囲.
 
-											// 宇宙人Dパラメータ------------------.
+	// 宇宙人Dパラメータ------------------.
 	float		LaserMoveSpeed;				// レーザーの移動速度.
 	float		ParalysisTime;				// 麻痺の時間.
 
@@ -47,6 +47,7 @@ struct stAlienParam : public CCharacter::SParameter
 
 	D3DXVECTOR3 SphereAdjPos;				// スフィアの調整座標.
 	float		SphereAdjRadius;			// スフィアの調整半径.
+	float		CapsuleAdjRadius;			// カプセルの調整半径.
 
 	stAlienParam()
 		: RotationalSpeed			( 0.0f )
@@ -85,6 +86,7 @@ struct stAlienParam : public CCharacter::SParameter
 
 		, SphereAdjPos				( 0.0f, 0.0f, 0.0f )
 		, SphereAdjRadius			( 0.0f )
+		, CapsuleAdjRadius			( 0.0f )
 	{}
 } typedef SAlienParam;
 
