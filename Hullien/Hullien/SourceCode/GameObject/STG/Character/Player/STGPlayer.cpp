@@ -7,11 +7,12 @@
 #include "..\..\..\..\XAudio2\SoundManager.h"
 
 STG::CPlayer::CPlayer()
-	: m_Direction		( 0.0f, 0.0f, 0.0f )
-	, m_SpawnMoveSpeed	( MOVE_SPEED )
-	, m_InitMoveCount	( 0.0f )
-	, m_IsDead			( false )
-	, m_IsInitMoveEnd	( false )
+	: m_Direction			( 0.0f, 0.0f, 0.0f )
+	, m_InvincibleTimeCount	( 0 )
+	, m_SpawnMoveSpeed		( MOVE_SPEED )
+	, m_InitMoveCount		( 0.0f )
+	, m_IsDead				( false )
+	, m_IsInitMoveEnd		( false )
 {
 	m_pCollManager	= std::make_shared<CCollisionManager>();
 	m_vScale		= { MODEL_SCALE_MAX, MODEL_SCALE_MAX, MODEL_SCALE_MAX };
@@ -40,12 +41,20 @@ void STG::CPlayer::Update()
 	Move();			// 移動.
 	DeadUpdate();	// 死亡処理.
 	BulletUpdate();	// 弾の更新.
+
+	// 無敵カウントが0より大きければ減算する.
+	if( m_InvincibleTimeCount > 0 ) m_InvincibleTimeCount--;
 }
 
 // 描画関数.
 void STG::CPlayer::Render()
 {
 	if( m_pStaticMesh == nullptr ) return;
+
+	// 攻撃を食らった時、点滅するように、色の計算をする.
+	const float color = STANDARD_MODEL_COLOR - fabsf(sinf( static_cast<float>(m_InvincibleTimeCount/INVINCIBLE_BLINKING_SPEED) )*INVINCIBLE_BLINKING_VALUE_MIN);
+	m_pStaticMesh->SetColor( { color, color, color, 1.0f } );	// 計算した色を設定.
+
 	MeshRender();					// メッシュの描画.
 	BulletRender( BULLET_COLOR );	// 弾の描画.
 
@@ -195,8 +204,13 @@ void STG::CPlayer::ShotController()
 // ライフ計算関数.
 void STG::CPlayer::LifeCalculation( const std::function<void(float&)>& proc )
 {
+	// 無敵時間がカウントされていれば終了.
+	if( m_InvincibleTimeCount > 0 ) return;
+
 	proc( m_LifePoint );	// ライフを計算する.
 	CSoundManager::PlaySE(HIT_SE_NAME);	// ヒットSEを鳴らす.
+
+	m_InvincibleTimeCount = INVINCIBLE_TIME;	// 無敵時間を入れる.
 
 	if( m_LifePoint > 0.0f ) return;
 	// ライフが 0 いかに慣れば.
