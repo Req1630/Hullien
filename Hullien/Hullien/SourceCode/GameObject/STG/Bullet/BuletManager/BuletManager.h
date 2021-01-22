@@ -30,9 +30,12 @@ namespace STG
 		// ランダムで撃つ.
 		void RandomShot();
 		// 弾が撃ち終わったかどうか.
-		inline bool IsShotEnd(){ return m_IsShotEnd; }
+		inline bool IsShotEnd() const { return m_IsShotEnd; }
 		// 初期角度の設定.
 		void SetInitAngle( const D3DXVECTOR3& pos, const D3DXVECTOR3& targetPos );
+
+		// 全弾の動作が終了したか.
+		inline bool IsAllBulletUpdateEnd() const { return m_IsAllBulletUpdateEnd; }
 
 	private:
 		// 弾を撃つ.
@@ -50,6 +53,7 @@ namespace STG
 		int			m_ShotCount;				// 弾を撃つカウント値.
 		int			m_NowShotBulletCount;		// 撃った弾の数.
 		bool		m_IsShotEnd;				// 弾が撃ち終わったか.
+		bool		m_IsAllBulletUpdateEnd;		// 弾の動作が全部終了したか.
 	};
 };
 

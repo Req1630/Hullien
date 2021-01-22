@@ -26,7 +26,10 @@ bool STG::CEnemyManager::Init()
 // XVŠÖ”.
 void STG::CEnemyManager::Update( std::function<void(STG::CActor*)> updateProc )
 {
-	for( auto& e : m_Enemys ) updateProc( e.get() );
+	for( auto& e : m_Enemys ){
+		if( e->IsAllBulletUpdateEnd() == true ) continue;
+		updateProc( e.get() );
+	}
 }
 
 // •`‰æŠÖ”.

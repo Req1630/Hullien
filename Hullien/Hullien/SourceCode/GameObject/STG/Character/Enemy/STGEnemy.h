@@ -43,6 +43,7 @@ namespace STG
 		inline static const float DEAD_MOVE_ACC_VALUE_MAX		= 1.5f;		// 死亡移動加速度最大値.
 		inline static const float DEAD_POSITION_Y_ADJ_VALUE		= 40.0f;	// 死亡座標の調整値.
 		inline static const float DEAD_CAMERA_SHAKE_ADJ_VALUE	= 10.0f;	// 死亡カメラ揺れ値.
+		inline static const float LAST_DEAD_ROTATION_SPEED		= 0.2f;		// 死亡時の回転速度.
 
 		const STG::SEnemyParam PARAMETER;	// パラメータ.
 
@@ -98,6 +99,9 @@ namespace STG
 		// 最後のスポーンフラグの設定.
 		inline void SetLastSpawn(){ m_IsMySpawnLast = true; }
 
+		// 全弾の動作が終了したか.
+		inline bool IsAllBulletUpdateEnd() const { return m_IsAllBulletUpdateEnd == true && m_IsActive == false; }
+
 	private:
 		// スポーン.
 		void Spawn();
@@ -138,6 +142,7 @@ namespace STG
 		int						m_SpawnCount;			// スポーンカウント.
 		bool					m_IsHitShake;			// 当たった時の揺れをするか.
 		bool					m_IsMySpawnLast;		// 自分が最後のスポーン.
+		bool					m_IsAllBulletUpdateEnd;	// 全弾の動作が終了したか.
 	};
 }
 

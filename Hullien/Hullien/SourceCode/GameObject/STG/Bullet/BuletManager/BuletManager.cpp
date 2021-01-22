@@ -16,6 +16,7 @@ STG::CBulletManager::CBulletManager( const SBulletManagerParam& param )
 	, m_ShotCount				( 0 )
 	, m_NowShotBulletCount		( 0 )
 	, m_IsShotEnd				( false )
+	, m_IsAllBulletUpdateEnd	( false )
 {
 }
 
@@ -42,7 +43,13 @@ bool STG::CBulletManager::Init()
 // 更新関数.
 void STG::CBulletManager::Update()
 {
-	for( auto& b : m_pBullets ) b->Update();
+	// 更新の初めに "true" にして、
+	//	どれか一つでも動作している弾があれば "false" になる.
+	m_IsAllBulletUpdateEnd = true;
+	for( auto& b : m_pBullets ){
+		b->Update();
+		if( b->IsUpdateEnd() == false ) m_IsAllBulletUpdateEnd = false;
+	}
 }
 
 // 描画関数.

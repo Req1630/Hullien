@@ -16,20 +16,21 @@ STG::CEnemy::CEnemy()
 }
 
 STG::CEnemy::CEnemy( const STG::SEnemyParam& param )
-	: PARAMETER				( param )
-	, m_pGuns				()
-	, m_pFont				( nullptr )
-	, m_NowState			( STG::EEnemyState::Spawn )
-	, m_DeadUpParam			()
-	, m_FontRotation		( FONT_ROTATION )
-	, m_MoveSpeed			( 0.0f )
-	, m_MoveingDistance		( 0.0f )
-	, m_MoveingDistanceMax	( 0.0f )
-	, m_ShakeCount			( SHAKE_COUNT_MAX )
-	, m_EscapeCount			( ESCAPE_COUNT_MAX )
-	, m_SpawnCount			( 0 )
-	, m_IsHitShake			( false )
-	, m_IsMySpawnLast		( false )
+	: PARAMETER					( param )
+	, m_pGuns					()
+	, m_pFont					( nullptr )
+	, m_NowState				( STG::EEnemyState::Spawn )
+	, m_DeadUpParam				()
+	, m_FontRotation			( FONT_ROTATION )
+	, m_MoveSpeed				( 0.0f )
+	, m_MoveingDistance			( 0.0f )
+	, m_MoveingDistanceMax		( 0.0f )
+	, m_ShakeCount				( SHAKE_COUNT_MAX )
+	, m_EscapeCount				( ESCAPE_COUNT_MAX )
+	, m_SpawnCount				( 0 )
+	, m_IsHitShake				( false )
+	, m_IsMySpawnLast			( false )
+	, m_IsAllBulletUpdateEnd	( false )
 {
 	m_pFont			= std::make_unique<CFont>();
 	m_pCollManager	= std::make_shared<CCollisionManager>();
@@ -74,9 +75,15 @@ bool STG::CEnemy::Init()
 // 更新関数.
 void STG::CEnemy::Update()
 {
-	// 弾の更新.
-	for( auto& g : m_pGuns ) g->Update();
+	if( m_IsAllBulletUpdateEnd == true && m_IsActive == false ) return;
 
+	// 弾の更新.
+	m_IsAllBulletUpdateEnd = true;
+	for( auto& g : m_pGuns ){
+		g->Update();
+		if( g->IsAllBulletUpdateEnd() == false ) m_IsAllBulletUpdateEnd = false;
+	}
+	
 	switch( m_NowState )
 	{
 	case STG::EEnemyState::Spawn:	Spawn();	break;	// スポーン.
@@ -93,6 +100,8 @@ void STG::CEnemy::Update()
 // 描画関数.
 void STG::CEnemy::Render()
 {
+	if( m_IsAllBulletUpdateEnd == true && m_IsActive == false ) return;
+
 	// 弾の描画.
 	for( auto& g : m_pGuns ) g->Render();
 
@@ -193,7 +202,6 @@ void STG::CEnemy::Escape()
 void STG::CEnemy::Dead()
 {
 	if( m_IsMySpawnLast == false ){
-		m_IsActive	= false;		// 動作終了.
 		m_vScale.x -= DEAD_SCALE_SUB_VALUE;	// スケールを加算.
 		m_vScale.y -= DEAD_SCALE_SUB_VALUE;	// スケールを加算.
 		m_vScale.z -= DEAD_SCALE_SUB_VALUE;	// スケールを加算.
@@ -204,6 +212,7 @@ void STG::CEnemy::Dead()
 		m_NowState	= STG::EEnemyState::None;	// 何もない状態へ遷移.
 		// 座標を画面外へ.
 		m_vPosition	= { INIT_POSITION_Z, 0.0f, INIT_POSITION_Z };
+		m_IsActive	= false;		// 動作終了.
 	} else {
 		// スポーンラストの際の死亡処理
 		SpawnLastDead();
@@ -226,7 +235,7 @@ void STG::CEnemy::SpawnLastDead()
 		m_vPosition.x += vec.x * moveSpeed;
 		m_vPosition.z += vec.z * moveSpeed;
 	}
-	m_FontRotation.z += DEAD_ROTATION_SPEED;	// 回転させる.
+	m_FontRotation.z += LAST_DEAD_ROTATION_SPEED;	// 回転させる.
 
 	// 移動加速値の加算.
 	m_DeadUpParam.MoveAccValue += DEAD_MOVE_ACC_ADD_VALUE;
@@ -238,7 +247,7 @@ void STG::CEnemy::SpawnLastDead()
 		m_vPosition.y += m_DeadUpParam.MoveSpeed + m_DeadUpParam.MoveAccValue;
 	} else {
 		m_vPosition.y = cameraPos.y-DEAD_POSITION_Y_ADJ_VALUE;
-		m_FontRotation.z -= DEAD_ROTATION_SPEED;
+		m_FontRotation.z -= LAST_DEAD_ROTATION_SPEED;
 
 		m_DeadUpParam.IsMoveEnd = true;
 		if( m_DeadUpParam.IsPlaySE == false ){

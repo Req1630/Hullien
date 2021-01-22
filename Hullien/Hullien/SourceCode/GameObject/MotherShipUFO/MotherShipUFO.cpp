@@ -100,6 +100,7 @@ void CMotherShipUFO::SetParameter( const SMotherShipUFOParam& param )
 	m_Param = param;
 	m_vPosition = m_Param.Position;
 	m_pUFOLight->SetLightScale( m_Param.LightSize.y, m_Param.LightSize.x );
+	m_pUFOLight->DischargePreparation();
 	if( m_pCollManager != nullptr ){
 		m_pCollManager->InitSphere(
 			&m_vPosition,

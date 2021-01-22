@@ -15,6 +15,7 @@ namespace STG
 		, m_Color						( 0.0f, 0.0f, 0.0f, 1.0f )
 		, m_MoveSpeed					( 0.0f )
 		, m_IsBulletToBulletCollJudge	( false )
+		, m_IsUpdateEnd					( false )
 	{
 		m_pCollManager	= std::make_shared<CCollisionManager>();
 		m_ObjectTag		= EObjectTag::STG_Bullet;
@@ -39,7 +40,10 @@ namespace STG
 		m_vPosition.x -= m_MoveVector.x * m_MoveSpeed;
 		m_vPosition.z -= m_MoveVector.z * m_MoveSpeed;
 
-		if( IsDisplayOut() == true ) m_IsActive = false;
+		if( IsDisplayOut() == true ){
+			m_IsActive = false;
+			m_IsUpdateEnd = true;
+		}
 	}
 
 	// •`‰æŠÖ”.
@@ -79,6 +83,7 @@ namespace STG
 		// ‘Šè‚ª’e‚È‚ç‘Šè‚Ì’e‚Ì“®ì‚ğ‚È‚­‚·.
 		if( targetIsBullet == true ) pActor->SetActive( false );
 		m_IsActive = false;	// ©•ª‚Ì“®ì‚ğ‚È‚­‚·.
+		m_IsUpdateEnd = true;
 	}
 
 	// Œ‚‚Â.
