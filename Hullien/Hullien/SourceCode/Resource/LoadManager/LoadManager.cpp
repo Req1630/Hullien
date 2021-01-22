@@ -100,8 +100,21 @@ bool CLoadManager::ThreadRelease()
 {
 	if( m_isThreadJoined == true ) return true;
 	if( m_isLoadEnd == false ) return false;
-	m_Thread.join();
-	m_isThreadJoined = true;
+	DWORD code = -1;
+	GetExitCodeThread( m_Thread.native_handle(),&code );
+	if( code == 0xffffffff ){
+		m_isThreadJoined = true;
+	}
+	if( code == 0 ){
+		m_Thread.join();
+		while (1)
+		{
+			if( m_Thread.joinable() != true ){
+				m_isThreadJoined = true;
+				break;
+			}
+		}
+	}
 	return true;
 }
 

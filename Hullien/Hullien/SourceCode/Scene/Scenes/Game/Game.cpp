@@ -75,6 +75,8 @@ bool CGame::Load()
 	}
 	CSceneTexRenderer::SetIsStartLoad( false );
 
+	while( CSoundManager::StopBGMThread("TitleBGM") == false );
+
 	return true;
 }
 

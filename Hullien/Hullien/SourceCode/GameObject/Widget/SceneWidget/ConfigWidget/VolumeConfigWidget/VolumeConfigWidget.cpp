@@ -223,6 +223,7 @@ void CVolumeConfigWidget::OffVolumeSeting()
 {
 	// ‰¹—Ê‚Ìİ’è‚ğ‹–‰Â‚·‚é.
 	CSoundManager::StateChangeVolumeThread( false );
+	m_IsOneStep = false;
 }
 
 // •Û‘¶I—¹.

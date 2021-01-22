@@ -58,6 +58,8 @@ bool CTitle::Load()
 void CTitle::Update()
 {
 	if (CFade::GetIsFade() == true) return;
+	if( CSceneTransition::GetIsFade() == true ) return;
+
 	if( m_IsNowConfig == false ){
 		// Œˆ’è‚µ‚Ä‚È‚¢ê‡UI‚ÌXV.
 		if( m_IsDecision == false ) m_pWidget->Update();
@@ -109,14 +111,14 @@ void CTitle::Render()
 
 	CEditRenderer::PushRenderProc( 
 		[&]()
-	{
-		ImGui::Image( CSceneTexRenderer::GetGBuffer()[0], ImVec2(800, 400) );
-		ImGui::Image( CSceneTexRenderer::GetGBuffer()[1], ImVec2(800, 400) );
-		ImGui::Image( CSceneTexRenderer::GetGBuffer()[2], ImVec2(800, 400) );
-		ImGui::Image( CSceneTexRenderer::GetTransBaffer(), ImVec2(800, 400) );
-		ImGui::Image( CSceneTexRenderer::GetBlurTexture(), ImVec2(800, 400) );
-		ImGui::Image( CSceneTexRenderer::GetTmpScreenTexture(), ImVec2(800, 400) );
-	});	
+		{
+			ImGui::Image( CSceneTexRenderer::GetGBuffer()[0],		ImVec2(800, 400) );
+			ImGui::Image( CSceneTexRenderer::GetGBuffer()[1],		ImVec2(800, 400) );
+			ImGui::Image( CSceneTexRenderer::GetGBuffer()[2],		ImVec2(800, 400) );
+			ImGui::Image( CSceneTexRenderer::GetTransBaffer(),		ImVec2(800, 400) );
+			ImGui::Image( CSceneTexRenderer::GetBlurTexture(),		ImVec2(800, 400) );
+			ImGui::Image( CSceneTexRenderer::GetTmpScreenTexture(),	ImVec2(800, 400) );
+		});
 }
 
 //============================.
@@ -131,9 +133,6 @@ void CTitle::ChangeScene()
 		{
 		case CTitleWidget::ESelectState::Start:
 			CSoundManager::PlaySE("Determination");
-			CSoundManager::FadeOutBGM("TitleBGM");
-			CSceneTexRenderer::SetSaveScreen( true );
-			CSceneTexRenderer::SetIsStartLoad( true );
 			m_IsGameStart = true;
 			break;
 		case CTitleWidget::ESelectState::Config:
@@ -152,8 +151,18 @@ void CTitle::ChangeScene()
 		m_IsDecision = true;
 	}
 	if( m_IsGameStart == true ){
-		if (CSoundManager::GetBGMVolume("TitleBGM") > 0.0f) return;
-		while( CSoundManager::StopBGMThread("TitleBGM") == false);
+		CSoundManager::FadeOutBGM("TitleBGM");
+//		if (CSoundManager::GetBGMVolume("TitleBGM") > 0.0f) return;
+//		while( CSoundManager::StopBGMThread("TitleBGM") == false);
+
+		CSceneTexRenderer::SetRenderPass( CSceneTexRenderer::ERenderPass::GBuffer );
+		CSceneTexRenderer::SetGBuffer();
+
+		m_pWidget->Render();
+		
+		CSceneTexRenderer::Render( false );
+		CSceneTexRenderer::SetSaveScreen( true );
+
 		m_pSceneManager->NextSceneMove();
 		CSceneTransition::SetSrcTexture( CSceneTexRenderer::GetTmpScreenTexture() );
 		CSceneTransition::SetTexture();

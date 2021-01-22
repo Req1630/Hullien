@@ -296,6 +296,8 @@ HRESULT CBloom::CreateConstantBuffer()
 
 		width	>>= 1;
 		height	>>= 1;
+		if( width == 0 )	width = 1;
+		if( height == 0 )	height = 1;
 	}
 
 	return S_OK;
