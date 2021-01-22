@@ -50,6 +50,7 @@ void CEventWidget::Render()
 	m_pSprite->SetBlend( false);
 	// 文字スプライトの描画.
 	for( auto& s : m_pSkipSprites ){
+		s->SetScale( 1.0f );
 		s->SetAlpha( m_Alpha );
 		s->SetBlend( true );
 		s->SetDeprh( false );
@@ -78,6 +79,7 @@ bool CEventWidget::SpriteSetting()
 	for( int sprite = 0; sprite < SpriteMax; sprite++ ){
 		m_pSkipSprites.emplace_back(CSpriteResource::GetSprite(spriteName[sprite]));
 		if( m_pSkipSprites[sprite] == nullptr ) return false;
+		m_pSkipSprites[sprite]->SetPosition( m_pSkipSprites[sprite]->GetRenderPos() );
 	}
 	m_vPosition = m_pSkipSprites[1]->GetRenderPos();
 	m_vPosition.x -= m_pSprite->GetSpriteSize().x/2.0f;

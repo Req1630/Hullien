@@ -244,7 +244,7 @@ int CSpawnUFO::CreateAlienNo( const int& min, const int& max, const int& outVal 
 EItemList CSpawnUFO::ProbabilityGetItem( const bool& isAlienD )
 {
 	// 乱数が確率値より少ない場合　または　宇宙人Dの場合.
-	if(( (rand()%100) < m_SpawnParameter.ProbabilityItem ) || ( isAlienD == true )){
+	if( ( isAlienD == true ) || ( (rand()%100) < m_SpawnParameter.ProbabilityItem ) ){
 		// ランダム値の最大と最小の値を設定.
 		std::uniform_int_distribution<int> itemNoMaxMin( 
 			static_cast<int>(EItemList::First),

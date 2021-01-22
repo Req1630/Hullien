@@ -13,12 +13,20 @@ class CTutorial : public CWidget
 	const char* SPRITE_TUTORIAL_ONE_NAME	= "Tutorial1";	// チュートリアル画像.
 	const char* SPRITE_TUTORIAL_TWO_NAME	= "Tutorial2";	// チュートリアル画像.
 	const char* SPRITE_TUTORIAL_THREE_NAME	= "Tutorial3";	// チュートリアル画像.
+	const char* SPRITE_TUTORIAL_FOUR_NAME	= "Tutorial4";	// チュートリアル画像.
+	const char* SPRITE_TUTORIAL_FIVE_NAME	= "Tutorial5";	// チュートリアル画像.
+	const char* SPRITE_TUTORIAL_SIX_NAME	= "Tutorial6";	// チュートリアル画像.
+	const char* SPRITE_TUTORIAL_SEVEN_NAME	= "Tutorial7";	// チュートリアル画像.
+
 	const char* SPRITE_BACKGROUND_NAME		= "Fade";		// 背景画像.
 
 	const char* SPRITE_ARROW_RIGHT			= "arrowRight";			// 矢印画像.
 	const char* SPRITE_ARROW_LEFT			= "arrowLeft";			// 矢印画像.
 	const char* SPRITE_SELECT_ARROW_RIGHT	= "selectArrowRight";	// 選択状態の矢印画像.
 	const char* SPRITE_SELECT_ARROW_LEFT	= "selectArrowLeft";	// 選択状態の矢印画像.
+
+	const char* SPRITE_BUTTON_NAME	= "buttonB";	// スプライトのファイル名.
+	const char* SPRITE_TITLE_NAME	= "skip";		// スプライトのファイル名.
 
 	const float BACK_GROUND_ALPHA_SPEED		= 0.01f;	// 背景のアルファ速度.
 	const float BACK_GROUND_ALPHA_MAX		= 0.4f;		// 背景のアルファ最大値.
@@ -27,15 +35,15 @@ class CTutorial : public CWidget
 	const float TRANSITION_MAX				= 1.0f;		// トランジションの最大値.
 	const float TRANSITION_MIN				= 0.0f;		// トランジションの最小値.
 
-	const float ARROW_RENDER_ADJ_POS_X		= 5.0f;		// 矢印の描画座標調整値.
+	const float ARROW_RENDER_ADJ_POS_X		= 10.0f;		// 矢印の描画座標調整値.
 
-	const float ARROW_SCALE			= 2.0f;
+	const float ARROW_SCALE			= 1.0f;
 	const float ARROW_ADJ_SCALE		= 0.5f;
-	const float ARROW_SCALE_VALUE	= -0.5f;
+	const float ARROW_SCALE_VALUE	= -0.2f;
 
 	const float	INPUT_WAIT_TIME_MAX		= 30.0f;			// 入力待機フレーム.
 
-	const D3DXVECTOR2 BUTTON_EXP_RENDER_POS = { 650.0f, 600.0f };
+	const D3DXVECTOR3 BUTTON_EXP_RENDER_POS = { 950.0f, 600.0f, 0.0f };
 
 	enum enTutorialState : unsigned char
 	{
@@ -44,6 +52,10 @@ class CTutorial : public CWidget
 		ETutorialState_One = 0,	// 一枚目.
 		ETutorialState_Two,		// 二枚目.
 		ETutorialState_Three,	// 三枚目.
+		ETutorialState_Four,	// 四枚目.
+		ETutorialState_Fives,	// 五枚目.
+		ETutorialState_Six,		// 六枚目.
+		ETutorialState_Seven,	// 七枚目.
 
 		ETutorialState_Max,
 
@@ -76,7 +88,7 @@ class CTutorial : public CWidget
 
 		stArrowParam()
 			: vPos	( 0.0f, 0.0f, 0.0f )
-			, Scale	( 2.0f )
+			, Scale	( 1.0f )
 		{}
 	} typedef SArrowParam;
 
@@ -94,7 +106,7 @@ public:
 	// チュートリアルを開始する.
 	inline void SetupTutorial() { m_IsSetup = true; m_IsTutorialEnd = false; }
 	// チュートリアルが終了したか.
-	inline bool IsTutorialEnd() { return m_IsTutorialEnd; }
+	inline bool IsTutorialEnd() { return m_BackGroundAlpha <= BACK_GROUND_ALPHA_MIN && m_IsTutorialEnd == true; }
 
 private:
 	// 矢印の描画.
@@ -106,6 +118,7 @@ private:
 private:
 	std::vector<std::shared_ptr<CSprite>>	m_pSprites;
 	std::vector<std::shared_ptr<CSprite>>	m_pArrowSprites;
+	std::vector<std::shared_ptr<CSprite>>	m_pSkipSprites;
 	std::vector<SArrowParam>				m_ArrowParams;
 	std::unique_ptr<CTransition>			m_pTransition;
 	std::unique_ptr<CButtonExp>				m_pButtonExp;

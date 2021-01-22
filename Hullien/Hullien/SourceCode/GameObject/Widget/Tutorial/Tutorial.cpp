@@ -9,6 +9,7 @@
 CTutorial::CTutorial()
 	: m_pSprites		()
 	, m_pArrowSprites	()
+	, m_pSkipSprites	()
 	, m_ArrowParams		( EArrowSpriteNo_Max )
 	, m_pTransition		( nullptr )
 	, m_pButtonExp		( nullptr )
@@ -53,8 +54,11 @@ void CTutorial::Update()
 	if( m_BackGroundAlpha <= BACK_GROUND_ALPHA_MAX ) return;
 
 	if( m_InputWaitTime <= 0.0f ){
-		if( CInput::IsMomentPress( EKeyBind::Right ) == true || CXInput::LThumbX_Axis() > IDLE_THUMB_MAX ||
-			CInput::IsMomentPress( EKeyBind::Decision ) == true ){
+		if( CInput::IsMomentPress( EKeyBind::Skip ) == true ){
+			CSoundManager::PlaySE("Determination");
+			m_IsTutorialEnd = true;
+		}
+		if( CInput::IsMomentPress( EKeyBind::Right ) == true || CXInput::LThumbX_Axis() > IDLE_THUMB_MAX ){
 			CSoundManager::PlaySE("Determination");
 			m_NowSpriteNo++;
 			m_InputWaitTime = INPUT_WAIT_TIME_MAX;
@@ -65,8 +69,7 @@ void CTutorial::Update()
 			}
 		}
 
-		if( CInput::IsMomentPress( EKeyBind::Left ) == true || CXInput::LThumbX_Axis() < IDLE_THUMB_MIN ||
-			CInput::IsMomentPress( EKeyBind::Cancel ) == true ){
+		if( CInput::IsMomentPress( EKeyBind::Left ) == true || CXInput::LThumbX_Axis() < IDLE_THUMB_MIN ){
 			m_NowSpriteNo--;
 			m_InputWaitTime = INPUT_WAIT_TIME_MAX;
 			m_SelectMoveNo = EArrowSpriteNo_SelectArrowLeft;
@@ -142,12 +145,27 @@ void CTutorial::ArrowRender()
 {
 	if( m_TransitionValue < TRANSITION_MAX ) return;
 
-//	m_pButtonExp->Render();
+	int skipNo = 0;
+	for( auto& s : m_pSkipSprites ){
+		D3DXVECTOR3 pos = BUTTON_EXP_RENDER_POS;
+		pos.x += skipNo*25.0f;
+		const float scale = skipNo == 0 ? 0.4f : 0.8f;
+		s->SetPosition( pos );
+		s->SetScale( scale );
+		s->SetAlpha( 1.0f );
+		s->SetDeprh( false );
+		s->SetBlend( true );
+		s->RenderUI();
+		s->SetBlend( false );
+		s->SetDeprh( true );
+		skipNo++;
+	}
 
 	if( m_SelectMoveNo == EArrowSpriteNo_None ){
 		for( int i = EArrowSpriteNo_ArrowRight; i < EArrowSpriteNo_SelectArrowRight; i++ ){
 			if( m_NowSpriteNo == ETutorialState_Start && i == EArrowSpriteNo_ArrowLeft ) continue;
-			if( m_NowSpriteNo == ETutorialState_Three && i == EArrowSpriteNo_ArrowRight ) continue;
+			// end ÇæÇ∆àÍå¬ëΩÇ≠Ç»Ç¡ÇƒÇµÇ‹Ç§ÇÃÇ≈ -1 Ç∑ÇÈ.
+			if( m_NowSpriteNo == ETutorialState_End-1 && i == EArrowSpriteNo_ArrowRight ) continue;
 			m_pArrowSprites[i]->SetPosition( m_ArrowParams[i].vPos );
 			m_pArrowSprites[i]->SetScale( m_ArrowParams[i].Scale );
 			m_pArrowSprites[i]->SetDeprh( false );
@@ -190,6 +208,10 @@ bool CTutorial::SpriteSetting()
 		SPRITE_TUTORIAL_ONE_NAME,
 		SPRITE_TUTORIAL_TWO_NAME,
 		SPRITE_TUTORIAL_THREE_NAME,
+		SPRITE_TUTORIAL_FOUR_NAME,
+		SPRITE_TUTORIAL_FIVE_NAME,
+		SPRITE_TUTORIAL_SIX_NAME,
+		SPRITE_TUTORIAL_SEVEN_NAME
 	};
 	int SpriteMax = sizeof(spriteName) / sizeof(spriteName[0]);
 
@@ -222,6 +244,22 @@ bool CTutorial::SpriteSetting()
 	m_ArrowParams[EArrowSpriteNo_SelectArrowLeft].vPos.x	+= ARROW_RENDER_ADJ_POS_X;
 	m_ArrowParams[EArrowSpriteNo_ArrowRight].vPos.x			+= m_pSprites[0]->GetSpriteSize().x - ARROW_RENDER_ADJ_POS_X;
 	m_ArrowParams[EArrowSpriteNo_SelectArrowRight].vPos.x	+= m_pSprites[0]->GetSpriteSize().x - ARROW_RENDER_ADJ_POS_X;
+
+
+	const char* skipSpriteName[] =
+	{
+		SPRITE_BUTTON_NAME,
+		SPRITE_TITLE_NAME,
+	};
+	SpriteMax = sizeof(skipSpriteName) / sizeof(skipSpriteName[0]);
+
+	// ÉÅÉÇÉäÇÃç≈ëÂílê›íË.
+	m_pSkipSprites.reserve(SpriteMax);
+	for( int sprite = 0; sprite < SpriteMax; sprite++ ){
+		m_pSkipSprites.emplace_back(CSpriteResource::GetSprite(skipSpriteName[sprite]));
+		if( m_pSkipSprites[sprite] == nullptr ) return false;
+		m_pSkipSprites[sprite]->SetPosition( BUTTON_EXP_RENDER_POS );
+	}
 
 	return true;
 }
