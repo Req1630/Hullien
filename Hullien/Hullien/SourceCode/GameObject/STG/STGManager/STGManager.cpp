@@ -65,11 +65,7 @@ void CSTGManager::Update()
 		pEnemy->Collision( m_pPlayer.get() );
 
 		// ’e“¯Žm‚Ì“–‚½‚è”»’è.
-		for( auto& pb : m_pPlayer->GetBullets() ){
-			for( auto& eb : pEnemy->GetBullets() ){
-				eb->Collision( pb.get() );
-			}
-		}
+		for( auto& pb : m_pPlayer->GetBullets() ) pEnemy->Collision( pb.get() ); 
 	});
 }
 

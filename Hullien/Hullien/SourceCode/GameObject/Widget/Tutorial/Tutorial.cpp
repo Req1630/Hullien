@@ -3,33 +3,24 @@
 #include "..\..\..\Common\Sprite\CSprite.h"
 #include "..\..\..\Utility\Input\Input.h"
 #include "..\..\..\Common\Transition\Transition.h"
-
-// 定数.
-namespace
-{
-	const char* SPRITE_TUTORIAL_ONE_NAME	= "Tutorial1";	// チュートリアル画像.
-	const char* SPRITE_TUTORIAL_TWO_NAME	= "Tutorial2";	// チュートリアル画像.
-	const char* SPRITE_TUTORIAL_THREE_NAME	= "Tutorial3";	// チュートリアル画像.
-	const char* SPRITE_BACKGROUND_NAME		= "Fade";		// 背景画像.
-
-	const float BACK_GROUND_ALPHA_SPEED		= 0.01f;	// 背景のアルファ速度.
-	const float BACK_GROUND_ALPHA_MAX		= 0.4f;		// 背景のアルファ最大値.
-	const float BACK_GROUND_ALPHA_MIN		= 0.0f;		// 背景のアルファ最小値.
-	const float TRANSITION_SPEED			= 0.02f;	// トランジションの速度.
-	const float TRANSITION_MAX				= 1.0f;		// トランジションの最大値.
-	const float TRANSITION_MIN				= 0.0f;		// トランジションの最小値.
-};
+#include "..\ButtonExplanation\ButtonExplanation.h"
 
 CTutorial::CTutorial()
 	: m_pSprites		()
+	, m_pArrowSprites	()
+	, m_ArrowParams		( EArrowSpriteNo_Max )
 	, m_pTransition		( nullptr )
+	, m_pButtonExp		( nullptr )
 	, m_NowSpriteNo		( ETutorialState_One )
+	, m_SelectMoveNo	( EArrowSpriteNo_None )
+	, m_InputWaitTime	( 0.0f )
 	, m_BackGroundAlpha	( 0.0f )
 	, m_TransitionValue	( 0.0f )
 	, m_IsSetup			( false )
-	, m_IsTurorialEnd	( true )
+	, m_IsTutorialEnd	( true )
 {
 	m_pTransition = std::make_unique<CTransition>();
+	m_pButtonExp = std::make_unique<CButtonExp>( BUTTON_EXP_RENDER_POS.x, BUTTON_EXP_RENDER_POS.y );
 }
 
 CTutorial::~CTutorial()
@@ -46,6 +37,7 @@ bool CTutorial::Init()
 		"Data\\Texture\\UI\\Fade\\171TransitoinRule.png",
 		m_pSprites[m_NowSpriteNo]->GetSpriteSize().x,
 		m_pSprites[m_NowSpriteNo]->GetSpriteSize().y ) )) return false;
+	if( m_pButtonExp->Init() == false ) return false;
 
 	m_pTransition->SetTexture( m_pSprites[m_NowSpriteNo]->GetSpriteData()->pTexture );
 	m_pTransition->SetPosition( m_pSprites[m_NowSpriteNo]->GetRenderPos() );
@@ -56,21 +48,41 @@ bool CTutorial::Init()
 void CTutorial::Update()
 {
 	if( m_IsSetup == false ) return;
-	if( m_IsTurorialEnd == true ) return;
+	if( m_IsTutorialEnd == true ) return;
 	if( m_BackGroundAlpha <= BACK_GROUND_ALPHA_MAX ) return;
 
-	if( CInput::IsMomentPress( EKeyBind::Decision ) == true ){
-		m_NowSpriteNo++;
-		if( m_NowSpriteNo >= ETutorialState_End ){
-			m_IsTurorialEnd = true;
-			return;
+	if( m_InputWaitTime <= 0.0f ){
+		if( CInput::IsMomentPress( EKeyBind::Right ) == true || CXInput::LThumbX_Axis() > IDLE_THUMB_MAX ||
+			CInput::IsMomentPress( EKeyBind::Decision ) == true ){
+			m_NowSpriteNo++;
+			m_InputWaitTime = INPUT_WAIT_TIME_MAX;
+			m_SelectMoveNo = EArrowSpriteNo_SelectArrowRight;
+			if( m_NowSpriteNo >= ETutorialState_End ){
+				m_IsTutorialEnd = true;
+				return;
+			}
 		}
-		m_pTransition->SetTexture( m_pSprites[m_NowSpriteNo]->GetSpriteData()->pTexture );
+
+		if( CInput::IsMomentPress( EKeyBind::Left ) == true || CXInput::LThumbX_Axis() < IDLE_THUMB_MIN ||
+			CInput::IsMomentPress( EKeyBind::Cancel ) == true ){
+			m_NowSpriteNo--;
+			m_InputWaitTime = INPUT_WAIT_TIME_MAX;
+			m_SelectMoveNo = EArrowSpriteNo_SelectArrowLeft;
+			if( m_NowSpriteNo < ETutorialState_Start ){
+				m_NowSpriteNo = ETutorialState_Start;
+				m_SelectMoveNo = EArrowSpriteNo_None;
+				m_InputWaitTime = 0.0f;
+			}
+		}
+	} else {
+		m_InputWaitTime--;
 	}
 
-	if( CInput::IsMomentPress( EKeyBind::Cancel ) == true ){
-		m_NowSpriteNo--;
-		if( m_NowSpriteNo < ETutorialState_Start ) m_NowSpriteNo = ETutorialState_Start;
+	if( m_SelectMoveNo == EArrowSpriteNo_None ) return;
+	m_ArrowParams[m_SelectMoveNo].Scale = 
+		ARROW_SCALE + fabsf(sinf( static_cast<float>(D3DX_PI)/ (m_InputWaitTime+ARROW_ADJ_SCALE) )) * ARROW_SCALE_VALUE;
+	if( m_InputWaitTime <= 0.0f ){
+		m_SelectMoveNo = EArrowSpriteNo_None;
 		m_pTransition->SetTexture( m_pSprites[m_NowSpriteNo]->GetSpriteData()->pTexture );
 	}
 }
@@ -80,7 +92,7 @@ void CTutorial::Render()
 {
 	if( m_IsSetup == false ) return;
 
-	if( m_IsTurorialEnd == false ){
+	if( m_IsTutorialEnd == false ){
 		// 背景のアルファ値が最大値より小さければ.
 		if( m_BackGroundAlpha <= BACK_GROUND_ALPHA_MAX ){
 			m_BackGroundAlpha += BACK_GROUND_ALPHA_SPEED;	// アルファ値を加算.
@@ -117,6 +129,48 @@ void CTutorial::Render()
 	m_pTransition->Render();
 	m_pTransition->SetBlend( false );
 	m_pTransition->SetDeprh( true );
+
+	ArrowRender();	// 矢印の描画.
+}
+
+// 矢印の描画.
+void CTutorial::ArrowRender()
+{
+	if( m_TransitionValue < TRANSITION_MAX ) return;
+
+//	m_pButtonExp->Render();
+
+	if( m_SelectMoveNo == EArrowSpriteNo_None ){
+		for( int i = EArrowSpriteNo_ArrowRight; i < EArrowSpriteNo_SelectArrowRight; i++ ){
+			if( m_NowSpriteNo == ETutorialState_Start && i == EArrowSpriteNo_ArrowLeft ) continue;
+			if( m_NowSpriteNo == ETutorialState_Three && i == EArrowSpriteNo_ArrowRight ) continue;
+			m_pArrowSprites[i]->SetPosition( m_ArrowParams[i].vPos );
+			m_pArrowSprites[i]->SetScale( m_ArrowParams[i].Scale );
+			m_pArrowSprites[i]->SetDeprh( false );
+			m_pArrowSprites[i]->SetBlend( true );
+			m_pArrowSprites[i]->RenderUI();
+			m_pArrowSprites[i]->SetBlend( false );
+			m_pArrowSprites[i]->SetDeprh( true );
+		}
+	} else {
+		const int no = m_SelectMoveNo == EArrowSpriteNo_SelectArrowRight ? EArrowSpriteNo_ArrowLeft : EArrowSpriteNo_ArrowRight;
+
+		m_pArrowSprites[no]->SetPosition( m_ArrowParams[no].vPos );
+		m_pArrowSprites[no]->SetScale( m_ArrowParams[no].Scale );
+		m_pArrowSprites[no]->SetDeprh( false );
+		m_pArrowSprites[no]->SetBlend( true );
+		m_pArrowSprites[no]->RenderUI();
+		m_pArrowSprites[no]->SetBlend( false );
+		m_pArrowSprites[no]->SetDeprh( true );
+
+		m_pArrowSprites[m_SelectMoveNo]->SetPosition( m_ArrowParams[m_SelectMoveNo].vPos );
+		m_pArrowSprites[m_SelectMoveNo]->SetScale( m_ArrowParams[m_SelectMoveNo].Scale );
+		m_pArrowSprites[m_SelectMoveNo]->SetDeprh( false );
+		m_pArrowSprites[m_SelectMoveNo]->SetBlend( true );
+		m_pArrowSprites[m_SelectMoveNo]->RenderUI();
+		m_pArrowSprites[m_SelectMoveNo]->SetBlend( false );
+		m_pArrowSprites[m_SelectMoveNo]->SetDeprh( true );
+	}
 }
 
 // スプライト設定関数.
@@ -141,5 +195,29 @@ bool CTutorial::SpriteSetting()
 		m_pSprites.emplace_back(CSpriteResource::GetSprite(spriteName[sprite]));
 		if( m_pSprites[sprite] == nullptr ) return false;
 	}
+
+	const char* arrowSpriteName[] =
+	{
+		SPRITE_ARROW_RIGHT,
+		SPRITE_ARROW_LEFT,
+		SPRITE_SELECT_ARROW_RIGHT,
+		SPRITE_SELECT_ARROW_LEFT,
+	};
+	SpriteMax = sizeof(arrowSpriteName) / sizeof(arrowSpriteName[0]);
+
+	// メモリの最大値設定.
+	m_pArrowSprites.reserve(SpriteMax);
+	for( int sprite = 0; sprite < SpriteMax; sprite++ ){
+		m_pArrowSprites.emplace_back(CSpriteResource::GetSprite(arrowSpriteName[sprite]));
+		if( m_pArrowSprites[sprite] == nullptr ) return false;
+		m_ArrowParams[sprite].vPos = m_pSprites[0]->GetRenderPos();
+		m_ArrowParams[sprite].vPos.y += m_pSprites[0]->GetSpriteSize().y/2.0f;
+	}
+
+	m_ArrowParams[EArrowSpriteNo_ArrowLeft].vPos.x			+= ARROW_RENDER_ADJ_POS_X;
+	m_ArrowParams[EArrowSpriteNo_SelectArrowLeft].vPos.x	+= ARROW_RENDER_ADJ_POS_X;
+	m_ArrowParams[EArrowSpriteNo_ArrowRight].vPos.x			+= m_pSprites[0]->GetSpriteSize().x - ARROW_RENDER_ADJ_POS_X;
+	m_ArrowParams[EArrowSpriteNo_SelectArrowRight].vPos.x	+= m_pSprites[0]->GetSpriteSize().x - ARROW_RENDER_ADJ_POS_X;
+
 	return true;
 }

@@ -8,7 +8,7 @@ namespace STG
 	class CPlayer : public STG::CCharacter
 	{
 		const char* MODEL_NAME				= "ufo";
-		const char* BULLET_MODEL_NAME		= "item cure";
+		const char* BULLET_MODEL_NAME		= "SpawnPoint";
 		const char* SHOT_SE_NAME			= "STGshot";
 		const char* HIT_SE_NAME				= "STGHit";
 		const float STANDARD_MODEL_COLOR	= 1.0f;
@@ -17,7 +17,7 @@ namespace STG
 		const float BULLET_MOVE_SPEED		= 0.8f;						// 弾の速度.
 		const int	BULLET_COUNT_MAX		= 30;						// 弾の最大数.
 		const int	SHOT_INTERVAL_FRAME		= 15;						// 弾を撃つ間隔フレーム.
-		const D3DXVECTOR3 BULLET_COLOR		= { 1.0f, 1.0f, 1.0f };		// 弾の色.
+		const D3DXVECTOR3 BULLET_COLOR		= { 0.4f, 1.2f, 0.4f };		// 弾の色.
 		const D3DXVECTOR3 INIT_POSITION		= { 0.0f, 0.0f, 70.0f };	// 初期座標.
 		const float MODEL_SCALE_MAX			= 0.2f;						// モデルの最大サイズ.
 		const float MODEL_SCALE_MIN			= 0.0f;						// モデルの最小サイズ.

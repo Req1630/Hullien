@@ -64,7 +64,7 @@ bool CGame::Load()
 	CConfigWidget::SetIsNowGameScene( true );
 	if (m_pSceneManager->GetRetry() == false)
 	{
-		m_pTutorial->SetupTurorial();
+		m_pTutorial->SetupTutorial();
 		m_NowEventScene = EEventSceneState::GameStart;
 		CSceneTransition::SetFadeIn();
 	}
@@ -251,7 +251,7 @@ void CGame::GameUpdate()
 		}
 	}
 
-	if( m_pTutorial->IsTurorialEnd() == true ){
+	if( m_pTutorial->IsTutorialEnd() == true ){
 		// 設定中じゃなければ.
 		if( m_IsConfig == false && CFade::GetIsFade() == false ){
 			// スタートボタンを押して設定画面を表示させる.

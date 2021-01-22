@@ -1047,7 +1047,7 @@ void CPlayer::SetParalysisTime( const std::function<void(float&)>& proc )
 	proc( tmpTime );
 	m_pEffectTimers[player::EEffectTimerNo_Paralysis]->SetTime( tmpTime );
 	m_pEffectTimers[player::EEffectTimerNo_Paralysis]->Set();
-	m_pEffects[player::EEffectNo_Paralysis]->Play( m_vPosition );
+//	m_pEffects[player::EEffectNo_Paralysis]->Play( m_vPosition );
 	m_AnimSpeed = STOP_ANIM_SPEED;
 	CSoundManager::NoMultipleSEPlay("PlayerVoiceParalysis");
 }
