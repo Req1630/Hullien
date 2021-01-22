@@ -4,6 +4,7 @@
 #include "..\..\..\Utility\Input\Input.h"
 #include "..\..\..\Common\Transition\Transition.h"
 #include "..\ButtonExplanation\ButtonExplanation.h"
+#include "..\..\..\XAudio2\SoundManager.h"
 
 CTutorial::CTutorial()
 	: m_pSprites		()
@@ -54,6 +55,7 @@ void CTutorial::Update()
 	if( m_InputWaitTime <= 0.0f ){
 		if( CInput::IsMomentPress( EKeyBind::Right ) == true || CXInput::LThumbX_Axis() > IDLE_THUMB_MAX ||
 			CInput::IsMomentPress( EKeyBind::Decision ) == true ){
+			CSoundManager::PlaySE("Determination");
 			m_NowSpriteNo++;
 			m_InputWaitTime = INPUT_WAIT_TIME_MAX;
 			m_SelectMoveNo = EArrowSpriteNo_SelectArrowRight;
@@ -72,6 +74,8 @@ void CTutorial::Update()
 				m_NowSpriteNo = ETutorialState_Start;
 				m_SelectMoveNo = EArrowSpriteNo_None;
 				m_InputWaitTime = 0.0f;
+			} else {
+				CSoundManager::PlaySE("Determination");
 			}
 		}
 	} else {

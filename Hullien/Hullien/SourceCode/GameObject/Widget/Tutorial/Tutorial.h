@@ -29,9 +29,9 @@ class CTutorial : public CWidget
 
 	const float ARROW_RENDER_ADJ_POS_X		= 5.0f;		// 矢印の描画座標調整値.
 
-	const float ARROW_SCALE			= 1.0f;
+	const float ARROW_SCALE			= 2.0f;
 	const float ARROW_ADJ_SCALE		= 0.5f;
-	const float ARROW_SCALE_VALUE	= -0.2f;
+	const float ARROW_SCALE_VALUE	= -0.5f;
 
 	const float	INPUT_WAIT_TIME_MAX		= 30.0f;			// 入力待機フレーム.
 
@@ -76,7 +76,7 @@ class CTutorial : public CWidget
 
 		stArrowParam()
 			: vPos	( 0.0f, 0.0f, 0.0f )
-			, Scale	( 1.0f )
+			, Scale	( 2.0f )
 		{}
 	} typedef SArrowParam;
 

@@ -2,6 +2,7 @@
 #include "..\..\..\Common\Sprite\CSprite.h"
 #include "..\..\..\Resource\SpriteResource\SpriteResource.h"
 #include "..\..\..\Utility\Input\Input.h"
+#include "..\..\..\XAudio2\SoundManager.h"
 
 CSwitch::CSwitch()
 	: CSwitch( SPRITE_ON_NAME, SPRITE_OFF_NAME )
@@ -42,10 +43,12 @@ void CSwitch::Update()
 		m_SelectNo = EArrowNo_None;
 		if( CInput::IsMomentPress( EKeyBind::Right ) == true || CXInput::LThumbX_Axis() > IDLE_THUMB_MAX  ){
 			m_SelectNo = EArrowNo_Right;
+			CSoundManager::PlaySE("Determination");
 			m_InputWaitTime = INPUT_WAIT_TIME_MAX;
 		}
 		if( CInput::IsMomentPress( EKeyBind::Left ) == true || CXInput::LThumbX_Axis() < IDLE_THUMB_MIN ){
 			m_SelectNo = EArrowNo_Left;
+			CSoundManager::PlaySE("Determination");
 			m_InputWaitTime = INPUT_WAIT_TIME_MAX;
 		}
 	} else {
