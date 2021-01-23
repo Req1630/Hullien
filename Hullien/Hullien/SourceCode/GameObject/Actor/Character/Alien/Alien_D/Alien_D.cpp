@@ -8,7 +8,6 @@
 #include "..\..\..\..\..\XAudio2\SoundManager.h"
 #include "..\..\..\..\..\Resource\MeshResource\MeshResource.h"
 #include "..\..\..\..\..\Common\Effect\EffectManager.h"
-#include "..\..\..\..\..\Common\DebugText\DebugText.h"
 
 CAlienD::CAlienD()
 	: CAlienD	( nullptr )
@@ -65,9 +64,6 @@ void CAlienD::Render()
 	// ‰æ–Ê‚ÌŠO‚È‚çI—¹.
 	if( IsDisplayOut() == true ) return;
 	ModelRender();			// ƒ‚ƒfƒ‹‚Ì•`‰æ.
-
-	CDebugText::SetPosition( { 30.0f, 10.0f, 0.0f } );
-	CDebugText::Render( "ItemNo : ", static_cast<int>(m_HasAnyItem) );
 
 #if _DEBUG
 	if( m_pCollManager == nullptr ) return;

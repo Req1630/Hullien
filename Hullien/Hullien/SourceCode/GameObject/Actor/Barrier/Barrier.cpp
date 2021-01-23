@@ -149,7 +149,7 @@ void CBarrier::SetTargetPos( CActor& pActor )
 {
 	if( m_IsActive == false ) return;
 	m_vPosition = pActor.GetPosition();
-	m_vPosition.y += 0.0001f;
+	m_vPosition.y += EFFECT_ADJ_POSITION_Y;
 	// すでにエフェクトを再生していれば終了.
 	if (m_IsEffectPlay == true) return;
 	m_pEffect->Play(m_vPosition);	// エフェクトを再生.

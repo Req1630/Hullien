@@ -13,8 +13,9 @@ class CBarrier : public CActor
 
 	const float COLLISION_SPHERE_RDIUS_MAX			= 20.0f;	// 当たり判定の最大半径.
 	const float COLLISION_SPHERE_RDIUS_ADD_VALUE	= 1.0f;		// 当たり判定サイズ加算値.
-	const float ACTIVE_TIME		= 5.0f;	// 動作時間.
-	const float EFFECT_SCALE	= 0.3f;	// エフェクトのサイズ.
+	const float ACTIVE_TIME				= 5.0f;		// 動作時間.
+	const float EFFECT_SCALE			= 0.3f;		// エフェクトのサイズ.
+	const float EFFECT_ADJ_POSITION_Y	= 0.001f;	// エフェクトの調整用座標.
 
 public:
 	CBarrier();
