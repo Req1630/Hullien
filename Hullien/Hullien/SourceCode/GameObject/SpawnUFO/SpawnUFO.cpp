@@ -110,14 +110,18 @@ void CSpawnUFO::SpawnAlien( std::vector<std::shared_ptr<CAlien>>& alienList )
 	if( m_pAbductUFOPosition == nullptr ) return;
 
 	alienList.emplace_back( m_AilenList[m_AlienSpawnCount] );	// 宇宙人の追加.
+
+	// オブジェクトのタグを取得する.
+	const EObjectTag objectTag = alienList.back()->GetObjectTag();
+
 	// リストにあったパラメータとスポーン座標を設定し、スポーンさせる.
 	alienList.back()->Spawn( m_SpawnPoint );
 	// 連れ去るUFOの座標を設定.
 	alienList.back()->SetAbductUFOPosition( m_pAbductUFOPosition );
 	// アイテムの設定.
-	alienList.back()->SetItem( ProbabilityGetItem( static_cast<EAlienList>(m_AlienIndex) == EAlienList::D ) );
+	alienList.back()->SetItem( ProbabilityGetItem( objectTag == EObjectTag::Alien_D ) );
 	// 追加した宇宙人がDなら警告を出す.
-	if( alienList.back()->GetObjectTag() == EObjectTag::Alien_D ) m_pUltemateSing->SetAppUltemate( true );
+	if( objectTag == EObjectTag::Alien_D ) m_pUltemateSing->SetAppUltemate( true );
 	m_SpawnCount = 0;
 	m_AlienSpawnCount++;
 	LightDischarge();
