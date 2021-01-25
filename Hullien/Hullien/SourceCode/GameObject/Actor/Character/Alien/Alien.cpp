@@ -143,7 +143,9 @@ void CAlien::LifeCalculation( const std::function<void(float&,bool&)>& proc )
 	}
 	// 体力が 0.0以下なら死亡状態へ遷移.
 	m_NowState = alien::EAlienState::Death;
-	m_pEffects[alien::EEffectNo_Dead]->Play( m_vPosition );
+	// 仮エフェクトを描画させていたので、
+	//	現在はコメントアウト.
+//	m_pEffects[alien::EEffectNo_Dead]->Play( m_vPosition );
 	CAlien::SetAnimation( alien::EAnimNo_Dead, m_pAC );
 	m_AnimSpeed = DEFAULT_ANIM_SPEED;
 //	if( m_IsHitStop == true ){
@@ -425,7 +427,17 @@ void CAlien::Escape()
 	WaitMove();			// 待機.
 	CAlien::VectorMove( m_MoveSpeed );	// 移動.
 
-	if( *m_pIsAlienOtherAbduct == true ) return;
+	if( *m_pIsAlienOtherAbduct == true ){
+		if( m_pArm == nullptr ) return;
+		// ほかの宇宙人が連れ去っている場合.
+		// アームを片付けていなければ片付ける.
+		if( m_pArm->IsCleanUp() == false ){
+			m_AnimSpeed = DEFAULT_ANIM_SPEED;
+			SetAnimation( alien::EAnimNo_Move, m_pAC );
+			m_pArm->SetCleanUpPreparation();
+		}
+		return;
+	}
 	// 女の子を連れ去っていなければ.
 	m_NowState		= alien::EAlienState::Move;		// 移動状態へ遷移.
 	m_NowMoveState	= alien::EMoveState::Rotation;		// 移動の回転状態へ遷移.
