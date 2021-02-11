@@ -1,3 +1,8 @@
+/**
+* @file CameraManager.h.
+* @brief カメラ管理クラス.
+* @author 福田玲也.
+*/
 #ifndef CAMERA_MANAGER_H
 #define CAMERA_MANAGER_H
 

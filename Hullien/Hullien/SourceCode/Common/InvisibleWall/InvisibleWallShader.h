@@ -1,13 +1,18 @@
+/**
+* @file InvisibleWallShader.h.
+* @brief 見えない壁の移動制限を描画する.
+* @author 福田玲也.
+*/
 #ifndef INVISIBLE_WALL_SHADER_H
 #define INVISIBLE_WALL_SHADER_H
 
 #include "..\Common.h"
 
+/***********************************************
+*	見えない壁の移動制限を描画するクラス.
+**/
 class CInvisibleWallShader : public CCommon
 {
-	const char* SHADER_NAME = "Data\\Shader\\InvisibleWall.hlsl";
-	const char* TEXTURE_NAME = "Data\\Mesh\\shield.png";	
-	const D3DXVECTOR4 CLEAR_BACK_COLOR = { 0.0f, 0.0f, 0.0f, 0.0f };
 	// コンスタントバッファ.
 	struct C_BUFFER
 	{

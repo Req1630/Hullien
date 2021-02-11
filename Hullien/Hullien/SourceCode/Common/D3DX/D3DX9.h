@@ -1,3 +1,8 @@
+/**
+* @file D3DX9.h.
+* @brief DirectX9 Device‚ğ‚Á‚Ä‚¢‚éƒNƒ‰ƒX.
+* @author •Ÿ“c—æ–ç.
+*/
 #ifndef D3DX9_H
 #define D3DX9_H
 
@@ -5,7 +10,7 @@
 
 /*********************************
 *	DirectX9
-*/
+**/
 class CDirectX9
 {
 public:

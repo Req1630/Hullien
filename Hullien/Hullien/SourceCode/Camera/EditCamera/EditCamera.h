@@ -1,3 +1,8 @@
+/**
+* @file EditCamera.h.
+* @brief エディタ画面用カメラクラス.
+* @author 福田玲也.
+*/
 #ifndef EDIT_CAMERA_H
 #define EDIT_CAMERA_H
 

@@ -1,14 +1,19 @@
+/**
+* @file FontCreate.h.
+* @brief Fontテクスチャ作成クラス.
+* @author 福田玲也.
+*/
 #ifndef FONT_CREATE_H
 #define FONT_CREATE_H
 
 #include "..\Common.h"
 #include <Shlwapi.h>
 
+/**********************************:
+*	フォントテクスチャ作成クラス.
+**/
 class CFontCreate
 {
-	const char*	FONT_PATH = "Data\\Texture\\_Font\\GN-KagakuGothic.ttf";
-	const char*	FONT_NAME = "GN-カガクゴ";
-	const int	FONT_BMP_SIZE = 256;
 public:
 	CFontCreate( ID3D11Device* pDevice11, ID3D11DeviceContext* pContext11 );
 	~CFontCreate();

@@ -2,6 +2,12 @@
 #include "..\D3DX\D3DX11.h"
 #include "..\..\Camera\CameraManager\CameraManager.h"
 
+namespace
+{
+	const char* SHADER_NAME		= "Data\\Shader\\InvisibleWall.hlsl";	// シェーダー名.
+	const char* TEXTURE_NAME	= "Data\\Mesh\\shield.png";				// 壁のテクスチャ.
+};
+
 CInvisibleWallShader::CInvisibleWallShader()
 	: m_pVertexShader	( nullptr )
 	, m_pPixelShader	( nullptr )

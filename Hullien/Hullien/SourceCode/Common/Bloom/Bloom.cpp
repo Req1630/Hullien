@@ -1,6 +1,12 @@
 #include "Bloom.h"
 #include "..\D3DX\D3DX11.h"
 
+namespace
+{
+	const char*			SHADER_NAME			= "Data\\Shader\\Bloom.hlsl";	// シェーダーファイル名.
+	const D3DXVECTOR4	CLEAR_BACK_COLOR	= { 0.0f, 0.0f, 0.0f, 0.0f };	// テクスチャクリア色.
+};
+
 CBloom::CBloom()
 	: m_pBlurBufferRTV		( SAMPLE_BLUR_MAX )
 	, m_pBlurBufferSRV		( SAMPLE_BLUR_MAX )

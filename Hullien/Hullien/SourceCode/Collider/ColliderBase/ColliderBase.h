@@ -1,8 +1,16 @@
+/**
+* @file ColliderBase.h.
+* @brief 当たり判定の規定クラス.
+* @author 福田玲也.
+*/
 #ifndef COLLIDER_BASE_H
 #define COLLIDER_BASE_H
 
 #include "..\..\Global.h"
 
+/***********************************
+*	当たり判定の規定クラス.
+**/
 class CColliderBase
 {
 public: //------- 関数 -------.

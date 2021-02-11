@@ -1,3 +1,8 @@
+/**
+* @file SphereCollsion.h.
+* @brief 球体の当たり判定用クラス.
+* @author 福田玲也.
+*/
 #ifndef SPHERE_COLLISION_H
 #define SPHERE_COLLISION_H
 
@@ -5,6 +10,9 @@
 
 class CSphereModel;
 
+/***********************************************
+*	球体の当たり判定用クラス.
+**/
 class CSphereCollision : public CColliderBase
 {
 public:  //------- 関数 -------.

@@ -1,3 +1,8 @@
+/**
+* @file EffectManager.h.
+* @brief Effekseerのエフェクト管理クラス.
+* @author 福田玲也.
+*/
 #ifndef EFFECT_MANAGER_H
 #define EFFECT_MANAGER_H
 

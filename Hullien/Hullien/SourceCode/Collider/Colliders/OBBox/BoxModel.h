@@ -1,3 +1,8 @@
+/**
+* @file BoxModel.h.
+* @brief ボックスのモデルを描画するクラス.
+* @author 福田玲也.
+*/
 #ifndef BOX_MODEL_H
 #define BOX_MODEL_H
 
@@ -5,11 +10,14 @@
 
 class CSimpleShader;
 
+/****************************************
+*	ボックスのモデルを描画するクラス.
+**/
 class CBoxModel : public CCommon
 {
 private: //------- 定数 -------.
-	const D3DXVECTOR4 MODEL_COLOR			= { 0.0f, 0.0f, 1.0f, 1.0f };	// モデルの色.
-	const D3DXVECTOR4 MODEL_CHANGE_COLOR	= { 1.0f, 0.0f, 0.0f, 1.0f };	// モデルの色.
+	inline static const D3DXVECTOR4 MODEL_COLOR			= { 0.0f, 0.0f, 1.0f, 1.0f };	// モデルの色.
+	inline static const D3DXVECTOR4 MODEL_CHANGE_COLOR	= { 1.0f, 0.0f, 0.0f, 1.0f };	// モデルの色.
 
 public: //------- 関数 -------.
 	CBoxModel();

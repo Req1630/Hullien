@@ -1,3 +1,8 @@
+/**
+* @file SceneTexRenderer.h.
+* @brief ポストエフェクトなどを描画する.
+* @author 福田玲也.
+*/
 #ifndef PERA_RENDERER_H
 #define PERA_RENDERER_H
 
@@ -6,9 +11,12 @@
 
 #include <vector>
 
-class CBloom;
-class CBlur;
+class CBloom;	// ブルームクラス.
+class CBlur;	// ブラークラス.
 
+/*************************************
+*	ポストエフェクトなどを描画する.
+**/
 class CSceneTexRenderer
 {
 public:
@@ -40,11 +48,6 @@ public:
 
 		Max,	// 最大.
 	} typedef ERenderPass;
-
-private:
-	// シェーダー名.
-	const char* SHADER_NAME = "Data\\Shader\\SceneTexRenderer.hlsl";
-	const float CLEAR_BACK_COLOR[4] = { 0.4f, 0.4f, 0.4f, 1.0f };	// バックカラー.
 
 public:
 	//======================================

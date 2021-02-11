@@ -1,12 +1,19 @@
+/**
+* @file Blur.h.
+* @brief ブラーテクスチャ作成クラス.
+* @author 福田玲也.
+*/
 #ifndef BLUR_H
 #define BLUR_H
 
 #include "..\Common.h"
 
+/************************************************
+*	シーンテクスチャを、
+*	　ブラーテクスチャとして作成する.
+**/
 class CBlur : public CCommon
 {
-	const char* SHADER_NAME = "Data\\Shader\\Blur.hlsl";
-	const D3DXVECTOR4 CLEAR_BACK_COLOR = { 0.0f, 0.0f, 0.0f, 0.0f };
 	// コンスタントバッファ.
 	struct C_BUFFER
 	{

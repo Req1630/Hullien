@@ -1,3 +1,8 @@
+/**
+* @file DebugText.h.
+* @brief デバッグ用テキスト描画クラス.
+* @author 福田玲也.
+*/
 #ifndef TEXT_SPRITE_H
 #define TEXT_SPRITE_H
 
@@ -9,7 +14,9 @@
 class CDebugTextShader;
 class CFont;
 
-// デバッグテキストクラス.
+/***************************************
+*	デバッグテキストクラス.
+**/
 class CDebugText : public CCommon
 {
 private:

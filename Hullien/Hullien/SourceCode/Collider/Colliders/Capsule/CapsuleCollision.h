@@ -1,3 +1,8 @@
+/**
+* @file CapusleCollision.h.
+* @brief カプセル当たり判定用クラス.
+* @author 福田玲也.
+*/
 #ifndef CAPSULE_COLLISION_H
 #define CAPSULE_COLLISION_H
 
@@ -6,6 +11,9 @@
 
 class CCapsuleModel;
 
+/**************************************************
+*	カプセル当たり判定用クラス.
+**/
 class CCapsuleCollision : public CColliderBase
 {
 public:

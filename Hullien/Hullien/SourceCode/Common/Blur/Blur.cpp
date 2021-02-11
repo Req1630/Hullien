@@ -1,11 +1,16 @@
 #include "Blur.h"
 #include "..\D3DX\D3DX11.h"
 
-// ブラーシェーダーのエントリ名リスト.
-const char* SHADER_ENTRY_NAME_LIST[] =
+namespace
 {
-	"PS_HorizontalBlur",	// 横方向.
-	"PS_VerticalBlur",		// 縦方向.
+	const char*			SHADER_NAME			= "Data\\Shader\\Blur.hlsl";	// シェーダーファイル名.
+	const D3DXVECTOR4	CLEAR_BACK_COLOR	= { 0.0f, 0.0f, 0.0f, 0.0f };	// テクスチャクリア色.
+	// ブラーシェーダーのエントリ名リスト.
+	const char* SHADER_ENTRY_NAME_LIST[] =
+	{
+		"PS_HorizontalBlur",	// 横方向.
+		"PS_VerticalBlur",		// 縦方向.
+	};
 };
 
 const int BLUR_TEXTURE_DISCOUNT_SIZE = 2;	// ブラーのテクスチャを割るサイズ.

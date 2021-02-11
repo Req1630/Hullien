@@ -1,17 +1,25 @@
+/**
+* @file RotLookAtCenter.h.
+* @brief ターゲットを中心に回転するカメラクラス.
+* @author 福田玲也.
+*/
 #ifndef ROTATION_LOOK_AT_CENTER_CAMERA_H
 #define ROTATION_LOOK_AT_CENTER_CAMERA_H
 
 #include "..\Camera.h"
 
+/********************************************
+*	ターゲットを中心に回転するカメラクラス.
+**/
 class CRotLookAtCenter : public CCamera
 {
 private: //------ 定数 -------.
-	const float DEFAULT_LENGTH			= 20.0f;	// カメラ位置と注視位置の距離.
-	const float DEFAULT_HORIZONTAL_MAX	= 360.0f;	// 横回転の最大サイズ.
-	const float DEFAULT_HORIZONTAL_MIN	= 0.0f;		// 横回転の最小サイズ.
-	const float DEFAULT_VERTICAL_MAX	= 90.0f;	// 縦回転の最大サイズ.
-	const float DEFAULT_VERTICAL_MIN	= 0.0f;		// 縦回転の最小サイズ.
-	const float DEFAULT_MOVE_SPEED		= 0.01f;	// 移動速度.
+	static constexpr float DEFAULT_LENGTH			= 20.0f;	// カメラ位置と注視位置の距離.
+	static constexpr float DEFAULT_HORIZONTAL_MAX	= 360.0f;	// 横回転の最大サイズ.
+	static constexpr float DEFAULT_HORIZONTAL_MIN	= 0.0f;		// 横回転の最小サイズ.
+	static constexpr float DEFAULT_VERTICAL_MAX		= 90.0f;	// 縦回転の最大サイズ.
+	static constexpr float DEFAULT_VERTICAL_MIN		= 0.0f;		// 縦回転の最小サイズ.
+	static constexpr float DEFAULT_MOVE_SPEED		= 0.01f;	// 移動速度.
 
 public:
 	// カメラ設定ファイルのパス.

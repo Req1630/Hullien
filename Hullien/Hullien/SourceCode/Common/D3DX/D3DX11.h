@@ -1,3 +1,8 @@
+/**
+* @file D3DX11.h.
+* @brief DirectX11 Deviceを持っているクラス.
+* @author 福田玲也.
+*/
 #ifndef D3DX_H
 #define D3DX_H
 
@@ -15,10 +20,13 @@ enum class enRS_STATE
 	Max,
 } typedef ERS_STATE;
 
+/********************************
+*	DirectX11.
+**/
 class CDirectX11
 {
 private: //----- 定数 ------.
-	const float CLEAR_BACK_COLOR[4] = { 0.6f, 0.6f, 0.6f, 1.0f };	// バックカラー.
+	static constexpr float CLEAR_BACK_COLOR[4] = { 0.6f, 0.6f, 0.6f, 1.0f };	// バックカラー.
 
 public: //----- 関数 ------.
 	CDirectX11();

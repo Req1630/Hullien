@@ -1,5 +1,12 @@
 #include "FontCreate.h"
 
+namespace
+{
+	const char*	FONT_PATH = "Data\\Texture\\_Font\\GN-KagakuGothic.ttf";
+	const char*	FONT_NAME = "GN-ÉJÉKÉNÉS";
+	const int	FONT_BMP_SIZE = 256;
+};
+
 CFontCreate::CFontCreate()
 	: m_pDevice11	( nullptr )
 	, m_pContext11	( nullptr )

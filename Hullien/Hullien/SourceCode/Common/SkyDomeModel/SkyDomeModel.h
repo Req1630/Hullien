@@ -1,8 +1,16 @@
+/**
+* @file SkyDomeModel.h.
+* @brief 背景オブジェクトの描画クラス.
+* @author 福田玲也.
+*/
 #ifndef SKY_DOME_MODEL_H
 #define SKY_DOME_MODEL_H
 
 #include "..\Common.h"
 
+/********************************************
+*	背景オブジェクトの描画クラス.
+**/
 class CSkyDomeModel : public CCommon
 {
 	// メッシュ単位で渡す情報.
@@ -38,9 +46,6 @@ class CSkyDomeModel : public CCommon
 			SAFE_RELEASE(pTexture);
 		}
 	};
-
-	const char* SHADER_NAME = "Data\\Shader\\SkyDome.hlsl";
-
 public:
 	CSkyDomeModel();
 	virtual ~CSkyDomeModel();

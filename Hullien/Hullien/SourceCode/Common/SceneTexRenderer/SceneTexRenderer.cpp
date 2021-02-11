@@ -4,6 +4,12 @@
 #include "..\Blur\Blur.h"
 #include "..\..\Utility\Input\KeyInput\KeyInput.h"
 
+namespace
+{
+	const char* SHADER_NAME			= "Data\\Shader\\SceneTexRenderer.hlsl";	// シェーダー名.
+	const float CLEAR_BACK_COLOR[4]	= { 0.4f, 0.4f, 0.4f, 1.0f };				// テクスチャクリア色.
+};
+
 CSceneTexRenderer::CSceneTexRenderer()
 	: m_pDevice11				( nullptr )
 	, m_pContext11				( nullptr )
@@ -238,7 +244,7 @@ void CSceneTexRenderer::FinalRender()
 {
 	if( GetInstance()->m_IsSaveScreen == true ){
 		GetInstance()->m_pContext11->ClearRenderTargetView( 
-			GetInstance()->m_pScreenRTV[EScreenRenderNo_Tmp], GetInstance()->CLEAR_BACK_COLOR );
+			GetInstance()->m_pScreenRTV[EScreenRenderNo_Tmp], CLEAR_BACK_COLOR );
 		// レンダーターゲットの設定.
 		GetInstance()->m_pContext11->OMSetRenderTargets( 1, &GetInstance()->m_pScreenRTV[EScreenRenderNo_Tmp], CDirectX11::GetDepthSV() );
 		// デプスステンシルバッファ.
@@ -296,21 +302,21 @@ void CSceneTexRenderer::ClearBuffer()
 {
 	// 深度バッファテクスチャのクリア.
 	for( auto& rtv : GetInstance()->m_pShadowBufferRTV ){
-		GetInstance()->m_pContext11->ClearRenderTargetView( rtv, GetInstance()->CLEAR_BACK_COLOR );
+		GetInstance()->m_pContext11->ClearRenderTargetView( rtv, CLEAR_BACK_COLOR );
 	}
 	// G-Bufferテクスチャのクリア.
 	for( auto& rtv : GetInstance()->m_pGBufferRTV ){
-		GetInstance()->m_pContext11->ClearRenderTargetView( rtv, GetInstance()->CLEAR_BACK_COLOR );
+		GetInstance()->m_pContext11->ClearRenderTargetView( rtv, CLEAR_BACK_COLOR );
 	}
 	// Transテクスチャのクリア.
 	GetInstance()->m_pContext11->ClearRenderTargetView( 
-		GetInstance()->m_pTransBufferRTV, GetInstance()->CLEAR_BACK_COLOR );
+		GetInstance()->m_pTransBufferRTV, CLEAR_BACK_COLOR );
 	// Antialiasingテクスチャのクリア.
 	GetInstance()->m_pContext11->ClearRenderTargetView( 
-		GetInstance()->m_pAntialiasingRTV, GetInstance()->CLEAR_BACK_COLOR );
+		GetInstance()->m_pAntialiasingRTV, CLEAR_BACK_COLOR );
 	// DownLuminanceテクスチャのクリア.
 	GetInstance()->m_pContext11->ClearRenderTargetView( 
-		GetInstance()->m_pDownLuminanceRTV, GetInstance()->CLEAR_BACK_COLOR );
+		GetInstance()->m_pDownLuminanceRTV, CLEAR_BACK_COLOR );
 	// 全描画用テクスチャのクリア.
 	//GetInstance()->m_pContext11->ClearRenderTargetView( 
 	//	GetInstance()->m_pScreenRTV[EScreenRenderNo_None], GetInstance()->CLEAR_BACK_COLOR );

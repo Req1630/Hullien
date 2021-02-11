@@ -8,7 +8,7 @@
 **/
 class CEventCamera : public CCamera
 {
-	const float INITIAL_VIEWING_ANGLE = static_cast<float>(D3DX_PI / 4.0);	// 初期視野角.
+	static constexpr float INITIAL_VIEWING_ANGLE = static_cast<float>(D3DX_PI / 4.0);	// 初期視野角.
 
 public:
 	// カメラのパラメータ.

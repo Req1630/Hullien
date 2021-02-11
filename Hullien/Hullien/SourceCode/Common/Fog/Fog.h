@@ -1,3 +1,8 @@
+/**
+* @file Fog.h.
+* @brief フォグの情報を持っている.
+* @author 福田玲也.
+*/
 #ifndef FOG_H
 #define FOG_H
 

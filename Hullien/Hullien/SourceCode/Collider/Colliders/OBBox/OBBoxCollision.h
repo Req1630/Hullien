@@ -1,3 +1,8 @@
+/**
+* @file OBBoxCollision.h.
+* @brief ボックスの当たり判定用クラス.
+* @author 福田玲也.
+*/
 #ifndef OBBOX_COLLISION_H
 #define OBBOX_COLLISION_H
 
@@ -5,6 +10,9 @@
 
 class CBoxModel;
 
+/************************************************
+*	ボックスの当たり判定用クラス.
+**/
 class COBBoxCollision : public CColliderBase
 {
 public: //------ 関数 -------.

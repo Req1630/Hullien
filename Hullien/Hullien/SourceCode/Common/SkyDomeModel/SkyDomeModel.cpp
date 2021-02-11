@@ -3,6 +3,11 @@
 #include "..\D3DX\D3DX11.h"
 #include "..\..\Camera\CameraManager\CameraManager.h"
 
+namespace
+{
+	const char* SHADER_NAME = "Data\\Shader\\SkyDome.hlsl";	// シェーダー名.
+};
+
 CSkyDomeModel::CSkyDomeModel()
 {
 }

@@ -1,3 +1,8 @@
+/**
+* @file CollisionManager.h.
+* @brief “–‚½‚è”»’èŠÇ—ƒNƒ‰ƒX.
+* @author •Ÿ“c—æ–ç.
+*/
 #ifndef COLLSION_MANAGER_H
 #define COLLSION_MANAGER_H
 

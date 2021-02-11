@@ -1,12 +1,19 @@
+/**
+* @file Bloom.h.
+* @brief ブルームテクスチャ作成クラス.
+* @author 福田玲也.
+*/
 #ifndef BLOOM_H
 #define BLOOM_H
 
 #include "..\Common.h"
 
+/*****************************************
+*	シーンに描画してテクスチャを、
+*	　ブルームテクスチャとして作成する.
+**/
 class CBloom : public CCommon
 {
-	const char* SHADER_NAME = "Data\\Shader\\Bloom.hlsl";
-	const D3DXVECTOR4 CLEAR_BACK_COLOR = { 0.0f, 0.0f, 0.0f, 0.0f };
 	// コンスタントバッファ.
 	struct C_BUFFER
 	{

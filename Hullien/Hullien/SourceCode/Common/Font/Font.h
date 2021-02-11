@@ -1,14 +1,19 @@
+/**
+* @file Font.h.
+* @brief Fontテクスチャ描画クラス.
+* @author 福田玲也.
+*/
 #ifndef FONT_H
 #define FONT_H
 
 #include "..\Common.h"
 #include "..\Shader\SpriteShader\SpriteShader.h"
 
+/****************************************
+*	フォントテクスチャ描画クラス.
+**/
 class CFont : public CCommon
 {
-	const float FONT_SIZE = 25.0f;	// フォントの大きさ.
-	const D3DXVECTOR2 TEXTUR_UV_POS = { 1.0f, 1.0f };	// テクスチャUV座標.
-
 public:
 	CFont();
 	virtual ~CFont();

@@ -3,6 +3,12 @@
 #include "..\..\Common\SceneTexRenderer\SceneTexRenderer.h"
 #include "..\..\Camera\CameraManager\CameraManager.h"
 
+namespace
+{
+	const float			FONT_SIZE		= 25.0f;			// フォントの大きさ.
+	const D3DXVECTOR2	TEXTUR_UV_POS	= { 1.0f, 1.0f };	// テクスチャUV座標.
+};
+
 CFont::CFont()
 	: m_pShader			( std::make_unique<CSpriteShader>() )
 	, m_pVertexBuffer	( nullptr )

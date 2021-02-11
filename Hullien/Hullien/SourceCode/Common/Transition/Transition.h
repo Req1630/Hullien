@@ -1,3 +1,8 @@
+/**
+* @file Transition.h.
+* @brief トランジションフェード用クラス.
+* @author 福田玲也.
+*/
 #ifndef TRANSITION_H
 #define TRANSITION_H
 
@@ -14,6 +19,9 @@ enum enTRANSITION_OUT_MODE
 	ETRANSITION_OUT_MODE_Max,
 } typedef ETRANSITION_OUT_MODE;
 
+/************************************************:
+*	トランジションクラス.
+**/
 class CTransition : public CCommon
 {
 	const char* SHADER_NAME		= "Data\\Shader\\Transition.hlsl";
