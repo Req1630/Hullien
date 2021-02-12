@@ -1,3 +1,8 @@
+/**
+* @file ItemBase.h.
+* @brief アイテム基底クラス.
+* @author 福田玲也.
+*/
 #ifndef ITEM_BASE_H
 #define ITEM_BASE_H
 
@@ -5,17 +10,20 @@
 
 class CEffectManager;	// エフェクトクラス.
 
+/*************************************
+*	アイテム基底クラス.
+**/
 class CItemBase : public CActor
 {
 protected:
-	inline static const float INIT_MODEL_ALPHA				= 1.0f;		// 初期モデル透過値.
-	inline static const float MODEL_ALPHA_MAX				= 1.0f;		// モデルのアルファの最大値.
-	inline static const float DEFAULT_ACCELERATION_VALUE	= -0.05f;	// デフォルト加速値.
-	inline static const float DEFAULT_GRAVITY				= 0.001f;	// デフォルト重力.
-	inline static const float SCALE_MAX						= 1.0f;		// モデルの最小値.
-	inline static const float SCALE_MIN						= 0.0f;		// モデルの最大値.
-	inline static const float POSITION_HEIGHT_MIN			= 1.0f;		// 座標の最小高さ.
-	inline static const float EFFECT_SCALE_MAX				= 1.5f;		// エフェクトの最大サイズ.
+	static constexpr float INIT_MODEL_ALPHA				= 1.0f;		// 初期モデル透過値.
+	static constexpr float MODEL_ALPHA_MAX				= 1.0f;		// モデルのアルファの最大値.
+	static constexpr float DEFAULT_ACCELERATION_VALUE	= -0.05f;	// デフォルト加速値.
+	static constexpr float DEFAULT_GRAVITY				= 0.001f;	// デフォルト重力.
+	static constexpr float SCALE_MAX					= 1.0f;		// モデルの最小値.
+	static constexpr float SCALE_MIN					= 0.0f;		// モデルの最大値.
+	static constexpr float POSITION_HEIGHT_MIN			= 1.0f;		// 座標の最小高さ.
+	static constexpr float EFFECT_SCALE_MAX				= 1.5f;		// エフェクトの最大サイズ.
 
 public:
 	// パラメータ.
@@ -51,9 +59,6 @@ public:
 			, HitEffectTime			( 0.0f )
 		{}
 	} typedef SParameter;
-
-private:
-	const SParameter* pPRAMETER;	// パラメータ(外部からポインタで取得する).
 
 protected:
 	// 現在の状態.
@@ -133,6 +138,7 @@ private:
 	void HitEffectRender();
 
 protected:
+	const SParameter* pPRAMETER;	// パラメータ(外部からポインタで取得する).
 	std::shared_ptr<CDX9StaticMesh> m_pStaticMesh;	// スタティックメッシュ.
 	std::vector<std::shared_ptr<CEffectManager>> m_pEffects; // エフェクト.
 	ENowState m_NowState;		// 現在の状態.

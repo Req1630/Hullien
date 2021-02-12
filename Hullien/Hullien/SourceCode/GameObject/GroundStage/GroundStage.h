@@ -1,3 +1,8 @@
+/**
+* @file GroundStage.h.
+* @brief 地面クラス.
+* @author 福田玲也.
+*/
 #ifndef GROUND_STAGE_H
 #define GROUND_STAGE_H
 

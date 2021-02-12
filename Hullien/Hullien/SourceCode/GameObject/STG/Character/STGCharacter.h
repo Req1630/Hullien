@@ -1,3 +1,8 @@
+/**
+* @file STGCharacter.h.
+* @brief STG用のキャラクター基底クラス.
+* @author 福田玲也.
+*/
 #ifndef STG_CHARACTER_H
 #define STG_CHARACTER_H
 
@@ -6,6 +11,9 @@
 
 namespace STG
 {
+	/*******************************************
+	*	STG用のキャラクター基底クラス.
+	**/
 	class CCharacter : public STG::CActor
 	{
 	public:

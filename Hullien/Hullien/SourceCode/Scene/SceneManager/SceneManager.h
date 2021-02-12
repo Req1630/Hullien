@@ -1,3 +1,8 @@
+/**
+* @file SceneManager.h.
+* @brief シーン管理クラス.
+* @author 福田玲也.
+*/
 #ifndef SCENE_MANAGER_H
 #define SCENE_MANAGER_H
 

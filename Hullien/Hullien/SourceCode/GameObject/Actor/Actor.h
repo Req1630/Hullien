@@ -1,3 +1,8 @@
+/**
+* @file Actor.h.
+* @brief 動作可能なオブジェクトの基底クラス.
+* @author 福田玲也.
+*/
 #ifndef ACTOR_H
 #define ACTOR_H
 
@@ -7,6 +12,9 @@
 class CCollisionManager;			// 当たり判定クラス.
 struct stBoxWall typedef SBoxWall;	// 見えない壁の構造体.
 
+/**************************************
+*	動作可能なオブジェクトの基底クラス.
+**/
 class CActor : public CGameObject
 {
 public:

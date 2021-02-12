@@ -1,3 +1,8 @@
+/**
+* @file Alien.h.
+* @brief 宇宙人基底クラス.
+* @author 福田玲也.
+*/
 #ifndef ALIEN_H
 #define ALIEN_H
 
@@ -10,27 +15,30 @@
 class CArm;				// アームクラス.
 class CEffectManager;	// エフェクトクラス.
 
+/**********************************
+*	宇宙人基底クラス,
+**/
 class CAlien : public CCharacter
 {
 protected:
-	inline static const char* HIT_EEFECT_NAME			= "hiteffekt";		// ヒットエフェクト.
-	inline static const char* SPAWN_EFFECT_NAME			= "spawnEffect";	// スポーンエフェクト.
-	inline static const char* DEAD_EFFECT_NAME			= "uvtest";			// 死亡エフェクト.
-	inline static const char* ATTACK_EFFECT_NAME		= "b_attackeffkt";	// 攻撃エフェクト.
-	inline static const float TOLERANCE_RADIAN			= static_cast<float>(D3DXToRadian(10.0));	// 回転の許容範囲.
-	inline static const float BARRIER_HIT_MOVE_SPEED	= -5.0f;									// バリアと衝突時の移動速度.
-	inline static const float SCALE_MIN					= 0.0f;										// モデルの最小値.
-	inline static const float SCALE_MAX					= 1.0f;										// モデルの最大値.
-	inline static const float DEATH_SCALE_PI			= 6.0f*static_cast<float>(D3DX_PI);			// 死亡時のスケールの範囲.
-	inline static const float POSITION_HEIGHT_MIN		= 0.0f;										// 座標の最小高さ.
+	inline static const char* HIT_EEFECT_NAME		= "hiteffekt";		// ヒットエフェクト.
+	inline static const char* SPAWN_EFFECT_NAME		= "spawnEffect";	// スポーンエフェクト.
+	inline static const char* DEAD_EFFECT_NAME		= "uvtest";			// 死亡エフェクト.
+	inline static const char* ATTACK_EFFECT_NAME	= "b_attackeffkt";	// 攻撃エフェクト.
+	static constexpr float TOLERANCE_RADIAN			= static_cast<float>(D3DXToRadian(10.0));	// 回転の許容範囲.
+	static constexpr float BARRIER_HIT_MOVE_SPEED	= -5.0f;									// バリアと衝突時の移動速度.
+	static constexpr float SCALE_MIN				= 0.0f;										// モデルの最小値.
+	static constexpr float SCALE_MAX				= 1.0f;										// モデルの最大値.
+	static constexpr float DEATH_SCALE_PI			= 6.0f*static_cast<float>(D3DX_PI);			// 死亡時のスケールの範囲.
+	static constexpr float POSITION_HEIGHT_MIN		= 0.0f;										// 座標の最小高さ.
 
-	inline static const float HIT_EFFECT_SCALE		= 2.0f;				// ヒットエフェクトのサイズ.
-	inline static const float HIT_EFFECT_HEIGHT		= 4.0f;				// ヒットエフェクトの高さ.
+	static constexpr float HIT_EFFECT_SCALE			= 2.0f;				// ヒットエフェクトのサイズ.
+	static constexpr float HIT_EFFECT_HEIGHT		= 4.0f;				// ヒットエフェクトの高さ.
 
-	inline static const float SPAWN_EFFECT_ADD_SIZE	= 0.2f;				// スポーンエフェクト調整加算値.
+	static constexpr float SPAWN_EFFECT_ADD_SIZE	= 0.2f;				// スポーンエフェクト調整加算値.
 
-	inline static const int	POSSIBLE_TIME = 80;
-	inline static const int MAX_HIT_COUNT = 3;
+	static constexpr int	POSSIBLE_TIME = 80;
+	static constexpr int	MAX_HIT_COUNT = 3;
 
 	const SAlienParam*	pPARAMETER;	// パラメータのポインタ : 外部から取得.
 

@@ -1,3 +1,8 @@
+/**
+* @file EditRender.h.
+* @brief エディタ描画クラス.
+* @author 福田玲也.
+*/
 #ifndef EDIT_RENDERER_H
 #define EDIT_RENDERER_H
 
@@ -5,6 +10,11 @@
 #include <vector>
 #include <functional>
 
+/*****************************************
+*	エディタ描画クラス.
+*	　PushRenderProc( std::function<void()> proc )に、
+*		ImGuiで編集で使用する関数を入れる.
+**/
 class CEditRenderer
 {
 public:

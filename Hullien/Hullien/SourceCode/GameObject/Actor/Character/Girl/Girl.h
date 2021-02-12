@@ -1,3 +1,8 @@
+/**
+* @file Girl.h.
+* @brief 女の子クラス.
+* @author 福田玲也.
+*/
 #ifndef GIRL_H
 #define GIRL_H
 
@@ -5,6 +10,9 @@
 #include "GirlParam.h"
 #include "..\..\..\Widget\SceneWidget\GameWidget\Warning\Warning.h"
 
+/***************************************
+*	女の子クラス.
+**/
 class CGirl : public CCharacter
 {
 	// パラメータのファイルパス.

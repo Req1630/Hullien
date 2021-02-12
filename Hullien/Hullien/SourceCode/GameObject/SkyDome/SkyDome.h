@@ -1,3 +1,8 @@
+/**
+* @file SkyDome.h.
+* @brief 背景クラス.
+* @author 福田玲也.
+*/
 #ifndef SKY_DOME_H
 #define SKY_DOME_H
 
@@ -5,6 +10,9 @@
 
 class CSkyDomeModel;
 
+/*****************************************
+*	背景クラス.
+**/
 class CSkyDome : public CGameObject
 {
 	const char* MODEL_NAME = "Data\\Mesh\\space\\space.x";	// モデル名.

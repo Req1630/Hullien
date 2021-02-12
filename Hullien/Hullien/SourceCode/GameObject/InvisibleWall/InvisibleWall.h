@@ -1,3 +1,8 @@
+/**
+* @file InvisibleWall.h.
+* @brief 見ない壁クラス.
+* @author 福田玲也.
+*/
 #ifndef INVISIBLE_WALL_H
 #define INVISIBLE_WALL_H
 
@@ -8,8 +13,8 @@ class CCollisionManager;	// 当たり判定クラス.
 class CInvisibleWallShader;	// 見えない壁シェーダークラス.
 
 /**************************************
-*	見えない壁.
-*/
+*	見えない壁クラス.
+**/
 class CInvisibleWall : public CGameObject
 {
 	const char* INVISIBLE_WALL_PARAM_FILE_NAME = "Data\\GameParam\\InvisibleWall.bin";

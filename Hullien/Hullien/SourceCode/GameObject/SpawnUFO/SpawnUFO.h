@@ -1,3 +1,8 @@
+/**
+* @file SpawnUFO.h.
+* @brief スポーンUFOクラス.
+* @author 福田玲也.
+*/
 #ifndef SPAWN_UFO_H
 #define SPAWN_UFO_H
 
@@ -15,14 +20,17 @@ class CUFOLight;			// UFOライトクラス.
 class CCollisionManager;	// 当たり判定クラス.
 class CUltemateSing;		// 宇宙人Dの警告UIクラス.
 
+/**************************************
+*	スポーンUFOクラス.
+**/
 class CSpawnUFO : public CGameObject
 {
-	inline static const char*	MODEL_NAME			= "ufo_mini";	// モデル名.
-	inline static const float	COLLISION_RADIUS	= 5.0f;			// 当たり判定のサイズ.
-	inline static const float	ADD_POS_POWER		= 0.1f;			// 座標を上にあげる力.
-	inline static const float	LIGHT_HEIGHT		= 1.65f;		// ライトの高さ.
-	inline static const float	LIGHT_WEDTH			= 1.4f;			// ライトの幅.
-	inline static const int		SPAWN_SUB_TIME		= 3*FPS;		// 最初のスポーン時間調整用.
+	inline static const char*	MODEL_NAME		= "ufo_mini";	// モデル名.
+	static constexpr float	COLLISION_RADIUS	= 5.0f;			// 当たり判定のサイズ.
+	static constexpr float	ADD_POS_POWER		= 0.1f;			// 座標を上にあげる力.
+	static constexpr float	LIGHT_HEIGHT		= 1.65f;		// ライトの高さ.
+	static constexpr float	LIGHT_WEDTH			= 1.4f;			// ライトの幅.
+	static constexpr int	SPAWN_SUB_TIME		= 3*FPS;		// 最初のスポーン時間調整用.
 public:
 	CSpawnUFO();
 	virtual ~CSpawnUFO();

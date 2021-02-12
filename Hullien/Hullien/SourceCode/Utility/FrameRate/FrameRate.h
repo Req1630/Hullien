@@ -1,8 +1,16 @@
+/**
+* @file FrameRate.h.
+* @brief フレームレート管理クラス.
+* @author 福田玲也.
+*/
 #ifndef FRAME_RATE_H
 #define FRAME_RATE_H
 
 #include <Windows.h>
 
+/*******************************
+*	フレームレート管理クラス.
+**/
 class CFrameRate
 {
 	static double FRAME_TIME;

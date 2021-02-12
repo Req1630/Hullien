@@ -1,3 +1,8 @@
+/**
+* @file ExplosionEdit.h.
+* @brief 爆発の当たり判定サイズの編集クラス.
+* @author 福田玲也.
+*/
 #ifndef EXPLOSION_EDIT_H
 #define EXPLOSION_EDIT_H
 
@@ -5,10 +10,11 @@
 #include "..\..\GameObject\Actor\Explosion\Explosion.h"
 #include <vector>
 
+/******************************************
+*	爆発の当たり判定サイズの編集クラス.
+**/
 class CExplosionEdit : public CEditBase
 {
-	const ImVec2 WINDOW_SIZE = { 510.0f, WND_H-70.0f };	// ウィンドウサイズ.
-	const ImVec2 RENDER_POSITION = { 0.0f, 70.0f };		// 描画座標.
 	const char* FILE_PATH = "Data\\GameParam\\Alien\\Explosion\\Explosion.bin";
 
 public:

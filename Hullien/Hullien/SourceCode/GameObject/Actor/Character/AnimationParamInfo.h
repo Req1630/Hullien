@@ -1,3 +1,8 @@
+/**
+* @file AnimationParamInfo.h.
+* @brief アニメーションの情報を持たせる構造体.
+* @author 福田玲也.
+*/
 #ifndef ANIMATION_PARAM_H
 #define ANIMATION_PARAM_H
 

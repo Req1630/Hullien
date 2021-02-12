@@ -1,3 +1,8 @@
+/**
+* @file LoadManager.h.
+* @brief 読み込み管理クラス.
+* @author 福田玲也.
+*/
 #ifndef LOAD_MANAGER_H
 #define LOAD_MANAGER_H
 
@@ -8,10 +13,9 @@
 #include <memory>
 #include <vector>
 
-/*********************************
+/*********************************************
 *	各リソース類の読み込みをまとめるクラス.
-*		Load画像などの表示をここに入れてもいいかも.
-*/
+**/
 class CLoadManager
 {
 	const char* LOAD_BACK_IMAGE = "Data\\Texture\\_LoadTexture\\loadBase.png";

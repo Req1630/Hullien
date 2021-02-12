@@ -1,3 +1,8 @@
+/**
+* @file InvisibleWallEdit.h.
+* @brief 見えない壁のサイズエディタクラス.
+* @author 福田玲也.
+*/
 #ifndef INVISIBLE_WALL_EDIT_H
 #define INVISIBLE_WALL_EDIT_H
 
@@ -6,6 +11,9 @@
 
 class CInvisibleWall;	// 見えない壁.
 
+/****************************************************
+*	見えない壁のサイズエディタクラス.
+**/
 class CInvisibleWallEdit : public CEditBase
 {
 	const char* INVISIBLE_WALL_PARAM_FILE_NAME = "Data\\GameParam\\InvisibleWall.bin";

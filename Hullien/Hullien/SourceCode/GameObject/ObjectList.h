@@ -1,6 +1,12 @@
+/**
+* @file ObjectList.h.
+* @brief ゲーム内で出てくるオブジェクトのタグリスト.
+* @author 福田玲也.
+*/
 #ifndef OBJECT_LIST_H
 #define OBJECT_LIST_H
 
+// ゲームオブジェクトのタグリスト.
 enum class enObjectTagList : unsigned char
 {
 	None,

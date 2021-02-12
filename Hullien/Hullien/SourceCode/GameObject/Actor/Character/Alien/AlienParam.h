@@ -1,3 +1,8 @@
+/**
+* @file AlienParam.h.
+* @brief 宇宙人の構造体などのヘッダー.
+* @author 福田玲也.
+*/
 #ifndef ALIEN_PARAM_H
 #define ALIEN_PARAM_H
 

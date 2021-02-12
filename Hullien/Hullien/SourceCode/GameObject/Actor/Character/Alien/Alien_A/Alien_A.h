@@ -1,11 +1,19 @@
+/**
+* @file Alien_A.h.
+* @brief 宇宙人Aクラス.
+* @author 福田玲也.
+*/
 #ifndef ALIEN_A_H
 #define ALIEN_A_H
 
 #include "..\Alien.h"
 
+/*************************************************
+*	宇宙人Aクラス.
+**/
 class CAlienA : public CAlien
 {
-	const char* MODEL_NAME = "a_s";
+	inline static const char* MODEL_NAME = "a_s";	// モデル名.
 
 public:
 	CAlienA();

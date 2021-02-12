@@ -1,27 +1,35 @@
+/**
+* @file Arm.h.
+* @brief アームクラス.
+* @author 福田玲也.
+*/
 #ifndef ARM_H
 #define ARM_H
 
 #include "..\GameObject.h"
 
+/*************************************
+*	アームクラス.
+**/
 class CArm : public CGameObject
 {
 public:
-	inline static const float GRAB_DISTANCE	= 5.0f;		// 掴むときの距離.
-	inline static const float GRAB_HEIGHT	= 5.0f;		// 掴むときの高さ.
+	static constexpr float GRAB_DISTANCE	= 5.0f;		// 掴むときの距離.
+	static constexpr float GRAB_HEIGHT		= 5.0f;		// 掴むときの高さ.
 
 private:
-	const char* MODEL_NAME = "armsandwich_s";
+	inline static const char* MODEL_NAME = "armsandwich_s";
 
-	const float APPEARANCE_ADD_VALUE	= 0.1f;		// 出現時の加算値.
-	const float APPEARANCE_COUNT_MAX	= 1.0f;		// 出現時の最大数.
-	const float CLEAN_UP_SUB_VALUE		= 0.015f;	// 片づけ時の減算値.
-	const float CLEAN_UP_COUNT_MIN		= 0.0f;		// 片づけ時の最小数.
+	static constexpr float APPEARANCE_ADD_VALUE	= 0.1f;		// 出現時の加算値.
+	static constexpr float APPEARANCE_COUNT_MAX	= 1.0f;		// 出現時の最大数.
+	static constexpr float CLEAN_UP_SUB_VALUE	= 0.015f;	// 片づけ時の減算値.
+	static constexpr float CLEAN_UP_COUNT_MIN	= 0.0f;		// 片づけ時の最小数.
 
-	const float SCALE_MAX				= 1.0f;		// モデルサイズの最大値.
-	const float SCALE_MIN				= 0.0f;		// モデルサイズの最小値.
-	const float SCALING_VALUE			= 0.5f;		// 拡縮値.
-	const float SCALING_VALUE_MAX		= 1.0f;		// 拡縮の最大値.
-	const float SCALING_ADD_VALUE		= (1.0f-SCALING_VALUE)*0.04f;	// 拡縮の加算値.
+	static constexpr float SCALE_MAX			= 1.0f;		// モデルサイズの最大値.
+	static constexpr float SCALE_MIN			= 0.0f;		// モデルサイズの最小値.
+	static constexpr float SCALING_VALUE		= 0.5f;		// 拡縮値.
+	static constexpr float SCALING_VALUE_MAX	= 1.0f;		// 拡縮の最大値.
+	static constexpr float SCALING_ADD_VALUE	= (1.0f-SCALING_VALUE)*0.04f;	// 拡縮の加算値.
 
 	enum class enArmState
 	{

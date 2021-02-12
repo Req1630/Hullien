@@ -1,3 +1,8 @@
+/**
+* @file ControllerEdit.h.
+* @brief コントローラーエディタクラス(今回は使用していない).
+* @author 福田玲也.
+*/
 #ifndef CONTROLLER_EDIT_H
 #define CONTROLLER_EDIT_H
 

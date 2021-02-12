@@ -1,3 +1,8 @@
+/**
+* @file STGActor.h.
+* @brief STG用のActorクラス.
+* @author 福田玲也.
+*/
 #ifndef STG_ACTOR_H
 #define STG_ACTOR_H
 
@@ -10,6 +15,9 @@ class CCollisionManager;	// 当たり判定クラス.
 namespace STG
 {
 	class CBullet;	// 弾クラス.
+	/******************************************
+	*	Actor基底クラス.
+	**/
 	class CActor : public CGameObject
 	{
 	public:

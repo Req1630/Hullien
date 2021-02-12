@@ -1,3 +1,8 @@
+/**
+* @file ItemManager.h.
+* @brief アイテム管理クラス.
+* @author 福田玲也.
+*/
 #ifndef ITEM_MANAGER_H
 #define ITEM_MANAGER_H
 
@@ -10,6 +15,9 @@
 
 class CActor;	// アクタークラス.
 
+/******************************
+*	アイテム管理クラス.
+**/
 class CItemManager
 {
 	const char* ITEM_PARAM_FILE_PATH = "Data\\GameParam\\Item\\ItemParam.bin";

@@ -1,3 +1,8 @@
+/**
+* @file FontResource.h.
+* @brief フォントリソースクラス.
+* @author 福田玲也.
+*/
 #ifndef FONT_RESOURCE_H
 #define FONT_RESOURCE_H
 
@@ -11,6 +16,9 @@
 
 namespace fs = std::filesystem;
 
+/******************************
+*	フォントリソースクラス.
+**/
 class CFontResource
 {
 	const char* TEXT_LIST_PATH = "Data\\TextList\\TextList.txt";

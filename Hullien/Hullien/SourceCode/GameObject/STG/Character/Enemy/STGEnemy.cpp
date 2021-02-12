@@ -10,6 +10,36 @@
 #include "..\..\Bullet\BuletManager\BuletManager.h"
 #include "..\..\..\..\Camera\CameraManager\CameraManager.h"
 
+namespace
+{
+	const char* DEAD_SE_NAME			= "STGEnemyDead";
+	const float E_WND_OUT_ADJ_SIZE		= 10.0f;
+	const float INIT_POSITION_Z			= -100.0f;	// 初期座標 : Z.
+	const float MOVE_SUB_VALUE			= 0.002f;	// 移動速度を引く値.
+	const float MOVE_SUB_POSITION_Z		= -10.0f;	// 移動速度を引いていく座標.
+	const float SHAKE_COUNT_MAX			= 10.0f;	// 揺れのカウント.
+	const float SHAKE_SUB_VALUE			= 0.4f;		// 揺れカウントを引く値.
+	const float SHAKE_SPEED				= 0.1f;		// 揺れの速度.
+	const float DEAD_SCALE_SUB_VALUE	= 0.03f;	// 死亡時のスケール減算値.
+	const float DEAD_ROTATION_SPEED		= 0.1f;		// 死亡時の回転速度.
+	const float ESCAPE_MOVE_DISTANCE	= 4.0f;		// 逃げる移動距離.
+	const float ESCAPE_COUNT_MAX		= 10*FPS;	// 逃げる時間.
+	const float		FONT_SIZE			= 2.0f;		// フォントサイズ.
+	const D3DXVECTOR3 FONT_ROTATION		=			// フォントの回転値.
+	{
+		static_cast<float>(D3DXToRadian(270)),
+		0.0f, 
+		static_cast<float>(D3DXToRadian(180))
+	};
+	const float DEAD_TARGET_POSITION_LENGTH	= 0.5f;		// 死亡時のターゲットとの距離.
+	const float DEAD_TARGET_MOVE_SPEED		= 0.045f;	// 死亡時のターゲットとの移動速度.
+	const float DEAD_MOVE_ACC_ADD_VALUE		= 0.1f;		// 死亡移動加速加算値.
+	const float DEAD_MOVE_ACC_VALUE_MAX		= 1.5f;		// 死亡移動加速度最大値.
+	const float DEAD_POSITION_Y_ADJ_VALUE	= 40.0f;	// 死亡座標の調整値.
+	const float DEAD_CAMERA_SHAKE_ADJ_VALUE	= 10.0f;	// 死亡カメラ揺れ値.
+	const float LAST_DEAD_ROTATION_SPEED	= 0.2f;		// 死亡時の回転速度.
+};
+
 STG::CEnemy::CEnemy()
 	: CEnemy	( STG::SEnemyParam() )
 {

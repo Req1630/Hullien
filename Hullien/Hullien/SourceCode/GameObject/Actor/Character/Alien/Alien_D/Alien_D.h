@@ -1,3 +1,8 @@
+/**
+* @file Alien_D.h.
+* @brief 宇宙人Dクラス.
+* @author 福田玲也.
+*/
 #ifndef ALIEN_D_H
 #define ALIEN_D_H
 
@@ -5,20 +10,22 @@
 
 class CLaserBeam;	// レーザービームクラス.
 
+/************************************
+*	宇宙人Dクラス.
+**/
 class CAlienD : public CAlien
 {
-	const char* MODEL_NAME = "ultemate_s";
-	const char* SPRITE_NAME = "AttackRange";
+	inline static const char* MODEL_NAME = "ultemate_s";
+	inline static const char* SPRITE_NAME = "AttackRange";
 
-	const D3DXVECTOR4 ATTACK_RANGE_COLOR		= { 0.8f, 0.0f, 0.0f, 0.0f };	// 赤色.
-	const D3DXVECTOR4 ATTACK_RANGE_DANGER_COLOR	= { 0.8f, 0.8f, 0.0f, 1.0f };	// 黄色.
-	const float ATTACK_TIME				= 1.0f;									// 攻撃時間.
-	const float ATTACL_SPRITE_ROT_X		= static_cast<float>(D3DXToRadian(90));	// 攻撃スプライトの回転値.
-	const D3DXVECTOR3 HEAD_ADJ_POSITION = { 3.5f, 15.0f, 3.5f };				// 頭の調整座標.
-	const float ATTACK_COLLISION_SCALE	= 3.0f;									// 攻撃当たり判定のサイズ.
-	const double ATTACK_FRAME			= 0.7;									// 攻撃フレーム.
-
-	const float SPAWN_EFFECT_SCALE		= 5.0f;	// スポーンエフェクトのサイズ.
+	inline static const D3DXVECTOR4 ATTACK_RANGE_COLOR			= { 0.8f, 0.0f, 0.0f, 0.0f };	// 赤色.
+	inline static const D3DXVECTOR4 ATTACK_RANGE_DANGER_COLOR	= { 0.8f, 0.8f, 0.0f, 1.0f };	// 黄色.
+	inline static const D3DXVECTOR3 HEAD_ADJ_POSITION			= { 3.5f, 15.0f, 3.5f };		// 頭の調整座標.
+	static constexpr float	ATTACK_TIME				= 1.0f;									// 攻撃時間.
+	static constexpr float	ATTACL_SPRITE_ROT_X		= static_cast<float>(D3DXToRadian(90));	// 攻撃スプライトの回転値.
+	static constexpr float	ATTACK_COLLISION_SCALE	= 3.0f;									// 攻撃当たり判定のサイズ.
+	static constexpr float	SPAWN_EFFECT_SCALE		= 5.0f;									// スポーンエフェクトのサイズ.
+	static constexpr double	ATTACK_FRAME			= 0.7;									// 攻撃フレーム.
 
 public:
 	CAlienD();

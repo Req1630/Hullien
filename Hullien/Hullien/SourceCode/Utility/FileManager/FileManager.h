@@ -1,3 +1,8 @@
+/**
+* @file FileManager.h.
+* @brief ファイル読み込みクラス.
+* @author 福田玲也.
+*/
 #ifndef FILE_MANAGER_H
 #define FILE_MANAGER_H
 
@@ -7,6 +12,9 @@
 #include <vector>
 #include <string>
 
+/**************************************
+*	ファイル読み込みクラス.
+**/
 class CFileManager
 {
 public:

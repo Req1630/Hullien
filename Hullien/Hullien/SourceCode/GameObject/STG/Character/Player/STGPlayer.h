@@ -1,3 +1,8 @@
+/**
+* @file STGPlayer.h.
+* @brief STG用のプレイヤークラス.
+* @author 福田玲也.
+*/
 #ifndef STG_PLAYER_H
 #define STG_PLAYER_H
 
@@ -5,6 +10,9 @@
 
 namespace STG
 {
+	/********************************************
+	*	プレイヤークラス.
+	**/
 	class CPlayer : public STG::CCharacter
 	{
 		const char* MODEL_NAME				= "ufo";

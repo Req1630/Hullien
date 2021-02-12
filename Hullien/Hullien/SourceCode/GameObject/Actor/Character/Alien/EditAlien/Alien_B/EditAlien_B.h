@@ -1,11 +1,19 @@
+/**
+* @file EditAlien_B.h.
+* @brief エディタ用宇宙人Bクラス.
+* @author 福田玲也.
+*/
 #ifndef EDIT_ALIEN_B_H
 #define EDIT_ALIEN_B_H
 
 #include "..\EditAlien.h"
 
+/****************************************
+*	エディタ用宇宙人Bクラス.
+**/
 class CEditAlienB : public CEditAlien
 {
-	const char* MODEL_NAME = "b_s";
+	inline static const char* MODEL_NAME = "b_s";
 public:
 	CEditAlienB();
 	virtual	~CEditAlienB();

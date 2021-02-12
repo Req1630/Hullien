@@ -1,3 +1,8 @@
+/**
+* @file ItemList.h.
+* @brief アイテムリストヘッダー.
+* @author 福田玲也.
+*/
 #ifndef ITEM_H
 #define ITEM_H
 

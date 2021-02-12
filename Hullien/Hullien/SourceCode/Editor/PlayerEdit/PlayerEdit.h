@@ -1,3 +1,8 @@
+/**
+* @file PlayerEdit.h.
+* @brief プレイヤーのパラメータエディタクラス.
+* @author 福田玲也.
+*/
 #ifndef PLAYER_EDIT_H
 #define PLAYER_EDIT_H
 
@@ -6,6 +11,9 @@
 
 class CEditAlienA;
 
+/**********************************************
+*	プレイヤーのパラメータエディタクラス.
+*/
 class CPlayerEdit : public CEditBase
 {
 	// パラメータのファイルパス.

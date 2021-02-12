@@ -1,3 +1,8 @@
+/**
+* @file STGEnemyFactory.h.
+* @brief STG用の敵作成クラス.
+* @author 福田玲也.
+*/
 #ifndef STG_ENEMY_FACTORY_H
 #define STG_ENEMY_FACTORY_H
 
@@ -12,6 +17,9 @@ namespace STG
 
 namespace STG
 {
+	/*********************************
+	*	敵作成クラス.
+	**/
 	class CEnemyFactory
 	{
 		const char* ENEMY_LIST_FILE_PATH	= "Data\\GameParam\\STG\\EnemyData.csv";	// ファイル名.

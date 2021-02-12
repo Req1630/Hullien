@@ -1,3 +1,8 @@
+/**
+* @file EachItemEffectStruct.h.
+* @brief 各アイテムの効果の情報.
+* @author 福田玲也.
+*/
 #ifndef EACH_ITEM_EFFECT_STRUCT_H
 #define EACH_ITEM_EFFECT_STRUCT_H
 

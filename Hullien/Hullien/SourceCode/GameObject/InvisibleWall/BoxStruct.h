@@ -1,3 +1,8 @@
+/**
+* @file BoxStruct.h.
+* @brief ボックス情報の構造体.
+* @author 福田玲也.
+*/
 #ifndef BOX_STRUCT_H
 #define BOX_STRUCT_H
 

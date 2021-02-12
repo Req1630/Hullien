@@ -1,3 +1,8 @@
+/**
+* @file SpawnEdit.h.
+* @brief 宇宙人のスポーン情報エディタクラス.
+* @author 福田玲也.
+*/
 #ifndef SPAWN_EDIT_H
 #define SPAWN_EDIT_H
 
@@ -6,6 +11,9 @@
 class CDX9StaticMesh;
 struct stSpawnUFOParam;
 
+/******************************************
+*	宇宙人のスポーン情報エディタクラス.
+**/
 class CSpawnEdit : public CEditBase
 {
 	const char* FILE_PATH = "Data\\GameParam\\Alien\\SpaenParam\\SpaenParam.bin";

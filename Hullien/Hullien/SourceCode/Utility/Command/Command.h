@@ -1,9 +1,17 @@
+/**
+* @file Command.h.
+* @brief コマンドクラス.
+* @author 福田玲也.
+*/
 #ifndef COMMAND_H
 #define COMMAND_H
 
 #include <queue>
 #include <vector>
 
+/****************************
+*	コマンドクラス.
+**/
 class CCommand
 {
 	// キー(button)のリスト.

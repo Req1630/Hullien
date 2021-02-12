@@ -1,7 +1,12 @@
+/**
+* @file AlienList.h.
+* @brief 宇宙人リストヘッダー.
+* @author 福田玲也.
+*/
 #ifndef ALIEN_LIST_H
 #define ALIEN_LIST_H
 
-enum class enAlienList
+enum class enAlienList : unsigned char
 {
 	None,
 

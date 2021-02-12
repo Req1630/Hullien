@@ -1,3 +1,8 @@
+/**
+* @file BuletManagerParam.h.
+* @brief ’eŠÇ—î•ñ.
+* @author •Ÿ“c—æ–ç.
+*/
 #ifndef BULLET_MANAGER_PARAM_H
 #define BULLET_MANAGER_PARAM_H
 

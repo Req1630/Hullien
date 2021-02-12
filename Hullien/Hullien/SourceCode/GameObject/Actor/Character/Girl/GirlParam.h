@@ -1,3 +1,8 @@
+/**
+* @file GirlParam.h.
+* @brief 女の子の構造体などのヘッダー.
+* @author 福田玲也.
+*/
 #ifndef GIRL_PARAM_H
 #define GIRL_PARAM_H
 

@@ -174,7 +174,7 @@ void CLaserBeam::ResetParam()
 }
 
 // ベジェ曲線の制御点の設定.
-void CLaserBeam::SetControlPointList( std::vector<D3DXVECTOR3> pointList )
+void CLaserBeam::SetControlPointList( const std::vector<D3DXVECTOR3>& pointList )
 {
 	m_ControlPointList = pointList; 
 }

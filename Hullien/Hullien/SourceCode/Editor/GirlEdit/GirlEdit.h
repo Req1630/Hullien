@@ -1,9 +1,17 @@
+/**
+* @file GirlEdit.h.
+* @brief 女の子のパラメータエディタクラス.
+* @author 福田玲也.
+*/
 #ifndef GIRL_EDIT_H
 #define GIRL_EDIT_H
 
 #include "..\EditBase.h"
 #include "..\..\GameObject\Actor\Character\Girl\Girl.h"
 
+/***********************************************
+*	女の子のパラメータエディタクラス.
+**/
 class CGirlEdit : public CEditBase
 {
 	// パラメータのファイルパス.

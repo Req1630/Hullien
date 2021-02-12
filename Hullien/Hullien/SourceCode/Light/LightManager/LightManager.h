@@ -1,3 +1,8 @@
+/**
+* @file LightManager.h.
+* @brief ライト管理クラス.
+* @author 福田玲也.
+*/
 #ifndef LIGHT_MANAGER_H
 #define LIGHT_MANAGER_H
 

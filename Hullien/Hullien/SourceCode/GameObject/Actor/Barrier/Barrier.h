@@ -1,3 +1,8 @@
+/**
+* @file Barrier.h.
+* @brief 女の子に張るバリアクラス.
+* @author 福田玲也.
+*/
 #ifndef BARRIER_H
 #define BARRIER_H
 
@@ -6,17 +11,11 @@
 class CEffectManager;	// エフェクトクラス.
 class CEventActor;		// イベントアクタークラス.
 
+/********************************
+*	バリアクラス.
+**/
 class CBarrier : public CActor
 {
-	const char* MODEL_NAME = "Barrier";
-	const char* EFFECT_NAME = "barrier_effect";	// エフェクトの名前.
-
-	const float COLLISION_SPHERE_RDIUS_MAX			= 20.0f;	// 当たり判定の最大半径.
-	const float COLLISION_SPHERE_RDIUS_ADD_VALUE	= 1.0f;		// 当たり判定サイズ加算値.
-	const float ACTIVE_TIME				= 5.0f;		// 動作時間.
-	const float EFFECT_SCALE			= 0.3f;		// エフェクトのサイズ.
-	const float EFFECT_ADJ_POSITION_Y	= 0.001f;	// エフェクトの調整用座標.
-
 public:
 	CBarrier();
 	virtual ~CBarrier();
@@ -37,13 +36,10 @@ public:
 	inline bool IsActive() const { return m_IsActive; }
 
 private:
-	// モデルの取得.
-	bool GetModel();
 	// 当たり判定の設定.
 	bool ColliderSetting();
 
 private:
-	std::shared_ptr<CDX9StaticMesh>	m_StaticMesh;	// スタティックメッシュ.
 	std::shared_ptr<CEffectManager>	m_pEffect;		// エフェクト.
 	bool m_IsEffectPlay;		// エフェクトが再生されたか.
 	bool m_IsActive;			// 動作状態か.

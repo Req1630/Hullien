@@ -1,3 +1,8 @@
+/**
+* @file SceneBase.h.
+* @brief シーン基底クラス.
+* @author 福田玲也.
+*/
 #ifndef SCENE_BASE_H
 #define SCENE_BASE_H
 
@@ -10,6 +15,9 @@
 
 class CSceneManager;
 
+/************************
+*	シーン基底クラス.
+**/
 class CSceneBase
 {
 public:

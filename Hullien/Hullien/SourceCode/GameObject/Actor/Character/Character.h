@@ -1,17 +1,25 @@
+/**
+* @file Caracter.h.
+* @brief キャラクタ基底クラス.
+* @author 福田玲也.
+*/
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
 #include "..\Actor.h"
 #include "AnimationParamInfo.h"
 
+/********************************************
+*	キャラクタ基底クラス.
+**/
 class CCharacter : public CActor
 {
-	inline static const float FOOT_COLLISION_SIZE	= 0.5f;	// 足の当たり判定のサイズ.
-	inline static const float GROUND_COLLISION_SIZE	= 1.0f;	// 地面の当たり判定のサイズ.
+	static constexpr float FOOT_COLLISION_SIZE		= 0.5f;	// 足の当たり判定のサイズ.
+	static constexpr float GROUND_COLLISION_SIZE	= 1.0f;	// 地面の当たり判定のサイズ.
 protected:
-	inline static const double DEFAULT_ANIM_SPEED		= 0.01;						// デフォルトアニメーション速度.
-	inline static const double DEFAULT_ANIM_HALF_SPEED	= DEFAULT_ANIM_SPEED*0.5;	// デフォルトアニメーション速度の半分の速度.
-	inline static const double STOP_ANIM_SPEED			= 0.0;						// 停止アニメーション速度.
+	static constexpr double DEFAULT_ANIM_SPEED		= 0.01;						// デフォルトアニメーション速度.
+	static constexpr double DEFAULT_ANIM_HALF_SPEED	= DEFAULT_ANIM_SPEED*0.5;	// デフォルトアニメーション速度の半分の速度.
+	static constexpr double STOP_ANIM_SPEED			= 0.0;						// 停止アニメーション速度.
 
 	// 足の番号.
 	enum enFootNumber : char

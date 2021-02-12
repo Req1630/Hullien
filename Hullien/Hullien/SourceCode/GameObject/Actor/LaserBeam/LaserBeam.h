@@ -1,22 +1,29 @@
+/**
+* @file LaserBeam.h.
+* @brief レーザービームクラス.
+* @author 福田玲也.
+*/
 #ifndef LASER_BEAM_H
 #define LASER_BEAM_H
 
 #include "..\Actor.h"
 #include <list>
 
-class CTrajectory;	// 軌跡.
+class CTrajectory;		// 軌跡.
 class CEffectManager;
 
+/*************************************
+*	レーザービームクラス.
+**/
 class CLaserBeam : public CActor
 {
-	const float DEFAULT_MOVE_SPEED			= 0.1f;	// 移動速度.
-	const float DEFAULT_PARALYSIS_TIME		= 3.0f;	// 麻痺の時間.
-	const int	MAX_TRAJECTORY_COUNT		= 50;	// 軌跡の最大頂点数.
-	const int	TRAJECTORY_TIME				= 1;	// 軌跡の頂点加算時間.
-	const int	TRAJECTORY_END_ADD_VALUE	= 8;	// 軌跡が終了する際の加算値.
-	const char*	EFFECT_NAME					= "ultemateAttackEffeck";
-	const float DEFAULT_ATTACK_COLLISION_SCALE		= 1.0f;	// 攻撃当たり判定のサイズ.
-	const float ATTACK_COLLISION_SCALE;						// 攻撃当たり判定のサイズ.
+	inline static const char*	EFFECT_NAME				= "ultemateAttackEffeck";
+	static constexpr float	DEFAULT_MOVE_SPEED				= 0.1f;	// 移動速度.
+	static constexpr float	DEFAULT_PARALYSIS_TIME			= 3.0f;	// 麻痺の時間.
+	static constexpr float	DEFAULT_ATTACK_COLLISION_SCALE	= 1.0f;	// 攻撃当たり判定のサイズ.
+	static constexpr int	MAX_TRAJECTORY_COUNT			= 50;	// 軌跡の最大頂点数.
+	static constexpr int	TRAJECTORY_TIME					= 1;	// 軌跡の頂点加算時間.
+	static constexpr int	TRAJECTORY_END_ADD_VALUE		= 8;	// 軌跡が終了する際の加算値.
 public:
 	CLaserBeam();
 	CLaserBeam( const float& collRad );
@@ -42,7 +49,7 @@ public:
 	// パラメータを初期に戻す.
 	void ResetParam();
 	// ベジェ曲線の制御点の設定.
-	void SetControlPointList( std::vector<D3DXVECTOR3> pointList );
+	void SetControlPointList( const std::vector<D3DXVECTOR3>& pointList );
 
 	// 移動速度の設定.
 	inline void SetMoveSpped( const float& moveSpeed ){ m_MoveSpeed = moveSpeed; }
@@ -71,6 +78,7 @@ private:
 	bool GetEffect();
 
 private:
+	const float ATTACK_COLLISION_SCALE;				// 攻撃当たり判定のサイズ.
 	std::unique_ptr<CTrajectory>	m_pTrajectory;	// 軌跡描画クラス.
 	std::shared_ptr<CEffectManager>	m_pEffect;		// エフェクト.
 	float		m_MoveSpeed;		// 移動速度.

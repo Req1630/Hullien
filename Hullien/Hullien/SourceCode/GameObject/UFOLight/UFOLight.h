@@ -1,19 +1,27 @@
+/**
+* @file UFOLight.h.
+* @brief UFOのライトクラス.
+* @author 福田玲也.
+*/
 #ifndef UFO_LIGHT_H
 #define UFO_LIGHT_H
 
 #include "..\GameObject.h"
 
+/**************************************
+*	UFOのライトクラス.
+**/
 class CUFOLight : public CGameObject
 {
-	const char* MODEL_NAME = "light";	// モデル名.
+	inline static const char* MODEL_NAME = "light";	// モデル名.
 
-	const float MODEL_ALPHA					= 0.15f;	// モデルアルファ値.
-	const float SCALE_UP_HEIGHT_SPEED		= 0.2f;		// デフォルト高さ拡大速度.
-	const float SCALE_UP_WEDTH_SPEED		= 0.02f;	// デフォルト幅拡大速度.
-	const float DEFAULT_SCALE_HEIGHT_MAX	= 1.0f;		// 高さの最大サイズ.
-	const float DEFAULT_SCALE_WEDTH_MAX		= 1.0f;		// 幅の最大サイズ,
-	const float DEFAULT_SCALE_HEIGHT_MIN	= 0.0f;		// 高さの最小サイズ.
-	const float DEFAULT_SCALE_WEDTH_MIN		= 0.0f;		// 幅の最小サイズ,
+	static constexpr float MODEL_ALPHA				= 0.15f;	// モデルアルファ値.
+	static constexpr float SCALE_UP_HEIGHT_SPEED	= 0.2f;		// デフォルト高さ拡大速度.
+	static constexpr float SCALE_UP_WEDTH_SPEED		= 0.02f;	// デフォルト幅拡大速度.
+	static constexpr float DEFAULT_SCALE_HEIGHT_MAX	= 1.0f;		// 高さの最大サイズ.
+	static constexpr float DEFAULT_SCALE_WEDTH_MAX	= 1.0f;		// 幅の最大サイズ,
+	static constexpr float DEFAULT_SCALE_HEIGHT_MIN	= 0.0f;		// 高さの最小サイズ.
+	static constexpr float DEFAULT_SCALE_WEDTH_MIN	= 0.0f;		// 幅の最小サイズ,
 
 	// UFOライトの状態.
 	enum class enUFOLightState

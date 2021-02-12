@@ -1,3 +1,8 @@
+/**
+* @file MeshResource.h.
+* @brief メッシュリソースクラス.
+* @author 福田玲也.
+*/
 #ifndef MESH_RESORCE_H
 #define MESH_RESORCE_H
 
@@ -14,6 +19,9 @@ namespace fs = std::filesystem;
 class CDX9SkinMesh;
 class CDX9StaticMesh;
 
+/********************************
+*	メッシュリソースクラス.
+**/
 class CMeshResorce
 {
 	const char* FILE_PATH = "Data\\Mesh";	// メッシュファイルパス.

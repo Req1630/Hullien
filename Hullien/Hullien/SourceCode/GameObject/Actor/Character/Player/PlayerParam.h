@@ -1,3 +1,8 @@
+/**
+* @file PlayerParam.h.
+* @brief プレイヤーの構造体などのヘッター.
+* @author 福田玲也.
+*/
 #ifndef PLAYER_PARAM_H
 #define PLAYER_PARAM_H
 

@@ -1,13 +1,21 @@
+/**
+* @file Alien_B.h.
+* @brief 宇宙人Bクラス.
+* @author 福田玲也.
+*/
 #ifndef ALIEN_B_H
 #define ALIEN_B_H
 
 #include "..\Alien.h"
 
+/********************************
+*	宇宙人Bクラス.
+**/
 class CAlienB : public CAlien
 {
-	const char* MODEL_NAME = "b_s";
-	const char* ATTACK_MODEL_NAME	= "b_attack";
-	const float ATTACK_EFFECT_SCALE = 0.5f;
+	inline static const char* MODEL_NAME = "b_s";
+	inline static const char* ATTACK_MODEL_NAME	= "b_attack";
+	static constexpr float ATTACK_EFFECT_SCALE = 0.5f;
 
 public:
 	CAlienB();

@@ -1,3 +1,8 @@
+/**
+* @file ImGuiManager.h.
+* @brief ImGuiライブラリを管理するクラス.
+* @author 福田玲也.
+*/
 #ifndef IMGUI_MANAGER_H
 #define IMGUI_MANAGER_H
 
@@ -8,6 +13,9 @@
 #include "..\..\..\Library\ImGui\imgui_impl_win32.h"
 #include "..\..\..\Library\ImGui\imgui_internal.h"
 
+/***********************************
+*	ImGuiライブラリを管理するクラス.
+**/
 class CImGuiManager
 {
 	inline static const char* FONT_FILE_PATH  = "Data\\Texture\\_Font\\mplus-1p-medium.ttf";

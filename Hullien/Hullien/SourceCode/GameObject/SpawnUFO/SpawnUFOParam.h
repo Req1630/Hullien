@@ -1,3 +1,8 @@
+/**
+* @file SpawnUFOParam.h.
+* @brief スポーンUFOパラメータ情報.
+* @author 福田玲也.
+*/
 #ifndef SPAWN_UFO_PARAM_H
 #define SPAWN_UFO_PARAM_H
 

@@ -1,3 +1,8 @@
+/**
+* @file BitFlagManager.h.
+* @brief ビットフラグを操作する関数をまとめた.
+* @author 福田玲也.
+*/
 #ifndef BIT_FLAG_MANAGER_H
 #define BIT_FLAG_MANAGER_H
 

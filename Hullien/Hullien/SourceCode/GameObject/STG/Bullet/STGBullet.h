@@ -1,3 +1,8 @@
+/**
+* @file STGBullet.h.
+* @brief STG用の弾クラス.
+* @author 福田玲也.
+*/
 #ifndef STG_BULLET_H
 #define STG_BULLET_H
 
@@ -5,11 +10,13 @@
 
 namespace STG
 {
+	/**************************************
+	*	弾クラス.
+	**/
 	class CBullet : public STG::CActor
 	{
-		const char* MODEL_NAME;				// モデル名 : 外部から取得.
-		const float	COLLISION_SCALE = 1.0f;	// 当たり判定の大きさ.
-		const float ATTACK_POWAR	= 1.0f;	// 攻撃力.
+		static constexpr float	COLLISION_SCALE = 1.0f;	// 当たり判定の大きさ.
+		static constexpr float	ATTACK_POWAR	= 1.0f;	// 攻撃力.
 	public:
 		CBullet();
 		CBullet( const char* modelName );
@@ -44,6 +51,7 @@ namespace STG
 		bool CollisionInit();
 
 	private:
+		const char* MODEL_NAME;						// モデル名 : 外部から取得.
 		D3DXVECTOR4 m_Color;						// 弾の色.
 		float		m_MoveSpeed;					// 移動速度.
 		bool		m_IsBulletToBulletCollJudge;	// 弾どうしの当たり判定を行うか.

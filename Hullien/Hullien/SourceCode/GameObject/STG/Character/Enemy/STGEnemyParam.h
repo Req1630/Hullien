@@ -1,3 +1,8 @@
+/**
+* @file STGEnemyParam.h.
+* @brief STG用の敵パラメータ.
+* @author 福田玲也.
+*/
 #ifndef STG_ENEMY_PARAM_H
 #define STG_ENEMY_PARAM_H
 

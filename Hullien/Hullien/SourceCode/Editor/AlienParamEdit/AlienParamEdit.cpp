@@ -105,7 +105,7 @@ void CAlienParamEdit::EffectRender()
 // 全ファイルの読み込み.
 bool CAlienParamEdit::FileAllReading()
 {
-	m_AlienPathList = CFileManager::TextLoading( FILE_PATH );
+	m_AlienPathList = CFileManager::TextLoading( ALIEN_LIST_FILE_PATH );
 	
 	for( const auto& f : m_AlienPathList ){
 		const fs::path fileName = f;	// ファイルネームをパスに設定.

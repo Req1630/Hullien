@@ -1,9 +1,17 @@
+/**
+* @file MotherShipUFOEdit.h.
+* @brief マザーシップのパラメータエディタクラス.
+* @author 福田玲也.
+*/
 #ifndef MOTHER_SHIP_UFO_EDIT_H
 #define MOTHER_SHIP_UFO_EDIT_H
 
 #include "..\EditBase.h"
 #include "..\..\GameObject\MotherShipUFO\MotherShipUFO.h"
 
+/*************************************************
+*	マザーシップのパラメータエディタクラス.
+**/
 class CMotherShipUFOEdit : public CEditBase
 {
 	const char* MOTHER_SHIP_UFO_PARAM_FILE_PATH = "Data\\GameParam\\Alien\\MotherShipUFOParam\\MotherShipUFOParam.bin";

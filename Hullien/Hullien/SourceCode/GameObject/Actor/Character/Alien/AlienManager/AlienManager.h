@@ -1,3 +1,8 @@
+/**
+* @file AlienManager.h.
+* @brief 宇宙人管理クラス.
+* @author 福田玲也.
+*/
 #ifndef ALIEN_MANAGER_H
 #define ALIEN_MANAGER_H
 
@@ -12,6 +17,9 @@ class CMotherShipUFO;	// マザーシップUFO.
 class CSpawnUFO;		// スポーンUFO.
 class CExplosion;		// 爆発クラス.
 
+/*********************************
+*	宇宙人管理クラス.
+**/
 class CAlienManager
 {
 	const char* SPAWN_PARAM_FILE_PATH = "Data\\GameParam\\Alien\\SpaenParam\\SpaenParam.bin";

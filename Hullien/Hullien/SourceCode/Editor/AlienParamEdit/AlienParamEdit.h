@@ -1,3 +1,8 @@
+/**
+* @file AlienParamEdit.h.
+* @brief 宇宙人パラメータエディタクラス.
+* @author 福田玲也.
+*/
 #ifndef ALIEN_PARAM_EDIT_H
 #define ALIEN_PARAM_EDIT_H
 
@@ -9,13 +14,16 @@
 
 #include <vector>
 
+/***********************************************
+*	宇宙人パラメータエディタクラス.
+**/
 class CAlienParamEdit : public CEditBase
 {
-	const char* FILE_PATH = "Data\\GameParam\\Alien\\AlienParamPathList.txt";
-	const char* MOTHER_SHIP_UFO_PARAM_FILE_PATH = "Data\\GameParam\\Alien\\MotherShipUFOParam\\MotherShipUFOParam.bin";
-	const char* SPAWN_UFO_PARAM_FILE_PATH = "Data\\GameParam\\Alien\\SpaenParam\\SpaenParam.bin";
+	const char* ALIEN_LIST_FILE_PATH			= "Data\\GameParam\\Alien\\AlienParamPathList.txt";
+	const char* MOTHER_SHIP_UFO_PARAM_FILE_PATH	= "Data\\GameParam\\Alien\\MotherShipUFOParam\\MotherShipUFOParam.bin";
+	const char* SPAWN_UFO_PARAM_FILE_PATH		= "Data\\GameParam\\Alien\\SpaenParam\\SpaenParam.bin";
 
-	const char* SPAWN_UFO_MODEL_NAME = "ufo_mini";
+	const char* SPAWN_UFO_MODEL_NAME			= "ufo_mini";
 public:
 	CAlienParamEdit();
 	~CAlienParamEdit();

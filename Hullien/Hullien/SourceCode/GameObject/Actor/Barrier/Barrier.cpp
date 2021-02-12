@@ -7,9 +7,19 @@
 
 #include "..\..\..\Common\Effect\EffectManager.h"
 
+namespace
+{
+	const char* EFFECT_NAME							= "barrier_effect";	// エフェクトの名前.
+
+	const float COLLISION_SPHERE_RDIUS_MAX			= 20.0f;	// 当たり判定の最大半径.
+	const float COLLISION_SPHERE_RDIUS_ADD_VALUE	= 1.0f;		// 当たり判定サイズ加算値.
+	const float ACTIVE_TIME							= 5.0f;		// 動作時間.
+	const float EFFECT_SCALE						= 0.3f;		// エフェクトのサイズ.
+	const float EFFECT_ADJ_POSITION_Y				= 0.001f;	// エフェクトの調整用座標.
+};
+
 CBarrier::CBarrier()
-	: m_StaticMesh			( nullptr )
-	, m_pEffect				( nullptr )
+	: m_pEffect				( nullptr )
 	, m_IsEffectPlay		( false )
 	, m_IsActive			( false )
 	, m_ActiveCount			( 0.0f )
@@ -31,7 +41,6 @@ CBarrier::~CBarrier()
 bool CBarrier::Init()
 {
 	if( m_IsActive == true ) return false;
-	if( GetModel() == false ) return false;
 	if( ColliderSetting() == false ) return false;
 	if (m_pEffect->SetEffect(EFFECT_NAME) == false) return false;
 	m_IsActive			= true;
@@ -71,7 +80,6 @@ void CBarrier::Update()
 void CBarrier::Render()
 {
 	if( m_IsActive == false ) return;		// 動作してなければ終了.
-	if( m_StaticMesh == nullptr ) return;
 	if( m_pCollManager == nullptr ) return;
 
 	//m_StaticMesh->SetPosition( m_vPosition );
@@ -101,7 +109,6 @@ void CBarrier::Render()
 void CBarrier::EffectRender()
 {
 	if( m_IsActive == false ) return;		// 動作してなければ終了.
-	if( m_StaticMesh == nullptr ) return;
 	if( m_pCollManager == nullptr ) return;
 
 	// エフェクトを描画.
@@ -155,18 +162,6 @@ void CBarrier::SetTargetPos( CActor& pActor )
 	m_pEffect->Play(m_vPosition);	// エフェクトを再生.
 	m_IsEffectPlay = true;
 
-}
-
-// モデルの取得.
-bool CBarrier::GetModel()
-{
-	// 既に読み込めていたら終了.
-	if( m_StaticMesh != nullptr ) return true;
-	// モデルの取得.
-	CMeshResorce::GetStatic( m_StaticMesh, MODEL_NAME );
-	// モデルが読み込めてなければ false.
-	if( m_StaticMesh == nullptr ) return false;
-	return true;
 }
 
 // 当たり判定の設定.

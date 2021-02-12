@@ -1,3 +1,8 @@
+/**
+* @file STGEnemyManager.h.
+* @brief STG用の敵管理クラス.
+* @author 福田玲也.
+*/
 #ifndef STG_ENEMY_MANAGER_H
 #define STG_ENEMY_MANAGER_H
 
@@ -14,6 +19,9 @@ namespace STG
 
 namespace STG
 {
+	/********************************
+	*	敵管理クラス.
+	**/
 	class CEnemyManager
 	{
 	public:

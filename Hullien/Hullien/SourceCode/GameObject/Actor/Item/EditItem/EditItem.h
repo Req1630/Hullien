@@ -1,8 +1,16 @@
+/**
+* @file EditItem.h.
+* @brief エディタ用アイテムクラス.
+* @author 福田玲也.
+*/
 #ifndef EDIT_ITME_H
 #define EDIT_ITME_H
 
 #include "..\ItemBase.h"
 
+/*************************************
+*	エディタ用アイテムクラス.
+**/
 class CEditItem : public CItemBase
 {
 	const char* CURE_MODEL_NAME		= "item cure";		// モデル名.
@@ -15,8 +23,8 @@ class CEditItem : public CItemBase
 	const char* ATTACK_EFFECT_NAME	= "item_effect_attack";		// エフェクト名.
 	const char* SPEED_EFFECT_NAME	= "item_effect_speed";		// エフェクト名.
 
-	const float SCALE_MAX	= 1.0f;
-	const float POSITION_HEIGHT = 5.0f;
+	const float SCALE_MAX		= 1.0f;
+	const float POSITION_HEIGHT	= 5.0f;
 public:
 	CEditItem();
 	virtual ~CEditItem();

@@ -1,3 +1,8 @@
+/**
+* @file GameActorManager.h.
+* @brief Actorクラスを管理するクラス.
+* @author 福田玲也.
+*/
 #ifndef CHARACTER_MANAGER_H
 #define CHARACTER_MANAGER_H
 
@@ -18,6 +23,9 @@ class CBarrier;			// バリアクラス.
 class CWarning;			// 警告クラス.
 class CInvisibleWall;	// 見えない壁.
 
+/**********************************
+*	Actorクラスを管理するクラス.
+**/
 class CGameActorManager
 {
 	const float GIRL_LIMIT_POS_Y = 5.0f;	//女の子がUFOに吸い込まれた時の限界値.

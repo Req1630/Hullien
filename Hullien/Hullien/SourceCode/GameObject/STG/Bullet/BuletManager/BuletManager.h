@@ -1,3 +1,8 @@
+/**
+* @file BuletManager.h.
+* @brief ’eŠÇ—ƒNƒ‰ƒX.
+* @author •Ÿ“c—æ–ç.
+*/
 #ifndef BULLET_MANAGER_H
 #define BULLET_MANAGER_H
 
@@ -6,12 +11,14 @@
 
 namespace STG
 {
+	/*********************************************
+	*	’eŠÇ—ƒNƒ‰ƒX.
+	**/
 	class CBulletManager : public STG::CActor
 	{
 		inline static const char* MODEL_NAME	= "SpawnPoint";
-		inline static const float BULLET_COLOR	= 0.5f;
+		static constexpr float BULLET_COLOR	= 0.5f;
 
-		const SBulletManagerParam PARAMETER;
 	public:
 		CBulletManager();
 		CBulletManager( const SBulletManagerParam& param );
@@ -44,6 +51,7 @@ namespace STG
 		bool BulletInit();
 
 	private:
+		const SBulletManagerParam PARAMETER;
 		std::vector<std::shared_ptr<CBullet>>	m_pBullets;	// ’e.
 		D3DXVECTOR3	m_BulletColor;				// ’e‚ÌF.
 		float		m_BulletAddAngle;			// ’e‚Ì‰ÁZŠp“x.

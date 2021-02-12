@@ -1,3 +1,8 @@
+/**
+* @file Player.h.
+* @brief プレイヤークラス.
+* @author 福田玲也.
+*/
 #ifndef PLAYER_H
 #define PLAYER_H
 
@@ -10,6 +15,9 @@ class CCharacterWidget;	// キャラクタUIクラス.
 class CEffectManager;	// エフェクトクラス.
 class CEffectTimer;		// アイテムの時間管理クラス.
 
+/***************************************
+*	プレイヤークラス.
+**/
 class CPlayer : public CCharacter
 {
 	// パラメータのファイルパス.

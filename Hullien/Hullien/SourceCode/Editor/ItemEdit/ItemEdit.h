@@ -1,3 +1,8 @@
+/**
+* @file ItemEdit.h.
+* @brief アイテムのパラメータエディタクラス.
+* @author 福田玲也.
+*/
 #ifndef ITEM_EDIT_H
 #define ITEM_EDIT_H
 
@@ -9,6 +14,9 @@
 
 class CEditItem;
 
+/********************************************
+*	アイテムのパラメータエディタクラス.
+**/
 class CItemEdit : public CEditBase
 {
 	const char* ITEM_PARAM_FILE_PATH = "Data\\GameParam\\Item\\ItemParam.bin";

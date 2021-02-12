@@ -1,3 +1,8 @@
+/**
+* @file STGManager.h.
+* @brief STG全体を管理するクラス.
+* @author 福田玲也.
+*/
 #ifndef STG_MANAGER_H
 #define STG_MANAGER_H
 
@@ -13,9 +18,11 @@ namespace STG
 class CSkyDome;	// 背景.
 class CCamera;	// カメラ.
 
+/*********************************
+*	STGを管理するクラス.
+**/
 class CSTGManager
 {
-
 	const float STG_END_FRAME				= 3*FPS;	// STGの終了フレーム.
 	const float SKY_DOME_SCROLL_SPEED		= -0.001f;
 	const D3DXVECTOR3 CAMERA_POSITION		= { 0.0f, 150.0f, 10.0f };

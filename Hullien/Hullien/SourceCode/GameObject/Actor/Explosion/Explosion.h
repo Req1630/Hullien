@@ -1,3 +1,8 @@
+/**
+* @file Explosion.h.
+* @brief 爆発クラス.
+* @author 福田玲也.
+*/
 #ifndef EXPLOSION_H
 #define EXPLOSION_H
 
@@ -5,9 +10,12 @@
 
 class CEffectManager;	// エフェクトクラス.
 
+/**********************************
+*	爆発クラス.
+**/
 class CExplosion : public CActor
 {
-	const char* EFFECT_NAME = "c_deadEffect";	// エフェクトの名前.
+	inline static const char* EFFECT_NAME = "c_deadEffect";	// エフェクトの名前.
 public:
 	// 爆発パラメーター.
 	struct stExplosionParam

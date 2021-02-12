@@ -1,3 +1,8 @@
+/**
+* @file SpriteResource.h.
+* @brief 画像リソースクラス.
+* @author 福田玲也.
+*/
 #ifndef SPRITE_RESOURCE_H
 #define SPRITE_RESOURCE_H
 
@@ -13,6 +18,9 @@
 
 namespace fs = std::filesystem;
 
+/***************************
+*	画像リソースクラス.
+**/
 class CSpriteResource
 {
 	const char* FILE_PATH = "Data\\Texture";	// テクスチャフォルダパス.

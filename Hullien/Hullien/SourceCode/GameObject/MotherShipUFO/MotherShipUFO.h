@@ -1,3 +1,8 @@
+/**
+* @file MotherShipUFO.h.
+* @brief マザーシップUFOクラス.
+* @author 福田玲也.
+*/
 #ifndef MOTHER_SHIP_UFO_H
 #define MOTHER_SHIP_UFO_H
 
@@ -7,6 +12,9 @@ class CActor;
 class CCollisionManager;	// 当たり判定クラス.
 class CUFOLight;
 
+/**********************************************
+*	マザーシップUFOクラス.
+**/
 class CMotherShipUFO : public CGameObject
 {
 public:

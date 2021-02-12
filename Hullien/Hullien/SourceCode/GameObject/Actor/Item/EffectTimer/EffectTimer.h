@@ -1,6 +1,14 @@
+/**
+* @file EffectTimer.h.
+* @brief アイテムの効果時間計測クラス.
+* @author 福田玲也.
+*/
 #ifndef EFFECT_TIMER_H
 #define EFFECT_TIMER_H
 
+/********************************
+*	アイテムの効果時間計測クラス.
+**/
 class CEffectTimer
 {
 public:

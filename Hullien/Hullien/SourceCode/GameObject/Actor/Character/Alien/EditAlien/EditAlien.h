@@ -1,11 +1,19 @@
+/**
+* @file EditAlien.h.
+* @brief エディタ用宇宙人基底クラス.
+* @author 福田玲也.
+*/
 #ifndef EDIT_ALIEN_H
 #define EDIT_ALIEN_H
 
 #include "..\Alien.h"
 
+/**********************************
+*	エディタ用宇宙人基底クラス.
+*/
 class CEditAlien : public CAlien
 {
-	inline static const float MOVE_DISTANCE = 50.0f;	// 移動距離.
+	static constexpr float MOVE_DISTANCE = 50.0f;	// 移動距離.
 public:
 	CEditAlien();
 	virtual ~CEditAlien();

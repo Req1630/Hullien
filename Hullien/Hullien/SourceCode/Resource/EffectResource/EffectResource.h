@@ -1,3 +1,8 @@
+/**
+* @file EffectResource.h.
+* @brief エフェクト(Effekseer)リソースクラス.
+* @author 福田玲也.
+*/
 #ifndef EFFECT_RESOURCE_H
 #define EFFECT_RESOURCE_H
 
