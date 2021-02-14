@@ -8,6 +8,10 @@ namespace
 {
 	const char* SHADER_NAME			= "Data\\Shader\\SceneTexRenderer.hlsl";	// シェーダー名.
 	const float CLEAR_BACK_COLOR[4]	= { 0.4f, 0.4f, 0.4f, 1.0f };				// テクスチャクリア色.
+
+	// ブルーム用のサンプリングの強さ.
+	const float SOFT_THRSHOLD	= 1.0f;
+	const float THRSHOLD		= 0.55f;
 };
 
 CSceneTexRenderer::CSceneTexRenderer()
@@ -140,14 +144,12 @@ void CSceneTexRenderer::Release()
 // 描画関数.
 void CSceneTexRenderer::Render( const bool& isBloomSmpling )
 {
-	// ブルーム用のサンプリングの強さ.
-	const float softThrshold = 1.0f;
-	static float thrshold = 0.55f;
+#ifdef _DEBUG
 	if( CKeyInput::IsHold('C') ) thrshold += 0.001f;
 	if( CKeyInput::IsHold('V') ) thrshold -= 0.001f;
 	if( thrshold >= 1.0f ) thrshold = 1.0f;
 	if( thrshold <= 0.0f ) thrshold = 0.0f;
-
+#endif	// #ifdef _DEBUG
 	// シェーダーのコンスタントバッファに各種データを渡す.
 	D3D11_MAPPED_SUBRESOURCE pData;
 	// バッファ内のデータの書き換え開始時にMap.
@@ -155,9 +157,9 @@ void CSceneTexRenderer::Render( const bool& isBloomSmpling )
 		GetInstance()->m_pConstantBufferFrame, 0, D3D11_MAP_WRITE_DISCARD, 0, &pData ))){
 		C_BUFFER_PER_FRAME cb;
 
-		const float knee = softThrshold*thrshold;
-		cb.SoftKneePram.x = thrshold;
-		cb.SoftKneePram.y = thrshold+knee;
+		const float knee = SOFT_THRSHOLD*THRSHOLD;
+		cb.SoftKneePram.x = THRSHOLD;
+		cb.SoftKneePram.y = THRSHOLD+knee;
 		cb.SoftKneePram.z = knee*2.0f;
 		cb.SoftKneePram.w = 0.25f*knee*0.00001f;
 
